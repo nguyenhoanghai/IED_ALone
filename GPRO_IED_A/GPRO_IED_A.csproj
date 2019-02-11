@@ -20,6 +20,8 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <Use64BitIISExpress />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -1389,7 +1391,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\DLL\GPRO.Core\GPRO.Core.csproj">
+    <ProjectReference Include="..\GPRO.Core\GPRO.Core.csproj">
       <Project>{c73f876d-cf6e-4e38-9efa-cea26f34f047}</Project>
       <Name>GPRO.Core</Name>
     </ProjectReference>

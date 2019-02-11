@@ -1,0 +1,11 @@
+E:\GPRO_2018\DLL\GPRO.Core\bin\Release\GPRO.Core.dll
+E:\GPRO_2018\DLL\GPRO.Core\bin\Release\GPRO.Core.pdb
+E:\GPRO_2018\DLL\GPRO.Core\bin\Release\System.Net.Http.dll
+E:\GPRO_2018\DLL\GPRO.Core\bin\Release\System.Net.Http.Formatting.dll
+E:\GPRO_2018\DLL\GPRO.Core\bin\Release\SystemGPRO.Serial.dll
+E:\GPRO_2018\DLL\GPRO.Core\bin\Release\Newtonsoft.Json.dll
+E:\GPRO_2018\DLL\GPRO.Core\bin\Release\System.Net.Http.xml
+E:\GPRO_2018\DLL\GPRO.Core\bin\Release\System.Net.Http.Formatting.xml
+E:\GPRO_2018\DLL\GPRO.Core\obj\Release\GPRO.Core.csprojResolveAssemblyReference.cache
+E:\GPRO_2018\DLL\GPRO.Core\obj\Release\GPRO.Core.dll
+E:\GPRO_2018\DLL\GPRO.Core\obj\Release\GPRO.Core.pdb
