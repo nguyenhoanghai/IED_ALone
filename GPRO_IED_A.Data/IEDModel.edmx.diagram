@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="728e24cde2fe4b0c8273aa945d303524" Name="Diagram1">
+        <EntityTypeShape EntityType="IEDModel.HR_Employee" Width="1.5" PointX="11.5" PointY="74.625" />
+        <EntityTypeShape EntityType="IEDModel.SCategory" Width="1.5" PointX="11" PointY="6.5" />
+        <EntityTypeShape EntityType="IEDModel.SCompany" Width="1.5" PointX="7" PointY="68.25" />
+        <EntityTypeShape EntityType="IEDModel.SCompanyModule" Width="1.5" PointX="9.25" PointY="75.375" />
+        <EntityTypeShape EntityType="IEDModel.SConfig" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="IEDModel.SFeature" Width="1.5" PointX="11" PointY="1.375" />
+        <EntityTypeShape EntityType="IEDModel.SLevelCompany" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="IEDModel.SMenu" Width="1.5" PointX="13.25" PointY="7.125" />
+        <EntityTypeShape EntityType="IEDModel.SModule" Width="1.5" PointX="8.75" PointY="3.875" />
+        <EntityTypeShape EntityType="IEDModel.SPermission" Width="1.5" PointX="13.25" PointY="1.375" />
+        <EntityTypeShape EntityType="IEDModel.SRoLe" Width="1.5" PointX="13.25" PointY="13" />
+        <EntityTypeShape EntityType="IEDModel.SRolePermission" Width="1.5" PointX="15.5" PointY="2.875" />
+        <EntityTypeShape EntityType="IEDModel.SUser" Width="1.5" PointX="9.25" PointY="68" />
+        <EntityTypeShape EntityType="IEDModel.SUserRole" Width="1.5" PointX="16.5" PointY="41.625" />
+        <EntityTypeShape EntityType="IEDModel.SWorkerLevel" Width="1.5" PointX="5.25" PointY="52.25" />
+        <EntityTypeShape EntityType="IEDModel.T_ApplyPressureLibrary" Width="1.5" PointX="6" PointY="11.875" />
+        <EntityTypeShape EntityType="IEDModel.T_CA_Phase" Width="1.5" PointX="7.5" PointY="29.75" />
+        <EntityTypeShape EntityType="IEDModel.T_CA_Phase_Mani" Width="1.5" PointX="13.5" PointY="32" />
+        <EntityTypeShape EntityType="IEDModel.T_CA_Phase_TimePrepare" Width="1.5" PointX="15.75" PointY="31.5" />
+        <EntityTypeShape EntityType="IEDModel.T_CommodityAnalysis" Width="1.5" PointX="5.25" PointY="32.75" />
+        <EntityTypeShape EntityType="IEDModel.T_CompanySkill" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="IEDModel.T_CompanySkillDetail" Width="1.5" PointX="0.75" PointY="5.75" />
+        <EntityTypeShape EntityType="IEDModel.T_Employee_CompanySkill" Width="1.5" PointX="2.75" PointY="5.75" />
+        <EntityTypeShape EntityType="IEDModel.T_Employee_PhaseGroupSkill" Width="1.5" PointX="4.75" PointY="5.75" />
+        <EntityTypeShape EntityType="IEDModel.T_EmployeePhase" Width="1.5" PointX="0.75" PointY="10.75" />
+        <EntityTypeShape EntityType="IEDModel.T_Equipment" Width="1.5" PointX="5.25" PointY="26.625" />
+        <EntityTypeShape EntityType="IEDModel.T_EquipmentAttribute" Width="1.5" PointX="13.5" PointY="23.625" />
+        <EntityTypeShape EntityType="IEDModel.T_EquipmentGroup" Width="1.5" PointX="3" PointY="28.5" />
+        <EntityTypeShape EntityType="IEDModel.T_EquipmentType" Width="1.5" PointX="3" PointY="22.75" />
+        <EntityTypeShape EntityType="IEDModel.T_EquipmentTypeAttribute" Width="1.5" PointX="5.25" PointY="21.75" />
+        <EntityTypeShape EntityType="IEDModel.T_EquipType_Default" Width="1.5" PointX="0.75" PointY="22.875" />
+        <EntityTypeShape EntityType="IEDModel.T_EquipTypeAttr_Default" Width="1.5" PointX="3" PointY="19.875" />
+        <EntityTypeShape EntityType="IEDModel.T_File" Width="1.5" PointX="8.25" PointY="17.25" />
+        <EntityTypeShape EntityType="IEDModel.T_IEDConfig" Width="1.5" PointX="2.75" PointY="10.75" />
+        <EntityTypeShape EntityType="IEDModel.T_LabourDivision" Width="1.5" PointX="11.5" PointY="66.375" />
+        <EntityTypeShape EntityType="IEDModel.T_Line" Width="1.5" PointX="9.25" PointY="63.375" />
+        <EntityTypeShape EntityType="IEDModel.T_LinePosition" Width="1.5" PointX="13.75" PointY="69.125" />
+        <EntityTypeShape EntityType="IEDModel.T_LinePositionDetail" Width="1.5" PointX="16" PointY="36" />
+        <EntityTypeShape EntityType="IEDModel.T_ManipulationEquipment" Width="1.5" PointX="10.5" PointY="27.875" />
+        <EntityTypeShape EntityType="IEDModel.T_ManipulationFile" Width="1.5" PointX="10.5" PointY="23.5" />
+        <EntityTypeShape EntityType="IEDModel.T_ManipulationLibrary" Width="1.5" PointX="8.25" PointY="21.875" />
+        <EntityTypeShape EntityType="IEDModel.T_ManipulationTypeLibrary" Width="1.5" PointX="6" PointY="42.625" />
+        <EntityTypeShape EntityType="IEDModel.T_NatureCutsLibrary" Width="1.5" PointX="6" PointY="16.625" />
+        <EntityTypeShape EntityType="IEDModel.T_PhaseGroup" Width="1.5" PointX="5.25" PointY="47.75" />
+        <EntityTypeShape EntityType="IEDModel.T_Product" Width="1.5" PointX="5.25" PointY="57.375" />
+        <EntityTypeShape EntityType="IEDModel.T_StopPrecisionLibrary" Width="1.5" PointX="6" PointY="38" />
+        <EntityTypeShape EntityType="IEDModel.T_TechProcessVersion" Width="1.5" PointX="7.5" PointY="56.5" />
+        <EntityTypeShape EntityType="IEDModel.T_TechProcessVersionDetail" Width="1.5" PointX="9.75" PointY="33" />
+        <EntityTypeShape EntityType="IEDModel.T_TimePrepare" Width="1.5" PointX="13.5" PointY="38.25" />
+        <EntityTypeShape EntityType="IEDModel.T_TimeTypePrepare" Width="1.5" PointX="11.25" PointY="38.5" />
+        <EntityTypeShape EntityType="IEDModel.T_WorkShop" Width="1.5" PointX="7" PointY="63.5" />
+        <AssociationConnector Association="IEDModel.FK_T_LinePosition_HR_Employee" />
+        <AssociationConnector Association="IEDModel.FK__SMenu__MenuCateg__03F0984C" />
+        <AssociationConnector Association="IEDModel.FK_SMenuCategory_SModule" />
+        <AssociationConnector Association="IEDModel.FK__SCompany__Parent__3B75D760" />
+        <AssociationConnector Association="IEDModel.FK__SUser__CompanyId__3A81B327" />
+        <AssociationConnector Association="IEDModel.FK_SRoLe_SCompany" />
+        <AssociationConnector Association="IEDModel.FK_Table_1_SCompany" />
+        <AssociationConnector Association="IEDModel.FK__SFeature__Module__3D5E1FD2" />
+        <AssociationConnector Association="IEDModel.FK__SPermissi__Featu__3C69FB99" />
+        <AssociationConnector Association="IEDModel.FK__SRolePerm__Featu__403A8C7D" />
+        <AssociationConnector Association="IEDModel.FK_SMenu_SModule" />
+        <AssociationConnector Association="IEDModel.FK__SRolePerm__Modul__3F466844" />
+        <AssociationConnector Association="IEDModel.FK__SRolePerm__Pemis__412EB0B6" />
+        <AssociationConnector Association="IEDModel.FK__SRolePerm__RoleI__3E52440B" />
+        <AssociationConnector Association="IEDModel.FK_SUserRole_SRoLe" />
+        <AssociationConnector Association="IEDModel.FK_SUserRole_SUser" />
+        <AssociationConnector Association="IEDModel.FK_T_LabourDivision_SUser" />
+        <AssociationConnector Association="IEDModel.FK_T_LabourDivision_SUser1" />
+        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_SWorkerLevel" />
+        <AssociationConnector Association="IEDModel.FK_T_ManipulationLibrary_T_ApplyPressureLibrary" />
+        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_ManiVer_De_T_CA_Phase" />
+        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_T_CommodityAnalysis" />
+        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_T_Equipment" />
+        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_T_PhaseGroup" />
+        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_TimePrepare_T_CA_Phase" />
+        <AssociationConnector Association="IEDModel.FK_T_TechProcessVersionDetail_T_CA_Phase" />
+        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_ManiVer_De_T_ManipulationLibrary" />
+        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_TimePrepare_T_TimePrepare" />
+        <AssociationConnector Association="IEDModel.FK_T_LabourDivision_T_CommoAna" />
+        <AssociationConnector Association="IEDModel.FK_T_Equipment_T_EquipmentGroup" />
+        <AssociationConnector Association="IEDModel.FK_T_Equipment_T_EquipmentType" />
+        <AssociationConnector Association="IEDModel.FK_T_EquipmentAttribute_T_Equipment" />
+        <AssociationConnector Association="IEDModel.FK_T_ManipulationEquipment_T_Equipment" />
+        <AssociationConnector Association="IEDModel.FK_T_EquipmentAttribute_T_EquipmentType" />
+        <AssociationConnector Association="IEDModel.FK_T_EquipmentType_T_EquipType_Default" />
+        <AssociationConnector Association="IEDModel.FK_T_EquipmentTypeAttribute_T_EquipmentType" />
+        <AssociationConnector Association="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType" />
+        <AssociationConnector Association="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType1" />
+        <AssociationConnector Association="IEDModel.FK_T_EquipmentTypeAttribute_T_EquipTypeAttr_Default" />
+        <AssociationConnector Association="IEDModel.FK_T_EquipTypeAttr_Default_T_EquipType_Default" />
+        <AssociationConnector Association="IEDModel.FK_T_ManipulationFile_T_File" />
+        <AssociationConnector Association="IEDModel.FK_T_LabourDivision_T_Line" />
+        <AssociationConnector Association="IEDModel.FK_T_LabourDivision_T_TechProcessVersion" />
+        <AssociationConnector Association="IEDModel.FK_T_LinePosition_T_LabourDivision" />
+        <AssociationConnector Association="IEDModel.FK_T_Line_T_WorkShop" />
+        <AssociationConnector Association="IEDModel.FK_T_LinePositionDetail_T_LinePosition" />
+        <AssociationConnector Association="IEDModel.FK_T_LinePositionDetail_T_TechProcessVersionDetail" />
+        <AssociationConnector Association="IEDModel.FK_T_ManipulationEquipment_T_ManipulationLibrary" />
+        <AssociationConnector Association="IEDModel.FK_T_ManipulationFile_T_ManipulationLibrary" />
+        <AssociationConnector Association="IEDModel.FK_T_ManipulationLibrary_T_ManipulationTypeLibrary" />
+        <AssociationConnector Association="IEDModel.FK_T_ManipulationLibrary_T_ManipulationTypeLibrary1" />
+        <AssociationConnector Association="IEDModel.FK_T_ManipulationLibrary_T_NatureCutsLibrary" />
+        <AssociationConnector Association="IEDModel.FK_T_ManipulationLibrary_T_StopPrecisionLibrary" />
+        <AssociationConnector Association="IEDModel.FK_T_TechProcessVersion_T_Product" />
+        <AssociationConnector Association="IEDModel.FK_T_TechProcessVersionDetail_T_TechProcessVersion" />
+        <AssociationConnector Association="IEDModel.FK_T_TimePrepare_T_TimeTypePrepare" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

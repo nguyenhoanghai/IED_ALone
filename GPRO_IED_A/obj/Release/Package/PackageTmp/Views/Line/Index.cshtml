@@ -1,0 +1,93 @@
+﻿ @{
+    ViewBag.Title = "Quản Lý Chuyền";
+    Layout = null; 
+    }
+<script src="~/Scripts/IED/Line/Line.js"></script>
+<div id="jtableLine" class="table-center"></div>
+
+<div class="modal fade " id="popup_Line" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button cancel_line aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">Thông Tin Chuyền</h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <input type="hidden" data-bind="value: Id" />
+                    <div class="col-md-6 form-group">
+                        <label class="control-label">Mã Chuyền <span class="required-class">*</span></label>
+                        <input class="form-control" id="lineCode" data-bind="value: Code" type="text" placeholder="Nhập Mã Chuyền ..." />
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="control-label">Tên Chuyền <span class="required-class">*</span></label>
+                        <input class="form-control" id="lineName" data-bind="value: Name" type="text" placeholder="Nhập Tên Chuyền ..." />
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="control-label">Số LĐ Định Biên <span class="required-class">*</span></label><br />
+                        <input class="form-control" id="lineCountOfLabours" data-bind="value: CountOfLabours" type="text" onkeypress=" return isNumberKey(event)" style="width: 100px !important" />
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="control-label">Chọn Phân Xưởng <span class="required-class">*</span></label>
+                        <div class="select-box">
+                            <select id="line_workshop"></select>
+                            <i re_line_workshop class="fa fa-refresh clickable red"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <label class="control-label">Mô Tả Chuyền</label>
+                        <textarea class="form-control" id="Description" data-bind="value: Description"></textarea>
+                    </div>
+                    <div class="clearfix">  </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button cancel_line aria-hidden="true" data-dismiss="modal" class="btn">
+                    <div class="button-image image-close"></div>
+                    Đóng
+                </button>
+                <button save_line class="btn btn-primary">
+                    <div class="button-image image-save"></div>
+                    Lưu Lại
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade  modalsmall" id="popup_SearchLine" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" close_search_line data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Tìm Kiếm</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="rows">
+                        <label class="control-label">Từ khóa</label>
+                        <input class="form-control" id="linetxtSearch" type="text" />
+                    </div>
+                    <div class="rows">
+                        <label class="control-label">Bạn muốn tìm theo ?</label>
+                        <select class="form-control" id="linesearchBy">
+                            <option value="2">Tìm theo Mã </option>
+                            <option value="1">Tìm theo Tên </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button close_search_line aria-hidden="true" data-dismiss="modal" class="btn">
+                <div class="button-image image-close"></div>
+                Đóng
+            </button>
+            <button search_line class="btn btn-primary">
+                <div class="button-image image-search"></div>
+                Tìm Kiếm
+            </button>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>

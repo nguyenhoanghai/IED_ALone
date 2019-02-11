@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CBCFD999-75FB-40D1-9F8D-D774D4FA09E4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GPRO_IED_A.Data</RootNamespace>
+    <AssemblyName>GPRO_IED_A.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libs\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="HR_Employee.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IEDModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IEDModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IEDModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IEDModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IEDModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SCategory.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SCompany.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SCompanyModule.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SConfig.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SFeature.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SLevelCompany.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SMenu.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SModule.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SPermission.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SRoLe.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SRolePermission.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SUser.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SUserRole.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SWorkerLevel.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_ApplyPressureLibrary.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_CA_Phase.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_CA_Phase_Mani.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_CA_Phase_TimePrepare.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_CommodityAnalysis.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_CompanySkill.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_CompanySkillDetail.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_EmployeePhase.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_Employee_CompanySkill.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_Employee_PhaseGroupSkill.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_Equipment.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_EquipmentAttribute.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_EquipmentGroup.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_EquipmentType.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_EquipmentTypeAttribute.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_EquipTypeAttr_Default.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_EquipType_Default.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_File.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_IEDConfig.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_LabourDivision.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_Line.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_LinePosition.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_LinePositionDetail.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_ManipulationEquipment.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_ManipulationFile.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_ManipulationLibrary.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_ManipulationTypeLibrary.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_NatureCutsLibrary.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_PhaseGroup.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_Product.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_StopPrecisionLibrary.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_TechProcessVersion.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_TechProcessVersionDetail.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_TimePrepare.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_TimeTypePrepare.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_WorkShop.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="IEDModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>IEDModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="IEDModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>IEDModel.edmx</DependentUpon>
+      <LastGenOutput>IEDModel.Context.cs</LastGenOutput>
+    </None>
+    <None Include="IEDModel.edmx.diagram">
+      <DependentUpon>IEDModel.edmx</DependentUpon>
+    </None>
+    <None Include="IEDModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>IEDModel.edmx</DependentUpon>
+      <LastGenOutput>IEDModel.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
