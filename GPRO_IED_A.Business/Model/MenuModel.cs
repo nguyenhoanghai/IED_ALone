@@ -18,5 +18,12 @@ namespace GPRO_IED_A.Business
         public int ModuleId { get; set; }
         public int? CompanyId { get; set; }
         public int MenuCategoryId { get; set; }
+        public string CategoryName { get; set; }
+        public string CategoryPosition { get; set; }
+        public int CategoryOrderIndex { get; set; }
+        public string CategoryLink { get; set; }
+        public string CategoryIcon { get; set; }
+        public string ModuleName { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

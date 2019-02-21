@@ -271,11 +271,37 @@ namespace GPRO_IED_A.Controllers
             return Json("");
         }
 
+        [HttpPost]
+        public JsonResult GetPhaseById(int phaseId)
+        {
+            try
+            {
+                var phase  = BLLCommo_Ana_Phase.Instance.GetPhase(phaseId);
+                JsonDataResult.Records = phase;
+                JsonDataResult.Result = "OK"; 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JsonDataResult);
+        }
+
         #endregion
 
         #region Commo Ana Phase Mani Version
-
-
+        [HttpPost]
+        public JsonResult GetPhasesForSuggest()
+        {
+            try
+            {
+                JsonDataResult.Result = "OK";
+                JsonDataResult.Records = BLLCommo_Ana_Phase.Instance.GetAllPhasesForSuggest( );
+            }
+            catch (Exception ex)
+            { }
+            return Json(JsonDataResult);
+        }
         #region export excel
         public void export_PhaseManiVersion(int Id)
         {

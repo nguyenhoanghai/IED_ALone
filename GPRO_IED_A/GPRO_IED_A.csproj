@@ -189,15 +189,18 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AuthenticateController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\EquipmentController.cs" />
     <Compile Include="Controllers\EquipmentGroupController.cs" />
     <Compile Include="Controllers\EquipmentTypeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LineController.cs" />
+    <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\MTypeController.cs" />
     <Compile Include="Controllers\ProAnaController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\TimePrepareController.cs" />
     <Compile Include="Controllers\PhaseGroupController.cs" />
     <Compile Include="Controllers\SharedController.cs" />
@@ -1001,7 +1004,7 @@
     <Content Include="Content\KendoUI\Kendo.Cultures.vn.min.js" />
     <Content Include="Content\KendoUI\kendo.default.mobile.min.css" />
     <Content Include="Content\KendoUI\kendo.material.min.css" />
-    <Content Include="Content\KendoUI\Material\sprite.png" />
+    <Content Include="Content\KendoUI\Material\sprite_2x.png" />
     <Content Include="Content\Layout\AdminCss.css" />
     <Content Include="Content\Layout\animate.min.css" />
     <Content Include="Content\Layout\floatexamples.css" />
@@ -1086,6 +1089,8 @@
     <Content Include="Content\Layout\Web\UserLayoutPage.min.css" />
     <Content Include="Content\Login\LoginPage.css" />
     <Content Include="Content\Login\style.css" />
+    <Content Include="Content\split-panel\split-pane.css" />
+    <Content Include="Content\split-panel\split-pane.js" />
     <Content Include="favicon.ico" />
     <Content Include="Content\font-awesome-4.7.0\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.7.0\css\font-awesome.min.css" />
@@ -1308,6 +1313,7 @@
     <Content Include="Scripts\Client\Layout\Web\Slide\jcycle.js" />
     <Content Include="Scripts\Client\Layout\Web\Slide\jquery-1.4.2.js" />
     <Content Include="Scripts\IED\Authenticate\Login.js" />
+    <Content Include="Scripts\IED\Category\C_Index.js" />
     <Content Include="Scripts\IED\Common.js" />
     <Content Include="Scripts\IED\Common.min.js" />
     <Content Include="Scripts\IED\EGroup\EG_Index.js" />
@@ -1319,6 +1325,7 @@
     <Content Include="Scripts\IED\IED_StandCommon.js" />
     <Content Include="Scripts\IED\IED_StandCommon.min.js" />
     <Content Include="Scripts\IED\Line\Line.js" />
+    <Content Include="Scripts\IED\Menu\M_Index.js" />
     <Content Include="Scripts\IED\MType\MT_Index.js" />
     <Content Include="Scripts\IED\PhaseGroup\PG_Index.js" />
     <Content Include="Scripts\IED\ProAna\PA_Index.js" />
@@ -1328,6 +1335,9 @@
     <Content Include="Scripts\IED\ProAna\ProAna_tkc.css" />
     <Content Include="Scripts\IED\ProAna\ProAna_tkc.min.css" />
     <Content Include="Scripts\IED\Product\P_Index.js" />
+    <Content Include="Scripts\IED\Role\R_Create.css" />
+    <Content Include="Scripts\IED\Role\R_Create.js" />
+    <Content Include="Scripts\IED\Role\R_Index.js" />
     <Content Include="Scripts\IED\TimePrepare\TP_Index.js" />
     <Content Include="Scripts\IED\User\Info.js" />
     <Content Include="Scripts\IED\User\User.js" />
@@ -1343,6 +1353,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\knockout-2.1.0.js" />
+    <Content Include="Scripts\masonry.pkgd.min.js" />
     <Content Include="Scripts\modernizr-2.5.3.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
@@ -1379,10 +1390,18 @@
     <Content Include="Views\Product\Index.cshtml" />
     <Content Include="Views\ProAna\Index.cshtml" />
     <Content Include="Views\ProAna\TKC_Partial.cshtml" />
+    <Content Include="Views\Shared\UnActived.cshtml" />
+    <Content Include="Views\Category\Index.cshtml" />
+    <Content Include="Views\Category\systemPatial.cshtml" />
+    <Content Include="Views\Role\Index.cshtml" />
+    <Content Include="Views\Role\Create.cshtml" />
+    <Content Include="Views\MType\Index.cshtml" />
+    <Content Include="Views\MType\MTPartial.cshtml" />
+    <Content Include="Views\Menu\Index.cshtml" />
+    <Content Include="Views\Shared\_MaterializeLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\MType\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -27,6 +27,7 @@ namespace GPRO_IED_A.Business
         }
         private BLLUserRole() { }
         #endregion
+
         public List<ModelSelectItem> GetUserRolesModelByUserId(int userId, bool IsOwner, int companyId)
         {
             List<ModelSelectItem> roles = null;
@@ -58,5 +59,18 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
+
+        public List<int> GetUserRolesIdByUserId(int userId, IEDEntities db)
+        { 
+            try
+            {
+              return (from x in db.SUserRoles where !x.IsDeleted && x.UserId == userId && !x.SRoLe.SCompany.IsDeleted select x.RoleId).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            } 
+        }
+
     }
 }

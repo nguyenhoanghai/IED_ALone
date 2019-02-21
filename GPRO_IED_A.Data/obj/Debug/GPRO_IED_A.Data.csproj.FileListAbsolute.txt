@@ -13,3 +13,4 @@ E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Data\obj\Debug\GPRO_IED_A.Data.csproj.CoreC
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Data\obj\Debug\GPRO_IED_A.Data.csproj.CopyComplete
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Data\obj\Debug\GPRO_IED_A.Data.dll
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Data\obj\Debug\GPRO_IED_A.Data.pdb
+E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Data\obj\Debug\GPRO_IED_A.Data.csprojAssemblyReference.cache

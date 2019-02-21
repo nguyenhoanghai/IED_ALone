@@ -12,7 +12,11 @@ namespace GPRO_IED_A
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-
+            routes.MapRoute(
+                name: "OutOfDate",
+                url: "OutOfDate",
+                defaults: new { controller = "Shared", action = "UnActived"  }
+            );
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

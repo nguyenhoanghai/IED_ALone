@@ -8,8 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GPRO_IED_A.Business
 {
@@ -367,71 +365,73 @@ namespace GPRO_IED_A.Business
                         sorting = "Index ASC";
 
                     var pageNumber = (startIndexRecord / pageSize) + 1;
-                    var phases = db.T_CA_Phase.Where(x => !x.IsDeleted && !x.T_PhaseGroup.IsDeleted && x.Node.Trim().Contains(node.Trim())).OrderBy(x => x.Index);
-                    PagedList<Commo_Ana_PhaseModel> pageListReturn = null;
-                    if (phases != null && phases.Count() > 0)
-                    {
-                        var phase = phases.Select(x => new Commo_Ana_PhaseModel()
-                        {
-                            Id = x.Id,
-                            Index = x.Index,
-                            Name = x.Name,
-                            Code = x.Code,
-                            TotalTMU = x.TotalTMU,
-                            Description = x.Description,
-                            EquipmentId = x.EquipmentId,
-                            EquipName = x.T_Equipment.Name,
-                            EquipDes = x.T_Equipment.Description,
-                            EquipTypeDefaultId = x.EquipmentId != null ? x.T_Equipment.T_EquipmentType.EquipTypeDefaultId ?? 0 : 0,
-                            WorkerLevelId = x.WorkerLevelId,
-                            WorkerLevelName = x.SWorkerLevel.Name,
-                            ParentId = x.ParentId,
-                            PhaseGroupId = x.PhaseGroupId,
-                            ApplyPressuresId = x.ApplyPressuresId != null ? x.ApplyPressuresId : 0,
-                            PercentWasteEquipment = x.PercentWasteEquipment,
-                            PercentWasteManipulation = x.PercentWasteManipulation,
-                            PercentWasteMaterial = x.PercentWasteMaterial,
-                            PercentWasteSpecial = x.PercentWasteSpecial,
-                            Video = x.Video
-                        });
-                        pageListReturn = new PagedList<Commo_Ana_PhaseModel>(phase.ToList(), pageNumber, pageSize);
-                    }
-                    else
-                        pageListReturn = new PagedList<Commo_Ana_PhaseModel>(new List<Commo_Ana_PhaseModel>(), pageNumber, pageSize);
+                    var phases = (from x in db.T_CA_Phase
+                                  where !x.IsDeleted && !x.T_PhaseGroup.IsDeleted && x.Node.Trim().Contains(node.Trim())
+                                  orderby x.Index
+                                  select new Commo_Ana_PhaseModel()
+                                  {
+                                      Id = x.Id,
+                                      Index = x.Index,
+                                      Name = x.Name,
+                                      Code = x.Code,
+                                      TotalTMU = x.TotalTMU,
+                                      Description = x.Description,
+                                      EquipmentId = x.EquipmentId,
+                                      EquipName = x.T_Equipment.Name,
+                                      EquipDes = x.T_Equipment.Description,
+                                      EquipTypeDefaultId = x.EquipmentId != null ? x.T_Equipment.T_EquipmentType.EquipTypeDefaultId ?? 0 : 0,
+                                      WorkerLevelId = x.WorkerLevelId,
+                                      WorkerLevelName = x.SWorkerLevel.Name,
+                                      ParentId = x.ParentId,
+                                      PhaseGroupId = x.PhaseGroupId,
+                                      ApplyPressuresId = x.ApplyPressuresId != null ? x.ApplyPressuresId : 0,
+                                      PercentWasteEquipment = x.PercentWasteEquipment,
+                                      PercentWasteManipulation = x.PercentWasteManipulation,
+                                      PercentWasteMaterial = x.PercentWasteMaterial,
+                                      PercentWasteSpecial = x.PercentWasteSpecial,
+                                      Video = x.Video
+                                  }).ToList();
 
+                    var pageListReturn = new PagedList<Commo_Ana_PhaseModel>(phases, pageNumber, pageSize);
                     if (pageListReturn != null && pageListReturn.Count > 0)
                     {
                         double tmu = 27.8;
-                        var config = db.T_IEDConfig.FirstOrDefault(x => !x.IsDeleted && x.Name.Trim().ToUpper().Equals(eIEDConfigName.TMU.Trim().ToUpper()));
+                        var config = (from x in db.T_IEDConfig
+                                      where !x.IsDeleted && x.Name.Trim().ToUpper().Equals(eIEDConfigName.TMU.Trim().ToUpper())
+                                      select x).FirstOrDefault();
                         if (config != null)
                             double.TryParse(config.Value, out tmu);
                         foreach (var item in pageListReturn)
                         {
-                            item.timePrepares.AddRange(db.T_CA_Phase_TimePrepare.Where(x => !x.IsDeleted && x.Commo_Ana_PhaseId == item.Id).Select(x => new Commo_Ana_Phase_TimePrepareModel()
-                            {
-                                Id = x.Id,
-                                TimePrepareId = x.TimePrepareId,
-                                Name = x.T_TimePrepare.Name,
-                                Code = x.T_TimePrepare.Code,
-                                TimeTypePrepareName = x.T_TimePrepare.T_TimeTypePrepare.Name,
-                                TMUNumber = x.T_TimePrepare.TMUNumber,
-                                Description = x.T_TimePrepare.Description,
-                            }).ToList());
+                            item.timePrepares.AddRange((from x in db.T_CA_Phase_TimePrepare
+                                                        where !x.IsDeleted && x.Commo_Ana_PhaseId == item.Id
+                                                        select new Commo_Ana_Phase_TimePrepareModel()
+                                                        {
+                                                            Id = x.Id,
+                                                            TimePrepareId = x.TimePrepareId,
+                                                            Name = x.T_TimePrepare.Name,
+                                                            Code = x.T_TimePrepare.Code,
+                                                            TimeTypePrepareName = x.T_TimePrepare.T_TimeTypePrepare.Name,
+                                                            TMUNumber = x.T_TimePrepare.TMUNumber,
+                                                            Description = x.T_TimePrepare.Description,
+                                                        }));
                             item.TimePrepareTMU = item.timePrepares.Sum(x => x.TMUNumber);
-
-                            item.actions.AddRange(db.T_CA_Phase_Mani.Where(x => !x.IsDeleted && x.CA_PhaseId == item.Id).Select(x => new Commo_Ana_Phase_ManiModel()
-                            {
-                                Id = x.Id,
-                                CA_PhaseId = x.CA_PhaseId,
-                                ManipulationId = x.ManipulationId,
-                                ManipulationName = x.ManipulationName,
-                                ManipulationCode = x.ManipulationCode,
-                                TMUEquipment = x.TMUEquipment,
-                                TMUManipulation = x.TMUManipulation,
-                                Loop = x.Loop,
-                                TotalTMU = x.TotalTMU,
-                                OrderIndex = x.OrderIndex
-                            }).OrderBy(x => x.OrderIndex).ToList());
+                            item.actions.AddRange((from x in db.T_CA_Phase_Mani
+                                                   where !x.IsDeleted && x.CA_PhaseId == item.Id
+                                                   orderby x.OrderIndex
+                                                   select new Commo_Ana_Phase_ManiModel()
+                                                   {
+                                                       Id = x.Id,
+                                                       CA_PhaseId = x.CA_PhaseId,
+                                                       ManipulationId = x.ManipulationId,
+                                                       ManipulationName = x.ManipulationName,
+                                                       ManipulationCode = x.ManipulationCode,
+                                                       TMUEquipment = x.TMUEquipment,
+                                                       TMUManipulation = x.TMUManipulation,
+                                                       Loop = x.Loop,
+                                                       TotalTMU = x.TotalTMU,
+                                                       OrderIndex = x.OrderIndex
+                                                   }));
                             item.ManiVerTMU = item.actions.Sum(x => ((x.TMUEquipment ?? 0 * x.Loop) + (x.TMUManipulation ?? 0 * x.Loop)));
                         }
                     }
@@ -539,13 +539,22 @@ namespace GPRO_IED_A.Business
             {
                 using (db = new IEDEntities())
                 {
-                    var phase = db.T_CA_Phase.FirstOrDefault(x => !x.IsDeleted && x.Id == Id);
+                    var phase = (from x in db.T_CA_Phase
+                                 where !x.IsDeleted && x.Id == Id
+                                 select x).FirstOrDefault();
                     if (phase != null)
                     {
-                        var phaseAcc = db.T_CA_Phase_Mani.Where(x => !x.IsDeleted && x.CA_PhaseId == Id).ToList();
-                        var times = db.T_CA_Phase_TimePrepare.Where(x => !x.IsDeleted && x.Commo_Ana_PhaseId == Id).ToList();
+                        var phaseAcc = (from x in db.T_CA_Phase_Mani
+                                        where !x.IsDeleted && x.CA_PhaseId == Id
+                                        select x);
+                        var times = (from x in db.T_CA_Phase_TimePrepare
+                                     where !x.IsDeleted && x.Commo_Ana_PhaseId == Id
+                                     select x);
 
-                        var lastPhase = db.T_CA_Phase.Where(x => !x.IsDeleted && x.ParentId == phase.ParentId).OrderByDescending(x => x.Index).FirstOrDefault();
+                        var lastPhase = (from x in db.T_CA_Phase
+                                         where !x.IsDeleted && x.ParentId == phase.ParentId
+                                         orderby x.Index descending
+                                         select x).FirstOrDefault();
 
                         T_CA_Phase phaseC;
                         T_CA_Phase_Mani maniC;
@@ -613,10 +622,14 @@ namespace GPRO_IED_A.Business
 
                         //ktra xem co qtcn chua
                         int paId = (phase.Node.Substring(0, phase.Node.Length - 1).Split(',').Select(x => Convert.ToInt32(x)).ToList()[2] + 1);
-                        var qt = db.T_TechProcessVersion.FirstOrDefault(x => !x.IsDeleted && x.ParentId == paId);
+                        var qt = (from x in db.T_TechProcessVersion
+                                  where !x.IsDeleted && x.ParentId == paId
+                                  select x).FirstOrDefault();
                         if (qt != null)
                         {
-                            var allDetails = db.T_TechProcessVersionDetail.Where(x => !x.IsDeleted && x.TechProcessVersionId == qt.Id);
+                            var allDetails = (from x in db.T_TechProcessVersionDetail
+                                              where !x.IsDeleted && x.TechProcessVersionId == qt.Id
+                                              select x);
 
                             var verDetail = new T_TechProcessVersionDetail();
                             verDetail.TechProcessVersionId = qt.Id;
@@ -628,22 +641,23 @@ namespace GPRO_IED_A.Business
                             verDetail.CreatedUser = phase.CreatedUser;
 
                             qt.TimeCompletePerCommo = Math.Round((qt.TimeCompletePerCommo + verDetail.TimeByPercent), 3);
-                            qt.PacedProduction = Math.Round(((qt.TimeCompletePerCommo / qt.NumberOfWorkers)), 3);
+                            qt.PacedProduction = (qt.TimeCompletePerCommo > 0 && qt.NumberOfWorkers > 0 ? Math.Round(((qt.TimeCompletePerCommo / qt.NumberOfWorkers)), 3) : 0);
                             qt.ProOfGroupPerHour = Math.Round(((3600 / qt.TimeCompletePerCommo) * qt.NumberOfWorkers), 3);
                             qt.ProOfGroupPerDay = Math.Round((qt.ProOfGroupPerHour * qt.WorkingTimePerDay), 3);
-                            qt.ProOfPersonPerDay = Math.Round((qt.ProOfGroupPerDay / qt.NumberOfWorkers), 3);
+                            qt.ProOfPersonPerDay = (qt.ProOfGroupPerDay > 0 && qt.NumberOfWorkers > 0 ? Math.Round((qt.ProOfGroupPerDay / qt.NumberOfWorkers), 3) : 0);
                             foreach (var item in allDetails)
-                                item.Worker = Math.Round(((item.TimeByPercent / qt.PacedProduction)), 3);
+                                item.Worker = (item.TimeByPercent > 0 && qt.PacedProduction > 0 ? Math.Round(((item.TimeByPercent / qt.PacedProduction)), 3) : 0);
 
-                            verDetail.Worker = Math.Round(((verDetail.TimeByPercent / qt.PacedProduction)), 3);
+                            verDetail.Worker = (verDetail.TimeByPercent > 0 && qt.PacedProduction > 0 ? Math.Round(((verDetail.TimeByPercent / qt.PacedProduction)), 3) : 0);
                             db.T_TechProcessVersionDetail.Add(verDetail);
+                            db.Entry<T_TechProcessVersion>(qt).State = System.Data.Entity.EntityState.Modified;
                         }
                         db.SaveChanges();
                         rs.IsSuccess = true;
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 rs.IsSuccess = false;
                 rs.Errors.Add(new Error() { MemberName = "", Message = "Lỗi SQL" });
@@ -658,23 +672,28 @@ namespace GPRO_IED_A.Business
             {
                 using (db = new IEDEntities())
                 {
-                    var phase = db.T_CA_Phase.FirstOrDefault(x => !x.IsDeleted && x.Id == Id);
+                    var phase = (from x in db.T_CA_Phase
+                                 where !x.IsDeleted && x.Id == Id
+                                 select x).FirstOrDefault();
                     if (phase != null)
                     {
                         exportObj = new ExportPhaseActionsModel();
-                        exportObj.Details.AddRange(db.T_CA_Phase_Mani.Where(x => !x.IsDeleted && x.CA_PhaseId == Id).Select(x => new Commo_Ana_Phase_ManiModel()
-                        {
-                            Id = x.Id,
-                            CA_PhaseId = x.CA_PhaseId,
-                            ManipulationId = x.ManipulationId,
-                            ManipulationName = x.ManipulationName,
-                            ManipulationCode = x.ManipulationCode,
-                            TMUEquipment = x.TMUEquipment,
-                            TMUManipulation = x.TMUManipulation,
-                            Loop = x.Loop,
-                            TotalTMU = x.TotalTMU,
-                            OrderIndex = x.OrderIndex,
-                        }).OrderBy(x => x.OrderIndex).ToList());
+                        exportObj.Details.AddRange((from x in db.T_CA_Phase_Mani
+                                                    where !x.IsDeleted && x.CA_PhaseId == Id
+                                                    orderby x.OrderIndex
+                                                    select new Commo_Ana_Phase_ManiModel()
+                                                    {
+                                                        Id = x.Id,
+                                                        CA_PhaseId = x.CA_PhaseId,
+                                                        ManipulationId = x.ManipulationId,
+                                                        ManipulationName = x.ManipulationName,
+                                                        ManipulationCode = x.ManipulationCode,
+                                                        TMUEquipment = x.TMUEquipment,
+                                                        TMUManipulation = x.TMUManipulation,
+                                                        Loop = x.Loop,
+                                                        TotalTMU = x.TotalTMU,
+                                                        OrderIndex = x.OrderIndex,
+                                                    }));
                         exportObj.TotalTMU = phase.TotalTMU;
 
                         //var timePrepares = db.T_CA_Phase_TimePrepare.Where(x => !x.IsDeleted && x.Commo_Ana_PhaseId ==  Id).Select(x => new Commo_Ana_Phase_TimePrepareModel()
@@ -704,18 +723,112 @@ namespace GPRO_IED_A.Business
             return exportObj;
         }
 
-
-
         public int GetLastIndex(int ParentId)
         {
             using (db = new IEDEntities())
             {
-                var obj = db.T_CA_Phase.Where(x => !x.IsDeleted && x.ParentId == ParentId).OrderByDescending(x => x.Index).FirstOrDefault();
+                var obj = (from x in db.T_CA_Phase where !x.IsDeleted && x.ParentId == ParentId orderby x.Index descending select x.Index).FirstOrDefault();
                 if (obj != null)
-                    return obj.Index;
+                    return obj;
                 return 0;
             }
         }
+        public List<ModelSelectItem> GetAllPhasesForSuggest()
+        {
+            using (var db = new IEDEntities())
+            {
+                return (from x in db.T_CA_Phase
+                        where !x.T_CommodityAnalysis.IsDeleted &&
+                        !x.T_PhaseGroup.IsDeleted
+                        select new ModelSelectItem()
+                        {
+                            Value = x.Id,
+                            Name = x.Name,
+                            Code = x.Code,
+                            Double = x.TotalTMU
+                        }).ToList();
+            }
+        }
 
+        public Commo_Ana_PhaseModel GetPhase(int phaseId)
+        {
+            using (db = new IEDEntities())
+            {
+                try
+                { 
+                    var phaseObj = (from x in db.T_CA_Phase
+                                    where !x.IsDeleted && !x.T_PhaseGroup.IsDeleted && x.Id == phaseId
+                                    select new Commo_Ana_PhaseModel()
+                                    {
+                                        Id = x.Id,
+                                        Index = x.Index,
+                                        Name = x.Name,
+                                        Code = x.Code,
+                                        TotalTMU = x.TotalTMU,
+                                        Description = x.Description,
+                                        EquipmentId = x.EquipmentId,
+                                        EquipName = x.T_Equipment.Name,
+                                        EquipDes = x.T_Equipment.Description,
+                                        EquipTypeDefaultId = x.EquipmentId != null ? x.T_Equipment.T_EquipmentType.EquipTypeDefaultId ?? 0 : 0,
+                                        WorkerLevelId = x.WorkerLevelId,
+                                        WorkerLevelName = x.SWorkerLevel.Name,
+                                        ParentId = x.ParentId,
+                                        PhaseGroupId = x.PhaseGroupId,
+                                        ApplyPressuresId = x.ApplyPressuresId != null ? x.ApplyPressuresId : 0,
+                                        PercentWasteEquipment = x.PercentWasteEquipment,
+                                        PercentWasteManipulation = x.PercentWasteManipulation,
+                                        PercentWasteMaterial = x.PercentWasteMaterial,
+                                        PercentWasteSpecial = x.PercentWasteSpecial,
+                                        Video = x.Video
+                                    }).FirstOrDefault();
+                    if (phaseObj != null)
+                    {
+                        double tmu = 27.8;
+                        var config = (from x in db.T_IEDConfig
+                                      where !x.IsDeleted && x.Name.Trim().ToUpper().Equals(eIEDConfigName.TMU.Trim().ToUpper())
+                                      select x).FirstOrDefault();
+                        if (config != null)
+                            double.TryParse(config.Value, out tmu);
+
+                        phaseObj.timePrepares.AddRange((from x in db.T_CA_Phase_TimePrepare
+                                                        where !x.IsDeleted && x.Commo_Ana_PhaseId == phaseObj.Id
+                                                        select new Commo_Ana_Phase_TimePrepareModel()
+                                                        {
+                                                            Id = x.Id,
+                                                            TimePrepareId = x.TimePrepareId,
+                                                            Name = x.T_TimePrepare.Name,
+                                                            Code = x.T_TimePrepare.Code,
+                                                            TimeTypePrepareName = x.T_TimePrepare.T_TimeTypePrepare.Name,
+                                                            TMUNumber = x.T_TimePrepare.TMUNumber,
+                                                            Description = x.T_TimePrepare.Description,
+                                                        }));
+                        phaseObj.TimePrepareTMU = phaseObj.timePrepares.Sum(x => x.TMUNumber);
+                        phaseObj.actions.AddRange((from x in db.T_CA_Phase_Mani
+                                                   where !x.IsDeleted && x.CA_PhaseId == phaseObj.Id
+                                                   orderby x.OrderIndex
+                                                   select new Commo_Ana_Phase_ManiModel()
+                                                   {
+                                                       Id = x.Id,
+                                                       CA_PhaseId = x.CA_PhaseId,
+                                                       ManipulationId = x.ManipulationId,
+                                                       ManipulationName = x.ManipulationName,
+                                                       ManipulationCode = x.ManipulationCode,
+                                                       TMUEquipment = x.TMUEquipment,
+                                                       TMUManipulation = x.TMUManipulation,
+                                                       Loop = x.Loop,
+                                                       TotalTMU = x.TotalTMU,
+                                                       OrderIndex = x.OrderIndex
+                                                   }));
+                        phaseObj.ManiVerTMU = phaseObj.actions.Sum(x => ((x.TMUEquipment ?? 0 * x.Loop) + (x.TMUManipulation ?? 0 * x.Loop)));
+
+                    }
+                    return phaseObj;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
     }
 }

@@ -40,7 +40,7 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     var commoAnaModel = new CommodityAnalysisModel();
-                    var commoAnalysis = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectType == (int)eObjectType.isCommodity).Select(x => new ProAnaModel()
+                    var commoAnalysis = (from x in db.T_CommodityAnalysis where  !x.IsDeleted && x.ObjectType == (int)eObjectType.isCommodity select new ProAnaModel()
                     {
                         Id = x.Id,
                         Name = x.Name,
@@ -76,15 +76,15 @@ namespace GPRO_IED_A.Business
                     switch (Type)
                     {
                         case (int)eObjectType.getYear:
-                            commoAnaModel.years.AddRange(db.T_CommodityAnalysis.Where(x => !x.IsDeleted && (x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId)) && x.ObjectType == (int)eObjectType.isCommodity).Select(x => x.CreatedDate.Year).Distinct());
+                            commoAnaModel.years.AddRange((from x in db.T_CommodityAnalysis where !x.IsDeleted && (x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId)) && x.ObjectType == (int)eObjectType.isCommodity select x.CreatedDate.Year).Distinct());
                             break;
                         case (int)eObjectType.getMonth:
                             value_ = int.Parse(value);
-                            commoAnaModel.years.AddRange(db.T_CommodityAnalysis.Where(x => !x.IsDeleted && (x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId)) && x.ObjectType == (int)eObjectType.isCommodity && x.CreatedDate.Year == value_).Select(x => x.CreatedDate.Month).Distinct());
+                            commoAnaModel.years.AddRange((from x in db.T_CommodityAnalysis where !x.IsDeleted && (x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId)) && x.ObjectType == (int)eObjectType.isCommodity && x.CreatedDate.Year == value_ select x.CreatedDate.Month).Distinct());
                             break;
                         case (int)eObjectType.isCommodity:
                             value_ = int.Parse(value);
-                            commoAnaModel.CommoAna.AddRange(db.T_CommodityAnalysis.Where(x => !x.IsDeleted && (x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId)) && x.ObjectType == (int)eObjectType.isCommodity && x.CreatedDate.Year == year && x.CreatedDate.Month == value_).Select(x => new ProAnaModel()
+                            commoAnaModel.CommoAna.AddRange((from x in db.T_CommodityAnalysis where !x.IsDeleted && (x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId)) && x.ObjectType == (int)eObjectType.isCommodity && x.CreatedDate.Year == year && x.CreatedDate.Month == value_ select new ProAnaModel()
                             {
                                 Id = x.Id,
                                 Name = x.Name,
@@ -100,7 +100,7 @@ namespace GPRO_IED_A.Business
                         case (int)eObjectType.isComponent:
                         case (int)eObjectType.isGroupVersion:
                         case (int)eObjectType.isPhaseGroup:
-                            commoAnaModel.CommoAna.AddRange(db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ParentId == parentId).Select(x => new ProAnaModel()
+                            commoAnaModel.CommoAna.AddRange((from x in db.T_CommodityAnalysis where !x.IsDeleted && x.ParentId == parentId select new ProAnaModel()
                             {
                                 Id = x.Id,
                                 Name = x.Name,
@@ -482,5 +482,6 @@ namespace GPRO_IED_A.Business
             }
         }
 
+        
     }
 }

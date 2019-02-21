@@ -43,19 +43,19 @@ namespace GPRO_IED_A.Helper
         }
 
 
-        //public   SelectList GetMenuCategorySelect(IBLLMenuCategory bllCategory, int companyId)
-        //{
-        //    List<SelectListItem> selectItems = new List<SelectListItem>();
-        //    selectItems.AddRange(bllCategory.GetCategoriesByCompanyIdNotSystem(companyId).Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList());
-        //    return new SelectList(selectItems, "Value", "Text", 0);
-        //}
+        public SelectList GetMenuCategorySelect( int companyId)
+        {
+            List<SelectListItem> selectItems = new List<SelectListItem>();
+            selectItems.AddRange(BLLMenuCategory.Instance.GetCategoriesByCompanyIdNotSystem(companyId).Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList());
+            return new SelectList(selectItems, "Value", "Text", 0);
+        }
 
-        //public   SelectList GetModuleSelect(IBLLModule bllModule, int companyId)
-        //{
-        //    List<SelectListItem> selectItems = new List<SelectListItem>();
-        //    selectItems.AddRange(bllModule.GetSelectListModuleByCompanyId(companyId).Select(x => new SelectListItem() { Text = x.Name, Value = x.Value.ToString() }).ToList());
-        //    return new SelectList(selectItems, "Value", "Text", 0);
-        //}
+        public SelectList GetModuleSelect( int companyId)
+        {
+            List<SelectListItem> selectItems = new List<SelectListItem>();
+            selectItems.AddRange(BLLModule.Instance.GetSelectListModuleByCompanyId(companyId).Select(x => new SelectListItem() { Text = x.Name, Value = x.Value.ToString() }).ToList());
+            return new SelectList(selectItems, "Value", "Text", 0);
+        }
 
         public   SelectList GetEquipType_DefaultSelectList(   )
         {

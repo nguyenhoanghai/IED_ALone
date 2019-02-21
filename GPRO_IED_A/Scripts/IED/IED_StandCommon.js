@@ -12,7 +12,7 @@
                     var str = '';
                     if (data.Data != null && data.Data.length > 0) {
                         $.each(data.Data, function (index, item) {
-                            str += '<option value="' + item.Id + '" '+(item.Id == value ? "selected":"")+'>' + item.Name + '</option>';
+                            str += '<option value="' + item.Value + '" ' + (item.Value == value ? "selected" : "") + '>' + item.Name + '</option>';
                         });
                     }
                     $('[' + controlId + ']').empty().append(str);

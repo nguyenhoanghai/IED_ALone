@@ -60,21 +60,24 @@ namespace GPRO.Core.Mvc
                 string requiredString2 = requestContext.RouteData.GetRequiredString("action");
                 string accessingResource = "/" + requiredString + "/" + requiredString2;
 
-                if (Authentication.today == null || Authentication.today != DateTime.Now.Day)
+                if (!accessingResource.Contains("/Shared/UnActived"))
                 {
-                    SerialKey serialKey = new SerialKey();
-                    ModelCheckKey modelCheckKey = serialKey.CheckActive(productCode, System.Web.Hosting.HostingEnvironment.MapPath("~/bin"));
-                    Authentication.today = DateTime.Now.Day; 
-                    if (!modelCheckKey.checkResult && !accessingResource.Equals("/Shared/UnActived"))
+                    if (Authentication.today == null || Authentication.today != DateTime.Now.Day)
                     {
-                        requestContext.HttpContext.Response.Redirect("/Shared/UnActived");
-                        Authentication.Check = false; 
+                        SerialKey serialKey = new SerialKey();
+                        ModelCheckKey modelCheckKey = serialKey.CheckActive(productCode, System.Web.Hosting.HostingEnvironment.MapPath("~/bin"));
+                        Authentication.today = DateTime.Now.Day;
+                        if (!modelCheckKey.checkResult && !accessingResource.Equals("/OutOfDate"))
+                        {
+                            requestContext.HttpContext.Response.Redirect("/OutOfDate");
+                            Authentication.Check = false;
+                        }
+                        else
+                            Authentication.Check = true;
                     }
-                    else
-                        Authentication.Check = true; 
-                   }
-                else if (Authentication.today == DateTime.Now.Day && !Authentication.Check)
-                    requestContext.HttpContext.Response.Redirect("/Shared/UnActived");
+                    else if (Authentication.today == DateTime.Now.Day && !Authentication.Check)
+                        requestContext.HttpContext.Response.Redirect("/OutOfDate");
+                }
 
                 if (accessingResource.Equals("/Shared/UnActived"))
                 {
