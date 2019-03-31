@@ -57,7 +57,10 @@ function isNumberKey(evt) {
     if (charCode == 59 || charCode == 46)
         return true;
     if (charCode > 31 && (charCode < 48 || charCode > 57))
-    { GlobalCommon.ShowMessageDialog("Vui lòng nhập số.", function () { }, "Lỗi Nhập liệu"); }
+    {
+        GlobalCommon.ShowMessageDialog("Vui lòng nhập số.", function () { }, "Lỗi Nhập liệu");
+        return false;
+    }
 }
  
 
