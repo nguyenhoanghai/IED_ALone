@@ -3,7 +3,6 @@ using GPRO.Core.Interface;
 using GPRO.Core.Security;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -12,33 +11,15 @@ namespace GPRO.Core.Mvc
 {
     public class ControllerCore : Controller
     {
-        public List<Error> ErrorMessages
-        {
-            get;
-            set;
-        }
-        public JsonDataResult JsonDataResult
-        {
-            get;
-            set;
-        }
-        public string Layout
-        {
-            get;
-            set;
-        }
-        public IUserService UserContext
-        {
-            get
-            {
-                return Authentication.User;
-            }
-        } 
+        public List<Error> ErrorMessages { get; set; }
+        public JsonDataResult JsonDataResult { get; set; }
+        public string Layout { get; set; }
+        public IUserService UserContext { get { return Authentication.User; } }
         public ControllerCore()
         {
             this.JsonDataResult = new JsonDataResult();
             this.ErrorMessages = new List<Error>();
-            this.JsonDataResult.Result = "OK";  
+            this.JsonDataResult.Result = "OK";
         }
         protected override void OnActionExecuted(ActionExecutedContext filterContext)
         {
@@ -112,7 +93,7 @@ namespace GPRO.Core.Mvc
                     }
                     else
                     {
-                         if ((requiredString.Equals("Authenticate") && requiredString2.Equals("Login")) || requiredString.Equals("UploadFile") || (requiredString.Equals("Authenticate") && requiredString2.Equals("Validate")))
+                        if ((requiredString.Equals("Authenticate") && requiredString2.Equals("Login")) || requiredString.Equals("UploadFile") || (requiredString.Equals("Authenticate") && requiredString2.Equals("Validate")))
                         {
                             base.Initialize(requestContext);
                         }
@@ -136,8 +117,9 @@ namespace GPRO.Core.Mvc
                                 {
                                     if (AjaxRequestExtensions.IsAjaxRequest(requestContext.HttpContext.Request))
                                     {
+                                        Authentication.isAuthenticate = false;
                                         this.JsonDataResult.Result = "ERROR";
-                                        this.JsonDataResult.Message = "Tài khoản của bạn không được phép vào trang này.";
+                                        this.JsonDataResult.ErrorMessages.Add(new Error() { MemberName = "Lỗi quyền truy cập", Message = "Tài khoản của bạn không có quyền thực hiện hành động này!." });
                                         base.Initialize(requestContext);
                                     }
                                     else

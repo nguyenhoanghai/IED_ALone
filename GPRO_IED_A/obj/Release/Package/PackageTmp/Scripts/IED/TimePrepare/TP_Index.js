@@ -155,10 +155,10 @@ GPRO.TimePrepare = function () {
                     title: "Tên ",
                     width: "20%",
                 },
-                Code: {
-                    title: "Mã",
-                    width: "5%",
-                },
+                //Code: {
+                //    title: "Mã",
+                //    width: "5%",
+                //},
                 IsPublic: {
                     title: "Sử dụng Chung",
                     width: "5%",
@@ -219,10 +219,10 @@ GPRO.TimePrepare = function () {
                                                 title: "Tên ",
                                                 width: "20%",
                                             },
-                                            Code: {
-                                                title: "Mã",
-                                                width: "5%",
-                                            }, 
+                                            //Code: {
+                                            //    title: "Mã",
+                                            //    width: "5%",
+                                            //}, 
                                             TMUNumber: {
                                                 title: "Chỉ số TMU",
                                                 width: "20%",

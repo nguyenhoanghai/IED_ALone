@@ -1,118 +1,126 @@
 ﻿@{
-    ViewBag.Title = "Phân Tích Mặt Hàng";
-  //  Layout = null;
-} 
+    ViewBag.Title = "Phân Tích mã hàng";
+    //  Layout = null;
+}
+<link href="~/Content/split-panel/split-pane.css" rel="stylesheet" />
+<script src="~/Content/split-panel/split-pane.js"></script>
+
+
 <script src="~/Scripts/IED/ProAna/PA_Index.js"></script>
-@*<script src="~/Scripts/IED/ProAna/PA_Index.min.js"></script>*@ 
+@*<script src="~/Scripts/IED/ProAna/PA_Index.min.js"></script>*@
 
 <input id="config" type="hidden" gettmutype="@ViewBag.GetTMUType" tmu="@ViewBag.TMU" maniexpenddefault="@ViewBag.ManipulationExpendDefault" />
-<div>
-    <div id="splitter" style=" height:1000px">
-        <div id="left">
+ 
+
+<div class="split-pane fixed-left" id="split-pane-2" style=" min-height:1000px">
+    <div class="split-pane-component" id="left-component">
+        <div class="pretty-split-pane-component-inner">
             <div id='jqxTree' style='border: none'></div>
             <div hidden>
                 <div id='jqxMenu'>
                     <ul>
-                        <li type="1">Thêm Mới Mặt Hàng</li>
-                        <li type="1a">Xem Thông Tin Mặt Hàng</li>
-                        <li type="1a">Xóa Mặt Hàng</li>
+                        <li type="1">Thêm Mới mã hàng</li>
+                        <li type="1a">Xem Thông Tin mã hàng</li>
+                        <li type="1a">Xóa mã hàng</li>
 
                         <li type="2">Thêm Mới Phân Xưởng</li>
                         <li type="2a">Xem Thông Tin Phân Xưởng</li>
                         <li type="2a">Xóa Phân Xưởng</li>
 
-                        <li type="6">Thêm Mới Nhóm Công Đoạn</li>
-                        <li type="6a">Xem Thông Tin Nhóm Công Đoạn</li>
-                        <li type="6a">Xóa Nhóm Công Đoạn</li>
-                        <li id="copy" type="6a">Sao Chép Nhóm Công Đoạn</li>
-                        <li id="paste" type="6a">Dán Nhóm Công Đoạn</li>
+                        <li type="6">Thêm Mới cụm công đoạn</li>
+                        <li type="6a">Xem Thông Tin cụm công đoạn</li>
+                        <li type="6a">Xóa cụm công đoạn</li>
+                        <li id="copy" type="6a">Sao Chép cụm công đoạn</li>
+                        <li id="paste" type="6a">Dán cụm công đoạn</li>
                     </ul>
                 </div>
             </div>
-
         </div>
-        <div id="right" style="overflow-y: auto; ">
-            <div id="jtable-phase" class="Jtable-css table-center"></div>
-            <div id="techprocess">
-                <div class="contain-main">
-                    <div class="modal-header custom-header">
-                        <span class="title ">Thông Tin Quy Trình Công Nghệ</span>
-                        <div style="float:right">
-                            <button techexport class="btn btn-danger" hidden="hidden">
-                                <i class="fa fa-file-excel-o"></i>
-                                Xuất File Excel
-                            </button>
-                            <button techsave class="btn btn-primary">
-                                <i class="fa fa-floppy-o"></i>
-                                Lưu Lại
-                            </button>
-                        </div>
-                        <div style="clear:right"></div>
+    </div>
+    <div class="split-pane-divider" id="vertical-divider"></div>
+    <div class="split-pane-component" id="right-component" style="overflow-y: auto; ">
+        <div id="jtable-phase" class="Jtable-css table-center"></div>
+        <div id="techprocess">
+            <div class="contain-main">
+                <div class="modal-header custom-header">
+                    <span class="title ">Thông Tin Quy Trình Công Nghệ</span>
+                    <div style="float:right">
+                        <button techexport class="btn btn-danger" hidden="hidden">
+                            <i class="fa fa-file-excel-o"></i>
+                            Xuất File Excel
+                        </button>
+                        <button techsave class="btn btn-primary">
+                            <i class="fa fa-floppy-o"></i>
+                            Lưu Lại
+                        </button>
                     </div>
-                    <div style="padding:  5px 10px; ">
-                        <div class="container-fluid">
-                            <div class="tech-info-box">
-                                <div class="tech-info-box-main">
-                                    <input type="hidden" id="techId" value="0" />
-                                    <div class="col-md-6 form-group">
-                                        <label class="control-label">Thời Gian / 1 Sản Phẩm</label>
-                                        <div id="time-product" class="form-control red">  0 (s)</div>
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label class="col1 col0">Công nhân</label>
-                                        <input class="form-control" id="total-worker" value="30" type="text" />
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label class="control-label">Thời Gian / Ngày</label>
-                                        <input class="form-control" id="work-time" value="9" type="text" />
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label class="control-label">Đơn giá / s </label>
-                                        <input class="form-control" id="pricePerSecond" value="1" type="text" />
-                                    </div>
-
-                                    <div class="col-md-6 form-group">
-                                        <label class="control-label">Phụ cấp (%)</label>
-                                        <input class="form-control" id="allowance" value="1" type="text" />
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label class="control-label">Nhịp độ sản xuất</label>
-                                        <div id="paced_production" class="form-control red"> 0 </div>
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label class="control-label">Năng suất tổ / 1 giờ</label>
-                                        <div class="form-control red" id="productivity"> 0 </div>
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label class="control-label">Năng suất tổ / Ngày  </label>
-                                        <div class="form-control red" id="pro_group_day">0</div>
-                                    </div>
-
-                                    <div class="col-md-6 form-group">
-                                        <label class="control-label">Năng suất người / Ngày</label>
-                                        <div class="form-control red" id="pro_person_day">0</div>
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label>Ghi Chú</label>
-                                        <textarea class="form-control" id="des"></textarea>
-                                    </div>
-                                    <div class="clearfix">   </div>
+                    <div style="clear:right"></div>
+                </div>
+                <div style="padding:  5px 10px; ">
+                    <div class="container-fluid">
+                        <div class="tech-info-box">
+                            <div class="tech-info-box-main">
+                                <input type="hidden" id="techId" value="0" />
+                                <div class="col-md-6 form-group">
+                                    <label class="control-label">Thời Gian / 1 Sản Phẩm</label>
+                                    <div id="time-product" class="form-control red">  0 (s)</div>
                                 </div>
-                                <div class="tech-info-box-but"> <i class="fa fa-angle-double-right " title="Thông tin quy trình công nghệ"></i></div>
-                            </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="col1 col0">Công nhân</label>
+                                    <input class="form-control" id="total-worker" value="30" type="text" />
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="control-label">Thời Gian / Ngày</label>
+                                    <input class="form-control" id="work-time" value="9" type="text" />
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="control-label">Đơn giá / s </label>
+                                    <input class="form-control" id="pricePerSecond" value="1" type="text" />
+                                </div>
 
-                            <div style="height:930px; overflow-y:auto">
-                                <div id="Jtable-TechCycle" class="table-center"></div>
+                                <div class="col-md-6 form-group">
+                                    <label class="control-label">Phụ cấp (%)</label>
+                                    <input class="form-control" id="allowance" value="1" type="text" />
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="control-label">Nhịp độ sản xuất</label>
+                                    <div id="paced_production" class="form-control red"> 0 </div>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="control-label">Năng suất tổ / 1 giờ</label>
+                                    <div class="form-control red" id="productivity"> 0 </div>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="control-label">Năng suất tổ / Ngày  </label>
+                                    <div class="form-control red" id="pro_group_day">0</div>
+                                </div>
+
+                                <div class="col-md-6 form-group">
+                                    <label class="control-label">Năng suất người / Ngày</label>
+                                    <div class="form-control red" id="pro_person_day">0</div>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label>Ghi Chú</label>
+                                    <textarea class="form-control" id="des"></textarea>
+                                </div>
+                                <div class="clearfix">   </div>
                             </div>
-                            <div class="clearfix">   </div>
+                            <div class="tech-info-box-but"> <i class="fa fa-angle-double-right " title="Thông tin quy trình công nghệ"></i></div>
                         </div>
+
+                        <div style="height:930px; overflow-y:auto">
+                            <div id="Jtable-TechCycle" class="table-center"></div>
+                        </div>
+                        <div class="clearfix">   </div>
                     </div>
                 </div>
             </div>
-            <div id="jtable_tkc" class="Jtable-css  table-center " parentid="0" node="0" wkid="0" wkname="" pid="0"></div>
         </div>
+        <div id="jtable_tkc" class="Jtable-css  table-center " parentid="0" node="0" wkid="0" wkname="" pid="0"></div>
+
     </div>
 </div>
+
 
 <!--   POPUP CREATE COMMODITY - COMMODITY INFORMATION  -->
 <div class="modal fade " id="capopup_Commodity" data-backdrop="static" data-keyboard="false">
@@ -120,7 +128,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button aria-hidden="true" data-dismiss="modal" cancel-commo class="close" type="button">×</button>
-                <h4 class="modal-title">Thông tin Mặt Hàng</h4>
+                <h4 class="modal-title">Thông tin mã hàng</h4>
             </div>
             <div class="modal-body form-inline">
                 <div class="container-fluid">
@@ -183,12 +191,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button aria-hidden="true" data-dismiss="modal" cancel-phasegroup class="close" type="button">×</button>
-                <h4 class="modal-title">Thông tin Nhóm Công Đoạn</h4>
+                <h4 class="modal-title">Thông tin cụm công đoạn</h4>
             </div>
             <div class="modal-body form-inline">
                 <div class="container-fluid">
                     <div class="form-group col-md-12">
-                        <label class="control-label">Nhóm Công Đoạn <span class="required-class">*</span></label>
+                        <label class="control-label">cụm công đoạn <span class="required-class">*</span></label>
                         <div class="select-box">
                             <select id="phaseGroup-name"></select>
                             <i re_phasegroup-name class="fa fa-refresh clickable red"></i>
@@ -228,28 +236,53 @@
                         <div role="tabpanel" class="tab-pane active" id="phas_infobox">
                             <div class=" col-md-4  form-group">
                                 <input type="hidden" id="phaseID" lastindex="0" />
+                                <label class="control-label " style="color:red !important">Tìm Công Đoạn mẫu </label>
+
+                                <div class="select-box">
+                                    <input style="width:90%; padding: 6px; border-radius: 5px; width: 90%; height: 34px;border: 2px solid red; " list="suggestPhases" id="phase-suggest" type="text" placeholder="Nhập tên hoặc mã Công Đoạn cần tìm." />
+                                    <i title="Lấy thông tin công đoạn." save-sugguest-phase class="fa fa-cloud-download clickable blue"></i>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-1 form-group">
+                                <label class="control-label">Mã Công Đoạn <span class="required-class">*</span></label>
+                                <span disabled class="form-control" id="phase-code" />
+                            </div>
+                            <div class="col-md-1 form-group">
+                                <label class="control-label">Vị trí công đoạn <span class="required-class">*</span></label>
+                                <input class="form-control" id="phase-index" type="text"   /> 
+                            </div>
+                            <div class=" col-md-4  form-group">
+                                <input type="hidden" id="phaseID" lastindex="0" />
                                 <label class="control-label">Tên Công Đoạn <span class="required-class">*</span></label>
                                 <input class="form-control" id="phase-name" type="text" placeholder="Nhập tên Công Đoạn ..." />
                             </div>
-                            <div class="col-md-4 form-group">
-                                <label class="control-label">Mã Công Đoạn <span class="required-class">*</span></label>
-                                <span class="form-control" id="phase-code" />
-                            </div>
-
-                            <div class="col-md-4 form-group">
+                            <div class="col-md-2 form-group">
                                 <label class="control-label">Bậc thợ <span class="required-class">*</span></label>
                                 <div class="select-box">
                                     <select id="workersLevel"></select>
                                     <i re_workerslevel class="fa fa-refresh clickable red"></i>
                                 </div>
                             </div>
+
+                            <div class="col-md-2 form-group">
+                                <label class="control-label">Video công đoạn (mp4 file)</label>
+                                <div>
+                                    <input type="file" id="video" accept="mp4 Video;video/mp4,video/x-m4v,video/*" />
+                                    <input type="hidden" id="hid_video" />
+                                </div>
+
+                                <textarea class="form-control" id="phase-Des" style="display:none"></textarea>
+                            </div>
+
                             <div class="col-md-4 form-group">
                                 <input type="hidden" id="equipmentId" />
                                 <input type="hidden" id="equiptypedefaultId" />
                                 <label class="control-label">Thiết bị</label><br />
                                 <input data-toggle="modal" data-target="#ChooseEquipment_Popup" class="form-control" id="equipmentName" type="text" placeholder="Chọn thiết bị..." style="width: 100%" />
                             </div>
-                            <div class="col-md-4 form-group">
+                            <div class="col-md-6 form-group">
                                 <label class="control-label">Thông tin Thiết Bị</label>
                                 <textarea class="form-control" id="E_info" disabled></textarea>
                             </div>
@@ -257,22 +290,16 @@
                                 <label class="control-label">Chọn số lớp cắt <span style="color: red;">(Sử dụng đối với máy cắt)</span></label><br />
                                 <select class="form-control" id="ApplyPressure"></select>
                             </div>
-                            <div class="col-md-4 form-group">
-                                <label class="control-label">Video công đoạn (mp4 file)</label>
-                                <div>
-                                    <input type="file" id="video" accept="mp4 Video;video/mp4,video/x-m4v,video/*" />
-                                    <input type="hidden" id="hid_video" />
-                                </div>
- 
-                                <textarea class="form-control" id="phase-Des" style="display:none"></textarea>
-                            </div>
+
                             <div class="col-md-12">
                                 <div class="col-md-4">
                                     <video width="98%" height="210" controls id="videotag" style="border: 1px solid #ccc;">
+                                        <source src="" type="video/wmv">
                                         <source src="" type="video/mp4">
+
                                     </video>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-8" style="padding:0">
                                     <div id="jtable-timeprepare-arr"></div>
                                 </div>
                             </div>
@@ -610,20 +637,18 @@
 
 <!--   POPUP PHASE VERSION MANIPULATION   -->
 <datalist id="manipulations"></datalist>
+<datalist id="suggestPhases"></datalist>
 
 @Html.Partial("TKC_Partial")
 
 
 
-<div id="treeview"></div>
-<script>
 
+<script>
+    $('div.split-pane').splitPane();
 
     var ProAna = new GPRO.ProAna();
     ProAna.Init();
-    $("#splitter").kendoSplitter({
-        panes: [{ collapsible: true, collapsedSize: "10%", size: '20%', min: '100px' }, { size: '80%' }]
-    });
 
 
     $('#equipment-box').hide();
@@ -644,3 +669,69 @@
     }
 
 </script>
+
+
+<style type="text/css">
+    #left-component {
+        width: 20em;
+    }
+
+    #vertical-divider {
+        left: 20em;
+        width: 5px;
+    }
+
+    #right-component {
+        left: 20em;
+        margin-left: 5px;
+    }
+</style>
+
+
+
+
+
+@*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<div id="jstree_demo_div"></div>
+<script>
+    
+    $('#jstree_demo_div').jstree({
+        'core': {
+            'data': [
+                { "id": "ajson1", "parent": "#", "text": "Simple root node" },
+                { "id": "ajson2", "parent": "#", "text": "Root node 2" },
+                { "id": "ajson3", "parent": "ajson2", "text": "Child 1" },
+                { "id": "ajson4", "parent": "ajson2", "text": "Child 2" },
+            ],
+            "animation": 0,
+            "check_callback": true,
+            "themes": { "stripes": true },
+        },
+        "types": {
+            "#": {
+                "max_children": 1,
+                "max_depth": 4,
+                "valid_children": ["root"]
+            },
+            "root": {
+                "icon": "/static/3.3.7/assets/images/tree_icon.png",
+                "valid_children": ["default"]
+            },
+            "default": {
+                "valid_children": ["default", "file"]
+            },
+            "file": {
+                "icon": "glyphicon glyphicon-file",
+                "valid_children": []
+            }
+        },
+        "plugins": [
+            "contextmenu", "dnd", "search",
+            "state", "types", "wholerow"
+        ]
+    });
+    $('#jstree_demo_div').on("changed.jstree", function (e, data) {
+      //  alert(data.selected);
+    });
+</script>*@

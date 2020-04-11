@@ -53,7 +53,6 @@ namespace GPRO_IED_A.Data
         public DbSet<T_Equipment> T_Equipment { get; set; }
         public DbSet<T_EquipmentAttribute> T_EquipmentAttribute { get; set; }
         public DbSet<T_EquipmentGroup> T_EquipmentGroup { get; set; }
-        public DbSet<T_EquipmentType> T_EquipmentType { get; set; }
         public DbSet<T_EquipmentTypeAttribute> T_EquipmentTypeAttribute { get; set; }
         public DbSet<T_EquipType_Default> T_EquipType_Default { get; set; }
         public DbSet<T_EquipTypeAttr_Default> T_EquipTypeAttr_Default { get; set; }
@@ -76,5 +75,6 @@ namespace GPRO_IED_A.Data
         public DbSet<T_TimePrepare> T_TimePrepare { get; set; }
         public DbSet<T_TimeTypePrepare> T_TimeTypePrepare { get; set; }
         public DbSet<T_WorkShop> T_WorkShop { get; set; }
+        public DbSet<T_EquipmentType> T_EquipmentType { get; set; }
     }
 }

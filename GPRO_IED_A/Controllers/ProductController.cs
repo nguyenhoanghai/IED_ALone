@@ -21,10 +21,13 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var productTypes = BLLProduct.Instance.GetList(keyword, searchBy, UserContext.CompanyId, UserContext.ChildCompanyId, jtStartIndex, jtPageSize, jtSorting);
-                JsonDataResult.Records = productTypes;
-                JsonDataResult.Result = "OK";
-                JsonDataResult.TotalRecordCount = productTypes.TotalItemCount;
+                if (isAuthenticate)
+                {
+                    var productTypes = BLLProduct.Instance.GetList(keyword, searchBy, UserContext.CompanyId, UserContext.ChildCompanyId, jtStartIndex, jtPageSize, jtSorting);
+                    JsonDataResult.Records = productTypes;
+                    JsonDataResult.Result = "OK";
+                    JsonDataResult.TotalRecordCount = productTypes.TotalItemCount;
+                }
             }
             catch (Exception ex)
             {
@@ -39,18 +42,21 @@ namespace GPRO_IED_A.Controllers
             ResponseBase responseResult;
             try
             {
-                model.CompanyId = null;
-                if (!model.IsPrivate)
-                    model.CompanyId = UserContext.CompanyId;
-                model.ActionUser = UserContext.UserID;
-                responseResult = BLLProduct.Instance.InsertOrUpdate(model);
-                if (!responseResult.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    model.CompanyId = null;
+                    if (!model.IsPrivate)
+                        model.CompanyId = UserContext.CompanyId;
+                    model.ActionUser = UserContext.UserID;
+                    responseResult = BLLProduct.Instance.InsertOrUpdate(model);
+                    if (!responseResult.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {
@@ -65,14 +71,17 @@ namespace GPRO_IED_A.Controllers
             ResponseBase result;
             try
             {
-                result = BLLProduct.Instance.Delete(Id, UserContext.UserID);
-                if (!result.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    result = BLLProduct.Instance.Delete(Id, UserContext.UserID);
+                    if (!result.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                    else
+                        result.IsSuccess = true;
                 }
-                else
-                    result.IsSuccess = true;
             }
             catch (Exception ex)
             {

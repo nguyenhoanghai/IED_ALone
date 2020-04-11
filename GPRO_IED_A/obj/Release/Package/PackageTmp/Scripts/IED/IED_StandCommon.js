@@ -12,7 +12,7 @@
                     var str = '';
                     if (data.Data != null && data.Data.length > 0) {
                         $.each(data.Data, function (index, item) {
-                            str += '<option value="' + item.Id + '" '+(item.Id == value ? "selected":"")+'>' + item.Name + '</option>';
+                            str += '<option value="' + item.Value + '" ' + (item.Value == value ? "selected" : "") + '>' + item.Name + '</option>';
                         });
                     }
                     $('[' + controlId + ']').empty().append(str);
@@ -260,7 +260,7 @@ function GetLineSelect(controlName, id) {
                         var str = '';
                         if (data.Data.length > 0) {
                             $.each(data.Data, function (index, item) {
-                                str += ' <option value="' + item.Value + '">' + item.Name + '</option>';
+                                str += ' <option labours = "' + item.Data + '" value="' + item.Value + '">' + item.Name + '</option>';
                             });
                         }
                         $('#' + controlName).empty().append(str);

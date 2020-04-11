@@ -159,7 +159,7 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     var listModelSelect = new List<ModelSelectItem>();
-                    var lines = db.T_Line.Where(x => !x.IsDeleted && x.WorkShopId == workShopId).Select(x => new ModelSelectItem() { Value = x.Id, Name = x.Name });
+                    var lines = db.T_Line.Where(x => !x.IsDeleted && x.WorkShopId == workShopId).Select(x => new ModelSelectItem() { Value = x.Id, Name = x.Name, Data = x.CountOfLabours });
                     if (lines != null && lines.Count() > 0)
                         listModelSelect.AddRange(lines);
                     else

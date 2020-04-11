@@ -16,14 +16,14 @@ namespace GPRO_IED_A.Data
     {
         public T_EquipType_Default()
         {
-            this.T_EquipmentType = new HashSet<T_EquipmentType>();
             this.T_EquipTypeAttr_Default = new HashSet<T_EquipTypeAttr_Default>();
+            this.T_EquipmentType = new HashSet<T_EquipmentType>();
         }
     
         public int Id { get; set; }
         public string Name { get; set; }
     
-        public virtual ICollection<T_EquipmentType> T_EquipmentType { get; set; }
         public virtual ICollection<T_EquipTypeAttr_Default> T_EquipTypeAttr_Default { get; set; }
+        public virtual ICollection<T_EquipmentType> T_EquipmentType { get; set; }
     }
 }

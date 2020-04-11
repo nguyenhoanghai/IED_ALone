@@ -23,13 +23,16 @@ namespace GPRO_IED_A.Controllers
             ResponseBase rs;
             try
             {
-                rs = BLLEquipment.Instance.Delete(Id, UserContext.UserID);
-                if (rs.IsSuccess)
-                    JsonDataResult.Result = "OK";
-                else
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    rs = BLLEquipment.Instance.Delete(Id, UserContext.UserID);
+                    if (rs.IsSuccess)
+                        JsonDataResult.Result = "OK";
+                    else
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    }
                 }
             }
             catch (Exception ex)
@@ -44,10 +47,13 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var objs = BLLEquipment.Instance.GetList(keyword, jtStartIndex, jtPageSize, jtSorting, UserContext.CompanyId  );
-                JsonDataResult.Records = objs;
-                JsonDataResult.Result = "OK";
-                JsonDataResult.TotalRecordCount = objs.TotalItemCount;
+                if (isAuthenticate)
+                {
+                    var objs = BLLEquipment.Instance.GetList(keyword, jtStartIndex, jtPageSize, jtSorting, UserContext.CompanyId);
+                    JsonDataResult.Records = objs;
+                    JsonDataResult.Result = "OK";
+                    JsonDataResult.TotalRecordCount = objs.TotalItemCount;
+                }
             }
             catch (Exception ex)
             {
@@ -61,25 +67,28 @@ namespace GPRO_IED_A.Controllers
             ResponseBase rs;
             try
             {
-                if (modelEquipment.Id == 0)
+                if (isAuthenticate)
                 {
-                    modelEquipment.CompanyId = UserContext.CompanyId  ;
-                    modelEquipment.ActionUser = UserContext.UserID;
-                    rs = BLLEquipment.Instance.Create(modelEquipment, UserContext.CompanyId  , a);
+                    if (modelEquipment.Id == 0)
+                    {
+                        modelEquipment.CompanyId = UserContext.CompanyId;
+                        modelEquipment.ActionUser = UserContext.UserID;
+                        rs = BLLEquipment.Instance.Create(modelEquipment, UserContext.CompanyId, a);
+                    }
+                    else
+                    {
+                        modelEquipment.CompanyId = UserContext.CompanyId;
+                        modelEquipment.ActionUser = UserContext.UserID;
+                        rs = BLLEquipment.Instance.Update(modelEquipment, UserContext.CompanyId, a);
+                    }
+                    if (!rs.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                {
-                    modelEquipment.CompanyId = UserContext.CompanyId  ;
-                    modelEquipment.ActionUser = UserContext.UserID;
-                    rs = BLLEquipment.Instance.Update(modelEquipment, UserContext.CompanyId  , a);
-                }
-                if (!rs.IsSuccess)
-                {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(rs.Errors);
-                }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {

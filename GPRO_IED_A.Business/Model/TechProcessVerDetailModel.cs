@@ -18,7 +18,7 @@ namespace GPRO_IED_A.Business.Model
         public int PhaseGroupId { get; set; }
         public string PhaseCode { get; set; }
         public string PhaseName { get; set; }
-        public int EquipmentId { get; set; }
+        public int? EquipmentId { get; set; }
         public string EquipmentCode { get; set; }
         public string EquipmentName { get; set; }
         public string EquipmentGroupCode { get; set; }

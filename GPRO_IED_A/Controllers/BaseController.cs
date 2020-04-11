@@ -26,6 +26,7 @@ namespace GPRO_IED_A.Controllers
                 defaultPage = "/" + valuesDefault[0].ToString() + "/" + valuesDefault[1].ToString();
             }
             CheckLogin(requestContext, App_Global.AppGlobal.ProductCode);
+            isAuthenticate = Authentication.isAuthenticate;
         }
     }
 }

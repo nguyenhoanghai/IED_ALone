@@ -112,7 +112,7 @@ GPRO.EquipmentType = function () {
     *                                                    EQUIPMENT TYPE  
     ********************************************************************************************************************/
     function InitViewModel(EquipmentType) {
-        
+
         var EquipmentTypeViewModel = {
             Id: 0,
             Code: '',
@@ -122,7 +122,7 @@ GPRO.EquipmentType = function () {
             IsDefault: false,
             EquipTypeDefaultId: null
         };
-       
+
         if (EquipmentType != null) {
             EquipmentTypeViewModel = {
                 Id: ko.observable(EquipmentType.Id),
@@ -133,7 +133,7 @@ GPRO.EquipmentType = function () {
                 Description: ko.observable(EquipmentType.Description),
                 EquipTypeDefaultId: ko.observable(EquipmentType.EquipTypeDefaultId),
             };
-          
+
         }
         return EquipmentTypeViewModel;
     }
@@ -152,12 +152,11 @@ GPRO.EquipmentType = function () {
             contentType: 'application/json',
             beforeSend: function () { $('#loading').show(); },
             success: function (result) {
+                $('#loading').hide();
                 GlobalCommon.CallbackProcess(result, function () {
                     if (result.Result == "OK") {
                         $('[etcancel]').click();
                         ReloadListEquipmentType();
-                        $('#loading').hide();
-                        GlobalCommon.ShowMessageDialog('Lưu Thành Công', function () { }, "Thông Báo");
                     }
                 }, false, Global.Element.PopupEquipmentType, true, true, function () {
                     var msg = GlobalCommon.GetErrorMessage(result);
@@ -168,7 +167,7 @@ GPRO.EquipmentType = function () {
     }
     function InitListEquipmentType() {
         $('#' + Global.Element.JtableEquipmentType).jtable({
-            title: 'Danh sách Loại Thiết Bị',
+            title: 'Danh sách Bộ phận',
             paging: true,
             pageSize: 10,
             pageSizeChangeEquipmentType: true,
@@ -201,110 +200,110 @@ GPRO.EquipmentType = function () {
                     edit: false,
                     list: false
                 },
-                Code: {
-                    title: "Mã Loại Thiết Bị",
-                    width: "10%",
-                },
+                //Code: {
+                //    title: "Mã Bộ phận",
+                //    width: "10%",
+                //},
                 Name: {
                     visibility: 'fixed',
-                    title: "Tên Loại Thiết Bị",
+                    title: "Tên Bộ phận",
                     width: "20%",
                 },
                 AddAtribute: {
                     visibility: 'fixed',
-                    title: "Thuộc Tính Thiết Bị",
+                    title: "Thuộc Tính Bộ phận",
                     width: "20%",
                     sorting: false,
                     display: function (eqip) {
-                        var $img = $('<a href="#" class="clickable red aaa"   title="Thêm Thuộc Tính Thiết Bị.">Xem Thuộc Tính Thiết Bị</a>');
+                        var $img = $('<a href="#" class="clickable red aaa"   title="Thêm Thuộc Tính Bộ phận.">Xem Thuộc Tính Bộ phận</a>');
                         $img.click(function () {
                             Global.Data.EquipmentTypeId = eqip.record.Id;
                             $('#' + Global.Element.JtableEquipmentType).jtable('openChildTable',
-                                    $img.closest('tr'),
-                                    {
-                                        title: 'Danh sách Thuộc Tính của Thiết bị : ' + eqip.record.Name,
-                                        paging: true,
-                                        pageSize: 3,
-                                        pageSizeChangeManipulationType: true,
-                                        sorting: true,
-                                        selectShow: true,
-                                        actions: {
-                                            listAction: Global.UrlAction.GetListEquipmentTypeAttribute + '?equipId=' + eqip.record.Id,
-                                            createAction: Global.Element.popup_attr,
-                                            createObjDefault: BindData_Attr(null),
+                                $img.closest('tr'),
+                                {
+                                    title: 'Danh sách Thuộc Tính của Bộ phận : ' + eqip.record.Name,
+                                    paging: true,
+                                    pageSize: 3,
+                                    pageSizeChangeManipulationType: true,
+                                    sorting: true,
+                                    selectShow: true,
+                                    actions: {
+                                        listAction: Global.UrlAction.GetListEquipmentTypeAttribute + '?equipId=' + eqip.record.Id,
+                                        createAction: Global.Element.popup_attr,
+                                        createObjDefault: BindData_Attr(null),
+                                    },
+                                    messages: {
+                                        addNewRecord: 'Thêm mới',
+                                        selectShow: 'Ẩn hiện cột'
+                                    },
+                                    fields: {
+                                        Id: {
+                                            key: true,
+                                            create: false,
+                                            edit: false,
+                                            list: false
                                         },
-                                        messages: {
-                                            addNewRecord: 'Thêm mới Thuộc Tính Thiết Bị',
-                                            selectShow: 'Ẩn hiện cột'
+                                        Name: {
+                                            visibility: 'fixed',
+                                            title: "Tên Thuộc Tính",
+                                            width: "20%",
+                                            display: function (data) {
+                                                var text = $('<a class="clickable bold blue" data-toggle="modal" data-target="#' + Global.Element.popup_attr + '" title="Chỉnh sửa thông tin.">' + data.record.Name + '</a>');
+                                                text.click(function () {
+                                                    BindData_Attr(data.record);
+                                                    if (data.record.IsDefault) {
+                                                        $('#Name_attr').prop('disabled', true);
+                                                        $('#index').prop('disabled', true);
+                                                    }
+                                                });
+                                                return text;
+                                            }
                                         },
-                                        fields: {
-                                            Id: {
-                                                key: true,
-                                                create: false,
-                                                edit: false,
-                                                list: false
-                                            },
-                                            Name: {
-                                                visibility: 'fixed',
-                                                title: "Tên Thuộc Tính",
-                                                width: "20%",
-                                                display: function (data) {
-                                                    var text = $('<a class="clickable bold blue" data-toggle="modal" data-target="#' + Global.Element.popup_attr + '" title="Chỉnh sửa thông tin.">' + data.record.Name + '</a>');
-                                                    text.click(function () {
-                                                        BindData_Attr(data.record);
-                                                        if (data.record.IsDefault) {
-                                                            $('#Name_attr').prop('disabled', true);
-                                                            $('#index').prop('disabled', true);
-                                                        }
-                                                    });
-                                                    return text;
-                                                }
-                                            },
-                                            OrderIndex: {
-                                                title: "Thứ Tự Sắp Xếp",
-                                                width: "3%",
-                                            },
-                                            EquipmentTypeName: {
-                                                title: " Loại Thiết Bị",
-                                                width: "20%",
-                                            },
-                                            //IsUseForTime: {
-                                            //    title: "IsUseForTime",
-                                            //    width: "5%",
-                                            //    display: function (data) {
-                                            //        var elementDisplay = "";
-                                            //        if (data.record.IsUseForTime)
-                                            //        { elementDisplay = "<input  type='checkbox' checked='checked' disabled/>"; }
-                                            //        else {
-                                            //            elementDisplay = "<input  type='checkbox' disabled />";
-                                            //        }
-                                            //        return elementDisplay;
-                                            //    }
-                                            //},
-                                            Delete: {
-                                                title: '',
-                                                width: "3%",
-                                                sorting: false,
-                                                display: function (data) {
-                                                    var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
-                                                    text.click(function () {
-                                                        GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
-                                                            Delete_Atrr(data.record.Id);
-                                                        }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
-                                                    });
-                                                    return text;
-                                                }
+                                        OrderIndex: {
+                                            title: "Thứ Tự Sắp Xếp",
+                                            width: "3%",
+                                        },
+                                        EquipmentTypeName: {
+                                            title: "Bộ phận",
+                                            width: "20%",
+                                        },
+                                        //IsUseForTime: {
+                                        //    title: "IsUseForTime",
+                                        //    width: "5%",
+                                        //    display: function (data) {
+                                        //        var elementDisplay = "";
+                                        //        if (data.record.IsUseForTime)
+                                        //        { elementDisplay = "<input  type='checkbox' checked='checked' disabled/>"; }
+                                        //        else {
+                                        //            elementDisplay = "<input  type='checkbox' disabled />";
+                                        //        }
+                                        //        return elementDisplay;
+                                        //    }
+                                        //},
+                                        Delete: {
+                                            title: '',
+                                            width: "3%",
+                                            sorting: false,
+                                            display: function (data) {
+                                                var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
+                                                text.click(function () {
+                                                    GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
+                                                        Delete_Atrr(data.record.Id);
+                                                    }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
+                                                });
+                                                return text;
                                             }
                                         }
-                                    }, function (data) { //opened handler
-                                        data.childTable.jtable('load');
-                                    });
+                                    }
+                                }, function (data) { //opened handler
+                                    data.childTable.jtable('load');
+                                });
                         });
                         return $img;
                     }
                 },
                 Description: {
-                    title: "Mô Tả Thiết Bị",
+                    title: "Mô Tả",
                     width: "20%",
                     sorting: false,
                 },
@@ -356,18 +355,16 @@ GPRO.EquipmentType = function () {
             contentType: 'application/json charset=utf-8',
             beforeSend: function () { $('#loading').show(); },
             success: function (data) {
+                $('#loading').hide();
                 GlobalCommon.CallbackProcess(data, function () {
                     if (data.Result == "ERROR") {
-                        GlobalCommon.ShowConfirmDialog('Đã Có Thiết Bị Tồn Tại Thuộc Tính Của Loại Thiết Bị Này.Bạn Có Muốn Xóa Tất Cả ?', function () {
+                        GlobalCommon.ShowConfirmDialog('Đã Có Thiết Bị Tồn Tại Thuộc Tính Của Bộ phận Này.Bạn Có Muốn Xóa Tất Cả ?', function () {
                             Delete(Id);
                         }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
                     }
-                    else {
+                    else
                         Delete(Id);
-                    }
-                    $('#loading').hide();
                 }, false, Global.Element.PopupEquipmentType, true, true, function () {
-
                     var msg = GlobalCommon.GetErrorMessage(data);
                     GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
                 });
@@ -383,13 +380,11 @@ GPRO.EquipmentType = function () {
             contentType: 'application/json charset=utf-8',
             beforeSend: function () { $('#loading').show(); },
             success: function (data) {
+                $('#loading').hide();
                 GlobalCommon.CallbackProcess(data, function () {
-                    if (data.Result == "OK") {
+                    if (data.Result == "OK")
                         ReloadListEquipmentType();
-                    }
-                    $('#loading').hide();
                 }, false, Global.Element.PopupEquipmentType, true, true, function () {
-
                     var msg = GlobalCommon.GetErrorMessage(data);
                     GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
                 });
@@ -462,12 +457,11 @@ GPRO.EquipmentType = function () {
             contentType: 'application/json',
             beforeSend: function () { $('#loading').show(); },
             success: function (result) {
+                $('#loading').hide();
                 GlobalCommon.CallbackProcess(result, function () {
                     if (result.Result == "OK") {
                         $('[cancel_attr]').click();
                         ReloadListEquipmentType();
-                        $('#loading').hide();
-                        GlobalCommon.ShowMessageDialog('Lưu Thành Công', function () { }, "Thông Báo");
                     }
                 }, false, Global.Element.PopupEquipmentTypeAttribute, true, true, function () {
                     var msg = GlobalCommon.GetErrorMessage(result);
@@ -483,13 +477,14 @@ GPRO.EquipmentType = function () {
             type: 'POST',
             data: JSON.stringify({ 'Id': Id }),
             contentType: 'application/json charset=utf-8',
+            beforeSend: function () { $('#loading').show(); },
             success: function (data) {
+                $('#loading').hide();
                 GlobalCommon.CallbackProcess(data, function () {
                     if (data.Result == "OK") {
                         ReloadListEquipmentType();
                     }
                 }, false, Global.Element.PopupEquipmentTypeAttribute, true, true, function () {
-
                     var msg = GlobalCommon.GetErrorMessage(data);
                     GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
                 });
@@ -505,8 +500,6 @@ GPRO.EquipmentType = function () {
         }
         return true;
     }
-
-
 }
 $(document).ready(function () {
     var EquipmentType = new GPRO.EquipmentType();

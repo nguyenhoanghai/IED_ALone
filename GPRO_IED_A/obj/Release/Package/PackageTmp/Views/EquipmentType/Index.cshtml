@@ -11,26 +11,26 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button cancel aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-                <h4 class="modal-title">Thông Tin Loại Thiết Bị</h4>
+                <h4 class="modal-title">Thông Tin Bộ phận</h4>
             </div>
             <div class="modal-body form-inline">
                 <div class="container-fluid">
                     <div class="col-md-12 form-group">
                         <input class="form-control" type="hidden" data-bind="value: Id" />
                         <div class="col-md-12 form-group">
-                            <label class="control-label">Tên Loại Thiết Bị <span class="required-class">*</span></label><br />
+                            <label class="control-label">Bộ phận <span class="required-class">*</span></label><br />
                             <input class="form-control" id="etName" required="required" data-bind="value: Name" type="text" placeholder="Nhập Tên Loại Thiết Bị..." />
                         </div>
-                        <div class="col-md-12 form-group">
+                        @*<div class="col-md-12 form-group">
                             <label class="control-label">Mã Loại Thiết Bị <span class="required-class">*</span></label><br />
                             <input class="form-control" id="etcode" data-bind="value: Code" type="text" placeholder="Nhập Mã Loại Thiết Bị..." />
-                        </div>
+                        </div>*@
                         <div class="col-md-12 form-group">
-                            <label class="control-label">Kiểu Loại Thiết Bị <span class="required-class">*</span></label><br />
+                            <label class="control-label">Mã bộ phận <span class="required-class">*</span></label><br />
                             @Html.DropDownList("eType_default", null, null, new { @class = "form-control" })
                         </div>
                         <div class="col-md-12 form-group">
-                            <label class="control-label">Mô Tả Loại Thiết Bị</label>
+                            <label class="control-label">Mô Tả </label>
                             <textarea class="form-control" id="etDescription" data-bind="value: Description"></textarea>
                         </div>
                     </div>
@@ -68,8 +68,8 @@
                         <label class="control-label">Bạn muốn tìm theo ?</label>
                         <select class="form-control" id="etsearchBy">
                             <option value="0">- - Chọn kiểu Tìm kiếm - -</option>
-                            <option value="1">Tên Loại Thiết Bị</option>
-                            <option value="2">Mã Loại Thiết Bị</option>
+                            <option value="1">Tên Bộ phận</option>
+                            @*<option value="2">Mã Loại Thiết Bị</option>*@
                         </select>
                     </div>
                 </div>

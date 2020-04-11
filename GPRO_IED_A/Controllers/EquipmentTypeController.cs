@@ -26,13 +26,16 @@ namespace GPRO_IED_A.Controllers
             ResponseBase rs;
             try
             {
-                rs = BLLEquipmentType.Instance.DeleteById(Id, UserContext.UserID);
-                if (rs.IsSuccess)
-                    JsonDataResult.Result = "OK";
-                else
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    rs = BLLEquipmentType.Instance.DeleteById(Id, UserContext.UserID);
+                    if (rs.IsSuccess)
+                        JsonDataResult.Result = "OK";
+                    else
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    }
                 }
             }
             catch (Exception ex)
@@ -49,15 +52,17 @@ namespace GPRO_IED_A.Controllers
             ResponseBase responseResult;
             try
             {
-                responseResult = BLLEquipmentType.Instance.CheckExistInEquipmentAtt(Id);
-                if (responseResult.IsSuccess)
-                    JsonDataResult.Result = "OK";
-                else
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    responseResult = BLLEquipmentType.Instance.CheckExistInEquipmentAtt(Id);
+                    if (responseResult.IsSuccess)
+                        JsonDataResult.Result = "OK";
+                    else
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    }
                 }
-
             }
             catch (Exception ex)
             {
@@ -72,10 +77,13 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var listEquipmentType = BLLEquipmentType.Instance.GetList(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting, UserContext.CompanyId);
-                JsonDataResult.Records = listEquipmentType;
-                JsonDataResult.Result = "OK";
-                JsonDataResult.TotalRecordCount = listEquipmentType.TotalItemCount;
+                if (isAuthenticate)
+                {
+                    var listEquipmentType = BLLEquipmentType.Instance.GetList(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting, UserContext.CompanyId);
+                    JsonDataResult.Records = listEquipmentType;
+                    JsonDataResult.Result = "OK";
+                    JsonDataResult.TotalRecordCount = listEquipmentType.TotalItemCount;
+                }
             }
             catch (Exception ex)
             {
@@ -90,19 +98,22 @@ namespace GPRO_IED_A.Controllers
             ResponseBase responseResult;
             try
             {
-                model.CompanyId = UserContext.CompanyId;
-                model.ActionUser = UserContext.UserID;
-                if (model.Id == 0)
-                    responseResult = BLLEquipmentType.Instance.Create(model);
-                else
-                    responseResult = BLLEquipmentType.Instance.Update(model);
-                if (!responseResult.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    model.CompanyId = UserContext.CompanyId;
+                    model.ActionUser = UserContext.UserID;
+                    if (model.Id == 0)
+                        responseResult = BLLEquipmentType.Instance.Create(model);
+                    else
+                        responseResult = BLLEquipmentType.Instance.Update(model);
+                    if (!responseResult.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {
@@ -132,27 +143,30 @@ namespace GPRO_IED_A.Controllers
         #region attr
         public ActionResult CreateAttibute(int id)
         {
-            try
+            if (isAuthenticate)
             {
-                var listModelSelect = BLLEquipmentType.Instance.GetListEquipmentType();
-                List<SelectListItem> listEquipmentType = new List<SelectListItem>();
-                if (listModelSelect != null && listModelSelect.Count > 0)
+                try
                 {
-                    listEquipmentType = listModelSelect.Select(c => new SelectListItem
+                    var listModelSelect = BLLEquipmentType.Instance.GetListEquipmentType();
+                    List<SelectListItem> listEquipmentType = new List<SelectListItem>();
+                    if (listModelSelect != null && listModelSelect.Count > 0)
                     {
-                        Text = c.Name,
-                        Value = c.Value.ToString(),
-                    }).ToList();
+                        listEquipmentType = listModelSelect.Select(c => new SelectListItem
+                        {
+                            Text = c.Name,
+                            Value = c.Value.ToString(),
+                        }).ToList();
+                    }
+                    ViewBag.listEquipmentType = listEquipmentType;
                 }
-                ViewBag.listEquipmentType = listEquipmentType;
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                Session["equipmentTypeId"] = id;
+                ViewBag.equipmentTypeId = id;
+                ViewBag.equipmentTypeName = BLLEquipmentType.Instance.GetEquipmentTypeNameById(id);
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            Session["equipmentTypeId"] = id;
-            ViewBag.equipmentTypeId = id;
-            ViewBag.equipmentTypeName = BLLEquipmentType.Instance.GetEquipmentTypeNameById(id);
             return View();
         }
 
@@ -161,13 +175,16 @@ namespace GPRO_IED_A.Controllers
             ResponseBase responseResult;
             try
             {
-                responseResult = BLLEquipmentTypeAttribute.Instance.DeleteById(Id, UserContext.UserID);
-                if (responseResult.IsSuccess)
-                    JsonDataResult.Result = "OK";
-                else
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    responseResult = BLLEquipmentTypeAttribute.Instance.DeleteById(Id, UserContext.UserID);
+                    if (responseResult.IsSuccess)
+                        JsonDataResult.Result = "OK";
+                    else
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    }
                 }
             }
             catch (Exception ex)
@@ -183,10 +200,13 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var objs = BLLEquipmentTypeAttribute.Instance.GetList(jtStartIndex, jtPageSize, jtSorting, equipId);
-                JsonDataResult.Records = objs;
-                JsonDataResult.Result = "OK";
-                JsonDataResult.TotalRecordCount = objs.TotalItemCount;
+                if (isAuthenticate)
+                {
+                    var objs = BLLEquipmentTypeAttribute.Instance.GetList(jtStartIndex, jtPageSize, jtSorting, equipId);
+                    JsonDataResult.Records = objs;
+                    JsonDataResult.Result = "OK";
+                    JsonDataResult.TotalRecordCount = objs.TotalItemCount;
+                }
             }
             catch (Exception ex)
             {
@@ -201,18 +221,21 @@ namespace GPRO_IED_A.Controllers
             ResponseBase responseResult;
             try
             {
-                model.ActionUser = UserContext.UserID;
-                if (model.Id == 0)
-                    responseResult = BLLEquipmentTypeAttribute.Instance.Create(model);
-                else
-                    responseResult = BLLEquipmentTypeAttribute.Instance.Update(model);
-                if (!responseResult.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    model.ActionUser = UserContext.UserID;
+                    if (model.Id == 0)
+                        responseResult = BLLEquipmentTypeAttribute.Instance.Create(model);
+                    else
+                        responseResult = BLLEquipmentTypeAttribute.Instance.Update(model);
+                    if (!responseResult.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {

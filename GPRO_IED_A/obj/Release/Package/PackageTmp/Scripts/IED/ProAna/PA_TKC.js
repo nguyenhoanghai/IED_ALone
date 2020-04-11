@@ -101,7 +101,14 @@ GPRO.LaborDivision = function () {
 
         $('[re_line_tkc]').click(function () {
             GetLineSelect('tkc_lineName', parseInt($('#jtable_tkc').attr('wkId')));
+            $('#tkc_lineName').change();
         });
+
+        $('#tkc_lineName').change(function () {
+            var _option = $('#tkc_lineName').children('option:selected');
+            $('#workers').html(_option.attr('labours'));
+        });
+
         $('[re_employ_tkc]').click(function () {
             GetEmployeeWithSkill('tkc_Employee');
         });
@@ -128,6 +135,7 @@ GPRO.LaborDivision = function () {
         $('#' + Global.Element.Popup_position).on('shown.bs.modal', function () {
             $('#' + Global.Element.Popup).hide();
             $('div.divParent').attr('currentPoppup', Global.Element.Popup_position.toUpperCase());
+
         });
 
         $('[cancel_tkc_po]').click(function () {
@@ -178,6 +186,7 @@ GPRO.LaborDivision = function () {
 
         $('#' + Global.Element.Popup).on('shown.bs.modal', function () {
             $('div.divParent').attr('currentPoppup', Global.Element.Popup.toUpperCase());
+            $('#tkc_lineName').change();
         });
 
         $('[tkc_save]').click(function () {
@@ -248,7 +257,8 @@ GPRO.LaborDivision = function () {
                 $('.tech-info-box-main').hide();
                 $('.tech-info-box-but i').removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
             }
-        })
+        });
+
     }
 
 
@@ -352,6 +362,9 @@ GPRO.LaborDivision = function () {
 
     function ReloadList() {
         $('#' + Global.Element.Jtable).jtable('load', { 'parentId': $('#jtable_tkc').attr('pId') });
+      //  if (Global.Data.TechProVerId == null || Global.Data.TechProVerId == 0)
+      //      GlobalCommon.ShowMessageDialog('Quy trình công nghệ chưa được tạo. Bạn cần phải lưu quy trình công nghệ trước rồi mới có thể tạo thiết kế chuyền được !.', function () { }, "Lỗi thao tác");
+
     }
 
 
@@ -441,7 +454,7 @@ GPRO.LaborDivision = function () {
                             $('#autoCompleteSource_Code').append(code_option);
                         }
                         else {
-                            GlobalCommon.ShowMessageDialog("Sản phẩm này chưa có quy trình công nghệ không thể thiết kế chuyền được. Vui lòng tạo quy trình công nghệ trước.", function () { }, 'Thông báo');
+                            //GlobalCommon.ShowMessageDialog("Mã hàng này chưa có quy trình công nghệ không thể thiết kế chuyền được. Vui lòng tạo quy trình công nghệ trước.", function () { }, 'Thông báo');
                             $('#' + Global.Element.Jtable).hide();
                         }
                     }
@@ -548,7 +561,7 @@ GPRO.LaborDivision = function () {
             str = '';
 
             if (rows > 0) {
-                for (var i = 1, y = i + 1; i <= positions.length ; i += 2, y += 2) {
+                for (var i = 1, y = i + 1; i <= positions.length; i += 2, y += 2) {
                     var ul = '';
                     var equip = '';
                     var tongtmu = 0;
@@ -788,7 +801,7 @@ GPRO.LaborDivision = function () {
     /*************************************************************************************************************/
     function ResetSize() {
         if (Global.Data.Index == 0) {
-            for (var i = 1, y = i + 1; i <= (Global.Data.Position_Arr.length) ; i += 2, y += 2) {
+            for (var i = 1, y = i + 1; i <= (Global.Data.Position_Arr.length); i += 2, y += 2) {
                 var left = $($('#' + i).parent().find('.line-left')).find('.main-info #phase').height();
                 var right = $($('#' + y).parent().find('.line-right')).find('.main-info #phase').height();
                 if (left > right) {
@@ -931,7 +944,7 @@ GPRO.LaborDivision = function () {
         var OldIndex = parseInt(index);
         if (Newindex <= 0 || Newindex >= (Global.Data.Position_Arr.length + 1)) {
             GlobalCommon.ShowMessageDialog('Số Thứ Tự vị trí phải lớn hơn 0 và nhỏ hơn ' + Global.Data.Position_Arr.length + '.',
-            function () { $('[linePo_' + index + ']').val(index); }, "Số Thứ Tự vị trí không hợp lệ");
+                function () { $('[linePo_' + index + ']').val(index); }, "Số Thứ Tự vị trí không hợp lệ");
         }
         else {
             var objTemp = Global.Data.Position_Arr[OldIndex - 1];

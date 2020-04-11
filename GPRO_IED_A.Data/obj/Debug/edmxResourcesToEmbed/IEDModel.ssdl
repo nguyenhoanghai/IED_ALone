@@ -562,7 +562,6 @@
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
-    <Property Name="Code" Type="varchar" MaxLength="250" />
     <Property Name="Description" Type="nvarchar(max)" />
     <Property Name="EquipTypeDefaultId" Type="int" />
     <Property Name="ObjectType" Type="int" />
@@ -809,24 +808,6 @@
     <Property Name="UpdatedDate" Type="datetime" />
     <Property Name="DeletedUser" Type="int" />
   </EntityType>
-  <EntityType Name="T_PhaseGroup">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Code" Type="nvarchar" MaxLength="50" />
-    <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
-    <Property Name="Description" Type="nvarchar(max)" />
-    <Property Name="MaxLevel" Type="float" Nullable="false" />
-    <Property Name="MinLevel" Type="float" Nullable="false" />
-    <Property Name="IsDeleted" Type="bit" Nullable="false" />
-    <Property Name="CreatedUser" Type="int" Nullable="false" />
-    <Property Name="DeletedUser" Type="int" />
-    <Property Name="UpdatedUser" Type="int" />
-    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
-    <Property Name="DeletedDate" Type="datetime" />
-    <Property Name="UpdatedDate" Type="datetime" />
-  </EntityType>
   <EntityType Name="T_Product">
     <Key>
       <PropertyRef Name="Id" />
@@ -844,6 +825,24 @@
     <Property Name="UpdatedDate" Type="datetime" />
     <Property Name="DeletedUser" Type="int" />
     <Property Name="DeletedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="T_PhaseGroup">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Code" Type="nvarchar" MaxLength="50" />
+    <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" />
+    <Property Name="MaxLevel" Type="float" Nullable="false" />
+    <Property Name="MinLevel" Type="float" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedUser" Type="int" Nullable="false" />
+    <Property Name="DeletedUser" Type="int" />
+    <Property Name="UpdatedUser" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedDate" Type="datetime" />
+    <Property Name="UpdatedDate" Type="datetime" />
   </EntityType>
   <EntityType Name="T_StopPrecisionLibrary">
     <Key>
@@ -1677,8 +1676,8 @@
     <EntitySet Name="T_ManipulationLibrary" EntityType="Self.T_ManipulationLibrary" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_ManipulationTypeLibrary" EntityType="Self.T_ManipulationTypeLibrary" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_NatureCutsLibrary" EntityType="Self.T_NatureCutsLibrary" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="T_PhaseGroup" EntityType="Self.T_PhaseGroup" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_Product" EntityType="Self.T_Product" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="T_PhaseGroup" EntityType="Self.T_PhaseGroup" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_StopPrecisionLibrary" EntityType="Self.T_StopPrecisionLibrary" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_TechProcessVersion" EntityType="Self.T_TechProcessVersion" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_TechProcessVersionDetail" EntityType="Self.T_TechProcessVersionDetail" Schema="dbo" store:Type="Tables" />

@@ -43,11 +43,14 @@ namespace GPRO_IED_A.Controllers
         public JsonResult Gets(string keyWord, int searchBy, bool isBlock, bool isRequiredChangePass, bool isTimeBlock, bool isForgotPass, int jtStartIndex = 0, int jtPageSize = 0, string jtSorting = "")
         {
             try
-            { 
+            {
+                if (isAuthenticate)
+                {
                     var Users = BLLUser.Instance.Gets(keyWord, searchBy, isBlock, isRequiredChangePass, isTimeBlock, isForgotPass, jtStartIndex, jtPageSize, jtSorting, UserContext.UserID, UserContext.CompanyId, UserContext.ChildCompanyId);
                     JsonDataResult.Records = Users;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = Users.TotalItemCount;
+                }
              }
             catch (Exception ex)
             {
@@ -64,9 +67,10 @@ namespace GPRO_IED_A.Controllers
             ResponseBase responseResult = null;
             try
             {
-                 
-                    model.CompanyId = UserContext.CompanyId  ;
-                    model.ActionUser = UserContext.UserID; 
+                if (isAuthenticate)
+                {
+                    model.CompanyId = UserContext.CompanyId;
+                    model.ActionUser = UserContext.UserID;
                     responseResult = BLLUser.Instance.InsertOrUpdate(model);
                     if (!responseResult.IsSuccess)
                     {
@@ -74,7 +78,8 @@ namespace GPRO_IED_A.Controllers
                         JsonDataResult.ErrorMessages.Add(new Error() { MemberName = responseResult.Errors.First().MemberName, Message = "Lỗi: " + responseResult.Errors.First().Message });
                     }
                     else
-                        JsonDataResult.Result = "OK"; 
+                        JsonDataResult.Result = "OK";
+                }
             }
             catch (Exception ex)
             {
@@ -90,7 +95,9 @@ namespace GPRO_IED_A.Controllers
         {
             ResponseBase responseResult;
             try
-            { 
+            {
+                if (isAuthenticate)
+                {
                     responseResult = new ResponseBase();
                     responseResult = BLLUser.Instance.Delete(id, UserContext.UserID);
                     if (!responseResult.IsSuccess)
@@ -100,6 +107,7 @@ namespace GPRO_IED_A.Controllers
                     }
                     else
                         JsonDataResult.Result = "OK";
+                }
               }
             catch (Exception ex)
             {

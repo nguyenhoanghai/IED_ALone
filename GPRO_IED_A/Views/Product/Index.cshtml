@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Sản phẩm";
+    ViewBag.Title = "Mã hàng";
     Layout = null;
 } 
 <script src="~/Scripts/IED/Product/P_Index.js"></script>
@@ -11,18 +11,18 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button aria-hidden="true" data-dismiss="modal" pcancel class="close" type="button">×</button>
-                <h4 class="modal-title">Thông tin sản phẩm</h4>
+                <h4 class="modal-title">Thông tin mã hàng</h4>
             </div>
             <div class="modal-body form-inline">
                 <div class="container-fluid">
                     <div class="form-group">
                         <input class="form-control" id="pid" data-bind="value: Id" type="hidden" />
-                        <label class="control-label">Tên Sản Phẩm <span class="required-class">*</span></label>
-                        <input class="form-control" id="pname" data-bind="value: Name" type="text" placeholder="Nhập Tên Sản Phẩm..." />
+                        <label class="control-label">Tên mã hàng <span class="required-class">*</span></label>
+                        <input class="form-control" id="pname" data-bind="value: Name" type="text" placeholder="Nhập Tên mã hàng..." />
                     </div>
-                    <div class="form-group">
-                        <label class="control-label">Mã Sản Phẩm </label><br />
-                        <input class="form-control" id="pcode" data-bind="value: Code" type="text" placeholder="Nhập Mã Sản Phẩm..." />
+                    <div class="form-group ">
+                        <label class="control-label">Khách hàng</label><br />
+                        <input class="form-control" id="pcode" data-bind="value: Code" type="text" placeholder="Nhập Mã mã hàng..." />
                     </div>
                     <div class="form-group">
                         <label class="control-label">Hình thức sử dụng</label><br />
@@ -63,7 +63,7 @@
                     <div class="form-group">
                         <label class="control-label">Bạn muốn tìm theo ?</label>
                         <select class="form-control" id="psearchBy">
-                            <option value="1">Mã sản phẫm</option>
+                            <option value="1">Khách hàng</option>
                             <option value="2">Tên sản phẫm</option>
                         </select>
                     </div>

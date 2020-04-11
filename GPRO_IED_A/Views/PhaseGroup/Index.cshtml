@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Nhóm công đoạn";
+    ViewBag.Title = "Cụm công đoạn";
     Layout = null;
 } 
 <script src="~/Scripts/IED/PhaseGroup/PG_Index.js"></script>
@@ -10,28 +10,28 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button aria-hidden="true" data-dismiss="modal" pgcancel class="close" type="button">×</button>
-                <h4 class="modal-title">Thông tin Nhóm Công Đoạn</h4>
+                <h4 class="modal-title">Thông tin cụm công đoạn</h4>
             </div>
             <div class="modal-body form-inline">
                 <div class="container-fluid">
                     <input data-bind="value: Id" type="hidden" />
-                    <div class="col-md-4 form-group">
-                        <label class="control-label">Tên nhóm Công Đoạn<span class="required-class">*</span></label>
-                        <input class="form-control" id="pgname" data-bind="value: Name" type="text" placeholder="Nhập Tên Nhóm Công Đoạn..." />
+                    <div class="col-md-6 form-group">
+                        <label class="control-label">Tên cụm công đoạn<span class="required-class">*</span></label>
+                        <input class="form-control" id="pgname" data-bind="value: Name" type="text" placeholder="Nhập Tên cụm công đoạn..." />
                     </div>
-                    <div class="col-md-4 form-group">
-                        <label class="control-label">Mã nhóm Công Đoạn</label><br />
-                        <input class="form-control" id="pgcode" data-bind="value: Code" type="text" placeholder="Nhập Mã Nhóm Công Đoạn..." />
+                    <div class="col-md-4 form-group hide">
+                        <label class="control-label">Mã cụm công đoạn</label><br />
+                        <input class="form-control" id="pgcode" data-bind="value: Code" type="text" placeholder="Nhập Mã cụm công đoạn..." />
                     </div>
-                    <div class="col-md-4 form-group">
+                    <div class="col-md-3 form-group">
                         <label class="control-label">Chỉ số Nhỏ nhất<span class="required-class">*</span></label>
                         <input class="form-control" id="pgMinLevel" data-bind="value: MinLevel" type="text" style="width: 70px" onkeypress=" return isNumberKey(event)" />
                     </div>
-                    <div class="col-md-4 form-group">
+                    <div class="col-md-3 form-group">
                         <label class="control-label">Chỉ số Lớn Nhất</label><br />
                         <input class="form-control" id="pgMaxLevel" data-bind="value: MaxLevel" type="text" style="width: 70px" onkeypress=" return isNumberKey(event)" />
                     </div>
-                    <div class="col-md-8 form-group">
+                    <div class="col-md-12 form-group">
                         <label class="control-label">Mô Tả</label><br />
                         <textarea id="pgdes" class="form-control" data-bind="value: Description"></textarea>
                     </div>
@@ -64,8 +64,8 @@
                     <div class="form-group">
                         <label class="control-label">Bạn muốn tìm theo ?</label>
                         <select class="form-control" id="pgsearchBy">
-                            <option value="1">Tên Nhóm Công Đoạn</option>
-                            <option value="2">Mã Nhóm Công Đoạn</option>
+                            <option value="1">Tên cụm công đoạn</option>
+                            @*<option value="2">Mã cụm công đoạn</option>*@
                         </select>
                     </div>
                 </div>

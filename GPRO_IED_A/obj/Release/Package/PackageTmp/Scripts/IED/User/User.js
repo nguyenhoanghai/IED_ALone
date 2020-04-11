@@ -49,46 +49,19 @@ GPRO.User = function () {
         RegisterEvent();
         InitList();
         ReloadList();
-        InitPopup();
-        BindData(null);
+        InitPopup(); 
     }
 
     this.BindindUsercontextId = function (userContextId) {
         Global.Data.UserContextId = userContextId;
     }
 
-
     this.reloadListUser = function () {
         ReloadListUser();
-    }
-
-    this.initViewModel = function (user) {
-        InitViewModel(user);
-    }
-
-    this.bindData = function (user) {
-        BindData(user);
-    }
+    } 
 
     var RegisterEvent = function () {
-        //$('[btn="saveUser"]').click(function () {
-        //    // var uploadobj = document.getElementById('uploader');
-        //    if (CheckValidate()) {
-        //        //   if (uploadobj.getqueuecount() > 0) {  //if file upload is null 
-        //        //      $('#submit').click();  // call event upload file
-        //        //  }
-        //        //   else {
-        //        SaveUser();
-        //        clearSelectBox();
-        //        //  }
-        //    }
-        //});
-
-        //$('[btn="addUser"]').click(function () {
-        //    BindData(null);
-
-        //});
-
+         
         $('[btn="updatePassword"]').click(function () {
             if (checkValidateUpdatePass()) {
                 ChangePassword();
@@ -119,7 +92,7 @@ GPRO.User = function () {
             $('div.divParent').attr('currentPoppup', Global.Element.popupSearch.toUpperCase());
         });
     }
-     
+
     function UnLockTime(Id) {
         $.ajax({
             url: Global.UrlAction.UnLock,
@@ -245,42 +218,25 @@ GPRO.User = function () {
         $('#istimeblock').prop('checked', false);
         $('#isforgotpass').prop('checked', false);
     }
-     
-    function InitViewModel(user) {
-        var userViewModel = {
-            Id: 0,
-            UserName: '',
-            PassWord: '',
-            LastName: '',
-            FisrtName: '',
-            Email: '',
-            ImagePath: '',
-            IsForgotPassword: false,
-            NoteForgotPassword: '',
-            IsLock: false,
-            UserRoles: null
-        }
-        if (user != null) {
-            userViewModel = {
-                Id: ko.observable(user.Id),
-                UserName: ko.observable(user.UserName),
-                PassWord: ko.observable(user.PassWord),
-                LastName: ko.observable(user.LastName),
-                FisrtName: ko.observable(user.FisrtName),
-                Email: ko.observable(user.Email),
-                ImagePath: ko.observable(user.ImagePath),
-                IsForgotPassword: ko.observable(user.IsForgotPassword),
-                NoteForgotPassword: ko.observable(user.NoteForgotPassword),
-                IsLock: ko.observable(user.IsLock),
-                UserRoles: ko.observable(user.UserRoles)
-            };
-        }
-        return userViewModel;
-    }
-
+ 
     function BindData(user) {
-        Global.Data.ModelUser = InitViewModel(user);
-        ko.applyBindings(Global.Data.ModelUser);
+        if (user) {
+            $('[txt="userId"]').val(user.Id);
+            $('[txt="userName"]').val(user.UserName);
+            $('[txt="txtpass"]').val(user.PassWord);
+            $('[txt="txtTen"]').val(user.LastName);
+            $('[txt="txtho"]').val(user.FisrtName);
+            $('[txt="email"]').val(user.Email); 
+        }
+        else {
+            $('[txt="userId"]').val(0);
+            $('[txt="userName"]').val('');
+            $('[txt="txtpass"]').val('');
+            $('[txt="txtTen"]').val('');
+            $('[txt="txtho"]').val('');
+            $('[txt="email"]').val('');
+            $("#userRoles").data("kendoMultiSelect").value('');
+        }
     }
 
     function InitPopup() {
@@ -291,7 +247,7 @@ GPRO.User = function () {
                 Save();
         });
 
-        $('#' + Global.Element.popupCreateUser + ' button[ucancel]').click(function () {
+        $('#' + Global.Element.popupCreateUser + ' button[cancel]').click(function () {
             $("#" + Global.Element.popupCreateUser).modal("hide");
             BindData(null);
             $('div.divParent').attr('currentPoppup', '');
@@ -299,14 +255,25 @@ GPRO.User = function () {
     }
 
     function Save() {
-        Global.Data.ModelUser.UserCategoryId = $('#UserCategory').val();
-        Global.Data.ModelUser.NoteForgotPassword = $('#userRoles').data("kendoMultiSelect").value().toString();
-        Global.Data.ModelUser.ChangePic = Global.Data.ChangePic;
-        Global.Data.ModelUser.ImagePath = $('[filelist]').attr('newurl');
+        var user = {
+            Id: $('[txt="userId"]').val(),
+            UserName: $('[txt="userName"]').val(),
+            PassWord: $('[txt="txtpass"]').val(),
+            LastName: $('[txt="txtTen"]').val(),
+            FisrtName: $('[txt="txtho"]').val(),
+            Email: $('[txt="email"]').val(),
+            ImagePath: $('[filelist]').attr('newurl'),
+            IsForgotPassword: false,
+            NoteForgotPassword: $('#userRoles').data("kendoMultiSelect").value().toString(),
+            IsLock: false,
+            UserRoles: null,
+            UserCategoryId: $('#UserCategory').val(),
+            ChangePic: Global.Data.ChangePic
+        }
         $.ajax({
             url: Global.UrlAction.Save,
             type: 'post',
-            data: ko.toJSON(Global.Data.ModelUser),
+            data: ko.toJSON(user),
             contentType: 'application/json',
             beforeSend: function () { $('#loading').show(); },
             success: function (result) {
@@ -314,7 +281,7 @@ GPRO.User = function () {
                 GlobalCommon.CallbackProcess(result, function () {
                     if (result.Result == "OK") {
                         ReloadList();
-                        $('#' + Global.Element.popupCreateUser + ' button[ucancel]').click();
+                        $('#' + Global.Element.popupCreateUser + ' button[cancel]').click();
                     }
                     else
                         GlobalCommon.ShowMessageDialog("", function () { }, "Đã có lỗi xảy ra trong quá trình sử lý.");
@@ -337,7 +304,6 @@ GPRO.User = function () {
             actions: {
                 listAction: Global.UrlAction.GetList,
                 createAction: Global.Element.popupCreateUser,
-                createObjDefault: InitViewModel(null),
                 searchAction: Global.Element.popupSearch
             },
             messages: {
@@ -424,8 +390,7 @@ GPRO.User = function () {
                     width: '1%',
                     display: function (data) {
                         var elementDisplay = "";
-                        if (data.record.IsShow)
-                        { elementDisplay = "<input  type='checkbox' checked='checked' disabled/>"; }
+                        if (data.record.IsShow) { elementDisplay = "<input  type='checkbox' checked='checked' disabled/>"; }
                         else {
                             elementDisplay = "<input  type='checkbox' disabled />";
                         }
@@ -457,13 +422,14 @@ GPRO.User = function () {
                     sorting: false,
                     display: function (data) {
                         var text = $('<i data-toggle="modal" data-target="#' + Global.Element.popupCreateUser + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
-                        text.click(function () { 
+                        text.click(function () {
                             if (data.record.IsRequireChangePW) {
                                 $('#passwordRow').show();
                                 data.record.PassWord = '';
                                 $('#required').val('1')
                             }
-                            $('#rowUsername').hide();
+                           // $('#rowUsername').hide();
+                            $('[txt="userName"]').prop('disabled', true);
 
                             if (data.record.UserRoleIds != null)
                                 $("#userRoles").data("kendoMultiSelect").value(data.record.UserRoleIds);
@@ -521,8 +487,7 @@ GPRO.User = function () {
             }
         });
     }
-
-
+    
 }
 
 $(document).ready(function () {
@@ -532,7 +497,8 @@ $(document).ready(function () {
 
     // show column username when button add click
     $('.jtable-toolbar-item-add-record').click(function () {
-        $('#rowUsername').show();
+      //  $('#rowUsername').show();
+        $('[txt="userName"]').prop('disabled', false);
         $('#passwordRow').show();
     });
 });

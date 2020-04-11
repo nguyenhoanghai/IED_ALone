@@ -22,10 +22,13 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var timePrepares = BLLTimePrepare.Instance.Gets(timeTypeId, jtStartIndex, jtPageSize, jtSorting);
-                JsonDataResult.Records = timePrepares;
-                JsonDataResult.Result = "OK";
-                JsonDataResult.TotalRecordCount = timePrepares.TotalItemCount;
+                if (isAuthenticate)
+                {
+                    var timePrepares = BLLTimePrepare.Instance.Gets(timeTypeId, jtStartIndex, jtPageSize, jtSorting);
+                    JsonDataResult.Records = timePrepares;
+                    JsonDataResult.Result = "OK";
+                    JsonDataResult.TotalRecordCount = timePrepares.TotalItemCount;
+                }
             }
             catch (Exception ex)
             {
@@ -39,10 +42,13 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var timePrepares = BLLTimePrepare.Instance.Gets(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting);
-                JsonDataResult.Records = timePrepares;
-                JsonDataResult.Result = "OK";
-                JsonDataResult.TotalRecordCount = timePrepares.TotalItemCount;
+                if (isAuthenticate)
+                {
+                    var timePrepares = BLLTimePrepare.Instance.Gets(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting);
+                    JsonDataResult.Records = timePrepares;
+                    JsonDataResult.Result = "OK";
+                    JsonDataResult.TotalRecordCount = timePrepares.TotalItemCount;
+                }
             }
             catch (Exception ex)
             {
@@ -57,14 +63,18 @@ namespace GPRO_IED_A.Controllers
             ResponseBase rs;
             try
             {
-                timePrepare.ActionUser = UserContext.UserID;
-                rs = BLLTimePrepare.Instance.InsertOrUpdate(timePrepare);
-                if (!rs.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    timePrepare.ActionUser = UserContext.UserID;
+                    rs = BLLTimePrepare.Instance.InsertOrUpdate(timePrepare);
+                    if (!rs.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    }
+                    else
+                    JsonDataResult.Result = "OK";
                 }
-                JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {
@@ -79,14 +89,17 @@ namespace GPRO_IED_A.Controllers
             ResponseBase result;
             try
             {
-                result = BLLTimePrepare.Instance.Delete(Id, UserContext.UserID);
-                if (!result.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    result = BLLTimePrepare.Instance.Delete(Id, UserContext.UserID);
+                    if (!result.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                    else
+                        result.IsSuccess = true;
                 }
-                else
-                    result.IsSuccess = true;
             }
             catch (Exception ex)
             {
@@ -103,10 +116,13 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var timeTypes = BLLTimeTypePrepare.Instance.Gets(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting);
-                JsonDataResult.Records = timeTypes;
-                JsonDataResult.Result = "OK";
-                JsonDataResult.TotalRecordCount = timeTypes.TotalItemCount;
+                if (isAuthenticate)
+                {
+                    var timeTypes = BLLTimeTypePrepare.Instance.Gets(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting);
+                    JsonDataResult.Records = timeTypes;
+                    JsonDataResult.Result = "OK";
+                    JsonDataResult.TotalRecordCount = timeTypes.TotalItemCount;
+                }
             }
             catch (Exception ex)
             {
@@ -121,15 +137,18 @@ namespace GPRO_IED_A.Controllers
             ResponseBase rs;
             try
             {
-                model.ActionUser = UserContext.UserID;
-                rs = BLLTimeTypePrepare.Instance.InsertOrUpdate(model);
-                if (!rs.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    model.ActionUser = UserContext.UserID;
+                    rs = BLLTimeTypePrepare.Instance.InsertOrUpdate(model);
+                    if (!rs.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {
@@ -144,14 +163,17 @@ namespace GPRO_IED_A.Controllers
             ResponseBase result;
             try
             {
-                result = BLLTimeTypePrepare.Instance.Delete(Id, UserContext.UserID);
-                if (!result.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    result = BLLTimeTypePrepare.Instance.Delete(Id, UserContext.UserID);
+                    if (!result.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {

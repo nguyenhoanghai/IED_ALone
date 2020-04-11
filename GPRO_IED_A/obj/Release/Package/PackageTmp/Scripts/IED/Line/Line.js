@@ -215,13 +215,12 @@ GPRO.Line = function () {
             contentType: 'application/json charset=utf-8',
             beforeSend: function () { $('#loading').show(); },
             success: function (data) {
+     $('#loading').hide();
                 GlobalCommon.CallbackProcess(data, function () {
                     if (data.Result == "OK") {
-                        ReloadList();
-                        $('#loading').hide();
+                        ReloadList();                   
                     }
                 }, false, Global.Element.PopupLine, true, true, function () {
-
                     var msg = GlobalCommon.GetErrorMessage(data);
                     GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
                 });

@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GPRO_IED_A.Business
 {
@@ -36,18 +34,18 @@ namespace GPRO_IED_A.Business
         {
             using (db = new IEDEntities())
             {
-               ResponseBase result = new ResponseBase();
-            var number = db.T_EquipmentTypeAttribute.Count(x => !x.IsDeleted && x.EquipmentTypeId == equipmentTypeId);
-            if (number > 0)
-            {
-                result.IsSuccess = false;
+                ResponseBase result = new ResponseBase();
+                var number = db.T_EquipmentTypeAttribute.Count(x => !x.IsDeleted && x.EquipmentTypeId == equipmentTypeId);
+                if (number > 0)
+                {
+                    result.IsSuccess = false;
+                    return result;
+                }
+                else
+                    result.IsSuccess = true;
                 return result;
             }
-            else
-                result.IsSuccess = true;
-            return result; 
-            }
-            
+
         }
 
         private bool CheckEquipmentTypeName(string EquipmentTypeName, int CompanyId, int Id)
@@ -70,18 +68,18 @@ namespace GPRO_IED_A.Business
         {
             using (db = new IEDEntities())
             {
- string name = null;
-            try
-            {
-                name = db.T_EquipmentType.FirstOrDefault(x => !x.IsDeleted && x.Id == Id).Name;
+                string name = null;
+                try
+                {
+                    name = db.T_EquipmentType.FirstOrDefault(x => !x.IsDeleted && x.Id == Id).Name;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                return name;
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return name;
-            }
-           
+
         }
 
         public ResponseBase Create(ModelEquipmentType model)
@@ -168,7 +166,7 @@ namespace GPRO_IED_A.Business
                         T_EquipmentType obj = db.T_EquipmentType.FirstOrDefault(x => x.Id == model.Id && !x.IsDeleted);
                         if (obj != null)
                         {
-                            obj.Code = model.Code;
+                            // obj.Code = model.Code;
                             obj.Name = model.Name;
                             obj.Description = model.Description;
                             obj.CompanyId = model.CompanyId;
@@ -223,7 +221,7 @@ namespace GPRO_IED_A.Business
             }
             return rs;
         }
-        
+
         public List<ModelSelectItem> GetListEquipmentType()
         {
             try
@@ -232,7 +230,13 @@ namespace GPRO_IED_A.Business
                 {
                     List<ModelSelectItem> listModelSelect = new List<ModelSelectItem>();
                     listModelSelect.Add(new ModelSelectItem() { Value = 0, Name = "- - Chọn Loại Thiết Bị - -" });
-                    listModelSelect.AddRange(db.T_EquipmentType.Where(x => !x.IsDeleted).Select(x => new ModelSelectItem() { Value = x.Id, Name = x.Name, Data = x.EquipTypeDefaultId ?? 0, Code = x.Code }));
+                    listModelSelect.AddRange(db.T_EquipmentType.Where(x => !x.IsDeleted).Select(x => new ModelSelectItem()
+                    {
+                        Value = x.Id,
+                        Name = x.Name,
+                        Data = x.EquipTypeDefaultId ?? 0,
+                        //Code = x.Code
+                    }));
                     return listModelSelect;
                 }
             }
@@ -257,19 +261,20 @@ namespace GPRO_IED_A.Business
                         keyWord = keyWord.Trim().ToUpper();
                         switch (searchBy)
                         {
-                            case 1: equipTypes = db.T_EquipmentType.Where(x => !x.IsDeleted && x.Name.Trim().ToUpper().Contains(keyWord));
+                            case 1:
+                                equipTypes = db.T_EquipmentType.Where(x => !x.IsDeleted && x.Name.Trim().ToUpper().Contains(keyWord));
                                 break;
-                            case 2: equipTypes = db.T_EquipmentType.Where(x => !x.IsDeleted && x.Code.Trim().ToUpper().Contains(keyWord));
-                                break;
+                                // case 2: equipTypes = db.T_EquipmentType.Where(x => !x.IsDeleted && x.Code.Trim().ToUpper().Contains(keyWord));
+                                //   break;
                         }
                     }
                     else
-                     equipTypes = db.T_EquipmentType.Where(c => !c.IsDeleted);
+                        equipTypes = db.T_EquipmentType.Where(c => !c.IsDeleted);
 
                     var EquipmentTypes = equipTypes.OrderByDescending(x => x.CreatedDate).Select(c => new ModelEquipmentType()
                     {
                         Id = c.Id,
-                        Code = c.Code,
+                       // Code = c.Code,
                         Name = c.Name,
                         EquipTypeDefaultId = c.EquipTypeDefaultId,
                         Description = c.Description,
@@ -290,7 +295,7 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     List<ModelSelectItem> objs = new List<ModelSelectItem>();
-                    objs.Add(new ModelSelectItem() { Value = 0, Name = "- - Chọn Kiểu Loại Thiết Bị - -" });
+                    objs.Add(new ModelSelectItem() { Value = 0, Name = "-- Chọn mã bộ phận --" });
                     objs.AddRange(db.T_EquipType_Default.Select(x => new ModelSelectItem() { Value = x.Id, Name = x.Name }));
                     objs.Add(new ModelSelectItem() { Value = 0, Name = "Khác" });
                     return objs;

@@ -22,13 +22,16 @@ namespace GPRO_IED_A.Controllers
             ResponseBase rs;
             try
             {
-                rs = BLLWorkerLevel.Instance.Delete(Id, UserContext.UserID);
-                if (rs.IsSuccess)
-                    JsonDataResult.Result = "OK";
-                else
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    rs = BLLWorkerLevel.Instance.Delete(Id, UserContext.UserID);
+                    if (rs.IsSuccess)
+                        JsonDataResult.Result = "OK";
+                    else
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    }
                 }
             }
             catch (Exception ex)
@@ -44,10 +47,13 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var listWorkersLevel = BLLWorkerLevel.Instance.Gets(keyword, jtStartIndex, jtPageSize, jtSorting, UserContext.CompanyId  , UserContext.ChildCompanyId);
-                JsonDataResult.Records = listWorkersLevel;
-                JsonDataResult.Result = "OK";
-                JsonDataResult.TotalRecordCount = listWorkersLevel.TotalItemCount;
+                if (isAuthenticate)
+                {
+                    var listWorkersLevel = BLLWorkerLevel.Instance.Gets(keyword, jtStartIndex, jtPageSize, jtSorting, UserContext.CompanyId, UserContext.ChildCompanyId);
+                    JsonDataResult.Records = listWorkersLevel;
+                    JsonDataResult.Result = "OK";
+                    JsonDataResult.TotalRecordCount = listWorkersLevel.TotalItemCount;
+                }
             }
             catch (Exception ex)
             {
@@ -61,17 +67,20 @@ namespace GPRO_IED_A.Controllers
         {
             ResponseBase rs;
             try
-            { 
-                obj.ActionUser =  UserContext.UserID;
-                obj.CompanyId = UserContext.CompanyId;
-                rs = BLLWorkerLevel.Instance.InsertOrUpdate(obj, UserContext.ChildCompanyId);
-                if (!rs.IsSuccess)
+            {
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    obj.ActionUser = UserContext.UserID;
+                    obj.CompanyId = UserContext.CompanyId;
+                    rs = BLLWorkerLevel.Instance.InsertOrUpdate(obj, UserContext.ChildCompanyId);
+                    if (!rs.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {

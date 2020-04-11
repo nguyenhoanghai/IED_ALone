@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using GPRO.Core.Mvc;
 using GPRO_IED_A.Business;
-using GPRO_IED_A.Data;
 using GPRO_IED_A.Business.Model;
-using System.IO;
+using GPRO_IED_A.Data;
+using Newtonsoft.Json;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
-using GPRO.Core.Mvc;
-using Newtonsoft.Json;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
 
 namespace GPRO_IED_A.Controllers
 {
@@ -22,7 +22,7 @@ namespace GPRO_IED_A.Controllers
         // GET: ProAna
         #region Commo Ana
         public ActionResult Index()
-        { 
+        {
             ViewBag.TMU = BLLIEDConfig.Instance.GetValueByCode("TMU");
             ViewBag.GetTMUType = BLLIEDConfig.Instance.GetValueByCode("GetTMUType");
             ViewBag.ListManipulationCode = BLLManipulationLibrary.Instance.GetListManipulationCode();
@@ -35,9 +35,12 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var noName = BLLCommodityAnalysis.Instance.GetList();
-                JsonDataResult.Data = noName;
-                JsonDataResult.Result = "OK";
+                if (isAuthenticate)
+                {
+                    var noName = BLLCommodityAnalysis.Instance.GetList();
+                    JsonDataResult.Data = noName;
+                    JsonDataResult.Result = "OK";
+                }
             }
             catch (Exception ex)
             {
@@ -51,12 +54,15 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                int[] relationCompanyId = new int[] { };
-                if (UserContext.ChildCompanyId != null)
-                    relationCompanyId = UserContext.ChildCompanyId;
-                var noName = BLLCommodityAnalysis.Instance.GetCommoAnaItemByParentId(parentId, value, Type, UserContext.CompanyId, relationCompanyId, year);
-                JsonDataResult.Data = noName;
-                JsonDataResult.Result = "OK";
+                if (isAuthenticate)
+                {
+                    int[] relationCompanyId = new int[] { };
+                    if (UserContext.ChildCompanyId != null)
+                        relationCompanyId = UserContext.ChildCompanyId;
+                    var noName = BLLCommodityAnalysis.Instance.GetCommoAnaItemByParentId(parentId, value, Type, UserContext.CompanyId, relationCompanyId, year);
+                    JsonDataResult.Data = noName;
+                    JsonDataResult.Result = "OK";
+                }
             }
             catch (Exception ex)
             {
@@ -71,20 +77,23 @@ namespace GPRO_IED_A.Controllers
             ResponseBase responseResult;
             try
             {
-                noName.CreatedUser = UserContext.UserID;
-                noName.CompanyId = UserContext.CompanyId;
-                if (noName.Id == 0)
-                    noName.CreatedDate = DateTime.Now;
-                else
-                    noName.UpdatedDate = DateTime.Now;
-                responseResult = BLLCommodityAnalysis.Instance.InsertOrUpdate(noName);
-                if (!responseResult.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    noName.CreatedUser = UserContext.UserID;
+                    noName.CompanyId = UserContext.CompanyId;
+                    if (noName.Id == 0)
+                        noName.CreatedDate = DateTime.Now;
+                    else
+                        noName.UpdatedDate = DateTime.Now;
+                    responseResult = BLLCommodityAnalysis.Instance.InsertOrUpdate(noName);
+                    if (!responseResult.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {
@@ -99,14 +108,17 @@ namespace GPRO_IED_A.Controllers
             ResponseBase result;
             try
             {
-                result = BLLCommodityAnalysis.Instance.Delete(Id, UserContext.UserID);
-                if (!result.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    result = BLLCommodityAnalysis.Instance.Delete(Id, UserContext.UserID);
+                    if (!result.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {
@@ -123,15 +135,18 @@ namespace GPRO_IED_A.Controllers
             ResponseBase responseResult;
             try
             {
-                phase.ActionUser = UserContext.UserID;
-                responseResult = BLLCommo_Ana_Phase.Instance.InsertOrUpdate(phase, timePrepares);
-                if (!responseResult.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    phase.ActionUser = UserContext.UserID;
+                    responseResult = BLLCommo_Ana_Phase.Instance.InsertOrUpdate(phase, timePrepares);
+                    if (!responseResult.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {
@@ -145,10 +160,13 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var phases = BLLCommo_Ana_Phase.Instance.GetListByNode(node, jtStartIndex, jtPageSize, jtSorting);
-                JsonDataResult.Records = phases;
-                JsonDataResult.Result = "OK";
-                JsonDataResult.TotalRecordCount = phases.TotalItemCount;
+                if (isAuthenticate)
+                {
+                    var phases = BLLCommo_Ana_Phase.Instance.GetListByNode(node, jtStartIndex, jtPageSize, jtSorting);
+                    JsonDataResult.Records = phases;
+                    JsonDataResult.Result = "OK";
+                    JsonDataResult.TotalRecordCount = phases.TotalItemCount;
+                }
             }
             catch (Exception ex)
             {
@@ -163,16 +181,19 @@ namespace GPRO_IED_A.Controllers
             ResponseBase result;
             try
             {
-                result = BLLCommo_Ana_Phase.Instance.Delete(Id, UserContext.UserID);
-                if (!result.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(result.Errors);
-                }
-                else
-                {
-                    JsonDataResult.Result = "OK";
-                    JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    result = BLLCommo_Ana_Phase.Instance.Delete(Id, UserContext.UserID);
+                    if (!result.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                    else
+                    {
+                        JsonDataResult.Result = "OK";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
                 }
             }
             catch (Exception ex)
@@ -201,14 +222,17 @@ namespace GPRO_IED_A.Controllers
             ResponseBase result;
             try
             {
-                result = BLLCommo_Ana_Phase.Instance.Copy(Id, UserContext.UserID);
-                if (!result.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    result = BLLCommo_Ana_Phase.Instance.Copy(Id, UserContext.UserID);
+                    if (!result.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {
@@ -223,14 +247,17 @@ namespace GPRO_IED_A.Controllers
             ResponseBase result;
             try
             {
-                result = BLLCommodityAnalysis.Instance.Copy_CommoAnaPhaseGroup(CopyObjectId, ObjectId, UserContext.UserID);
-                if (!result.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    result = BLLCommodityAnalysis.Instance.Copy_CommoAnaPhaseGroup(CopyObjectId, ObjectId, UserContext.UserID);
+                    if (!result.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {
@@ -241,7 +268,7 @@ namespace GPRO_IED_A.Controllers
 
         [HttpPost]
 
-        public async Task<JsonResult> UploadVideo( )
+        public async Task<JsonResult> UploadVideo()
         {
             HttpFileCollectionBase files = Request.Files;
             for (int i = 0; i < files.Count; i++)
@@ -266,7 +293,7 @@ namespace GPRO_IED_A.Controllers
 
                 fname = Path.Combine(Server.MapPath(("~/Videos/")), str.Split('|')[0]);
                 file.SaveAs(fname);
-                return Json( returnName);
+                return Json(returnName);
             }
             return Json("");
         }
@@ -276,9 +303,9 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var phase  = BLLCommo_Ana_Phase.Instance.GetPhase(phaseId);
+                var phase = BLLCommo_Ana_Phase.Instance.GetPhase(phaseId);
                 JsonDataResult.Records = phase;
-                JsonDataResult.Result = "OK"; 
+                JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {
@@ -296,7 +323,7 @@ namespace GPRO_IED_A.Controllers
             try
             {
                 JsonDataResult.Result = "OK";
-                JsonDataResult.Records = BLLCommo_Ana_Phase.Instance.GetAllPhasesForSuggest( );
+                JsonDataResult.Records = BLLCommo_Ana_Phase.Instance.GetAllPhasesForSuggest();
             }
             catch (Exception ex)
             { }
@@ -305,160 +332,165 @@ namespace GPRO_IED_A.Controllers
         #region export excel
         public void export_PhaseManiVersion(int Id)
         {
-            try
+            if (isAuthenticate)
             {
-                var excelPackage = new ExcelPackage();
-                excelPackage.Workbook.Properties.Author = "IED";
-                excelPackage.Workbook.Properties.Title = "Phân Tích Công Đoạn";
-                var sheet = excelPackage.Workbook.Worksheets.Add("PTCĐ");
-                sheet.Name = "Phân Tích Công Đoạn";
-                sheet.Cells.Style.Font.Size = 12;
-                sheet.Cells.Style.Font.Name = "Times New Roman";
-
-                sheet.Cells[1, 2].Value = "PHÂN TÍCH CÔNG ĐOẠN";
-                sheet.Cells[1, 2].Style.Font.Size = 14;
-                sheet.Cells[1, 2, 1, 7].Merge = true;
-                sheet.Cells[1, 2, 1, 7].Style.Font.Bold = true;
-                sheet.Cells[1, 2, 1, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                // sheet.Cells[1, 2, 1, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                //  sheet.Cells[1, 2, 1, 7].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
-                //  sheet.Cells[1, 2, 1, 7].Style.Font.Color.SetColor(Color.White);
-
-                var result = BLLCommo_Ana_Phase.Instance.Export_CommoAnaPhaseManiVer(Id);
-                if (result != null)
+                try
                 {
-                    sheet.Cells[2, 2].Value = "Ngày : " + DateTime.Now.ToString("dd/MM/yyyy");
-                    sheet.Cells[2, 2, 2, 4].Merge = true;
-                    sheet.Cells[2, 2, 2, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    var excelPackage = new ExcelPackage();
+                    excelPackage.Workbook.Properties.Author = "IED";
+                    excelPackage.Workbook.Properties.Title = "Phân Tích Công Đoạn";
+                    var sheet = excelPackage.Workbook.Worksheets.Add("PTCĐ");
+                    sheet.Name = "Phân Tích Công Đoạn";
+                    sheet.Cells.Style.Font.Size = 12;
+                    sheet.Cells.Style.Font.Name = "Times New Roman";
 
-                    sheet.Cells[3, 2].Value = "Khách hàng : ";
-                    sheet.Cells[3, 2, 3, 4].Merge = true;
-                    sheet.Cells[3, 2, 3, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[1, 2].Value = "PHÂN TÍCH CÔNG ĐOẠN";
+                    sheet.Cells[1, 2].Style.Font.Size = 14;
+                    sheet.Cells[1, 2, 1, 7].Merge = true;
+                    sheet.Cells[1, 2, 1, 7].Style.Font.Bold = true;
+                    sheet.Cells[1, 2, 1, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    // sheet.Cells[1, 2, 1, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    //  sheet.Cells[1, 2, 1, 7].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+                    //  sheet.Cells[1, 2, 1, 7].Style.Font.Color.SetColor(Color.White);
 
-                    sheet.Cells[4, 2, 5, 4].Merge = true;
-                    sheet.Cells[4, 2, 5, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[4, 2, 5, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                    sheet.Cells[4, 2, 5, 4].Value = "Mã hàng : ";
-
-                    double basicTime = Math.Round((result.TotalTMU + result.TimePrepare), 2);
-                    sheet.Cells[2, 5].Value = "Thời gian chuẩn (giây) : ";
-                    sheet.Cells[2, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[2, 8].Value = basicTime;
-                    sheet.Cells[2, 8, 2, 9].Merge = true;
-                    sheet.Cells[2, 8, 2, 9].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-
-                    sheet.Cells[3, 5].Value = "Hiệu suất : ";
-                    sheet.Cells[3, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[3, 8].Value = "100 %";
-                    sheet.Cells[3, 8, 3, 9].Merge = true;
-                    sheet.Cells[3, 8, 3, 9].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-
-                    sheet.Cells[4, 5].Value = "Định mức / 1h ";
-                    sheet.Cells[4, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[4, 8].Value = Math.Round(3600 / basicTime) + " SP";
-                    sheet.Cells[4, 8, 4, 9].Merge = true;
-                    sheet.Cells[4, 8, 4, 9].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-
-                    sheet.Cells[5, 5].Value = "Định mức / 9h ";
-                    sheet.Cells[5, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[5, 8].Value = Math.Round((3600 / basicTime) * 9) + " SP";
-                    sheet.Cells[5, 8, 5, 9].Merge = true;
-                    sheet.Cells[5, 8, 5, 9].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-
-                    sheet.Cells[2, 9, 5, 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    //  sheet.Cells[2, 2, 5, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    //  sheet.Cells[2, 2, 5, 7].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 242, 204));
-
-
-                    sheet.Cells[6, 2, 6, 4].Merge = true;
-                    sheet.Cells[6, 2].Value = "Tên công đoạn";
-                    sheet.Cells[6, 2, 6, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[6, 2, 6, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-                    //   sheet.Cells[6, 5].Value = result.VersionNumber;
-                    sheet.Cells[6, 5, 6, 7].Merge = true;
-                    sheet.Cells[6, 5, 6, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[6, 5, 6, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-                    sheet.Cells[7, 2].Value = "STT";
-                    sheet.Cells[7, 2].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[7, 3].Value = "Mã số";
-                    sheet.Cells[7, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[7, 4].Value = "Tần suất";
-                    sheet.Cells[7, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[7, 5].Value = "Mô tả";
-                    sheet.Cells[7, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-
-                    sheet.Cells[7, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    sheet.Cells[7, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[7, 6].Value = "TMU thiết bị";
-
-                    sheet.Cells[7, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    sheet.Cells[7, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[7, 7].Value = "TMU thao tác";
-
-                    sheet.Cells[7, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    sheet.Cells[7, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[7, 8].Value = "TMU";
-
-                    sheet.Cells[7, 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    sheet.Cells[7, 9].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[7, 9].Value = "TG chuẩn (giây)";
-
-                    sheet.Cells[6, 2, 7, 9].Style.Font.Bold = true;
-                    //  sheet.Cells[6, 2, 7, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    //  sheet.Cells[6, 2, 7, 7].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 255, 0));
-                    var row = 8;
-                    double tmu = 0;
-                    if (result.Details != null && result.Details.Count > 0)
+                    var result = BLLCommo_Ana_Phase.Instance.Export_CommoAnaPhaseManiVer(Id);
+                    if (result != null)
                     {
-                        foreach (var item in result.Details)
+                        sheet.Cells[1, 2].Value = "PHÂN TÍCH CÔNG ĐOẠN  ";
+
+                        sheet.Cells[2, 2].Value = "Ngày : " + DateTime.Now.ToString("dd/MM/yyyy");
+                        sheet.Cells[2, 2, 2, 4].Merge = true;
+                        sheet.Cells[2, 2, 2, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                        sheet.Cells[3, 2].Value = "Khách hàng : " + result.CustomerName;
+                        sheet.Cells[3, 2, 3, 4].Merge = true;
+                        sheet.Cells[3, 2, 3, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                        sheet.Cells[4, 2, 5, 4].Merge = true;
+                        sheet.Cells[4, 2, 5, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[4, 2, 5, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                        sheet.Cells[4, 2, 5, 4].Value = "Mã hàng : " + result.ProductName;
+
+                        double basicTime = Math.Round((result.TotalTMU + result.TimePrepare), 2);
+                        sheet.Cells[2, 5].Value = "Thời gian chuẩn (giây) : ";
+                        sheet.Cells[2, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[2, 8].Value = basicTime;
+                        sheet.Cells[2, 8, 2, 9].Merge = true;
+                        sheet.Cells[2, 8, 2, 9].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                        sheet.Cells[3, 5].Value = "Hiệu suất : ";
+                        sheet.Cells[3, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[3, 8].Value = "100 %";
+                        sheet.Cells[3, 8, 3, 9].Merge = true;
+                        sheet.Cells[3, 8, 3, 9].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                        sheet.Cells[4, 5].Value = "Định mức / 1h ";
+                        sheet.Cells[4, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[4, 8].Value = Math.Round(3600 / basicTime) + " SP";
+                        sheet.Cells[4, 8, 4, 9].Merge = true;
+                        sheet.Cells[4, 8, 4, 9].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                        sheet.Cells[5, 5].Value = "Định mức / 9h ";
+                        sheet.Cells[5, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[5, 8].Value = Math.Round((3600 / basicTime) * 9) + " SP";
+                        sheet.Cells[5, 8, 5, 9].Merge = true;
+                        sheet.Cells[5, 8, 5, 9].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                        sheet.Cells[2, 9, 5, 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        //  sheet.Cells[2, 2, 5, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        //  sheet.Cells[2, 2, 5, 7].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 242, 204));
+
+
+                        sheet.Cells[6, 2, 6, 4].Merge = true;
+                        sheet.Cells[6, 2].Value = "Tên công đoạn";
+                        sheet.Cells[6, 2, 6, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[6, 2, 6, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                        sheet.Cells[6, 5].Value = result.PhaseName.Trim().ToUpper();
+                        sheet.Cells[6, 5, 6, 7].Merge = true;
+                        sheet.Cells[6, 5, 6, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[6, 5, 6, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                        sheet.Cells[7, 2].Value = "STT";
+                        sheet.Cells[7, 2].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[7, 3].Value = "Mã số";
+                        sheet.Cells[7, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[7, 4].Value = "Tần suất";
+                        sheet.Cells[7, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[7, 5].Value = "Mô tả";
+                        sheet.Cells[7, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                        sheet.Cells[7, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        sheet.Cells[7, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[7, 6].Value = "TMU thiết bị (chuẩn)";
+
+                        sheet.Cells[7, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        sheet.Cells[7, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[7, 7].Value = "TMU thao tác (chuẩn)";
+
+                        sheet.Cells[7, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        sheet.Cells[7, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[7, 8].Value = "TMU * Tần suất";
+
+                        sheet.Cells[7, 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        sheet.Cells[7, 9].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[7, 9].Value = "Tổng thời gian(giây)";
+
+                        sheet.Cells[6, 2, 7, 9].Style.Font.Bold = true;
+                        //  sheet.Cells[6, 2, 7, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        //  sheet.Cells[6, 2, 7, 7].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 255, 0));
+                        var row = 8;
+                        double tmu = 0;
+                        if (result.Details != null && result.Details.Count > 0)
                         {
+                            foreach (var item in result.Details)
+                            {
 
-                            sheet.Cells[row, 2].Value = item.OrderIndex;
-                            sheet.Cells[row, 3].Value = item.ManipulationCode.Trim();
-                            sheet.Cells[row, 4].Value = item.Loop;
-                            sheet.Cells[row, 5].Value = item.ManipulationName;
-                            sheet.Cells[row, 6].Value = item.TMUEquipment;
-                            sheet.Cells[row, 7].Value = item.TMUManipulation;
-                            tmu = ((item.TMUManipulation ?? 0 * item.Loop) + (item.TMUEquipment ?? 0 * item.Loop));
-                            sheet.Cells[row, 8].Value = tmu;
-                            sheet.Cells[row, 9].Value = Math.Round((tmu / 27.8), 2);
+                                sheet.Cells[row, 2].Value = item.OrderIndex;
+                                sheet.Cells[row, 3].Value = item.ManipulationCode.Trim();
+                                sheet.Cells[row, 4].Value = item.Loop;
+                                sheet.Cells[row, 5].Value = item.ManipulationName;
+                                sheet.Cells[row, 6].Value = item.TMUEquipment;
+                                sheet.Cells[row, 7].Value = item.TMUManipulation;
+                                tmu = ((item.TMUManipulation.Value * item.Loop) + (item.TMUEquipment.Value * item.Loop));
+                                sheet.Cells[row, 8].Value = tmu;
+                                sheet.Cells[row, 9].Value = Math.Round((tmu / 27.8), 2);
 
-                            AddCellBorder(sheet, row);
-                            row++;
+                                AddCellBorder(sheet, row);
+                                row++;
+                            }
                         }
+                        // sheet.Cells[8, 2, row - 1, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        //  sheet.Cells[8, 2, row - 1, 7].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 242, 204));
+
+                        sheet.Cells[7, 2, row, 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        sheet.Cells[row, 5].Value = "Tổng TMU";
+                        sheet.Cells[row, 6].Value = result.Details.Sum(x => x.TMUEquipment);
+                        sheet.Cells[row, 7].Value = result.Details.Sum(x => x.TMUManipulation);
+                        tmu = result.Details.Sum(x => (x.TMUManipulation.Value * x.Loop) + (x.TMUEquipment.Value * x.Loop));
+                        sheet.Cells[row, 8].Value = tmu;
+                        sheet.Cells[row, 9].Value = Math.Round((tmu / 27.8), 2);
+                        sheet.Cells[row, 5, row, 9].Style.Font.Bold = true;
+
+                        AddCellBorder(sheet, row);
                     }
-                    // sheet.Cells[8, 2, row - 1, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    //  sheet.Cells[8, 2, row - 1, 7].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 242, 204));
-
-                    sheet.Cells[7, 2, row, 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    sheet.Cells[row, 5].Value = "Tổng TMU";
-                    sheet.Cells[row, 6].Value = result.Details.Sum(x => x.TMUEquipment);
-                    sheet.Cells[row, 7].Value = result.Details.Sum(x => x.TMUManipulation);
-                    tmu = result.Details.Sum(x => (x.TMUManipulation ?? 0 * x.Loop) + (x.TMUEquipment ?? 0 * x.Loop));
-                    sheet.Cells[row, 8].Value = tmu;
-                    sheet.Cells[row, 9].Value = Math.Round((tmu / 27.8), 2);
-                    sheet.Cells[row, 5, row, 9].Style.Font.Bold = true;
-
-                    AddCellBorder(sheet, row);
+                    sheet.Cells.AutoFitColumns();
+                    sheet.Column(6).Width = 16;
+                    sheet.Column(7).Width = 16;
+                    sheet.Column(14).Style.WrapText = true;
+                    Response.ClearContent();
+                    Response.BinaryWrite(excelPackage.GetAsByteArray());
+                    DateTime dateNow = DateTime.Now;
+                    string fileName = "PTCĐ_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+                    Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
+                    Response.ContentType = "application/excel";
+                    Response.Flush();
+                    Response.End();
                 }
-                sheet.Cells.AutoFitColumns();
-                sheet.Column(6).Width = 16;
-                sheet.Column(7).Width = 16;
-                sheet.Column(14).Style.WrapText = true;
-                Response.ClearContent();
-                Response.BinaryWrite(excelPackage.GetAsByteArray());
-                DateTime dateNow = DateTime.Now;
-                string fileName = "PTCĐ_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
-                Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
-                Response.ContentType = "application/excel";
-                Response.Flush();
-                Response.End();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
         }
 
@@ -480,20 +512,25 @@ namespace GPRO_IED_A.Controllers
 
         #region Techprocess
         [HttpPost]
-        public JsonResult SaveTech(TechProcessVersionModel version)
+        public JsonResult SaveTech(TechProcessVersionModel version, string details)
         {
             ResponseBase responseResult;
             try
             {
-                version.ActionUser = UserContext.UserID;
-                responseResult = BLLTechProcessVersion.Instance.InsertOrUpdate(version);
-                if (!responseResult.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    var _details = JsonConvert.DeserializeObject<List<TechProcessVerDetailModel>>(details);
+                    version.details = _details;
+                    version.ActionUser = UserContext.UserID;
+                    responseResult = BLLTechProcessVersion.Instance.InsertOrUpdate(version);
+                    if (!responseResult.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {
@@ -508,14 +545,17 @@ namespace GPRO_IED_A.Controllers
             ResponseBase result;
             try
             {
-                result = BLLTechProcessVersion.Instance.Delete(Id, UserContext.UserID);
-                if (!result.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    result = BLLTechProcessVersion.Instance.Delete(Id, UserContext.UserID);
+                    if (!result.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {
@@ -529,9 +569,12 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var details = BLLTechProcessVersion.Instance.Get(parentId, node);
-                JsonDataResult.Data = details;
-                JsonDataResult.Result = "OK";
+                if (isAuthenticate)
+                {
+                    var details = BLLTechProcessVersion.Instance.Get(parentId, node);
+                    JsonDataResult.Data = details;
+                    JsonDataResult.Result = "OK";
+                }
             }
             catch (Exception ex)
             {
@@ -547,416 +590,419 @@ namespace GPRO_IED_A.Controllers
         /// <param name="techProcessVersionId"></param>
         public void ExportToExcel_1(int parentId)
         {
-            var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId);
-            var excelPackage = new ExcelPackage();
-            excelPackage.Workbook.Properties.Author = "IED";
-            excelPackage.Workbook.Properties.Title = "Quy trình công nghệ";
-            var sheet = excelPackage.Workbook.Worksheets.Add("Quy trình công nghệ");
-            sheet.Name = "Quy trình công nghệ";
-            sheet.Cells.Style.Font.Size = 12;
-            sheet.Cells.Style.Font.Name = "Times New Roman";
-
-            sheet.Cells[1, 2].Value = ConfigurationManager.AppSettings["ComName"].ToString().ToUpper();
-            sheet.Cells[1, 2].Style.Font.Size = 13;
-            sheet.Cells[1, 2, 1, 10].Merge = true;
-            sheet.Cells[1, 2, 1, 10].Style.Font.Bold = true;
-            sheet.Cells[1, 2].Style.WrapText = true;
-            sheet.Cells[2, 2].Value = ConfigurationManager.AppSettings["ComAdd"].ToString();
-            sheet.Cells[2, 2].Style.Font.Size = 10;
-            sheet.Cells[2, 2, 2, 10].Merge = true;
-            sheet.Cells[2, 2, 2, 10].Style.Font.Bold = true;
-            sheet.Row(1).Height = 20;
-            sheet.Cells[4, 2].Value = "TIME STUDY - QUY TRÌNH CÔNG NGHỆ SẢN XUẤT : " + techProcessInfo.ProductName.ToUpper();
-            sheet.Cells[4, 2].Style.Font.Size = 14;
-            sheet.Cells[4, 2, 4, 10].Merge = true;
-            sheet.Cells[4, 2, 4, 10].Style.Font.Bold = true;
-            sheet.Cells[4, 2].Style.WrapText = true;
-            sheet.Cells[4, 2, 4, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            sheet.Cells[4, 2, 4, 10].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-            sheet.Cells[4, 2, 4, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
-            sheet.Cells[4, 2, 4, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
-            sheet.Cells[4, 2, 4, 10].Style.Font.Color.SetColor(Color.White);
-            sheet.Row(4).Height = 40;
-
-            sheet.Cells[5, 2].Value = "Ngày " + DateTime.Now.Day + " Tháng " + DateTime.Now.Month + " Năm " + DateTime.Now.Year;
-            sheet.Cells[5, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-            sheet.Cells[5, 2].Style.Font.Bold = true;
-            sheet.Cells[5, 2, 5, 9].Merge = true;
-
-
-            int rowIndex = 6, row = 0, dem = 1;
-            double tongTG = 0, TongLĐ = 0;
-            #region TTchung
-            if (techProcessInfo != null)
+            if (isAuthenticate)
             {
-                row = rowIndex;
+                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId);
+                var excelPackage = new ExcelPackage();
+                excelPackage.Workbook.Properties.Author = "IED";
+                excelPackage.Workbook.Properties.Title = "Quy trình công nghệ";
+                var sheet = excelPackage.Workbook.Worksheets.Add("Quy trình công nghệ");
+                sheet.Name = "Quy trình công nghệ";
+                sheet.Cells.Style.Font.Size = 12;
+                sheet.Cells.Style.Font.Name = "Times New Roman";
 
-                sheet.Cells[rowIndex, 3].Value = "Thời gian làm việc trong ngày  ";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = techProcessInfo.WorkingTimePerDay * 3600;
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Value = "Giây/Ngày";
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Chuyền SX ";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                //sheet.Cells[rowIndex, 7].Value = techProcessInfo.LineName;
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "Sản Lượng";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                sheet.Cells[1, 2].Value = ConfigurationManager.AppSettings["ComName"].ToString().ToUpper();
+                sheet.Cells[1, 2].Style.Font.Size = 13;
+                sheet.Cells[1, 2, 1, 10].Merge = true;
+                sheet.Cells[1, 2, 1, 10].Style.Font.Bold = true;
+                sheet.Cells[1, 2].Style.WrapText = true;
+                sheet.Cells[2, 2].Value = ConfigurationManager.AppSettings["ComAdd"].ToString();
+                sheet.Cells[2, 2].Style.Font.Size = 10;
+                sheet.Cells[2, 2, 2, 10].Merge = true;
+                sheet.Cells[2, 2, 2, 10].Style.Font.Bold = true;
+                sheet.Row(1).Height = 20;
+                sheet.Cells[4, 2].Value = "TIME STUDY - QUY TRÌNH CÔNG NGHỆ SẢN XUẤT : " + techProcessInfo.ProductName.ToUpper();
+                sheet.Cells[4, 2].Style.Font.Size = 14;
+                sheet.Cells[4, 2, 4, 10].Merge = true;
+                sheet.Cells[4, 2, 4, 10].Style.Font.Bold = true;
+                sheet.Cells[4, 2].Style.WrapText = true;
+                sheet.Cells[4, 2, 4, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                sheet.Cells[4, 2, 4, 10].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                sheet.Cells[4, 2, 4, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                sheet.Cells[4, 2, 4, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+                sheet.Cells[4, 2, 4, 10].Style.Font.Color.SetColor(Color.White);
+                sheet.Row(4).Height = 40;
 
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Thời gian hoàn thành 1 sản phẩm ";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.TimeCompletePerCommo);
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Value = "Giây/SP";
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "K.Hàng";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                // sheet.Cells[rowIndex, 7].Value = techProcessInfo.CustomerName;
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "số ngày SX";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                sheet.Cells[5, 2].Value = "Ngày " + DateTime.Now.Day + " Tháng " + DateTime.Now.Month + " Năm " + DateTime.Now.Year;
+                sheet.Cells[5, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                sheet.Cells[5, 2].Style.Font.Bold = true;
+                sheet.Cells[5, 2, 5, 9].Merge = true;
 
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Nhịp độ sản xuất Chuyền";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.PacedProduction);
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Value = "Giây/SP/LĐ";
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Mã Hàng";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = techProcessInfo.ProductName;
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "Ngày vào";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
 
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Năng suất bình quân / Người";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.ProOfPersonPerDay);
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Value = "/Người";
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Chủng Loại";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = "";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "Ngày giao";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[row, 6, rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Năng suất của Chuyền / giờ  ";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.ProOfGroupPerHour);
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Value = "SP";
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Bậc Thợ";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = "Đơn Giá";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Font.Bold = true;
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Font.Color.SetColor(Color.White);
-
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Năng suất Chuyền / ngày  ";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.ProOfGroupPerDay);
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Value = "SP";
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Bậc 2";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = " ";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Tổng Lao Động tham gia Sản Xuất";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = techProcessInfo.NumberOfWorkers;
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Bậc 3";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = " ";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Lao Động trực tiếp";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = techProcessInfo.NumberOfWorkers;
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Bậc 4";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = " ";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Quản Lý Chuyền";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = "";
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Bậc 5";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = " ";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Thợ dự trữ / Chuyền";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = "";
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-
-                sheet.Cells[rowIndex, 6].Value = " ";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = " ";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-
-                sheet.Cells[row, 4, rowIndex, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                sheet.Cells[row, 4, rowIndex, 4].Style.Font.Bold = true;
-                sheet.Cells[row, 5, rowIndex, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-                sheet.Cells[row, 7, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-                rowIndex++;
-                sheet.Cells[rowIndex, 2].Value = "Cụm";
-                sheet.Cells[rowIndex, 2].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 3].Value = "Tên Cụm";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-
-                sheet.Cells[rowIndex, 4].Value = "Phương Án Phân Công QL";
-                sheet.Cells[rowIndex, 4, rowIndex, 5].Merge = true;
-                sheet.Cells[rowIndex, 4, rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-
-                sheet.Cells[rowIndex, 6].Value = "TG Cụm";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = "HSLĐ";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 2, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
-                sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Font.Bold = true;
-                sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Font.Color.SetColor(Color.White);
-
-                foreach (var group in techProcessInfo.ListTechProcessGroup)
+                int rowIndex = 6, row = 0, dem = 1;
+                double tongTG = 0, TongLĐ = 0;
+                #region TTchung
+                if (techProcessInfo != null)
                 {
+                    row = rowIndex;
+
+                    sheet.Cells[rowIndex, 3].Value = "Thời gian làm việc trong ngày  ";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = techProcessInfo.WorkingTimePerDay * 3600;
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Value = "Giây/Ngày";
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Chuyền SX ";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    //sheet.Cells[rowIndex, 7].Value = techProcessInfo.LineName;
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "Sản Lượng";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
                     rowIndex++;
-                    sheet.Cells[rowIndex, 2].Value = dem;
+                    sheet.Cells[rowIndex, 3].Value = "Thời gian hoàn thành 1 sản phẩm ";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.TimeCompletePerCommo);
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Value = "Giây/SP";
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "K.Hàng";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    // sheet.Cells[rowIndex, 7].Value = techProcessInfo.CustomerName;
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "số ngày SX";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Nhịp độ sản xuất Chuyền";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.PacedProduction);
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Value = "Giây/SP/LĐ";
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Mã Hàng";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = techProcessInfo.ProductName;
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "Ngày vào";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Năng suất bình quân / Người";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.ProOfPersonPerDay);
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Value = "/Người";
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Chủng Loại";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = "";
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "Ngày giao";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[row, 6, rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Năng suất của Chuyền / giờ  ";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.ProOfGroupPerHour);
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Value = "SP";
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Bậc Thợ";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = "Đơn Giá";
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Font.Bold = true;
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Font.Color.SetColor(Color.White);
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Năng suất Chuyền / ngày  ";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.ProOfGroupPerDay);
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Value = "SP";
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Bậc 2";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = " ";
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Tổng Lao Động tham gia Sản Xuất";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = techProcessInfo.NumberOfWorkers;
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Bậc 3";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = " ";
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Lao Động trực tiếp";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = techProcessInfo.NumberOfWorkers;
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Bậc 4";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = " ";
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Quản Lý Chuyền";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = "";
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Bậc 5";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = " ";
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Thợ dự trữ / Chuyền";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = "";
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                    sheet.Cells[rowIndex, 6].Value = " ";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = " ";
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                    sheet.Cells[row, 4, rowIndex, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    sheet.Cells[row, 4, rowIndex, 4].Style.Font.Bold = true;
+                    sheet.Cells[row, 5, rowIndex, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    sheet.Cells[row, 7, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 2].Value = "Cụm";
                     sheet.Cells[rowIndex, 2].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    sheet.Cells[rowIndex, 3].Value = group.PhaseGroupName;
+                    sheet.Cells[rowIndex, 3].Value = "Tên Cụm";
                     sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
 
+                    sheet.Cells[rowIndex, 4].Value = "Phương Án Phân Công QL";
                     sheet.Cells[rowIndex, 4, rowIndex, 5].Merge = true;
-                    tongTG += group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent);
-                    sheet.Cells[rowIndex, 6].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent));
+                    sheet.Cells[rowIndex, 4, rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                    sheet.Cells[rowIndex, 6].Value = "TG Cụm";
                     sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    TongLĐ += group.ListTechProcessVerDetail.Sum(x => x.Worker);
-                    sheet.Cells[rowIndex, 7].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.Worker));
+                    sheet.Cells[rowIndex, 7].Value = "HSLĐ";
                     sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    dem++;
+                    sheet.Cells[rowIndex, 2, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+                    sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Font.Bold = true;
+                    sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Font.Color.SetColor(Color.White);
+
+                    foreach (var group in techProcessInfo.ListTechProcessGroup)
+                    {
+                        rowIndex++;
+                        sheet.Cells[rowIndex, 2].Value = dem;
+                        sheet.Cells[rowIndex, 2].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        sheet.Cells[rowIndex, 3].Value = group.PhaseGroupName;
+                        sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                        sheet.Cells[rowIndex, 4, rowIndex, 5].Merge = true;
+                        tongTG += group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent);
+                        sheet.Cells[rowIndex, 6].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent));
+                        sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        TongLĐ += group.ListTechProcessVerDetail.Sum(x => x.Worker);
+                        sheet.Cells[rowIndex, 7].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.Worker));
+                        sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        dem++;
+                    }
+                    rowIndex++;
+
+                    sheet.Cells[rowIndex, 2].Value = "Tổng";
+                    sheet.Cells[rowIndex, 2, rowIndex, 3].Merge = true;
+                    sheet.Cells[rowIndex, 2, rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 2, rowIndex, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                    sheet.Cells[rowIndex, 6].Value = Math.Round(tongTG);
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = Math.Round(TongLĐ);
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 2, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Font.Bold = true;
+
+                    sheet.Cells[2, 2, rowIndex, 10].Style.Font.Size = 9;
+                    sheet.Cells[row, 2, rowIndex, 10].Style.Border.BorderAround(ExcelBorderStyle.Medium);
+
+                    rowIndex += 2;
                 }
+                #endregion
+
+                #region Thong tin QTCN
+                if (techProcessInfo != null && techProcessInfo.ListTechProcessGroup != null && techProcessInfo.ListTechProcessGroup.Count > 0)
+                {
+                    row = rowIndex;
+                    sheet.Cells[rowIndex, 2].Value = "STT";
+                    sheet.Cells[rowIndex, 3].Value = "Tên Công Đoạn";
+                    sheet.Cells[rowIndex, 4].Value = "Thiết Bị";
+                    sheet.Cells[rowIndex, 5].Value = "Bậc Thợ";
+                    sheet.Cells[rowIndex, 6].Value = "TG Chuẩn";
+                    sheet.Cells[rowIndex, 7].Value = "Tỉ Lệ %";
+                    sheet.Cells[rowIndex, 8].Value = "TG theo %";
+                    sheet.Cells[rowIndex, 9].Value = "Lao Động";
+                    sheet.Cells[rowIndex, 10].Value = "Ghi Chú";
+                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
+                    sheet.Row(rowIndex).Height = 25;
+                    AddCellBorder(sheet, rowIndex, 2, 10);
+                    techProcessInfo.CompanyName = UserContext.CompanyName;
+                    int stt = 1, stt_group = 1;
+                    rowIndex++;
+                    foreach (var group in techProcessInfo.ListTechProcessGroup)
+                    {
+                        sheet.Cells[rowIndex, 2].Value = stt_group;
+                        sheet.Cells[rowIndex, 3].Value = group.PhaseGroupName.ToUpper();
+                        sheet.Cells[rowIndex, 6].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.StandardTMU), 2);
+                        sheet.Cells[rowIndex, 8].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent), 2);
+                        sheet.Cells[rowIndex, 9].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.Worker), 2);
+                        sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+                        sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Color.SetColor(Color.White);
+                        sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
+                        AddCellBorder(sheet, rowIndex, 2, 10);
+                        rowIndex++;
+                        if (group.ListTechProcessVerDetail != null && group.ListTechProcessVerDetail.Count > 0)
+                        {
+                            foreach (var detail in group.ListTechProcessVerDetail)
+                            {
+                                sheet.Cells[rowIndex, 2].Value = stt;
+                                sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                sheet.Cells[rowIndex, 3].Value = detail.PhaseName;
+                                sheet.Cells[rowIndex, 4].Value = detail.EquipmentName;
+                                sheet.Cells[rowIndex, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                sheet.Cells[rowIndex, 5].Value = detail.WorkerLevelName;
+                                sheet.Cells[rowIndex, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                sheet.Cells[rowIndex, 6].Value = Math.Round(detail.StandardTMU, 2);
+                                sheet.Cells[rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                sheet.Cells[rowIndex, 7].Value = detail.Percent;
+                                sheet.Cells[rowIndex, 7].Style.Font.Bold = true;
+                                sheet.Cells[rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                sheet.Cells[rowIndex, 8].Value = Math.Round(detail.TimeByPercent, 2);
+                                sheet.Cells[rowIndex, 8].Style.Font.Color.SetColor(Color.Blue);
+                                sheet.Cells[rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                sheet.Cells[rowIndex, 9].Value = Math.Round(detail.Worker, 2);
+                                sheet.Cells[rowIndex, 9].Style.Font.Bold = true;
+                                sheet.Cells[rowIndex, 9].Style.Font.Color.SetColor(Color.Red);
+                                sheet.Cells[rowIndex, 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                sheet.Cells[rowIndex, 10].Value = detail.Description;
+                                AddCellBorder(sheet, rowIndex, 2, 10);
+                                stt++;
+                                rowIndex++;
+                            }
+                        }
+                        stt_group++;
+                    }
+                }
+                sheet.Cells[7, 3, rowIndex, 3].Style.WrapText = true;
+                sheet.Cells[row, 2, rowIndex - 1, 10].Style.Border.BorderAround(ExcelBorderStyle.Medium);
+
+                #endregion
+
+                #region Thông Tin Thiết Bi
+                row = rowIndex;
                 rowIndex++;
+                sheet.Cells[rowIndex, 2].Value = "TỔNG HỢP THIẾT BỊ SỬ DỤNG THEO QUY TRÌNH";
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Merge = true;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
 
-                sheet.Cells[rowIndex, 2].Value = "Tổng";
-                sheet.Cells[rowIndex, 2, rowIndex, 3].Merge = true;
-                sheet.Cells[rowIndex, 2, rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 2, rowIndex, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                rowIndex++;
+                sheet.Cells[rowIndex, 2].Value = "STT";
+                sheet.Cells[rowIndex, 3].Value = "Tên Thiết Bị";
+                sheet.Cells[rowIndex, 4].Value = "Mã Thiết Bị";
+                sheet.Cells[rowIndex, 5].Value = "QT";
+                sheet.Cells[rowIndex, 6].Value = "Làm Tròn";
+                sheet.Cells[rowIndex, 7].Value = "Thực Tế";
 
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                AddCellBorder(sheet, rowIndex, 2, 10);
 
-                sheet.Cells[rowIndex, 6].Value = Math.Round(tongTG);
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = Math.Round(TongLĐ);
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
                 sheet.Cells[rowIndex, 2, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Font.Bold = true;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Color.SetColor(Color.White);
 
-                sheet.Cells[2, 2, rowIndex, 10].Style.Font.Size = 9;
-                sheet.Cells[row, 2, rowIndex, 10].Style.Border.BorderAround(ExcelBorderStyle.Medium);
+                rowIndex++;
+                if (techProcessInfo.equipments != null && techProcessInfo.equipments.Count > 0)
+                {
+                    TongLĐ = 0;
+                    for (int i = 0; i < techProcessInfo.equipments.Count; i++)
+                    {
+                        var equipment = techProcessInfo.equipments[i];
+                        double tong = 0;
+                        foreach (var item in techProcessInfo.ListTechProcessGroup)
+                        {
+                            tong += item.ListTechProcessVerDetail.Where(x => x.EquipmentId == equipment.Id).Select(x => x.Worker).Sum();
+                        }
+                        sheet.Cells[rowIndex, 2].Value = i + 1;
+                        sheet.Cells[rowIndex, 3].Value = equipment.Name;
+                        sheet.Cells[rowIndex, 4].Value = equipment.Code;
+                        sheet.Cells[rowIndex, 5].Value = Math.Round(tong, 2);
+                        sheet.Cells[rowIndex, 6].Value = Math.Round(tong);
+
+                        AddCellBorder(sheet, rowIndex, 2, 10);
+                        rowIndex++;
+                        TongLĐ += tong;
+                    }
+                    sheet.Cells[rowIndex, 2].Value = "Tổng";
+                    sheet.Cells[rowIndex, 2, rowIndex, 4].Merge = true;
+                    sheet.Cells[rowIndex, 5].Value = Math.Round(TongLĐ, 2);
+                    sheet.Cells[rowIndex, 6].Value = Math.Round(TongLĐ);
+                    AddCellBorder(sheet, rowIndex, 2, 10);
+                }
+
+                sheet.Cells[row, 2, rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                sheet.Cells[row, 4, rowIndex, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                sheet.Cells[row + 2, 2, rowIndex, 10].Style.Border.BorderAround(ExcelBorderStyle.Medium);
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
+                #endregion
 
                 rowIndex += 2;
+                sheet.Cells[rowIndex, 2].Value = "               GĐ ĐH 	                  GIÁM ĐỐC 	                     TP/KỸ THUẬT 	                   TRƯỞNG NHÓM QT 	                              NGƯỜI LẬP QT".ToUpper();
+                sheet.Cells[rowIndex, 2].Style.Font.Bold = true;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Merge = true;
+
+                rowIndex += 7;
+                sheet.Cells[rowIndex, 2].Value = "             PT.KỸ THUẬT XN 	                     KT.TRIỂN KHAI".ToUpper();
+                sheet.Cells[rowIndex, 2].Style.Font.Bold = true;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Merge = true;
+
+                sheet.Cells.AutoFitColumns(5);
+                sheet.Column(3).Width = 50;
+                sheet.Column(14).Style.WrapText = true;
+                Response.ClearContent();
+                Response.BinaryWrite(excelPackage.GetAsByteArray());
+                DateTime dateNow = DateTime.Now;
+                string fileName = "QTC_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+                Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
+                Response.ContentType = "application/excel";
+                Response.Flush();
+                Response.End();
             }
-            #endregion
-
-            #region Thong tin QTCN
-            if (techProcessInfo != null && techProcessInfo.ListTechProcessGroup != null && techProcessInfo.ListTechProcessGroup.Count > 0)
-            {
-                row = rowIndex;
-                sheet.Cells[rowIndex, 2].Value = "STT";
-                sheet.Cells[rowIndex, 3].Value = "Tên Công Đoạn";
-                sheet.Cells[rowIndex, 4].Value = "Thiết Bị";
-                sheet.Cells[rowIndex, 5].Value = "Bậc Thợ";
-                sheet.Cells[rowIndex, 6].Value = "TG Chuẩn";
-                sheet.Cells[rowIndex, 7].Value = "Tỉ Lệ %";
-                sheet.Cells[rowIndex, 8].Value = "TG theo %";
-                sheet.Cells[rowIndex, 9].Value = "Lao Động";
-                sheet.Cells[rowIndex, 10].Value = "Ghi Chú";
-                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
-                sheet.Row(rowIndex).Height = 25;
-                AddCellBorder(sheet, rowIndex, 2, 10);
-                techProcessInfo.CompanyName = UserContext.CompanyName;
-                int stt = 1, stt_group = 1;
-                rowIndex++;
-                foreach (var group in techProcessInfo.ListTechProcessGroup)
-                {
-                    sheet.Cells[rowIndex, 2].Value = stt_group;
-                    sheet.Cells[rowIndex, 3].Value = group.PhaseGroupName.ToUpper();
-                    sheet.Cells[rowIndex, 6].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.StandardTMU), 2);
-                    sheet.Cells[rowIndex, 8].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent), 2);
-                    sheet.Cells[rowIndex, 9].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.Worker), 2);
-                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
-                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Color.SetColor(Color.White);
-                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
-                    AddCellBorder(sheet, rowIndex, 2, 10);
-                    rowIndex++;
-                    if (group.ListTechProcessVerDetail != null && group.ListTechProcessVerDetail.Count > 0)
-                    {
-                        foreach (var detail in group.ListTechProcessVerDetail)
-                        {
-                            sheet.Cells[rowIndex, 2].Value = stt;
-                            sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells[rowIndex, 3].Value = detail.PhaseName;
-                            sheet.Cells[rowIndex, 4].Value = detail.EquipmentName;
-                            sheet.Cells[rowIndex, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells[rowIndex, 5].Value = detail.WorkerLevelName;
-                            sheet.Cells[rowIndex, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells[rowIndex, 6].Value = Math.Round(detail.StandardTMU, 2);
-                            sheet.Cells[rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells[rowIndex, 7].Value = detail.Percent;
-                            sheet.Cells[rowIndex, 7].Style.Font.Bold = true;
-                            sheet.Cells[rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells[rowIndex, 8].Value = Math.Round(detail.TimeByPercent, 2);
-                            sheet.Cells[rowIndex, 8].Style.Font.Color.SetColor(Color.Blue);
-                            sheet.Cells[rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells[rowIndex, 9].Value = Math.Round(detail.Worker, 2);
-                            sheet.Cells[rowIndex, 9].Style.Font.Bold = true;
-                            sheet.Cells[rowIndex, 9].Style.Font.Color.SetColor(Color.Red);
-                            sheet.Cells[rowIndex, 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells[rowIndex, 10].Value = detail.Description;
-                            AddCellBorder(sheet, rowIndex, 2, 10);
-                            stt++;
-                            rowIndex++;
-                        }
-                    }
-                    stt_group++;
-                }
-            }
-            sheet.Cells[7, 3, rowIndex, 3].Style.WrapText = true;
-            sheet.Cells[row, 2, rowIndex - 1, 10].Style.Border.BorderAround(ExcelBorderStyle.Medium);
-
-            #endregion
-
-            #region Thông Tin Thiết Bi
-            row = rowIndex;
-            rowIndex++;
-            sheet.Cells[rowIndex, 2].Value = "TỔNG HỢP THIẾT BỊ SỬ DỤNG THEO QUY TRÌNH";
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Merge = true;
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
-
-            rowIndex++;
-            sheet.Cells[rowIndex, 2].Value = "STT";
-            sheet.Cells[rowIndex, 3].Value = "Tên Thiết Bị";
-            sheet.Cells[rowIndex, 4].Value = "Mã Thiết Bị";
-            sheet.Cells[rowIndex, 5].Value = "QT";
-            sheet.Cells[rowIndex, 6].Value = "Làm Tròn";
-            sheet.Cells[rowIndex, 7].Value = "Thực Tế";
-
-            AddCellBorder(sheet, rowIndex, 2, 10);
-
-            sheet.Cells[rowIndex, 2, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Color.SetColor(Color.White);
-
-            rowIndex++;
-            if (techProcessInfo.equipments != null && techProcessInfo.equipments.Count > 0)
-            {
-                TongLĐ = 0;
-                for (int i = 0; i < techProcessInfo.equipments.Count; i++)
-                {
-                    var equipment = techProcessInfo.equipments[i];
-                    double tong = 0;
-                    foreach (var item in techProcessInfo.ListTechProcessGroup)
-                    {
-                        tong += item.ListTechProcessVerDetail.Where(x => x.EquipmentId == equipment.Id).Select(x => x.Worker).Sum();
-                    }
-                    sheet.Cells[rowIndex, 2].Value = i + 1;
-                    sheet.Cells[rowIndex, 3].Value = equipment.Name;
-                    sheet.Cells[rowIndex, 4].Value = equipment.Code;
-                    sheet.Cells[rowIndex, 5].Value = Math.Round(tong, 2);
-                    sheet.Cells[rowIndex, 6].Value = Math.Round(tong);
-
-                    AddCellBorder(sheet, rowIndex, 2, 10);
-                    rowIndex++;
-                    TongLĐ += tong;
-                }
-                sheet.Cells[rowIndex, 2].Value = "Tổng";
-                sheet.Cells[rowIndex, 2, rowIndex, 4].Merge = true;
-                sheet.Cells[rowIndex, 5].Value = Math.Round(TongLĐ, 2);
-                sheet.Cells[rowIndex, 6].Value = Math.Round(TongLĐ);
-                AddCellBorder(sheet, rowIndex, 2, 10);
-            }
-
-            sheet.Cells[row, 2, rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            sheet.Cells[row, 4, rowIndex, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            sheet.Cells[row + 2, 2, rowIndex, 10].Style.Border.BorderAround(ExcelBorderStyle.Medium);
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
-            #endregion
-
-            rowIndex += 2;
-            sheet.Cells[rowIndex, 2].Value = "               GĐ ĐH 	                  GIÁM ĐỐC 	                     TP/KỸ THUẬT 	                   TRƯỞNG NHÓM QT 	                              NGƯỜI LẬP QT".ToUpper();
-            sheet.Cells[rowIndex, 2].Style.Font.Bold = true;
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Merge = true;
-
-            rowIndex += 7;
-            sheet.Cells[rowIndex, 2].Value = "             PT.KỸ THUẬT XN 	                     KT.TRIỂN KHAI".ToUpper();
-            sheet.Cells[rowIndex, 2].Style.Font.Bold = true;
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Merge = true;
-
-            sheet.Cells.AutoFitColumns(5);
-            sheet.Column(3).Width = 50;
-            sheet.Column(14).Style.WrapText = true;
-            Response.ClearContent();
-            Response.BinaryWrite(excelPackage.GetAsByteArray());
-            DateTime dateNow = DateTime.Now;
-            string fileName = "QTC_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
-            Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
-            Response.ContentType = "application/excel";
-            Response.Flush();
-            Response.End();
         }
 
         private static void AddCellBorder(ExcelWorksheet sheet, int rowIndex, int from, int to)
@@ -973,412 +1019,415 @@ namespace GPRO_IED_A.Controllers
         /// <param name="techProcessVersionId"></param>
         public void ExportToExcel_2(int parentId)
         {
-            var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId);
-            var excelPackage = new ExcelPackage();
-            excelPackage.Workbook.Properties.Author = "IED";
-            excelPackage.Workbook.Properties.Title = "Quy trình công nghệ";
-            var sheet = excelPackage.Workbook.Worksheets.Add("Quy trình công nghệ");
-            sheet.Name = "Quy trình công nghệ";
-            sheet.Cells.Style.Font.Size = 12;
-            sheet.Cells.Style.Font.Name = "Times New Roman";
-
-            sheet.Cells[1, 2].Value = "QUY TRÌNH CÔNG NGHỆ SẢN XUẤT " + techProcessInfo.ProductName.ToUpper();
-            sheet.Cells[1, 2].Style.Font.Size = 14;
-            sheet.Cells[1, 2, 1, 10].Merge = true;
-            sheet.Cells[1, 2, 1, 10].Style.Font.Bold = true;
-            sheet.Cells[1, 2].Style.WrapText = true;
-            sheet.Cells[1, 2, 1, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            sheet.Cells[1, 2, 1, 10].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-            sheet.Cells[1, 2, 1, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
-            sheet.Cells[1, 2, 1, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
-            sheet.Cells[1, 2, 1, 10].Style.Font.Color.SetColor(Color.White);
-            sheet.Row(1).Height = 50;
-
-            sheet.Cells[2, 2].Value = "Ngày " + DateTime.Now.Day + " Tháng " + DateTime.Now.Month + " Năm " + DateTime.Now.Year;
-            sheet.Cells[2, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-            sheet.Cells[2, 2].Style.Font.Bold = true;
-            sheet.Cells[2, 2, 2, 9].Merge = true;
-
-
-            int rowIndex = 3, row = 0, dem = 1;
-            double tongTG = 0, TongLĐ = 0;
-
-
-            #region Thong tin QTCN
-            if (techProcessInfo != null && techProcessInfo.ListTechProcessGroup != null && techProcessInfo.ListTechProcessGroup.Count > 0)
+            if (isAuthenticate)
             {
-                row = rowIndex;
-                sheet.Cells[rowIndex, 2].Value = "STT";
-                sheet.Cells[rowIndex, 3].Value = "Tên Công Đoạn";
-                sheet.Cells[rowIndex, 4].Value = "Thiết Bị";
-                sheet.Cells[rowIndex, 5].Value = "Bậc Thợ";
-                sheet.Cells[rowIndex, 6].Value = "TG Chuẩn";
-                sheet.Cells[rowIndex, 7].Value = "Tỉ Lệ %";
-                sheet.Cells[rowIndex, 8].Value = "TG theo %";
-                sheet.Cells[rowIndex, 9].Value = "Lao Động";
-                sheet.Cells[rowIndex, 10].Value = "Ghi Chú";
-                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
-                sheet.Row(rowIndex).Height = 25;
-                AddCellBorder(sheet, rowIndex, 2, 10);
-                techProcessInfo.CompanyName = UserContext.CompanyName;
-                int stt = 1;
-                int stt_group = 1;
-                rowIndex++;
-                foreach (var group in techProcessInfo.ListTechProcessGroup)
+                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId);
+                var excelPackage = new ExcelPackage();
+                excelPackage.Workbook.Properties.Author = "IED";
+                excelPackage.Workbook.Properties.Title = "Quy trình công nghệ";
+                var sheet = excelPackage.Workbook.Worksheets.Add("Quy trình công nghệ");
+                sheet.Name = "Quy trình công nghệ";
+                sheet.Cells.Style.Font.Size = 12;
+                sheet.Cells.Style.Font.Name = "Times New Roman";
+
+                sheet.Cells[1, 2].Value = "QUY TRÌNH CÔNG NGHỆ SẢN XUẤT " + techProcessInfo.ProductName.ToUpper();
+                sheet.Cells[1, 2].Style.Font.Size = 14;
+                sheet.Cells[1, 2, 1, 10].Merge = true;
+                sheet.Cells[1, 2, 1, 10].Style.Font.Bold = true;
+                sheet.Cells[1, 2].Style.WrapText = true;
+                sheet.Cells[1, 2, 1, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                sheet.Cells[1, 2, 1, 10].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                sheet.Cells[1, 2, 1, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                sheet.Cells[1, 2, 1, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+                sheet.Cells[1, 2, 1, 10].Style.Font.Color.SetColor(Color.White);
+                sheet.Row(1).Height = 50;
+
+                sheet.Cells[2, 2].Value = "Ngày " + DateTime.Now.Day + " Tháng " + DateTime.Now.Month + " Năm " + DateTime.Now.Year;
+                sheet.Cells[2, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                sheet.Cells[2, 2].Style.Font.Bold = true;
+                sheet.Cells[2, 2, 2, 9].Merge = true;
+
+
+                int rowIndex = 3, row = 0, dem = 1;
+                double tongTG = 0, TongLĐ = 0;
+
+
+                #region Thong tin QTCN
+                if (techProcessInfo != null && techProcessInfo.ListTechProcessGroup != null && techProcessInfo.ListTechProcessGroup.Count > 0)
                 {
-                    sheet.Cells[rowIndex, 2].Value = stt_group;
-                    sheet.Cells[rowIndex, 3].Value = group.PhaseGroupName.ToUpper();
-                    sheet.Cells[rowIndex, 6].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.StandardTMU), 2);
-                    sheet.Cells[rowIndex, 8].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent), 2);
-                    sheet.Cells[rowIndex, 9].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.Worker), 2);
-                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
-                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Color.SetColor(Color.White);
+                    row = rowIndex;
+                    sheet.Cells[rowIndex, 2].Value = "STT";
+                    sheet.Cells[rowIndex, 3].Value = "Tên Công Đoạn";
+                    sheet.Cells[rowIndex, 4].Value = "Thiết Bị";
+                    sheet.Cells[rowIndex, 5].Value = "Bậc Thợ";
+                    sheet.Cells[rowIndex, 6].Value = "TG Chuẩn";
+                    sheet.Cells[rowIndex, 7].Value = "Tỉ Lệ %";
+                    sheet.Cells[rowIndex, 8].Value = "TG theo %";
+                    sheet.Cells[rowIndex, 9].Value = "Lao Động";
+                    sheet.Cells[rowIndex, 10].Value = "Ghi Chú";
+                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                     sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
-
+                    sheet.Row(rowIndex).Height = 25;
                     AddCellBorder(sheet, rowIndex, 2, 10);
+                    techProcessInfo.CompanyName = UserContext.CompanyName;
+                    int stt = 1;
+                    int stt_group = 1;
                     rowIndex++;
-                    if (group.ListTechProcessVerDetail != null && group.ListTechProcessVerDetail.Count > 0)
+                    foreach (var group in techProcessInfo.ListTechProcessGroup)
                     {
-                        foreach (var detail in group.ListTechProcessVerDetail)
+                        sheet.Cells[rowIndex, 2].Value = stt_group;
+                        sheet.Cells[rowIndex, 3].Value = group.PhaseGroupName.ToUpper();
+                        sheet.Cells[rowIndex, 6].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.StandardTMU), 2);
+                        sheet.Cells[rowIndex, 8].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent), 2);
+                        sheet.Cells[rowIndex, 9].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.Worker), 2);
+                        sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+                        sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Color.SetColor(Color.White);
+                        sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
+
+                        AddCellBorder(sheet, rowIndex, 2, 10);
+                        rowIndex++;
+                        if (group.ListTechProcessVerDetail != null && group.ListTechProcessVerDetail.Count > 0)
                         {
-                            sheet.Cells[rowIndex, 2].Value = stt;
-                            sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells[rowIndex, 3].Value = detail.PhaseName;
-                            sheet.Cells[rowIndex, 4].Value = detail.EquipmentName;
-                            sheet.Cells[rowIndex, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells[rowIndex, 5].Value = detail.WorkerLevelName;
-                            sheet.Cells[rowIndex, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells[rowIndex, 6].Value = Math.Round(detail.StandardTMU, 2);
-                            sheet.Cells[rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells[rowIndex, 7].Value = detail.Percent;
-                            sheet.Cells[rowIndex, 7].Style.Font.Bold = true;
-                            sheet.Cells[rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells[rowIndex, 8].Value = Math.Round(detail.TimeByPercent, 2);
-                            sheet.Cells[rowIndex, 8].Style.Font.Color.SetColor(Color.Blue);
-                            sheet.Cells[rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells[rowIndex, 9].Value = Math.Round(detail.Worker, 2);
-                            sheet.Cells[rowIndex, 9].Style.Font.Bold = true;
-                            sheet.Cells[rowIndex, 9].Style.Font.Color.SetColor(Color.Red);
-                            sheet.Cells[rowIndex, 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells[rowIndex, 10].Value = detail.Description;
-                            AddCellBorder(sheet, rowIndex, 2, 10);
-                            stt++;
-                            rowIndex++;
+                            foreach (var detail in group.ListTechProcessVerDetail)
+                            {
+                                sheet.Cells[rowIndex, 2].Value = stt;
+                                sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                sheet.Cells[rowIndex, 3].Value = detail.PhaseName;
+                                sheet.Cells[rowIndex, 4].Value = detail.EquipmentName;
+                                sheet.Cells[rowIndex, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                sheet.Cells[rowIndex, 5].Value = detail.WorkerLevelName;
+                                sheet.Cells[rowIndex, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                sheet.Cells[rowIndex, 6].Value = Math.Round(detail.StandardTMU, 2);
+                                sheet.Cells[rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                sheet.Cells[rowIndex, 7].Value = detail.Percent;
+                                sheet.Cells[rowIndex, 7].Style.Font.Bold = true;
+                                sheet.Cells[rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                sheet.Cells[rowIndex, 8].Value = Math.Round(detail.TimeByPercent, 2);
+                                sheet.Cells[rowIndex, 8].Style.Font.Color.SetColor(Color.Blue);
+                                sheet.Cells[rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                sheet.Cells[rowIndex, 9].Value = Math.Round(detail.Worker, 2);
+                                sheet.Cells[rowIndex, 9].Style.Font.Bold = true;
+                                sheet.Cells[rowIndex, 9].Style.Font.Color.SetColor(Color.Red);
+                                sheet.Cells[rowIndex, 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                sheet.Cells[rowIndex, 10].Value = detail.Description;
+                                AddCellBorder(sheet, rowIndex, 2, 10);
+                                stt++;
+                                rowIndex++;
+                            }
                         }
+                        stt_group++;
                     }
-                    stt_group++;
                 }
-            }
-            sheet.Cells[7, 3, rowIndex, 3].Style.WrapText = true;
-            sheet.Cells[row, 2, rowIndex - 1, 10].Style.Border.BorderAround(ExcelBorderStyle.Medium);
+                sheet.Cells[7, 3, rowIndex, 3].Style.WrapText = true;
+                sheet.Cells[row, 2, rowIndex - 1, 10].Style.Border.BorderAround(ExcelBorderStyle.Medium);
 
-            #endregion
+                #endregion
 
-            #region Thông Tin Thiết Bi
-            row = rowIndex;
-            rowIndex++;
-            sheet.Cells[rowIndex, 2].Value = "TỔNG HỢP THIẾT BỊ SỬ DỤNG THEO QUY TRÌNH";
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Merge = true;
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
-
-            rowIndex++;
-            sheet.Cells[rowIndex, 2].Value = "STT";
-            sheet.Cells[rowIndex, 3].Value = "Tên Thiết Bị";
-            sheet.Cells[rowIndex, 4].Value = "Mã Thiết Bị";
-            sheet.Cells[rowIndex, 5].Value = "QT";
-            sheet.Cells[rowIndex, 6].Value = "Làm Tròn";
-            sheet.Cells[rowIndex, 7].Value = "Thực Tế";
-
-            AddCellBorder(sheet, rowIndex, 2, 10);
-
-            sheet.Cells[rowIndex, 2, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Color.SetColor(Color.White);
-
-            rowIndex++;
-            if (techProcessInfo.equipments != null && techProcessInfo.equipments.Count > 0)
-            {
-                TongLĐ = 0;
-                for (int i = 0; i < techProcessInfo.equipments.Count; i++)
-                {
-                    var equipment = techProcessInfo.equipments[i];
-                    double tong = 0;
-                    foreach (var item in techProcessInfo.ListTechProcessGroup)
-                    {
-                        tong += item.ListTechProcessVerDetail.Where(x => x.EquipmentId == equipment.Id).Select(x => x.Worker).Sum();
-                    }
-                    sheet.Cells[rowIndex, 2].Value = i + 1;
-                    sheet.Cells[rowIndex, 3].Value = equipment.Name;
-                    sheet.Cells[rowIndex, 4].Value = equipment.Code;
-                    sheet.Cells[rowIndex, 5].Value = Math.Round(tong, 2);
-                    sheet.Cells[rowIndex, 6].Value = Math.Round(tong);
-
-                    AddCellBorder(sheet, rowIndex, 2, 10);
-                    rowIndex++;
-                    TongLĐ += tong;
-                }
-                sheet.Cells[rowIndex, 2].Value = "Tổng";
-                sheet.Cells[rowIndex, 2, rowIndex, 4].Merge = true;
-                sheet.Cells[rowIndex, 5].Value = Math.Round(TongLĐ, 2);
-                sheet.Cells[rowIndex, 6].Value = Math.Round(TongLĐ);
-                AddCellBorder(sheet, rowIndex, 2, 10);
-            }
-
-            sheet.Cells[row, 2, rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            sheet.Cells[row, 4, rowIndex, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            sheet.Cells[row + 2, 2, rowIndex, 10].Style.Border.BorderAround(ExcelBorderStyle.Medium);
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
-            rowIndex += 2;
-            #endregion
-
-            #region TTchung
-            if (techProcessInfo != null)
-            {
+                #region Thông Tin Thiết Bi
                 row = rowIndex;
-                sheet.Cells[rowIndex, 3].Value = "Thời gian làm việc trong ngày  ";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = techProcessInfo.WorkingTimePerDay * 3600;
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Value = "Giây/Ngày";
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Chuyền SX ";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                // sheet.Cells[rowIndex, 7].Value = techProcessInfo.LineName;
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "Sản Lượng";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                rowIndex++;
+                sheet.Cells[rowIndex, 2].Value = "TỔNG HỢP THIẾT BỊ SỬ DỤNG THEO QUY TRÌNH";
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Merge = true;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
 
                 rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Thời gian hoàn thành 1 sản phẩm ";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.TimeCompletePerCommo);
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Value = "Giây/SP";
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "K.Hàng";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                //    sheet.Cells[rowIndex, 7].Value = techProcessInfo.CustomerName;
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "số ngày SX";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                sheet.Cells[rowIndex, 2].Value = "STT";
+                sheet.Cells[rowIndex, 3].Value = "Tên Thiết Bị";
+                sheet.Cells[rowIndex, 4].Value = "Mã Thiết Bị";
+                sheet.Cells[rowIndex, 5].Value = "QT";
+                sheet.Cells[rowIndex, 6].Value = "Làm Tròn";
+                sheet.Cells[rowIndex, 7].Value = "Thực Tế";
 
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Nhịp độ sản xuất Chuyền";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.PacedProduction);
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Value = "Giây/SP/LĐ";
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Mã Hàng";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = techProcessInfo.ProductName;
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "Ngày vào";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                AddCellBorder(sheet, rowIndex, 2, 10);
 
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Năng suất bình quân / Người";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.ProOfPersonPerDay);
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Value = "/Người";
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Chủng Loại";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = "";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "Ngày giao";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[row, 6, rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Năng suất của Chuyền / giờ  ";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.ProOfGroupPerHour);
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Value = "SP";
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Bậc Thợ";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = "Đơn Giá";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Font.Bold = true;
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Font.Color.SetColor(Color.White);
-
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Năng suất Chuyền / ngày  ";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.ProOfGroupPerDay);
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Value = "SP";
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Bậc 2";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = " ";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Tổng Lao Động tham gia Sản Xuất";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = techProcessInfo.NumberOfWorkers;
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Bậc 3";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = " ";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Lao Động trực tiếp";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = techProcessInfo.NumberOfWorkers;
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Bậc 4";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = " ";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Quản Lý Chuyền";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = techProcessInfo.NumberOfWorkers;
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6].Value = "Bậc 5";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = " ";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-                rowIndex++;
-                sheet.Cells[rowIndex, 3].Value = "Thợ dự trữ / Chuyền";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 4].Value = techProcessInfo.NumberOfWorkers;
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-
-                sheet.Cells[rowIndex, 6].Value = " ";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = " ";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 8].Value = "";
-                sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-
-                sheet.Cells[row, 4, rowIndex, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                sheet.Cells[row, 4, rowIndex, 4].Style.Font.Bold = true;
-                sheet.Cells[row, 5, rowIndex, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-                sheet.Cells[row, 7, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-                rowIndex++;
-                sheet.Cells[rowIndex, 2].Value = "Cụm";
-                sheet.Cells[rowIndex, 2].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 3].Value = "Tên Cụm";
-                sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-
-                sheet.Cells[rowIndex, 4].Value = "Phương Án Phân Công QL";
-                sheet.Cells[rowIndex, 4, rowIndex, 5].Merge = true;
-                sheet.Cells[rowIndex, 4, rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-
-                sheet.Cells[rowIndex, 6].Value = "TG Cụm";
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = "HSLĐ";
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
                 sheet.Cells[rowIndex, 2, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
-                sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Font.Bold = true;
-                sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Font.Color.SetColor(Color.White);
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Color.SetColor(Color.White);
 
-                foreach (var group in techProcessInfo.ListTechProcessGroup)
+                rowIndex++;
+                if (techProcessInfo.equipments != null && techProcessInfo.equipments.Count > 0)
                 {
+                    TongLĐ = 0;
+                    for (int i = 0; i < techProcessInfo.equipments.Count; i++)
+                    {
+                        var equipment = techProcessInfo.equipments[i];
+                        double tong = 0;
+                        foreach (var item in techProcessInfo.ListTechProcessGroup)
+                        {
+                            tong += item.ListTechProcessVerDetail.Where(x => x.EquipmentId == equipment.Id).Select(x => x.Worker).Sum();
+                        }
+                        sheet.Cells[rowIndex, 2].Value = i + 1;
+                        sheet.Cells[rowIndex, 3].Value = equipment.Name;
+                        sheet.Cells[rowIndex, 4].Value = equipment.Code;
+                        sheet.Cells[rowIndex, 5].Value = Math.Round(tong, 2);
+                        sheet.Cells[rowIndex, 6].Value = Math.Round(tong);
+
+                        AddCellBorder(sheet, rowIndex, 2, 10);
+                        rowIndex++;
+                        TongLĐ += tong;
+                    }
+                    sheet.Cells[rowIndex, 2].Value = "Tổng";
+                    sheet.Cells[rowIndex, 2, rowIndex, 4].Merge = true;
+                    sheet.Cells[rowIndex, 5].Value = Math.Round(TongLĐ, 2);
+                    sheet.Cells[rowIndex, 6].Value = Math.Round(TongLĐ);
+                    AddCellBorder(sheet, rowIndex, 2, 10);
+                }
+
+                sheet.Cells[row, 2, rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                sheet.Cells[row, 4, rowIndex, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                sheet.Cells[row + 2, 2, rowIndex, 10].Style.Border.BorderAround(ExcelBorderStyle.Medium);
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
+                rowIndex += 2;
+                #endregion
+
+                #region TTchung
+                if (techProcessInfo != null)
+                {
+                    row = rowIndex;
+                    sheet.Cells[rowIndex, 3].Value = "Thời gian làm việc trong ngày  ";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = techProcessInfo.WorkingTimePerDay * 3600;
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Value = "Giây/Ngày";
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Chuyền SX ";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    // sheet.Cells[rowIndex, 7].Value = techProcessInfo.LineName;
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "Sản Lượng";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
                     rowIndex++;
-                    sheet.Cells[rowIndex, 2].Value = dem;
+                    sheet.Cells[rowIndex, 3].Value = "Thời gian hoàn thành 1 sản phẩm ";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.TimeCompletePerCommo);
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Value = "Giây/SP";
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "K.Hàng";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    //    sheet.Cells[rowIndex, 7].Value = techProcessInfo.CustomerName;
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "số ngày SX";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Nhịp độ sản xuất Chuyền";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.PacedProduction);
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Value = "Giây/SP/LĐ";
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Mã Hàng";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = techProcessInfo.ProductName;
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "Ngày vào";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Năng suất bình quân / Người";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.ProOfPersonPerDay);
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Value = "/Người";
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Chủng Loại";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = "";
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "Ngày giao";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[row, 6, rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Năng suất của Chuyền / giờ  ";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.ProOfGroupPerHour);
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Value = "SP";
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Bậc Thợ";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = "Đơn Giá";
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Font.Bold = true;
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.Font.Color.SetColor(Color.White);
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Năng suất Chuyền / ngày  ";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.ProOfGroupPerDay);
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Value = "SP";
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Bậc 2";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = " ";
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Tổng Lao Động tham gia Sản Xuất";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = techProcessInfo.NumberOfWorkers;
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Bậc 3";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = " ";
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Lao Động trực tiếp";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = techProcessInfo.NumberOfWorkers;
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Bậc 4";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = " ";
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Quản Lý Chuyền";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = techProcessInfo.NumberOfWorkers;
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6].Value = "Bậc 5";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = " ";
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 6, rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 3].Value = "Thợ dự trữ / Chuyền";
+                    sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 4].Value = techProcessInfo.NumberOfWorkers;
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                    sheet.Cells[rowIndex, 6].Value = " ";
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = " ";
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 8].Value = "";
+                    sheet.Cells[rowIndex, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                    sheet.Cells[row, 4, rowIndex, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    sheet.Cells[row, 4, rowIndex, 4].Style.Font.Bold = true;
+                    sheet.Cells[row, 5, rowIndex, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    sheet.Cells[row, 7, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 2].Value = "Cụm";
                     sheet.Cells[rowIndex, 2].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    sheet.Cells[rowIndex, 3].Value = group.PhaseGroupName;
+                    sheet.Cells[rowIndex, 3].Value = "Tên Cụm";
                     sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
 
+                    sheet.Cells[rowIndex, 4].Value = "Phương Án Phân Công QL";
                     sheet.Cells[rowIndex, 4, rowIndex, 5].Merge = true;
-                    tongTG += group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent);
-                    sheet.Cells[rowIndex, 6].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent));
+                    sheet.Cells[rowIndex, 4, rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                    sheet.Cells[rowIndex, 6].Value = "TG Cụm";
                     sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    TongLĐ += group.ListTechProcessVerDetail.Sum(x => x.Worker);
-                    sheet.Cells[rowIndex, 7].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.Worker));
+                    sheet.Cells[rowIndex, 7].Value = "HSLĐ";
                     sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                    sheet.Cells[rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    dem++;
+                    sheet.Cells[rowIndex, 2, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+                    sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Font.Bold = true;
+                    sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Font.Color.SetColor(Color.White);
+
+                    foreach (var group in techProcessInfo.ListTechProcessGroup)
+                    {
+                        rowIndex++;
+                        sheet.Cells[rowIndex, 2].Value = dem;
+                        sheet.Cells[rowIndex, 2].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        sheet.Cells[rowIndex, 3].Value = group.PhaseGroupName;
+                        sheet.Cells[rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                        sheet.Cells[rowIndex, 4, rowIndex, 5].Merge = true;
+                        tongTG += group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent);
+                        sheet.Cells[rowIndex, 6].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent));
+                        sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        TongLĐ += group.ListTechProcessVerDetail.Sum(x => x.Worker);
+                        sheet.Cells[rowIndex, 7].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.Worker));
+                        sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        sheet.Cells[rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        dem++;
+                    }
+                    rowIndex++;
+
+                    sheet.Cells[rowIndex, 2].Value = "Tổng";
+                    sheet.Cells[rowIndex, 2, rowIndex, 3].Merge = true;
+                    sheet.Cells[rowIndex, 2, rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 2, rowIndex, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                    sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                    sheet.Cells[rowIndex, 6].Value = Math.Round(tongTG);
+                    sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 7].Value = Math.Round(TongLĐ);
+                    sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    sheet.Cells[rowIndex, 2, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Font.Bold = true;
+
+                    sheet.Cells[2, 2, rowIndex, 10].Style.Font.Size = 9;
+                    sheet.Cells[row, 2, rowIndex, 10].Style.Border.BorderAround(ExcelBorderStyle.Medium);
+
+                    rowIndex++;
                 }
-                rowIndex++;
+                #endregion
 
-                sheet.Cells[rowIndex, 2].Value = "Tổng";
-                sheet.Cells[rowIndex, 2, rowIndex, 3].Merge = true;
-                sheet.Cells[rowIndex, 2, rowIndex, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 2, rowIndex, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                rowIndex += 2;
+                sheet.Cells[rowIndex, 2].Value = "                      GĐ ĐH 	                           GIÁM ĐỐC 	                                TP/KỸ THUẬT 	                           TRƯỞNG NHÓM QT 	                              NGƯỜI LẬP QT".ToUpper();
+                sheet.Cells[rowIndex, 2].Style.Font.Bold = true;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Merge = true;
+                sheet.Cells[rowIndex, 2].Style.Font.Size = 10;
 
-                sheet.Cells[rowIndex, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                rowIndex += 7;
+                sheet.Cells[rowIndex, 2].Value = "                        PT.KỸ THUẬT XN 	                     KT.TRIỂN KHAI".ToUpper();
+                sheet.Cells[rowIndex, 2].Style.Font.Bold = true;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Merge = true;
+                sheet.Cells[rowIndex, 2].Style.Font.Size = 10;
 
-                sheet.Cells[rowIndex, 6].Value = Math.Round(tongTG);
-                sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 7].Value = Math.Round(TongLĐ);
-                sheet.Cells[rowIndex, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                sheet.Cells[rowIndex, 2, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                sheet.Cells[rowIndex, 2, rowIndex, 7].Style.Font.Bold = true;
-
-                sheet.Cells[2, 2, rowIndex, 10].Style.Font.Size = 9;
-                sheet.Cells[row, 2, rowIndex, 10].Style.Border.BorderAround(ExcelBorderStyle.Medium);
-
-                rowIndex++;
+                sheet.Cells.AutoFitColumns(5);
+                sheet.Column(3).Width = 50;
+                sheet.Column(14).Style.WrapText = true;
+                Response.ClearContent();
+                Response.BinaryWrite(excelPackage.GetAsByteArray());
+                DateTime dateNow = DateTime.Now;
+                string fileName = "QTC_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+                Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
+                Response.ContentType = "application/excel";
+                Response.Flush();
+                Response.End();
             }
-            #endregion
-
-            rowIndex += 2;
-            sheet.Cells[rowIndex, 2].Value = "                      GĐ ĐH 	                           GIÁM ĐỐC 	                                TP/KỸ THUẬT 	                           TRƯỞNG NHÓM QT 	                              NGƯỜI LẬP QT".ToUpper();
-            sheet.Cells[rowIndex, 2].Style.Font.Bold = true;
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Merge = true;
-            sheet.Cells[rowIndex, 2].Style.Font.Size = 10;
-
-            rowIndex += 7;
-            sheet.Cells[rowIndex, 2].Value = "                        PT.KỸ THUẬT XN 	                     KT.TRIỂN KHAI".ToUpper();
-            sheet.Cells[rowIndex, 2].Style.Font.Bold = true;
-            sheet.Cells[rowIndex, 2, rowIndex, 10].Merge = true;
-            sheet.Cells[rowIndex, 2].Style.Font.Size = 10;
-
-            sheet.Cells.AutoFitColumns(5);
-            sheet.Column(3).Width = 50;
-            sheet.Column(14).Style.WrapText = true;
-            Response.ClearContent();
-            Response.BinaryWrite(excelPackage.GetAsByteArray());
-            DateTime dateNow = DateTime.Now;
-            string fileName = "QTC_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
-            Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
-            Response.ContentType = "application/excel";
-            Response.Flush();
-            Response.End();
         }
 
 
@@ -1411,16 +1460,24 @@ namespace GPRO_IED_A.Controllers
             try
             {
                 LabourDivisionModel obj = JsonConvert.DeserializeObject<LabourDivisionModel>(model);
-                obj.ActionUser = UserContext.UserID;
-                rs = BLLLabourDivision.Instance.Insert(obj);
-
-                if (!rs.IsSuccess)
+                if (obj.TechProVer_Id == 0)
                 {
                     JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    JsonDataResult.ErrorMessages.Add(new Error() { MemberName = "Lỗi", Message = "Quy trình công nghệ chưa được tạo. Bạn cần phải lưu quy trình công nghệ trước rồi mới có thể lưu thiết kế chuyền được !." });
                 }
                 else
-                    JsonDataResult.Result = "OK";
+                {
+                    obj.ActionUser = UserContext.UserID;
+                    rs = BLLLabourDivision.Instance.Insert(obj);
+                    if (!rs.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
+                }
+
             }
             catch (Exception ex)
             {
@@ -1475,7 +1532,7 @@ namespace GPRO_IED_A.Controllers
             var diagram = BLLLabourDivision.Instance.GetLinePositionById(Id);
             if (diagram != null)
             {
-            #endregion
+                #endregion
 
                 var excelPackage = new ExcelPackage();
                 excelPackage.Workbook.Properties.Author = "IED";

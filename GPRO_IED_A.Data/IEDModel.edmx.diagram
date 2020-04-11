@@ -33,7 +33,6 @@
         <EntityTypeShape EntityType="IEDModel.T_Equipment" Width="1.5" PointX="5.25" PointY="26.625" />
         <EntityTypeShape EntityType="IEDModel.T_EquipmentAttribute" Width="1.5" PointX="13.5" PointY="23.625" />
         <EntityTypeShape EntityType="IEDModel.T_EquipmentGroup" Width="1.5" PointX="3" PointY="28.5" />
-        <EntityTypeShape EntityType="IEDModel.T_EquipmentType" Width="1.5" PointX="3" PointY="22.75" />
         <EntityTypeShape EntityType="IEDModel.T_EquipmentTypeAttribute" Width="1.5" PointX="5.25" PointY="21.75" />
         <EntityTypeShape EntityType="IEDModel.T_EquipType_Default" Width="1.5" PointX="0.75" PointY="22.875" />
         <EntityTypeShape EntityType="IEDModel.T_EquipTypeAttr_Default" Width="1.5" PointX="3" PointY="19.875" />
@@ -86,14 +85,8 @@
         <AssociationConnector Association="IEDModel.FK_T_CA_Phase_TimePrepare_T_TimePrepare" />
         <AssociationConnector Association="IEDModel.FK_T_LabourDivision_T_CommoAna" />
         <AssociationConnector Association="IEDModel.FK_T_Equipment_T_EquipmentGroup" />
-        <AssociationConnector Association="IEDModel.FK_T_Equipment_T_EquipmentType" />
         <AssociationConnector Association="IEDModel.FK_T_EquipmentAttribute_T_Equipment" />
         <AssociationConnector Association="IEDModel.FK_T_ManipulationEquipment_T_Equipment" />
-        <AssociationConnector Association="IEDModel.FK_T_EquipmentAttribute_T_EquipmentType" />
-        <AssociationConnector Association="IEDModel.FK_T_EquipmentType_T_EquipType_Default" />
-        <AssociationConnector Association="IEDModel.FK_T_EquipmentTypeAttribute_T_EquipmentType" />
-        <AssociationConnector Association="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType" />
-        <AssociationConnector Association="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType1" />
         <AssociationConnector Association="IEDModel.FK_T_EquipmentTypeAttribute_T_EquipTypeAttr_Default" />
         <AssociationConnector Association="IEDModel.FK_T_EquipTypeAttr_Default_T_EquipType_Default" />
         <AssociationConnector Association="IEDModel.FK_T_ManipulationFile_T_File" />
@@ -112,6 +105,13 @@
         <AssociationConnector Association="IEDModel.FK_T_TechProcessVersion_T_Product" />
         <AssociationConnector Association="IEDModel.FK_T_TechProcessVersionDetail_T_TechProcessVersion" />
         <AssociationConnector Association="IEDModel.FK_T_TimePrepare_T_TimeTypePrepare" />
+        <EntityTypeShape EntityType="IEDModel.T_EquipmentType" Width="1.5" PointX="3" PointY="14.375" />
+        <AssociationConnector Association="IEDModel.FK_T_Equipment_T_EquipmentType" />
+        <AssociationConnector Association="IEDModel.FK_T_EquipmentAttribute_T_EquipmentType" />
+        <AssociationConnector Association="IEDModel.FK_T_EquipmentType_T_EquipType_Default" />
+        <AssociationConnector Association="IEDModel.FK_T_EquipmentTypeAttribute_T_EquipmentType" />
+        <AssociationConnector Association="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType" />
+        <AssociationConnector Association="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType1" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

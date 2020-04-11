@@ -4,8 +4,6 @@ using GPRO_IED_A.Business.Model;
 using GPRO_IED_A.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace GPRO_IED_A.Controllers
@@ -22,13 +20,13 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                //if (isAuthenticate)
-                //{
-                    var roles = BLLRole.Instance.GetListRole(keyWord, jtStartIndex, jtPageSize, jtSorting, UserContext.UserID, UserContext.CompanyId  , UserContext.IsOwner);
+                if (isAuthenticate)
+                {
+                    var roles = BLLRole.Instance.GetListRole(keyWord, jtStartIndex, jtPageSize, jtSorting, UserContext.UserID, UserContext.CompanyId, UserContext.IsOwner);
                     JsonDataResult.Records = roles;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = roles.TotalItemCount;
-              //  }
+                }
             }
             catch (Exception ex)
             {
@@ -43,17 +41,20 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                ViewData["Modules"] = BLLRole.Instance.GetListModuleByUserId(UserContext.UserID);
-                ViewData["Features"] = BLLRole.Instance.GetListFeatureByUserId(UserContext.UserID);
-                ViewData["Permissions"] = BLLRole.Instance.GetListPermissionByUserId(UserContext.UserID);
-                int ID = id ?? 0; // nullable  default value is 0;
-                if (ID != 0)
+                if (isAuthenticate)
                 {
-                    var roleDetail = BLLRole.Instance.GetRoleDetailByRoleId(ID);
-                    if (roleDetail != null)
+                    ViewData["Modules"] = BLLRole.Instance.GetListModuleByUserId(UserContext.UserID);
+                    ViewData["Features"] = BLLRole.Instance.GetListFeatureByUserId(UserContext.UserID);
+                    ViewData["Permissions"] = BLLRole.Instance.GetListPermissionByUserId(UserContext.UserID);
+                    int ID = id ?? 0; // nullable  default value is 0;
+                    if (ID != 0)
                     {
-                        ViewData["RoleDetail"] = roleDetail;
-                        ViewData["RolePermission"] = BLLRole.Instance.GetListRolePermissionByRoleId(ID);
+                        var roleDetail = BLLRole.Instance.GetRoleDetailByRoleId(ID);
+                        if (roleDetail != null)
+                        {
+                            ViewData["RoleDetail"] = roleDetail;
+                            ViewData["RolePermission"] = BLLRole.Instance.GetListRolePermissionByRoleId(ID);
+                        }
                     }
                 }
             }
@@ -71,13 +72,13 @@ namespace GPRO_IED_A.Controllers
             ResponseBase result;
             try
             {
-                //if (isAuthenticate)
-                //{
+                if (isAuthenticate)
+                {
                     SRoLe role = new SRoLe();
                     role.Id = id;
                     role.RoleName = roleName;
                     role.IsSystem = false;
-                    role.CompanyId = UserContext.CompanyId ;
+                    role.CompanyId = UserContext.CompanyId;
                     role.CreatedUser = UserContext.UserID;
                     role.CreatedDate = DateTime.Now;
                     role.Description = description;
@@ -98,7 +99,7 @@ namespace GPRO_IED_A.Controllers
                         JsonDataResult.Result = "ERROR";
                         JsonDataResult.ErrorMessages.AddRange(result.Errors);
                     }
-              //  }
+                }
             }
             catch (Exception ex)
             {
@@ -109,12 +110,12 @@ namespace GPRO_IED_A.Controllers
 
         [HttpPost]
         public JsonResult Delete(int id)
-        {
+        { 
             ResponseBase responseResult;
             try
             {
-                //if (isAuthenticate)
-                //{
+                if (isAuthenticate)
+                {
                     responseResult = new ResponseBase();
                     responseResult = BLLRole.Instance.DeleteById(id, UserContext.UserID);
                     if (!responseResult.IsSuccess)
@@ -122,8 +123,9 @@ namespace GPRO_IED_A.Controllers
                         JsonDataResult.Result = "ERROR";
                         JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
                     }
+                    else
                     JsonDataResult.Result = "OK";
-               // }
+                }
             }
             catch (Exception ex)
             {

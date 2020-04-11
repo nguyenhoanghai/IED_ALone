@@ -111,7 +111,7 @@ GPRO.PhaseGroup = function () {
 
     function InitList () {
         $('#' + Global.Element.JtablePhaseGroup).jtable({
-            title: 'Danh Sách Nhóm Công Đoạn',
+            title: 'Danh Sách cụm công đoạn',
             paging: true,
             pageSize: 50,
             pageSizeChange : true,
@@ -135,13 +135,13 @@ GPRO.PhaseGroup = function () {
                     edit: false,
                     list: false
                 },
-                Code: {
-                    title: "Mã Nhóm Công Đoạn",
-                    width: "5%",
-                },
+                //Code: {
+                //    title: "Mã cụm công đoạn",
+                //    width: "5%",
+                //},
                 Name: {
                     visibility: 'fixed',
-                    title: "Tên Nhóm Công Đoạn",
+                    title: "Tên cụm công đoạn",
                     width: "15%", 
                 }, 
                 MinLevel: {

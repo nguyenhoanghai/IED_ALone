@@ -28,7 +28,9 @@ namespace GPRO_IED_A.Controllers
         {
             ResponseBase rs;
             try
-            { 
+            {
+                if (isAuthenticate)
+                {
                     model.CompanyId = UserContext.CompanyId;
                     model.ActionUser = UserContext.UserID;
                     rs = BLLEmployee.Instance.CreateOrUpdate(model);
@@ -38,7 +40,8 @@ namespace GPRO_IED_A.Controllers
                         JsonDataResult.ErrorMessages.AddRange(rs.Errors);
                     }
                     else
-                        JsonDataResult.Result = "OK"; 
+                        JsonDataResult.Result = "OK";
+                }
             }
             catch (Exception ex)
             {
@@ -54,10 +57,13 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var objs = BLLEmployee.Instance.Gets(keyword, UserContext.CompanyId, jtStartIndex, jtPageSize, jtSorting);
-                JsonDataResult.Records = objs;
-                JsonDataResult.Result = "OK";
-                JsonDataResult.TotalRecordCount = objs.TotalItemCount;
+                if (isAuthenticate)
+                {
+                    var objs = BLLEmployee.Instance.Gets(keyword, UserContext.CompanyId, jtStartIndex, jtPageSize, jtSorting);
+                    JsonDataResult.Records = objs;
+                    JsonDataResult.Result = "OK";
+                    JsonDataResult.TotalRecordCount = objs.TotalItemCount;
+                }
             }
             catch (Exception ex)
             {
@@ -72,7 +78,9 @@ namespace GPRO_IED_A.Controllers
         {
             ResponseBase rs;
             try
-            { 
+            {
+                if (isAuthenticate)
+                {
                     rs = BLLEmployee.Instance.Delete(Id, UserContext.UserID, UserContext.CompanyId);
                     if (!rs.IsSuccess)
                     {
@@ -81,6 +89,7 @@ namespace GPRO_IED_A.Controllers
                     }
                     else
                         rs.IsSuccess = true;
+                }
               }
             catch (Exception ex)
             {

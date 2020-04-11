@@ -21,11 +21,14 @@ namespace GPRO_IED_A.Controllers
         public JsonResult Gets(string keyword, int searchBy, int jtStartIndex = 0, int jtPageSize = 0, string jtSorting = "")
         {
             try
-            { 
+            {
+                if (isAuthenticate)
+                {
                     var E_Groups = BLLEquipmentGroup.Instance.GetList(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting);
                     JsonDataResult.Records = E_Groups;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = E_Groups.TotalItemCount;
+                }
              }
             catch (Exception ex)
             {
@@ -40,24 +43,27 @@ namespace GPRO_IED_A.Controllers
             ResponseBase rs;
             try
             {
-                if (E_Group.Id == 0)
+                if (isAuthenticate)
                 {
-                    E_Group.CreatedUser = UserContext.UserID;
-                    E_Group.CreatedDate = DateTime.Now;
+                    if (E_Group.Id == 0)
+                    {
+                        E_Group.CreatedUser = UserContext.UserID;
+                        E_Group.CreatedDate = DateTime.Now;
+                    }
+                    else
+                    {
+                        E_Group.UpdatedUser = UserContext.UserID;
+                        E_Group.UpdatedDate = DateTime.Now;
+                    }
+                    rs = BLLEquipmentGroup.Instance.InsertOrUpdate(E_Group);
+                    if (!rs.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                {
-                    E_Group.UpdatedUser = UserContext.UserID;
-                    E_Group.UpdatedDate = DateTime.Now;
-                }
-                rs = BLLEquipmentGroup.Instance.InsertOrUpdate(E_Group);
-                if (!rs.IsSuccess)
-                {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(rs.Errors);
-                }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {
@@ -72,14 +78,17 @@ namespace GPRO_IED_A.Controllers
             ResponseBase result;
             try
             {
-                result = BLLEquipmentGroup.Instance.DeleteById(Id, UserContext.UserID);
-                if (!result.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    result = BLLEquipmentGroup.Instance.DeleteById(Id, UserContext.UserID);
+                    if (!result.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                    else
+                        result.IsSuccess = true;
                 }
-                else
-                    result.IsSuccess = true;
             }
             catch (Exception ex)
             {

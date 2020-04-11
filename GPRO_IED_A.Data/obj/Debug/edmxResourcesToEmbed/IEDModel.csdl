@@ -29,7 +29,6 @@
     <EntitySet Name="T_Equipment" EntityType="IEDModel.T_Equipment" />
     <EntitySet Name="T_EquipmentAttribute" EntityType="IEDModel.T_EquipmentAttribute" />
     <EntitySet Name="T_EquipmentGroup" EntityType="IEDModel.T_EquipmentGroup" />
-    <EntitySet Name="T_EquipmentType" EntityType="IEDModel.T_EquipmentType" />
     <EntitySet Name="T_EquipmentTypeAttribute" EntityType="IEDModel.T_EquipmentTypeAttribute" />
     <EntitySet Name="T_EquipType_Default" EntityType="IEDModel.T_EquipType_Default" />
     <EntitySet Name="T_EquipTypeAttr_Default" EntityType="IEDModel.T_EquipTypeAttr_Default" />
@@ -172,10 +171,6 @@
       <End Role="T_EquipmentGroup" EntitySet="T_EquipmentGroup" />
       <End Role="T_Equipment" EntitySet="T_Equipment" />
     </AssociationSet>
-    <AssociationSet Name="FK_T_Equipment_T_EquipmentType" Association="IEDModel.FK_T_Equipment_T_EquipmentType">
-      <End Role="T_EquipmentType" EntitySet="T_EquipmentType" />
-      <End Role="T_Equipment" EntitySet="T_Equipment" />
-    </AssociationSet>
     <AssociationSet Name="FK_T_EquipmentAttribute_T_Equipment" Association="IEDModel.FK_T_EquipmentAttribute_T_Equipment">
       <End Role="T_Equipment" EntitySet="T_Equipment" />
       <End Role="T_EquipmentAttribute" EntitySet="T_EquipmentAttribute" />
@@ -183,26 +178,6 @@
     <AssociationSet Name="FK_T_ManipulationEquipment_T_Equipment" Association="IEDModel.FK_T_ManipulationEquipment_T_Equipment">
       <End Role="T_Equipment" EntitySet="T_Equipment" />
       <End Role="T_ManipulationEquipment" EntitySet="T_ManipulationEquipment" />
-    </AssociationSet>
-    <AssociationSet Name="FK_T_EquipmentAttribute_T_EquipmentType" Association="IEDModel.FK_T_EquipmentAttribute_T_EquipmentType">
-      <End Role="T_EquipmentType" EntitySet="T_EquipmentType" />
-      <End Role="T_EquipmentAttribute" EntitySet="T_EquipmentAttribute" />
-    </AssociationSet>
-    <AssociationSet Name="FK_T_EquipmentType_T_EquipType_Default" Association="IEDModel.FK_T_EquipmentType_T_EquipType_Default">
-      <End Role="T_EquipType_Default" EntitySet="T_EquipType_Default" />
-      <End Role="T_EquipmentType" EntitySet="T_EquipmentType" />
-    </AssociationSet>
-    <AssociationSet Name="FK_T_EquipmentTypeAttribute_T_EquipmentType" Association="IEDModel.FK_T_EquipmentTypeAttribute_T_EquipmentType">
-      <End Role="T_EquipmentType" EntitySet="T_EquipmentType" />
-      <End Role="T_EquipmentTypeAttribute" EntitySet="T_EquipmentTypeAttribute" />
-    </AssociationSet>
-    <AssociationSet Name="FK_T_ManipulationLibrary_T_EquipmentType" Association="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType">
-      <End Role="T_EquipmentType" EntitySet="T_EquipmentType" />
-      <End Role="T_ManipulationLibrary" EntitySet="T_ManipulationLibrary" />
-    </AssociationSet>
-    <AssociationSet Name="FK_T_ManipulationLibrary_T_EquipmentType1" Association="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType1">
-      <End Role="T_EquipmentType" EntitySet="T_EquipmentType" />
-      <End Role="T_ManipulationLibrary" EntitySet="T_ManipulationLibrary" />
     </AssociationSet>
     <AssociationSet Name="FK_T_EquipmentTypeAttribute_T_EquipTypeAttr_Default" Association="IEDModel.FK_T_EquipmentTypeAttribute_T_EquipTypeAttr_Default">
       <End Role="T_EquipTypeAttr_Default" EntitySet="T_EquipTypeAttr_Default" />
@@ -275,6 +250,31 @@
     <AssociationSet Name="FK_T_TimePrepare_T_TimeTypePrepare" Association="IEDModel.FK_T_TimePrepare_T_TimeTypePrepare">
       <End Role="T_TimeTypePrepare" EntitySet="T_TimeTypePrepare" />
       <End Role="T_TimePrepare" EntitySet="T_TimePrepare" />
+    </AssociationSet>
+    <EntitySet Name="T_EquipmentType" EntityType="IEDModel.T_EquipmentType" />
+    <AssociationSet Name="FK_T_Equipment_T_EquipmentType" Association="IEDModel.FK_T_Equipment_T_EquipmentType">
+      <End Role="T_EquipmentType" EntitySet="T_EquipmentType" />
+      <End Role="T_Equipment" EntitySet="T_Equipment" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_EquipmentAttribute_T_EquipmentType" Association="IEDModel.FK_T_EquipmentAttribute_T_EquipmentType">
+      <End Role="T_EquipmentType" EntitySet="T_EquipmentType" />
+      <End Role="T_EquipmentAttribute" EntitySet="T_EquipmentAttribute" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_EquipmentType_T_EquipType_Default" Association="IEDModel.FK_T_EquipmentType_T_EquipType_Default">
+      <End Role="T_EquipType_Default" EntitySet="T_EquipType_Default" />
+      <End Role="T_EquipmentType" EntitySet="T_EquipmentType" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_EquipmentTypeAttribute_T_EquipmentType" Association="IEDModel.FK_T_EquipmentTypeAttribute_T_EquipmentType">
+      <End Role="T_EquipmentType" EntitySet="T_EquipmentType" />
+      <End Role="T_EquipmentTypeAttribute" EntitySet="T_EquipmentTypeAttribute" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_ManipulationLibrary_T_EquipmentType" Association="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType">
+      <End Role="T_EquipmentType" EntitySet="T_EquipmentType" />
+      <End Role="T_ManipulationLibrary" EntitySet="T_ManipulationLibrary" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_ManipulationLibrary_T_EquipmentType1" Association="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType1">
+      <End Role="T_EquipmentType" EntitySet="T_EquipmentType" />
+      <End Role="T_ManipulationLibrary" EntitySet="T_ManipulationLibrary" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="HR_Employee">
@@ -830,9 +830,9 @@
     <Property Name="ObjectType" Type="Int32" />
     <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_CA_Phase_T_Equipment" FromRole="T_Equipment" ToRole="T_CA_Phase" />
     <NavigationProperty Name="T_EquipmentGroup" Relationship="IEDModel.FK_T_Equipment_T_EquipmentGroup" FromRole="T_Equipment" ToRole="T_EquipmentGroup" />
-    <NavigationProperty Name="T_EquipmentType" Relationship="IEDModel.FK_T_Equipment_T_EquipmentType" FromRole="T_Equipment" ToRole="T_EquipmentType" />
     <NavigationProperty Name="T_EquipmentAttribute" Relationship="IEDModel.FK_T_EquipmentAttribute_T_Equipment" FromRole="T_Equipment" ToRole="T_EquipmentAttribute" />
     <NavigationProperty Name="T_ManipulationEquipment" Relationship="IEDModel.FK_T_ManipulationEquipment_T_Equipment" FromRole="T_Equipment" ToRole="T_ManipulationEquipment" />
+    <NavigationProperty Name="T_EquipmentType" Relationship="IEDModel.FK_T_Equipment_T_EquipmentType" FromRole="T_Equipment" ToRole="T_EquipmentType" />
   </EntityType>
   <EntityType Name="T_EquipmentAttribute">
     <Key>
@@ -889,31 +889,6 @@
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
     <NavigationProperty Name="T_Equipment" Relationship="IEDModel.FK_T_Equipment_T_EquipmentGroup" FromRole="T_EquipmentGroup" ToRole="T_Equipment" />
   </EntityType>
-  <EntityType Name="T_EquipmentType">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
-    <Property Name="Code" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
-    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="EquipTypeDefaultId" Type="Int32" />
-    <Property Name="ObjectType" Type="Int32" />
-    <Property Name="CompanyId" Type="Int32" Nullable="false" />
-    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-    <Property Name="CreatedUser" Type="Int32" Nullable="false" />
-    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="UpdatedUser" Type="Int32" />
-    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-    <Property Name="DeletedUser" Type="Int32" />
-    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="T_Equipment" Relationship="IEDModel.FK_T_Equipment_T_EquipmentType" FromRole="T_EquipmentType" ToRole="T_Equipment" />
-    <NavigationProperty Name="T_EquipmentAttribute" Relationship="IEDModel.FK_T_EquipmentAttribute_T_EquipmentType" FromRole="T_EquipmentType" ToRole="T_EquipmentAttribute" />
-    <NavigationProperty Name="T_EquipType_Default" Relationship="IEDModel.FK_T_EquipmentType_T_EquipType_Default" FromRole="T_EquipmentType" ToRole="T_EquipType_Default" />
-    <NavigationProperty Name="T_EquipmentTypeAttribute" Relationship="IEDModel.FK_T_EquipmentTypeAttribute_T_EquipmentType" FromRole="T_EquipmentType" ToRole="T_EquipmentTypeAttribute" />
-    <NavigationProperty Name="T_ManipulationLibrary" Relationship="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType" FromRole="T_EquipmentType" ToRole="T_ManipulationLibrary" />
-    <NavigationProperty Name="T_ManipulationLibrary1" Relationship="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType1" FromRole="T_EquipmentType" ToRole="T_ManipulationLibrary" />
-  </EntityType>
   <EntityType Name="T_EquipmentTypeAttribute">
     <Key>
       <PropertyRef Name="Id" />
@@ -932,8 +907,8 @@
     <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
     <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="T_EquipmentType" Relationship="IEDModel.FK_T_EquipmentTypeAttribute_T_EquipmentType" FromRole="T_EquipmentTypeAttribute" ToRole="T_EquipmentType" />
     <NavigationProperty Name="T_EquipTypeAttr_Default" Relationship="IEDModel.FK_T_EquipmentTypeAttribute_T_EquipTypeAttr_Default" FromRole="T_EquipmentTypeAttribute" ToRole="T_EquipTypeAttr_Default" />
+    <NavigationProperty Name="T_EquipmentType" Relationship="IEDModel.FK_T_EquipmentTypeAttribute_T_EquipmentType" FromRole="T_EquipmentTypeAttribute" ToRole="T_EquipmentType" />
   </EntityType>
   <EntityType Name="T_EquipType_Default">
     <Key>
@@ -941,8 +916,8 @@
     </Key>
     <Property Name="Id" Type="Int32" Nullable="false" />
     <Property Name="Name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="T_EquipmentType" Relationship="IEDModel.FK_T_EquipmentType_T_EquipType_Default" FromRole="T_EquipType_Default" ToRole="T_EquipmentType" />
     <NavigationProperty Name="T_EquipTypeAttr_Default" Relationship="IEDModel.FK_T_EquipTypeAttr_Default_T_EquipType_Default" FromRole="T_EquipType_Default" ToRole="T_EquipTypeAttr_Default" />
+    <NavigationProperty Name="T_EquipmentType" Relationship="IEDModel.FK_T_EquipmentType_T_EquipType_Default" FromRole="T_EquipType_Default" ToRole="T_EquipmentType" />
   </EntityType>
   <EntityType Name="T_EquipTypeAttr_Default">
     <Key>
@@ -1137,14 +1112,14 @@
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
     <NavigationProperty Name="T_ApplyPressureLibrary" Relationship="IEDModel.FK_T_ManipulationLibrary_T_ApplyPressureLibrary" FromRole="T_ManipulationLibrary" ToRole="T_ApplyPressureLibrary" />
     <NavigationProperty Name="T_CA_Phase_Mani" Relationship="IEDModel.FK_T_CA_Phase_ManiVer_De_T_ManipulationLibrary" FromRole="T_ManipulationLibrary" ToRole="T_CA_Phase_Mani" />
-    <NavigationProperty Name="T_EquipmentType" Relationship="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType" FromRole="T_ManipulationLibrary" ToRole="T_EquipmentType" />
-    <NavigationProperty Name="T_EquipmentType1" Relationship="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType1" FromRole="T_ManipulationLibrary" ToRole="T_EquipmentType" />
     <NavigationProperty Name="T_ManipulationEquipment" Relationship="IEDModel.FK_T_ManipulationEquipment_T_ManipulationLibrary" FromRole="T_ManipulationLibrary" ToRole="T_ManipulationEquipment" />
     <NavigationProperty Name="T_ManipulationFile" Relationship="IEDModel.FK_T_ManipulationFile_T_ManipulationLibrary" FromRole="T_ManipulationLibrary" ToRole="T_ManipulationFile" />
     <NavigationProperty Name="T_ManipulationTypeLibrary" Relationship="IEDModel.FK_T_ManipulationLibrary_T_ManipulationTypeLibrary" FromRole="T_ManipulationLibrary" ToRole="T_ManipulationTypeLibrary" />
     <NavigationProperty Name="T_ManipulationTypeLibrary1" Relationship="IEDModel.FK_T_ManipulationLibrary_T_ManipulationTypeLibrary1" FromRole="T_ManipulationLibrary" ToRole="T_ManipulationTypeLibrary" />
     <NavigationProperty Name="T_NatureCutsLibrary" Relationship="IEDModel.FK_T_ManipulationLibrary_T_NatureCutsLibrary" FromRole="T_ManipulationLibrary" ToRole="T_NatureCutsLibrary" />
     <NavigationProperty Name="T_StopPrecisionLibrary" Relationship="IEDModel.FK_T_ManipulationLibrary_T_StopPrecisionLibrary" FromRole="T_ManipulationLibrary" ToRole="T_StopPrecisionLibrary" />
+    <NavigationProperty Name="T_EquipmentType" Relationship="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType" FromRole="T_ManipulationLibrary" ToRole="T_EquipmentType" />
+    <NavigationProperty Name="T_EquipmentType1" Relationship="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType1" FromRole="T_ManipulationLibrary" ToRole="T_EquipmentType" />
   </EntityType>
   <EntityType Name="T_ManipulationTypeLibrary">
     <Key>
@@ -1710,18 +1685,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_T_Equipment_T_EquipmentType">
-    <End Type="IEDModel.T_EquipmentType" Role="T_EquipmentType" Multiplicity="1" />
-    <End Type="IEDModel.T_Equipment" Role="T_Equipment" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_EquipmentType">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_Equipment">
-        <PropertyRef Name="EquipmentTypeId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_T_EquipmentAttribute_T_Equipment">
     <End Type="IEDModel.T_Equipment" Role="T_Equipment" Multiplicity="1" />
     <End Type="IEDModel.T_EquipmentAttribute" Role="T_EquipmentAttribute" Multiplicity="*" />
@@ -1743,66 +1706,6 @@
       </Principal>
       <Dependent Role="T_ManipulationEquipment">
         <PropertyRef Name="EquipmentId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_EquipmentAttribute_T_EquipmentType">
-    <End Type="IEDModel.T_EquipmentType" Role="T_EquipmentType" Multiplicity="1" />
-    <End Type="IEDModel.T_EquipmentAttribute" Role="T_EquipmentAttribute" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_EquipmentType">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_EquipmentAttribute">
-        <PropertyRef Name="EquipmentTypeId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_EquipmentType_T_EquipType_Default">
-    <End Type="IEDModel.T_EquipType_Default" Role="T_EquipType_Default" Multiplicity="0..1" />
-    <End Type="IEDModel.T_EquipmentType" Role="T_EquipmentType" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_EquipType_Default">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_EquipmentType">
-        <PropertyRef Name="EquipTypeDefaultId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_EquipmentTypeAttribute_T_EquipmentType">
-    <End Type="IEDModel.T_EquipmentType" Role="T_EquipmentType" Multiplicity="1" />
-    <End Type="IEDModel.T_EquipmentTypeAttribute" Role="T_EquipmentTypeAttribute" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_EquipmentType">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_EquipmentTypeAttribute">
-        <PropertyRef Name="EquipmentTypeId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_ManipulationLibrary_T_EquipmentType">
-    <End Type="IEDModel.T_EquipmentType" Role="T_EquipmentType" Multiplicity="0..1" />
-    <End Type="IEDModel.T_ManipulationLibrary" Role="T_ManipulationLibrary" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_EquipmentType">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_ManipulationLibrary">
-        <PropertyRef Name="EquipmentTypeId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_ManipulationLibrary_T_EquipmentType1">
-    <End Type="IEDModel.T_EquipmentType" Role="T_EquipmentType" Multiplicity="0..1" />
-    <End Type="IEDModel.T_ManipulationLibrary" Role="T_ManipulationLibrary" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_EquipmentType">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_ManipulationLibrary">
-        <PropertyRef Name="EquipmentTypeId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -2019,6 +1922,102 @@
       </Principal>
       <Dependent Role="T_TimePrepare">
         <PropertyRef Name="TimeTypePrepareId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="T_EquipmentType">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EquipTypeDefaultId" Type="Int32" />
+    <Property Name="ObjectType" Type="Int32" />
+    <Property Name="CompanyId" Type="Int32" Nullable="false" />
+    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedUser" Type="Int32" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="UpdatedUser" Type="Int32" />
+    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+    <Property Name="DeletedUser" Type="Int32" />
+    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="T_Equipment" Relationship="IEDModel.FK_T_Equipment_T_EquipmentType" FromRole="T_EquipmentType" ToRole="T_Equipment" />
+    <NavigationProperty Name="T_EquipmentAttribute" Relationship="IEDModel.FK_T_EquipmentAttribute_T_EquipmentType" FromRole="T_EquipmentType" ToRole="T_EquipmentAttribute" />
+    <NavigationProperty Name="T_EquipType_Default" Relationship="IEDModel.FK_T_EquipmentType_T_EquipType_Default" FromRole="T_EquipmentType" ToRole="T_EquipType_Default" />
+    <NavigationProperty Name="T_EquipmentTypeAttribute" Relationship="IEDModel.FK_T_EquipmentTypeAttribute_T_EquipmentType" FromRole="T_EquipmentType" ToRole="T_EquipmentTypeAttribute" />
+    <NavigationProperty Name="T_ManipulationLibrary" Relationship="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType" FromRole="T_EquipmentType" ToRole="T_ManipulationLibrary" />
+    <NavigationProperty Name="T_ManipulationLibrary1" Relationship="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType1" FromRole="T_EquipmentType" ToRole="T_ManipulationLibrary" />
+  </EntityType>
+  <Association Name="FK_T_Equipment_T_EquipmentType">
+    <End Type="IEDModel.T_EquipmentType" Role="T_EquipmentType" Multiplicity="1" />
+    <End Type="IEDModel.T_Equipment" Role="T_Equipment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_EquipmentType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_Equipment">
+        <PropertyRef Name="EquipmentTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_EquipmentAttribute_T_EquipmentType">
+    <End Type="IEDModel.T_EquipmentType" Role="T_EquipmentType" Multiplicity="1" />
+    <End Type="IEDModel.T_EquipmentAttribute" Role="T_EquipmentAttribute" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_EquipmentType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_EquipmentAttribute">
+        <PropertyRef Name="EquipmentTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_EquipmentType_T_EquipType_Default">
+    <End Type="IEDModel.T_EquipType_Default" Role="T_EquipType_Default" Multiplicity="0..1" />
+    <End Type="IEDModel.T_EquipmentType" Role="T_EquipmentType" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_EquipType_Default">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_EquipmentType">
+        <PropertyRef Name="EquipTypeDefaultId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_EquipmentTypeAttribute_T_EquipmentType">
+    <End Type="IEDModel.T_EquipmentType" Role="T_EquipmentType" Multiplicity="1" />
+    <End Type="IEDModel.T_EquipmentTypeAttribute" Role="T_EquipmentTypeAttribute" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_EquipmentType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_EquipmentTypeAttribute">
+        <PropertyRef Name="EquipmentTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_ManipulationLibrary_T_EquipmentType">
+    <End Type="IEDModel.T_EquipmentType" Role="T_EquipmentType" Multiplicity="0..1" />
+    <End Type="IEDModel.T_ManipulationLibrary" Role="T_ManipulationLibrary" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_EquipmentType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_ManipulationLibrary">
+        <PropertyRef Name="EquipmentTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_ManipulationLibrary_T_EquipmentType1">
+    <End Type="IEDModel.T_EquipmentType" Role="T_EquipmentType" Multiplicity="0..1" />
+    <End Type="IEDModel.T_ManipulationLibrary" Role="T_ManipulationLibrary" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_EquipmentType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_ManipulationLibrary">
+        <PropertyRef Name="EquipmentTypeId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

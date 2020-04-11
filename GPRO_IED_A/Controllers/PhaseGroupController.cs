@@ -21,10 +21,13 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var phaseGroups = BLLPhaseGroup.Instance.GetList(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting);
-                JsonDataResult.Records = phaseGroups;
-                JsonDataResult.Result = "OK";
-                JsonDataResult.TotalRecordCount = phaseGroups.TotalItemCount;
+                if (isAuthenticate)
+                {
+                    var phaseGroups = BLLPhaseGroup.Instance.GetList(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting);
+                    JsonDataResult.Records = phaseGroups;
+                    JsonDataResult.Result = "OK";
+                    JsonDataResult.TotalRecordCount = phaseGroups.TotalItemCount;
+                }
             }
             catch (Exception ex)
             {
@@ -40,15 +43,18 @@ namespace GPRO_IED_A.Controllers
             ResponseBase rs;
             try
             {
-                phaseGroup.ActionUser = UserContext.UserID;
-                rs = BLLPhaseGroup.Instance.InsertOrUpdate(phaseGroup);
-                if (!rs.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    phaseGroup.ActionUser = UserContext.UserID;
+                    rs = BLLPhaseGroup.Instance.InsertOrUpdate(phaseGroup);
+                    if (!rs.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {
@@ -63,15 +69,18 @@ namespace GPRO_IED_A.Controllers
             ResponseBase result;
             try
             {
-                result = BLLPhaseGroup.Instance.Delete(Id, UserContext.UserID);
-                if (!result.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(result.Errors);
-                }
-                else
-                {
-                    result.IsSuccess = true;
+                    result = BLLPhaseGroup.Instance.Delete(Id, UserContext.UserID);
+                    if (!result.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                    else
+                    {
+                        result.IsSuccess = true;
+                    }
                 }
             }
             catch (Exception ex)

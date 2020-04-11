@@ -93,6 +93,28 @@ namespace GPRO_IED_A.Business
                                     }
                                 }
                             }
+
+                            //sap xiep lai thứ tự
+                            var phases = (from x in db.T_CA_Phase where !x.IsDeleted && x.Index >= phase.Index && x.ParentId == phase.ParentId select x);
+                            if (phases != null && phases.Count() > 0)
+                            {
+                                int index = phase.Index;
+                                foreach (var item in phases)
+                                {
+                                    index++;
+                                    item.Index = index;
+                                    if (item.Code.Split('-').Length > 1)
+                                    {
+                                        string code = item.Code.Substring(0, item.Code.LastIndexOf('-'));
+                                        item.Code = code + "-" + item.Index;
+                                    }
+                                    else
+                                    {
+                                        item.Code = item.Index.ToString();
+                                    }
+                                }
+                            }
+
                             db.T_CA_Phase.Add(phase);
                             db.SaveChanges();
 
@@ -133,6 +155,7 @@ namespace GPRO_IED_A.Business
                             if (phase != null)
                             {
                                 phase.Name = model.Name;
+                                phase.Index = model.Index;
                                 phase.WorkerLevelId = model.WorkerLevelId;
                                 phase.Code = model.Code;
                                 phase.Description = model.Description;
@@ -268,6 +291,26 @@ namespace GPRO_IED_A.Business
                                 }
                                 #endregion
 
+                                //sap xiep lai thứ tự
+                                var phases = (from x in db.T_CA_Phase where !x.IsDeleted && x.Index >= phase.Index && x.ParentId == phase.ParentId && x.Id != phase.Id select x);
+                                if (phases != null && phases.Count() > 0)
+                                {
+                                    int index = phase.Index;
+                                    foreach (var item in phases)
+                                    {
+                                        index++;
+                                        item.Index = index;
+                                        if (item.Code.Split('-').Length > 1)
+                                        {
+                                            string code = item.Code.Substring(0, item.Code.LastIndexOf('-'));
+                                            item.Code = code + "-" + item.Index;
+                                        }
+                                        else
+                                        {
+                                            item.Code = item.Index.ToString();
+                                        }
+                                    }
+                                }
 
                                 //ktra xem co qtcn chua
                                 int paId = (phase.Node.Substring(0, phase.Node.Length - 1).Split(',').Select(x => Convert.ToInt32(x)).ToList()[2] + 1);
@@ -695,6 +738,25 @@ namespace GPRO_IED_A.Business
                                                         OrderIndex = x.OrderIndex,
                                                     }));
                         exportObj.TotalTMU = phase.TotalTMU;
+                        exportObj.PhaseName = phase.Name;
+
+                        int cAnaId = Convert.ToInt32(phase.Node.Split(',')[1]);
+                        var cAnaObj = db.T_CommodityAnalysis.FirstOrDefault(x => x.Id == cAnaId);
+                        if (cAnaObj != null)
+                        {
+                            var proObj = db.T_Product.FirstOrDefault(x => x.Id == cAnaObj.ObjectId);
+                            if (proObj != null)
+                            {
+                                exportObj.ProductName = proObj.Name;
+                                exportObj.CustomerName = proObj.Code;
+                            }
+                            else
+                            {
+                                exportObj.ProductName = "";
+                                exportObj.CustomerName = "";
+                            }
+                        }
+
 
                         //var timePrepares = db.T_CA_Phase_TimePrepare.Where(x => !x.IsDeleted && x.Commo_Ana_PhaseId ==  Id).Select(x => new Commo_Ana_Phase_TimePrepareModel()
                         //{
@@ -755,7 +817,7 @@ namespace GPRO_IED_A.Business
             using (db = new IEDEntities())
             {
                 try
-                { 
+                {
                     var phaseObj = (from x in db.T_CA_Phase
                                     where !x.IsDeleted && !x.T_PhaseGroup.IsDeleted && x.Id == phaseId
                                     select new Commo_Ana_PhaseModel()

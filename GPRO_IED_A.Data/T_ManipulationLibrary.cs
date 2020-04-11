@@ -43,13 +43,13 @@ namespace GPRO_IED_A.Data
     
         public virtual T_ApplyPressureLibrary T_ApplyPressureLibrary { get; set; }
         public virtual ICollection<T_CA_Phase_Mani> T_CA_Phase_Mani { get; set; }
-        public virtual T_EquipmentType T_EquipmentType { get; set; }
-        public virtual T_EquipmentType T_EquipmentType1 { get; set; }
         public virtual ICollection<T_ManipulationEquipment> T_ManipulationEquipment { get; set; }
         public virtual ICollection<T_ManipulationFile> T_ManipulationFile { get; set; }
         public virtual T_ManipulationTypeLibrary T_ManipulationTypeLibrary { get; set; }
         public virtual T_ManipulationTypeLibrary T_ManipulationTypeLibrary1 { get; set; }
         public virtual T_NatureCutsLibrary T_NatureCutsLibrary { get; set; }
         public virtual T_StopPrecisionLibrary T_StopPrecisionLibrary { get; set; }
+        public virtual T_EquipmentType T_EquipmentType { get; set; }
+        public virtual T_EquipmentType T_EquipmentType1 { get; set; }
     }
 }

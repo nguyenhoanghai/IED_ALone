@@ -1,5 +1,6 @@
 ﻿@{
     ViewBag.Title = "Trang chủ";
+  //  Layout = "~/Views/Shared/_MaterializeLayout.cshtml";
 }
 <link href="~/Content/EquipMana/Home/Home.css" rel="stylesheet" />
 <style>
@@ -60,12 +61,7 @@
     <div div_tab_content class="tab-content"></div>
 </div>
 <div class="clearfix"></div>
-
-
-
-<label id="CountDownHolder">@Session.Timeout</label>
-
-
+ 
 <script>
     var a = 'http://localhost:38176/';
     $('[ul_tab_list],[div_tab_content]').hide();
@@ -106,17 +102,4 @@
             $('[ul_tab_list],[div_tab_content]').hide();
     }
 </script>
-<label>Session Timout : <span class="red timeout">@Session.Timeout</span></label>
-<script type="text/javascript">
-
-    setInterval(function () {
-        $('#CountDownHolder').html(@Session.Timeout);
-    }, 100);
-
-    @*window.setTimeout(function () {
-        $(".timeout").html("Time out")
-    }, @(Session.Timeout -2));*@
-
-</script>
-
-
+ 

@@ -36,10 +36,10 @@ namespace GPRO_IED_A
             GPRO.Core.Security.Authentication.Logout();
         }
 
-        //protected void Session_Start()
-        //{
-        //    Session.Timeout = 600;
-        //}
+        protected void Session_Start()
+        {
+            Session.Timeout = 24 * 60;
+        }
         protected void Session_End()
         {
             GPRO.Core.Security.Authentication.Logout();

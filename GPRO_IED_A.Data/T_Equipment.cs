@@ -40,8 +40,8 @@ namespace GPRO_IED_A.Data
     
         public virtual ICollection<T_CA_Phase> T_CA_Phase { get; set; }
         public virtual T_EquipmentGroup T_EquipmentGroup { get; set; }
-        public virtual T_EquipmentType T_EquipmentType { get; set; }
         public virtual ICollection<T_EquipmentAttribute> T_EquipmentAttribute { get; set; }
         public virtual ICollection<T_ManipulationEquipment> T_ManipulationEquipment { get; set; }
+        public virtual T_EquipmentType T_EquipmentType { get; set; }
     }
 }

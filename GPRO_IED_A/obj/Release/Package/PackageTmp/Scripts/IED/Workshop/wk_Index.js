@@ -141,16 +141,16 @@ GPRO.WorkShop = function () {
                     create: false,
                     edit: false,
                     list: false
-                }, 
+                },
                 Name: {
                     visibility: 'fixed',
                     title: "Tên Phân Xưởng",
                     width: "20%",
                 },
-                Code: {
-                    title: "Mã Phân Xưởng",
-                    width: "10%",
-                },
+                //Code: {
+                //    title: "Mã Phân Xưởng",
+                //    width: "10%",
+                //},
                 Description: {
                     title: "Mô Tả",
                     width: "20%",
@@ -199,12 +199,12 @@ GPRO.WorkShop = function () {
             data: JSON.stringify({ 'Id': Id }),
             contentType: 'application/json charset=utf-8', beforeSend: function () { $('#loading').show(); },
             success: function (data) {
+                $('#loading').hide();
                 GlobalCommon.CallbackProcess(data, function () {
                     if (data.Result == "OK") {
-                        ReloadListWorkShop(); $('#loading').hide();
+                        ReloadListWorkShop();
                     }
                 }, false, Global.Element.PopupWorkShop, true, true, function () {
-
                     var msg = GlobalCommon.GetErrorMessage(data);
                     GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
                 });
@@ -245,8 +245,8 @@ GPRO.WorkShop = function () {
             $('div.divParent').attr('currentPoppup', '');
         });
     }
- 
-    function CheckValidate() { 
+
+    function CheckValidate() {
         if ($('#wkName').val().trim() == "") {
             GlobalCommon.ShowMessageDialog("Vui lòng nhập Tên Phân Xưởng.", function () { }, "Lỗi Nhập liệu");
             $('#wkName').focus();

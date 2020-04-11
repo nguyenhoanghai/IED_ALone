@@ -25,13 +25,13 @@ GPRO.WorkersLevel = function () {
             Delete: '/WorkerLevel/Delete',
         },
         Element: {
-            Jtable : 'jtableWorkersLevel',
-            Popup : 'popup_WorkersLevel',
+            Jtable: 'jtableWorkersLevel',
+            Popup: 'popup_WorkersLevel',
             PopupSearch: 'popup_SearchWorkersLevel'
         },
         Data: {
             Model: {},
-            IsInsert : true
+            IsInsert: true
         }
     }
     this.GetGlobal = function () {
@@ -46,7 +46,7 @@ GPRO.WorkersLevel = function () {
         InitPopupSearch();
         BindData(null);
     }
-     
+
 
     var RegisterEvent = function () {
         $("#wlIsPrivate").kendoMobileSwitch({
@@ -54,7 +54,7 @@ GPRO.WorkersLevel = function () {
             offLabel: "Nội bộ"
         });
         $('#' + Global.Element.Popup).on('shown.bs.modal', function () {
-            $('div.divParent').attr('currentPoppup', Global.Element.Popup.toUpperCase()); 
+            $('div.divParent').attr('currentPoppup', Global.Element.Popup.toUpperCase());
         });
         $('#' + Global.Element.PopupSearch).on('shown.bs.modal', function () {
             $('div.divParent').attr('currentPoppup', Global.Element.PopupSearch.toUpperCase());
@@ -89,12 +89,18 @@ GPRO.WorkersLevel = function () {
         ko.applyBindings(Global.Data.Model, document.getElementById(Global.Element.Popup));
     }
     function Save() {
-        Global.Data.Model.IsPrivate = $("#wlIsPrivate").data("kendoMobileSwitch").check();
-        Global.Data.Model.Coefficient = parseFloat($('#wlCoefficient').val().trim());
+        var obj = {
+            Id: $("#wlId").val(),
+            Coefficient: parseFloat($('#wlCoefficient').val().trim()),
+            Name: $("#wlName").val(),
+            CompanyId: 0,
+            Note: $("#wlNote").val(),
+            IsPrivate: $("#wlIsPrivate").data("kendoMobileSwitch").check()
+        }
         $.ajax({
             url: Global.UrlAction.Save,
             type: 'post',
-            data: ko.toJSON(Global.Data.Model),
+            data: ko.toJSON(obj),
             contentType: 'application/json',
             beforeSend: function () { $('#loading').show(); },
             success: function (result) {
@@ -102,7 +108,12 @@ GPRO.WorkersLevel = function () {
                 GlobalCommon.CallbackProcess(result, function () {
                     if (result.Result == "OK") {
                         ReloadList();
-                        BindData(null);
+                        $("#wlId").val(0);
+                        $('#wlCoefficient').val(0);
+                        $("#wlName").val("");
+                        $("#wlNote").val("");
+                        var switchInstance = $("#wlIsPrivate").data("kendoMobileSwitch");
+                        switchInstance.check(false);
                         if (!Global.Data.IsInsert)
                             $("#" + Global.Element.Popup + ' button[wlcancel]').click();
                         Global.Data.IsInsert = true;
@@ -114,12 +125,12 @@ GPRO.WorkersLevel = function () {
             }
         });
     }
-    function InitList () {
+    function InitList() {
         $('#' + Global.Element.Jtable).jtable({
             title: 'Danh sách Bậc Thợ',
             paging: true,
             pageSize: 50,
-            pageSizeChange : true,
+            pageSizeChange: true,
             sorting: true,
             selectShow: true,
             actions: {
@@ -161,8 +172,13 @@ GPRO.WorkersLevel = function () {
                     sorting: false,
                     display: function (data) {
                         var text = $('<i data-toggle="modal" data-target="#' + Global.Element.Popup + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
-                        text.click(function () {
-                            BindData(data.record); 
+                        text.click(function () { 
+                            $("#wlId").val(data.record.Id);
+                            $('#wlCoefficient').val(data.record.Coefficient);
+                            $("#wlName").val(data.record.Name);
+                            $("#wlNote").val(data.record.Note);
+                            var switchInstance = $("#wlIsPrivate").data("kendoMobileSwitch");
+                            switchInstance.check(data.record.IsPrivate);
                             Global.Data.IsInsert = false;
                         });
                         return text;
@@ -186,7 +202,7 @@ GPRO.WorkersLevel = function () {
             }
         });
     }
-    function ReloadList () {
+    function ReloadList() {
         $('#' + Global.Element.Jtable).jtable('load', { 'keyword': $('#wltxtSearch').val() });
     }
     function Delete(Id) {
@@ -197,11 +213,10 @@ GPRO.WorkersLevel = function () {
             contentType: 'application/json charset=utf-8',
             beforeSend: function () { $('#loading').show(); },
             success: function (data) {
+                $('#loading').hide();
                 GlobalCommon.CallbackProcess(data, function () {
-                    if (data.Result == "OK") {
+                    if (data.Result == "OK")
                         ReloadList();
-                        $('#loading').hide();
-                    }
                 }, false, Global.Element.PopupWorkersLevel, true, true, function () {
 
                     var msg = GlobalCommon.GetErrorMessage(data);
@@ -210,7 +225,7 @@ GPRO.WorkersLevel = function () {
             }
         });
     }
-    function InitPopup () {
+    function InitPopup() {
         $("#" + Global.Element.Popup).modal({
             keyboard: false,
             show: false
@@ -242,7 +257,7 @@ GPRO.WorkersLevel = function () {
             $('div.divParent').attr('currentPoppup', '');
         });
     }
-     
+
     function CheckValidate() {
         if ($('#wlName').val().trim() == "") {
             GlobalCommon.ShowMessageDialog("Vui lòng nhập Tên Bậc Thợ.", function () { }, "Lỗi Nhập liệu");

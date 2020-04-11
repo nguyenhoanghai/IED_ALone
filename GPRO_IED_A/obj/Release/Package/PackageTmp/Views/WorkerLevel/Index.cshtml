@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "Bậc Thợ";
-    Layout = null;
+   // Layout = null;
 } 
 <script src="~/Scripts/IED/WorkerLevel/WL_Index.js"></script>
 <div id="jtableWorkersLevel" class="table-center"></div>
@@ -15,7 +15,7 @@
             </div>
             <div class="modal-body form-inline">
                 <div class="container-fluid">
-                    <input type="hidden" data-bind="value: Id" />
+                    <input type="hidden" id="wlId" data-bind="value: Id" />
                     <div class="col-md-12 form-group">
                         <label class="control-label">Tên Bậc thợ <span class="required-class">*</span></label>
                         <input class="form-control" id="wlName" required="required" data-bind="value: Name" type="text" />
@@ -32,7 +32,7 @@
                     </div>
                     <div class="col-md-12 form-group">
                         <label class="control-label">Ghi chú</label>
-                        <textarea class="form-control" data-bind="value: Note"></textarea>
+                        <textarea class="form-control" id="wlNote"></textarea>
                     </div>
                 </div>
             </div>

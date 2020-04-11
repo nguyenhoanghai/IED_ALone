@@ -62,7 +62,7 @@ namespace GPRO_IED_A.Business
                     }
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             { }
             return rs;
         }

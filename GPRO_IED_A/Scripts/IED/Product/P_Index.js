@@ -167,7 +167,7 @@ GPRO.Product = function () {
 
     function InitList () {
         $('#' + Global.Element.JtableProduct).jtable({
-            title: 'Quản lý sản phẩm',
+            title: 'Quản lý mã hàng',
             paging: true,
             pageSize: 50,
             pageSizeChange: true,
@@ -193,11 +193,11 @@ GPRO.Product = function () {
                 },
                 Name: {
                     visibility: 'fixed',
-                    title: "Tên Sản Phẩm",
+                    title: "Tên mã hàng",
                     width: "20%", 
                 },
                 Code: {
-                    title: "Mã Sản Phẩm",
+                    title: "Khách hàng",
                     width: "5%",
                 },
                 //CTBTP: {
@@ -299,7 +299,7 @@ GPRO.Product = function () {
      
     function CheckValidate() {
         if ($('#pname').val().trim() == "") {
-            GlobalCommon.ShowMessageDialog("Vui lòng nhập Tên Loại Sản Phẩm.", function () { }, "Lỗi Nhập liệu");
+            GlobalCommon.ShowMessageDialog("Vui lòng nhập Tên mã hàng.", function () { }, "Lỗi Nhập liệu");
             return false;
         }
         return true;

@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'E:\GPRO_2018\Website\GPRO_IED_A\GPRO_IED_A\GPRO_IED_A.Data\IEDModel.edmx'. 
+﻿// T4 code generation is enabled for model 'E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Data\IEDModel.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

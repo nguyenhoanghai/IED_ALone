@@ -287,7 +287,7 @@ namespace GPRO_IED_A.Business
                             {
                                 var equipments = details.Where(c => c.EquipmentId == equipmentId).Select(c => new ModelEquipment()
                                 {
-                                    Id = c.EquipmentId,
+                                    Id = c.EquipmentId.Value,
                                     Name = c.EquipmentName,
                                     Code = c.EquipmentCode
                                 }).ToList();

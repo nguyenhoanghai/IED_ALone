@@ -19,8 +19,7 @@
         <div class="navbar nav_title" style="border: 0;">
             <a href="/Home/Index" class="site_title"><i class="fa fa-heartbeat"></i> <span>@(categories != null && categories.Count > 0 ? categories[0].ModuleName : "")</span></a>
         </div>
-        <div class="clearfix"></div>
-        <!-- menu prile quick info -->
+        <div class="clearfix"></div> 
         <div class="profile">
             <div class="profile_pic">
                 <img src="@userInfo.ImagePath" alt="..." class="img-circle profile_img" />
@@ -29,10 +28,8 @@
                 <span>Welcome,</span>
                 <h2>@userInfo.EmployeeName</h2>
             </div>
-        </div>
-        <!-- /menu prile quick info -->
-        <br />
-        <!-- sidebar menu -->
+        </div> 
+        <br /> 
         <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
             <div class="menu_section">
                 <h3>&nbsp;</h3>
@@ -72,12 +69,10 @@
                     }
                 </ul>
             </div>
-        </div>
-        <!-- /sidebar menu -->
+        </div> 
     </div>
 </div>
-
-<!-- top navigation -->
+ 
 <div class="top_nav">
     <div class="nav_menu">
         <nav class="" role="navigation">
@@ -100,7 +95,7 @@
         </nav>
     </div>
 </div>
-<!-- /top navigation -->
+ 
 <script type="text/javascript">
     $(document).ready(function () {
         $('#Logout').click(function () {

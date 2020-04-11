@@ -29,7 +29,7 @@ namespace GPRO_IED_A.Data
         public Nullable<System.DateTime> DeletedDate { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
     
-        public virtual T_EquipmentType T_EquipmentType { get; set; }
         public virtual T_EquipTypeAttr_Default T_EquipTypeAttr_Default { get; set; }
+        public virtual T_EquipmentType T_EquipmentType { get; set; }
     }
 }

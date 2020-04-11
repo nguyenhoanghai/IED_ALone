@@ -144,7 +144,7 @@ GPRO.Equipment = function () {
         $.each(Global.Data.att, function (i, item) {
             a.push($('#' + item).val());
         });
-        for (var r = a.length ; r < 20; r++) {
+        for (var r = a.length; r < 20; r++) {
             a.push("");
         }
 
@@ -163,9 +163,9 @@ GPRO.Equipment = function () {
             success: function (result) {
                 $('#loading').hide();
                 GlobalCommon.CallbackProcess(result, function () {
+                    $('#loading').hide();
                     if (result.Result == "OK") {
                         ReloadList();
-                        $('#loading').hide();
                         if (!Global.Data.IsInsert) {
                             $("#" + Global.Element.PopupEquipment + ' button[ecancel]').click();
                             $('div.divParent').attr('currentPoppup', '');
@@ -302,13 +302,12 @@ GPRO.Equipment = function () {
             contentType: 'application/json charset=utf-8',
             beforeSend: function () { $('#loading').show(); },
             success: function (data) {
+                $('#loading').hide();
                 GlobalCommon.CallbackProcess(data, function () {
                     if (data.Result == "OK") {
                         ReloadList();
-                        $('#loading').hide();
                     }
                 }, false, Global.Element.PopupEquipment, true, true, function () {
-
                     var msg = GlobalCommon.GetErrorMessage(data);
                     GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
                 });

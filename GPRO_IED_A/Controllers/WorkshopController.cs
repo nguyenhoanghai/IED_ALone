@@ -2,17 +2,12 @@
 using GPRO_IED_A.Business;
 using GPRO_IED_A.Business.Model;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace GPRO_IED_A.Controllers
 {
     public class WorkShopController : BaseController
     {
-
-
         public ActionResult Index()
         {
             return View();
@@ -24,13 +19,16 @@ namespace GPRO_IED_A.Controllers
             ResponseBase responseResult;
             try
             {
-                responseResult = BLLWorkshop.Instance.Delete(Id, UserContext.UserID);
-                if (responseResult.IsSuccess)
-                    JsonDataResult.Result = "OK";
-                else
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    responseResult = BLLWorkshop.Instance.Delete(Id, UserContext.UserID);
+                    if (responseResult.IsSuccess)
+                        JsonDataResult.Result = "OK";
+                    else
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                    }
                 }
             }
             catch (Exception ex)
@@ -47,10 +45,13 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var listWorkShop = BLLWorkshop.Instance.GetList(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting, UserContext.CompanyId);
-                JsonDataResult.Records = listWorkShop;
-                JsonDataResult.Result = "OK";
-                JsonDataResult.TotalRecordCount = listWorkShop.TotalItemCount;
+                if (isAuthenticate)
+                {
+                    var listWorkShop = BLLWorkshop.Instance.GetList(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting, UserContext.CompanyId);
+                    JsonDataResult.Records = listWorkShop;
+                    JsonDataResult.Result = "OK";
+                    JsonDataResult.TotalRecordCount = listWorkShop.TotalItemCount;
+                }
             }
             catch (Exception ex)
             {
@@ -65,16 +66,19 @@ namespace GPRO_IED_A.Controllers
             ResponseBase rs;
             try
             {
-                model.CompanyId = UserContext.CompanyId;
-                model.ActionUser = UserContext.UserID;
-                rs = BLLWorkshop.Instance.InsertOrUpdate(model);
-                if (!rs.IsSuccess)
+                if (isAuthenticate)
                 {
-                    JsonDataResult.Result = "ERROR";
-                    JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    model.CompanyId = UserContext.CompanyId;
+                    model.ActionUser = UserContext.UserID;
+                    rs = BLLWorkshop.Instance.InsertOrUpdate(model);
+                    if (!rs.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
                 }
-                else
-                    JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
             {
@@ -89,10 +93,10 @@ namespace GPRO_IED_A.Controllers
         public JsonResult GetSelect()
         {
             try
-            { 
-                    JsonDataResult.Data = BLLWorkshop.Instance.GetListWorkShop();
-                    JsonDataResult.Result = "OK";
-              }
+            {
+                JsonDataResult.Data = BLLWorkshop.Instance.GetListWorkShop();
+                JsonDataResult.Result = "OK";
+            }
             catch (Exception ex)
             {
                 //add error
