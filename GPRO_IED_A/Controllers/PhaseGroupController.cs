@@ -17,7 +17,7 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult Gets(string keyword, int searchBy, int jtStartIndex, int jtPageSize, string jtSorting)
+        public JsonResult Gets(string keyword, int searchBy, int jtStartIndex=0, int jtPageSize=1000, string jtSorting="")
         {
             try
             {

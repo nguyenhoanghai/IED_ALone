@@ -119,7 +119,7 @@ GPRO.TimePrepare = function () {
         $('#' + Global.Element.Jtable).jtable({
             title: 'Danh Sách Loại Thời Gian Chuẩn Bị',
             paging: true,
-            pageSize: 50,
+            pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
             selectShow: true,
@@ -190,7 +190,7 @@ GPRO.TimePrepare = function () {
                                     {
                                         title: '<span class="red">Danh sách thời gian chuẩn bị thuộc loại : ' + parent.record.Name + '</span>',
                                         paging: true,
-                                        pageSize: 10,
+                                        pageSize: 1000,
                                         pageSizeChange: true,
                                         sorting: true,
                                         selectShow: true,

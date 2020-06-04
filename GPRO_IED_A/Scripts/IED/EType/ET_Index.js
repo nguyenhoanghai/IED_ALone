@@ -169,8 +169,8 @@ GPRO.EquipmentType = function () {
         $('#' + Global.Element.JtableEquipmentType).jtable({
             title: 'Danh sách Bộ phận',
             paging: true,
-            pageSize: 10,
-            pageSizeChangeEquipmentType: true,
+            pageSize: 1000,
+            pageSizeChange: true,
             sorting: true,
             selectShow: true,
             actions: {
@@ -223,8 +223,8 @@ GPRO.EquipmentType = function () {
                                 {
                                     title: 'Danh sách Thuộc Tính của Bộ phận : ' + eqip.record.Name,
                                     paging: true,
-                                    pageSize: 3,
-                                    pageSizeChangeManipulationType: true,
+                                    pageSize: 1000,
+                                    pageSizeChange: true,
                                     sorting: true,
                                     selectShow: true,
                                     actions: {

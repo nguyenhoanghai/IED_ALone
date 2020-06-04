@@ -113,8 +113,8 @@ GPRO.PhaseGroup = function () {
         $('#' + Global.Element.JtablePhaseGroup).jtable({
             title: 'Danh Sách cụm công đoạn',
             paging: true,
-            pageSize: 50,
-            pageSizeChange : true,
+            pageSize: 1000,
+            pageSizeChange: true,
             sorting: true,
             selectShow: true,
             actions: {

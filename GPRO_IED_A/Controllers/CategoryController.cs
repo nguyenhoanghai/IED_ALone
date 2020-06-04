@@ -17,7 +17,7 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult Gets(string keyWord, string position, int moduleId, int jtStartIndex = 0, int jtPageSize = 0, string jtSorting = "")
+        public JsonResult Gets(string keyWord, string position, int moduleId, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
             try
             {
@@ -108,7 +108,7 @@ namespace GPRO_IED_A.Controllers
         #region system
 
         [HttpPost]
-        public JsonResult Gets_(string keyWord, string position, int moduleId, int jtStartIndex = 0, int jtPageSize = 0, string jtSorting = "")
+        public JsonResult Gets_(string keyWord, string position, int moduleId, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
             try
             {

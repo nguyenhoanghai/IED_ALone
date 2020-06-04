@@ -335,6 +335,7 @@
     <Property Name="UpdatedDate" Type="datetime" />
     <Property Name="DeletedUser" Type="int" />
     <Property Name="DeletedDate" Type="datetime" />
+    <Property Name="IsLibrary" Type="bit" Nullable="false" />
   </EntityType>
   <EntityType Name="T_CA_Phase_Mani">
     <Key>
@@ -427,6 +428,22 @@
     <Property Name="CreatedDate" Type="datetime" Nullable="false" />
     <Property Name="DeletedDate" Type="datetime" />
     <Property Name="UpdatedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="T_Customer">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedUser" Type="int" Nullable="false" />
+    <Property Name="DeletedUser" Type="int" />
+    <Property Name="UpdatedUser" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedDate" Type="datetime" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="CompanyId" Type="int" />
   </EntityType>
   <EntityType Name="T_Employee_CompanySkill">
     <Key>
@@ -813,6 +830,7 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CustomerId" Type="int" Nullable="false" />
     <Property Name="Code" Type="nvarchar" MaxLength="500" />
     <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
     <Property Name="Img" Type="nvarchar(max)" />
@@ -1572,6 +1590,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_T_Product_T_Customer">
+    <End Role="T_Customer" Type="Self.T_Customer" Multiplicity="1" />
+    <End Role="T_Product" Type="Self.T_Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_Customer">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_Product">
+        <PropertyRef Name="CustomerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_T_TechProcessVersion_T_Product">
     <End Role="T_Product" Type="Self.T_Product" Multiplicity="1" />
     <End Role="T_TechProcessVersion" Type="Self.T_TechProcessVersion" Multiplicity="*" />
@@ -1655,6 +1685,7 @@
     <EntitySet Name="T_CommodityAnalysis" EntityType="Self.T_CommodityAnalysis" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_CompanySkill" EntityType="Self.T_CompanySkill" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_CompanySkillDetail" EntityType="Self.T_CompanySkillDetail" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="T_Customer" EntityType="Self.T_Customer" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_Employee_CompanySkill" EntityType="Self.T_Employee_CompanySkill" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_Employee_PhaseGroupSkill" EntityType="Self.T_Employee_PhaseGroupSkill" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_EmployeePhase" EntityType="Self.T_EmployeePhase" Schema="dbo" store:Type="Tables" />
@@ -1887,6 +1918,10 @@
     <AssociationSet Name="FK_T_ManipulationLibrary_T_StopPrecisionLibrary" Association="Self.FK_T_ManipulationLibrary_T_StopPrecisionLibrary">
       <End Role="T_StopPrecisionLibrary" EntitySet="T_StopPrecisionLibrary" />
       <End Role="T_ManipulationLibrary" EntitySet="T_ManipulationLibrary" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_Product_T_Customer" Association="Self.FK_T_Product_T_Customer">
+      <End Role="T_Customer" EntitySet="T_Customer" />
+      <End Role="T_Product" EntitySet="T_Product" />
     </AssociationSet>
     <AssociationSet Name="FK_T_TechProcessVersion_T_Product" Association="Self.FK_T_TechProcessVersion_T_Product">
       <End Role="T_Product" EntitySet="T_Product" />

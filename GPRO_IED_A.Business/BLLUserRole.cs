@@ -48,7 +48,7 @@ namespace GPRO_IED_A.Business
                         roles = db.SUserRoles.Where(x => !x.IsDeleted && x.UserId == userId).Select(x => new ModelSelectItem()
                         {
                             Name = x.SRoLe.RoleName,
-                            Value = x.Id
+                            Value = x.SRoLe.Id
                         }).ToList();
                     } 
                     return roles;

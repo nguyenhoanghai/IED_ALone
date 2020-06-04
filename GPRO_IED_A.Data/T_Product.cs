@@ -32,7 +32,9 @@ namespace GPRO_IED_A.Data
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
+        public int CustomerId { get; set; }
     
         public virtual ICollection<T_TechProcessVersion> T_TechProcessVersion { get; set; }
+        public virtual T_Customer T_Customer { get; set; }
     }
 }

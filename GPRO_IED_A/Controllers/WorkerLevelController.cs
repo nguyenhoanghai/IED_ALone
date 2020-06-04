@@ -43,7 +43,7 @@ namespace GPRO_IED_A.Controllers
             return Json(JsonDataResult);
         }
 
-        public JsonResult GetList(string keyword, int jtStartIndex, int jtPageSize, string jtSorting)
+        public JsonResult GetList(string keyword, int jtStartIndex=0, int jtPageSize=1000, string jtSorting="")
         {
             try
             {

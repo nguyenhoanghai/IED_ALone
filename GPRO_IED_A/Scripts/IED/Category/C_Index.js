@@ -126,7 +126,7 @@ GPRO.MenuCategory = function () {
         $('#' + Global.Element.Jtable).jtable({
             title: 'Danh Sách Nhóm Danh Mục',
             paging: true,
-            pageSize: 50,
+            pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
             selectShow: true,
@@ -325,9 +325,9 @@ GPRO.MenuCategory = function () {
     function InitList_() {
         $('#' + Global.Element.Jtable_).jtable({
             title: 'Danh sách nhóm danh mục hệ thống',
-            paging: true,
-            pageSize: 50,
-            pageSizeChange: true,
+            //paging: true,
+            //pageSize: 50,
+            //pageSizeChange: true,
             sorting: true,
             selectShow: true,
             actions: {

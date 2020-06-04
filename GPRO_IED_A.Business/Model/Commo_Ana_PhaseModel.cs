@@ -35,6 +35,7 @@ namespace GPRO_IED_A.Business.Model
         public string EquipDes { get; set; }
         public int EquipTypeDefaultId { get; set; }
         public int ActionUser { get; set; }
+        public bool IsLibrary { get; set; }
 
         public List<Commo_Ana_Phase_ManiModel> actions { get; set; }
         public Commo_Ana_PhaseModel()

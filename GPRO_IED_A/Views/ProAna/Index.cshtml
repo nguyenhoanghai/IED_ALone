@@ -10,7 +10,7 @@
 @*<script src="~/Scripts/IED/ProAna/PA_Index.min.js"></script>*@
 
 <input id="config" type="hidden" gettmutype="@ViewBag.GetTMUType" tmu="@ViewBag.TMU" maniexpenddefault="@ViewBag.ManipulationExpendDefault" />
- 
+
 
 <div class="split-pane fixed-left" id="split-pane-2" style=" min-height:1000px">
     <div class="split-pane-component" id="left-component">
@@ -226,15 +226,16 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#phas_infobox" aria-controls="phas_infobox" role="tab" data-toggle="tab">Thông tin chung</a></li>
-                        <li role="presentation"><a href="#Phantich" aria-controls="Phantich" role="tab" data-toggle="tab">Phân tích</a></li>
-                        <li role="presentation"><a href="#Haophi" aria-controls="Haophi" role="tab" data-toggle="tab">Hao phí</a></li>
+                        <li role="presentation" class="@ViewBag.hasPer"><a href="#Phantich" aria-controls="Phantich" role="tab" data-toggle="tab">Phân tích</a></li>
+                        <li role="presentation" class="@ViewBag.hasPer"><a href="#Haophi" aria-controls="Haophi" role="tab" data-toggle="tab">Hao phí</a></li>
                         <li role="presentation"><a>TG công đoạn :<span id="TotalTMU" class="red">0</span><input class="form-control" id="ManiVerTMU" type="hidden" /> (s)</a></li>
+                        <li role="presentation" class="@ViewBag.hasPer"><a style="background: wheat; color: blue; font-weight: 600;"><input type="checkbox" id="islibs" /> chọn làm công đoạn mẫu.</a></li>
                     </ul>
 
                     <!-- Tab panes -->
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane active" id="phas_infobox">
-                            <div class=" col-md-4  form-group">
+                            <div class=" col-md-12  form-group">
                                 <input type="hidden" id="phaseID" lastindex="0" />
                                 <label class="control-label " style="color:red !important">Tìm Công Đoạn mẫu </label>
 
@@ -245,20 +246,20 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-1 form-group">
+                            <div class="col-md-1 form-group @ViewBag.hasPer">
                                 <label class="control-label">Mã Công Đoạn <span class="required-class">*</span></label>
                                 <span disabled class="form-control" id="phase-code" />
                             </div>
                             <div class="col-md-1 form-group">
                                 <label class="control-label">Vị trí công đoạn <span class="required-class">*</span></label>
-                                <input class="form-control" id="phase-index" type="text"   /> 
+                                <input class="form-control" id="phase-index" type="text" />
                             </div>
-                            <div class=" col-md-4  form-group">
+                            <div class="@(ViewBag.hasPer=="hide"?"col-md-11 ":"col-md-10")   form-group">
                                 <input type="hidden" id="phaseID" lastindex="0" />
                                 <label class="control-label">Tên Công Đoạn <span class="required-class">*</span></label>
-                                <input class="form-control" id="phase-name" type="text" placeholder="Nhập tên Công Đoạn ..." />
+                                <input class="form-control" id="phase-name" @(ViewBag.hasPer == "hide" ? "disabled" : "") type="text" placeholder=@(ViewBag.hasPer=="hide"?"":"Nhập tên Công Đoạn ...") />
                             </div>
-                            <div class="col-md-2 form-group">
+                            <div class="col-md-2 form-group @ViewBag.hasPer">
                                 <label class="control-label">Bậc thợ <span class="required-class">*</span></label>
                                 <div class="select-box">
                                     <select id="workersLevel"></select>
@@ -266,7 +267,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-2 form-group">
+                            <div class="col-md-2 form-group @ViewBag.hasPer">
                                 <label class="control-label">Video công đoạn (mp4 file)</label>
                                 <div>
                                     <input type="file" id="video" accept="mp4 Video;video/mp4,video/x-m4v,video/*" />
@@ -276,22 +277,22 @@
                                 <textarea class="form-control" id="phase-Des" style="display:none"></textarea>
                             </div>
 
-                            <div class="col-md-4 form-group">
+                            <div class="col-md-4 form-group @ViewBag.hasPer">
                                 <input type="hidden" id="equipmentId" />
                                 <input type="hidden" id="equiptypedefaultId" />
                                 <label class="control-label">Thiết bị</label><br />
                                 <input data-toggle="modal" data-target="#ChooseEquipment_Popup" class="form-control" id="equipmentName" type="text" placeholder="Chọn thiết bị..." style="width: 100%" />
                             </div>
-                            <div class="col-md-6 form-group">
+                            <div class="col-md-4 form-group @ViewBag.hasPer">
                                 <label class="control-label">Thông tin Thiết Bị</label>
                                 <textarea class="form-control" id="E_info" disabled></textarea>
                             </div>
-                            <div class="col-md-4 form-group" id="chooseApplyPressure" style="display:none">
+                            <div class="col-md-4 form-group @ViewBag.hasPer" id="chooseApplyPressure" style="display:none">
                                 <label class="control-label">Chọn số lớp cắt <span style="color: red;">(Sử dụng đối với máy cắt)</span></label><br />
                                 <select class="form-control" id="ApplyPressure"></select>
                             </div>
 
-                            <div class="col-md-12">
+                            <div class="col-md-12 @ViewBag.hasPer">
                                 <div class="col-md-4">
                                     <video width="98%" height="210" controls id="videotag" style="border: 1px solid #ccc;">
                                         <source src="" type="video/wmv">
@@ -305,10 +306,10 @@
                             </div>
                             <div class="clearfix"></div>
                         </div>
-                        <div role="tabpanel" class="tab-pane  " id="Phantich">
+                        <div role="tabpanel" class="tab-pane   @ViewBag.hasPer" id="Phantich">
                             <div id="jtable_ManipulationArr"> </div>
                         </div>
-                        <div role="tabpanel" class="tab-pane  " id="Haophi">
+                        <div role="tabpanel" class="tab-pane   @ViewBag.hasPer" id="Haophi">
                             <div class="col-md-3 form-group">
                                 <label class="control-label">Tổng TMU Thiết Bị</label><br />
                                 <input class="form-control" totaltmuequipment type="text" value="0" disabled style="width: 70px" onkeypress=" return isNumberKey(event)" />
@@ -692,46 +693,46 @@
 
 
 @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
-<div id="jstree_demo_div"></div>
-<script>
-    
-    $('#jstree_demo_div').jstree({
-        'core': {
-            'data': [
-                { "id": "ajson1", "parent": "#", "text": "Simple root node" },
-                { "id": "ajson2", "parent": "#", "text": "Root node 2" },
-                { "id": "ajson3", "parent": "ajson2", "text": "Child 1" },
-                { "id": "ajson4", "parent": "ajson2", "text": "Child 2" },
-            ],
-            "animation": 0,
-            "check_callback": true,
-            "themes": { "stripes": true },
-        },
-        "types": {
-            "#": {
-                "max_children": 1,
-                "max_depth": 4,
-                "valid_children": ["root"]
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+    <div id="jstree_demo_div"></div>
+    <script>
+
+        $('#jstree_demo_div').jstree({
+            'core': {
+                'data': [
+                    { "id": "ajson1", "parent": "#", "text": "Simple root node" },
+                    { "id": "ajson2", "parent": "#", "text": "Root node 2" },
+                    { "id": "ajson3", "parent": "ajson2", "text": "Child 1" },
+                    { "id": "ajson4", "parent": "ajson2", "text": "Child 2" },
+                ],
+                "animation": 0,
+                "check_callback": true,
+                "themes": { "stripes": true },
             },
-            "root": {
-                "icon": "/static/3.3.7/assets/images/tree_icon.png",
-                "valid_children": ["default"]
+            "types": {
+                "#": {
+                    "max_children": 1,
+                    "max_depth": 4,
+                    "valid_children": ["root"]
+                },
+                "root": {
+                    "icon": "/static/3.3.7/assets/images/tree_icon.png",
+                    "valid_children": ["default"]
+                },
+                "default": {
+                    "valid_children": ["default", "file"]
+                },
+                "file": {
+                    "icon": "glyphicon glyphicon-file",
+                    "valid_children": []
+                }
             },
-            "default": {
-                "valid_children": ["default", "file"]
-            },
-            "file": {
-                "icon": "glyphicon glyphicon-file",
-                "valid_children": []
-            }
-        },
-        "plugins": [
-            "contextmenu", "dnd", "search",
-            "state", "types", "wholerow"
-        ]
-    });
-    $('#jstree_demo_div').on("changed.jstree", function (e, data) {
-      //  alert(data.selected);
-    });
-</script>*@
+            "plugins": [
+                "contextmenu", "dnd", "search",
+                "state", "types", "wholerow"
+            ]
+        });
+        $('#jstree_demo_div').on("changed.jstree", function (e, data) {
+          //  alert(data.selected);
+        });
+    </script>*@

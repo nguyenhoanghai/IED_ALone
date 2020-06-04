@@ -14,8 +14,7 @@ namespace GPRO_IED_A.Business
 {
     public class BLLUser
     {
-        #region constructor
-        IEDEntities db;
+        #region constructor 
         static object key = new object();
         private static volatile BLLUser _Instance;
         public static BLLUser Instance
@@ -39,7 +38,7 @@ namespace GPRO_IED_A.Business
             {
                 rs = new ResponseBase();
                 userName = userName.Trim().ToUpper();
-                using (db = new IEDEntities())
+                using (var db = new IEDEntities())
                 {
                     SUser user = db.SUsers.Where(x => x.UserName.Trim().ToUpper().Equals(userName) && !x.IsDeleted).FirstOrDefault();
                     if (user == null)
@@ -72,7 +71,7 @@ namespace GPRO_IED_A.Business
             UserService user = null;
             try
             {
-                using (db = new IEDEntities())
+                using (var db = new IEDEntities())
                 {
                     user = db.SUsers.Where(c => c.Id == userId && !c.IsDeleted && !c.SCompany.IsDeleted).Select(c => new UserService()
                                    {
@@ -188,7 +187,7 @@ namespace GPRO_IED_A.Business
 
         public UserModel Get(int userId)
         {
-            using (db = new IEDEntities())
+            using (var db = new IEDEntities())
             {
                 UserModel user = null;
                 user = db.SUsers.Where(x => x.Id == userId && !x.IsDeleted).Select(x => new UserModel()
@@ -216,7 +215,7 @@ namespace GPRO_IED_A.Business
             ResponseBase result = null;
             try
             {
-                using (db = new IEDEntities())
+                using (var db = new IEDEntities())
                 {
                     result = new ResponseBase();
                     SUser obj = null;
@@ -286,18 +285,23 @@ namespace GPRO_IED_A.Business
                                     #region sử lý nếu list user role new != null
                                     if (oldRoles != null && oldRoles.Count() > 0)
                                     {
+                                        string query = "";
                                         foreach (var oldItem in oldRoles)
                                         {
-                                            var userRoleFind = model.UserRoleIds.Find(x => x == oldItem.Id);
-                                            if (userRoleFind == 0)
-                                            {
-                                                oldItem.IsDeleted = true;
-                                                oldItem.DeletedUser = obj.UpdatedUser;
-                                                oldItem.DeletedDate = obj.UpdatedDate;
-                                            }
-                                            else
-                                                model.UserRoleIds.Remove(userRoleFind);
+                                            //var userRoleFind = model.UserRoleIds.Find(x => x == oldItem.Id);
+                                            //if (userRoleFind == 0)
+                                            //{
+                                            //    oldItem.IsDeleted = true;
+                                            //    oldItem.DeletedUser = obj.UpdatedUser;
+                                            //    oldItem.DeletedDate = obj.UpdatedDate;
+                                            //}
+                                            //else
+                                            //    model.UserRoleIds.Remove(userRoleFind);
+
+                                              query += " update SUserRole set IsDeleted=1 where Id=" + oldItem.Id;
                                         }
+                                        if (!string.IsNullOrEmpty(query))
+                                            db.Database.ExecuteSqlCommand(query);
 
                                         if (model.UserRoleIds != null && model.UserRoleIds.Count > 0)
                                         {
@@ -377,7 +381,7 @@ namespace GPRO_IED_A.Business
             ResponseBase rs = null;
             try
             {
-                using (db = new IEDEntities())
+                using (var db = new IEDEntities())
                 {
                     rs = new ResponseBase();
                     SUser user = db.SUsers.FirstOrDefault(x => x.Id == accountId && !x.IsDeleted);
@@ -408,7 +412,7 @@ namespace GPRO_IED_A.Business
             ResponseBase userResult = null;
             try
             {
-                using (db = new IEDEntities())
+                using (var db = new IEDEntities())
                 {
                     userResult = new ResponseBase();
                     SUser user = db.SUsers.FirstOrDefault(x => x.Id == accountId && !x.IsDeleted);
@@ -443,7 +447,7 @@ namespace GPRO_IED_A.Business
             ResponseBase rs = new ResponseBase();
             try
             {
-                using (db = new IEDEntities())
+                using (var db = new IEDEntities())
                 {
                     SUser user = db.SUsers.FirstOrDefault(x => x.Id == userId && !x.IsDeleted);
                     if (user == null)
@@ -472,7 +476,7 @@ namespace GPRO_IED_A.Business
             ResponseBase rs = new ResponseBase();
             try
             {
-                using (db = new IEDEntities())
+                using (var db = new IEDEntities())
                 {
                     SUser user = db.SUsers.FirstOrDefault(x => x.Id == userId && !x.IsDeleted);
                     if (user == null)
@@ -503,7 +507,7 @@ namespace GPRO_IED_A.Business
             ResponseBase rs = null;
             try
             {
-                using (db = new IEDEntities())
+                using (var db = new IEDEntities())
                 {
                     rs = new ResponseBase();
                     SUser user = db.SUsers.FirstOrDefault(x => x.Id == userId && !x.IsDeleted);
@@ -546,7 +550,7 @@ namespace GPRO_IED_A.Business
         {
             try
             {
-                using (db = new IEDEntities())
+                using (var db = new IEDEntities())
                 {
                     IQueryable<SUser> users = null;
                     PagedList<UserModel> usersReturn = null;

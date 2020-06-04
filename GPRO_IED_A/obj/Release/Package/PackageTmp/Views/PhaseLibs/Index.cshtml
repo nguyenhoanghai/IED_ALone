@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewBag.Title = "Công đoạn mẫu";
+     Layout = null  ;
+}
+
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#phas_infobox" aria-controls="phas_infobox" role="tab" data-toggle="tab">Công đoạn không phải mẫu</a></li>
+    <li role="presentation"><a href="#Phantich" aria-controls="Phantich" role="tab" data-toggle="tab">Công đoạn mẫu</a></li>
+</ul>
+<div class="tab-content" style="max-height:550px;overflow-y:scroll;margin-bottom:10px;border-radius:0">
+    <div role="tabpanel" class="tab-pane active" id="phas_infobox">
+        <div id="tb-phase"></div>
+        <div class="modal-footer custom-footer">
+            <button class="btn btn-primary bt-save-1">
+                <div class="button-image image-save"></div>
+                Lưu các công đoạn được chọn làm công đoạn mẫu
+            </button>
+        </div>
+    </div>
+    <div role="tabpanel" class="tab-pane " id="Phantich">
+        <div id="tb-phase-lib"></div>
+        <div class="modal-footer custom-footer">
+            <button class="btn btn-primary bt-save-2">
+                <div class="button-image image-save"></div>
+                Gỡ các công đoạn được chọn khỏi danh sách công đoạn mẫu
+            </button>
+        </div>
+    </div>
+</div>
+  
+<script src="~/Scripts/IED/PhaseLibs/phase-libs.js"></script>

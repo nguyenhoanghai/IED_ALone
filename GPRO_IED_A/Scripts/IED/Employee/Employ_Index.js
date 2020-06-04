@@ -112,7 +112,7 @@ GPRO.EmployeeList = function () {
         $('#' + Global.Element.Jtable).jtable({
             title: 'Quản Lý Nhân Viên',
             paging: true,
-            pageSize: 50,
+            pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
             selectShow: true,

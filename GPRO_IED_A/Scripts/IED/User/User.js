@@ -297,8 +297,8 @@ GPRO.User = function () {
         $('#' + Global.Element.JtableUser).jtable({
             title: 'Danh Sách Tài Khoản',
             paging: true,
-            pageSize: 10,
-            pageSizeChangeUser: true,
+            pageSize: 1000,
+            pageSizeChange: true,
             sorting: true,
             selectShow: true,
             actions: {

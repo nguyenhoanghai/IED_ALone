@@ -41,7 +41,6 @@ namespace GPRO_IED_A.Data
         public DbSet<SUserRole> SUserRoles { get; set; }
         public DbSet<SWorkerLevel> SWorkerLevels { get; set; }
         public DbSet<T_ApplyPressureLibrary> T_ApplyPressureLibrary { get; set; }
-        public DbSet<T_CA_Phase> T_CA_Phase { get; set; }
         public DbSet<T_CA_Phase_Mani> T_CA_Phase_Mani { get; set; }
         public DbSet<T_CA_Phase_TimePrepare> T_CA_Phase_TimePrepare { get; set; }
         public DbSet<T_CommodityAnalysis> T_CommodityAnalysis { get; set; }
@@ -76,5 +75,7 @@ namespace GPRO_IED_A.Data
         public DbSet<T_TimeTypePrepare> T_TimeTypePrepare { get; set; }
         public DbSet<T_WorkShop> T_WorkShop { get; set; }
         public DbSet<T_EquipmentType> T_EquipmentType { get; set; }
+        public DbSet<T_CA_Phase> T_CA_Phase { get; set; }
+        public DbSet<T_Customer> T_Customer { get; set; }
     }
 }

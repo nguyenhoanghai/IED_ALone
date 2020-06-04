@@ -267,7 +267,7 @@ GPRO.LaborDivision = function () {
         $('#' + Global.Element.Jtable).jtable({
             title: 'Danh sách thiết kế chuyền',
             paging: true,
-            pageSize: 50,
+            pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
             selectShow: true,

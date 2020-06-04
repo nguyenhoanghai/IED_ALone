@@ -108,6 +108,36 @@ function GetProductSelect(controlName) {
     });
 }
 
+function GetCustomerSelect(controlName) {
+    $.ajax({
+        url: '/Customer/GetSelectList',
+        type: 'POST',
+        data: '',
+        contentType: 'application/json charset=utf-8',
+        success: function (data) {
+            GlobalCommon.CallbackProcess(data, function () {
+                if (data.Result == "OK") {
+                    if (data.Data.length > 0) {
+                        var str = '';
+                        if (data.Data.length > 0) {
+                            $.each(data.Data, function (index, item) {
+                                str += ' <option value="' + item.Value + '">' + item.Name + '</option>';
+                            });
+                        }
+                        $('#' + controlName).empty().append(str);
+                        $('[' + controlName + ']').empty().append(str);
+                        $('#' + controlName).trigger('liszt:updated');
+                    }
+                }
+            }, false, '', true, true, function () {
+                var msg = GlobalCommon.GetErrorMessage(data);
+                GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+            });
+        }
+    });
+}
+
+
 function GetWorkshopSelect(controlName) {
     $.ajax({
         url: '/Workshop/GetSelect',

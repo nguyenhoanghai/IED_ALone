@@ -23,9 +23,6 @@ GPRO.Product = function () {
             GetListProduct: '/Product/Gets',
             SaveProduct: '/Product/Save',
             DeleteProduct: '/Product/Delete',
-            //GetProDeGroup: '/Product/GetProductDetailGroupByProductId',
-            //SaveProDeGroup: '/Product/SaveProductDetailGroup',
-            //DeleteProDeGroup: '/Product/DeleteProductDetailGroup',
         },
         Element: {
             JtableProduct: 'jtableProduct',
@@ -57,6 +54,7 @@ GPRO.Product = function () {
         ReloadList();
         InitPopup();
         BindData(null);
+        GetCustomerSelect('pcustomer');
     }
 
     this.reloadListProduct = function () {
@@ -73,8 +71,8 @@ GPRO.Product = function () {
 
     var RegisterEvent = function () {
         $("#proIsPrivate").kendoMobileSwitch({
-            onLabel: "Tất cả",
-            offLabel: "Nội bộ"
+            onLabel: "Nội bộ",
+            offLabel: "Tất cả"
         });
 
         $('#' + Global.Element.PopupProduct).on('shown.bs.modal', function () {
@@ -111,7 +109,8 @@ GPRO.Product = function () {
             Code: '',
             Description: '',
             CTBTP: '',
-            IsPrivate: false
+            IsPrivate: false,
+            CustomerId:0
         };
         switchInstance.check(true);
         if (Product != null) {
@@ -122,6 +121,7 @@ GPRO.Product = function () {
                 Description: ko.observable(Product.Description),
                 CTBTP: ko.observable(Product.CTBTP),
                 IsPrivate: ko.observable(Product.IsPrivate),
+                CustomerId: 0
             };
             switchInstance.check(Product.IsPrivate)
         }
@@ -135,6 +135,8 @@ GPRO.Product = function () {
 
     function SaveProduct() {
         Global.Data.ModelProduct.IsPrivate = $("#proIsPrivate").data("kendoMobileSwitch").check();
+        Global.Data.ModelProduct.CustomerId = $("#pcustomer").val();
+        Global.Data.ModelProduct.Code = $("#pcustomer option:selected").text();
         $.ajax({
             url: Global.UrlAction.SaveProduct,
             type: 'post',
@@ -148,7 +150,7 @@ GPRO.Product = function () {
                         ReloadList(); 
                         BindData(null);
                         $('#pdes').val('');
-
+                        $("#pcustomer").val('');
                         if (!Global.Data.IsInsert) {
                             $("#" + Global.Element.PopupProduct + ' button[pcancel]').click();
                             $('div.divParent').attr('currentPoppup', '');
@@ -169,7 +171,7 @@ GPRO.Product = function () {
         $('#' + Global.Element.JtableProduct).jtable({
             title: 'Quản lý mã hàng',
             paging: true,
-            pageSize: 50,
+            pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
             selectShow: true,
@@ -226,7 +228,8 @@ GPRO.Product = function () {
                     display: function (data) {
                         var text = $('<i data-toggle="modal" data-target="#' + Global.Element.PopupProduct + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
                         text.click(function () {
-                            BindData(data.record); 
+                            BindData(data.record);
+                            $("#pcustomer").val(data.record.CustomerId);
                             Global.Data.IsInsert = false;
                         });
                         return text;
@@ -303,8 +306,7 @@ GPRO.Product = function () {
             return false;
         }
         return true;
-    }
-     
+    }     
 }
 
 $(document).ready(function () {

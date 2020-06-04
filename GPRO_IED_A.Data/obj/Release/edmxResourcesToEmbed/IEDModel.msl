@@ -324,36 +324,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="T_CA_Phase">
-      <EntityTypeMapping TypeName="IEDModel.T_CA_Phase">
-        <MappingFragment StoreEntitySet="T_CA_Phase">
-          <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
-          <ScalarProperty Name="DeletedUser" ColumnName="DeletedUser" />
-          <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
-          <ScalarProperty Name="UpdatedUser" ColumnName="UpdatedUser" />
-          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-          <ScalarProperty Name="CreatedUser" ColumnName="CreatedUser" />
-          <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-          <ScalarProperty Name="Video" ColumnName="Video" />
-          <ScalarProperty Name="Node" ColumnName="Node" />
-          <ScalarProperty Name="PercentWasteMaterial" ColumnName="PercentWasteMaterial" />
-          <ScalarProperty Name="PercentWasteSpecial" ColumnName="PercentWasteSpecial" />
-          <ScalarProperty Name="PercentWasteManipulation" ColumnName="PercentWasteManipulation" />
-          <ScalarProperty Name="PercentWasteEquipment" ColumnName="PercentWasteEquipment" />
-          <ScalarProperty Name="ApplyPressuresId" ColumnName="ApplyPressuresId" />
-          <ScalarProperty Name="TotalTMU" ColumnName="TotalTMU" />
-          <ScalarProperty Name="ParentId" ColumnName="ParentId" />
-          <ScalarProperty Name="PhaseGroupId" ColumnName="PhaseGroupId" />
-          <ScalarProperty Name="WorkerLevelId" ColumnName="WorkerLevelId" />
-          <ScalarProperty Name="EquipmentId" ColumnName="EquipmentId" />
-          <ScalarProperty Name="Description" ColumnName="Description" />
-          <ScalarProperty Name="Code" ColumnName="Code" />
-          <ScalarProperty Name="Name" ColumnName="Name" />
-          <ScalarProperty Name="Index" ColumnName="Index" />
-          <ScalarProperty Name="Id" ColumnName="Id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="T_CA_Phase_Mani">
       <EntityTypeMapping TypeName="IEDModel.T_CA_Phase_Mani">
         <MappingFragment StoreEntitySet="T_CA_Phase_Mani">
@@ -855,6 +825,7 @@
     <EntitySetMapping Name="T_Product">
       <EntityTypeMapping TypeName="IEDModel.T_Product">
         <MappingFragment StoreEntitySet="T_Product">
+          <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
           <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
           <ScalarProperty Name="DeletedUser" ColumnName="DeletedUser" />
           <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
@@ -1006,6 +977,54 @@
           <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
           <ScalarProperty Name="ObjectType" ColumnName="ObjectType" />
           <ScalarProperty Name="EquipTypeDefaultId" ColumnName="EquipTypeDefaultId" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="T_CA_Phase">
+      <EntityTypeMapping TypeName="IEDModel.T_CA_Phase">
+        <MappingFragment StoreEntitySet="T_CA_Phase">
+          <ScalarProperty Name="IsLibrary" ColumnName="IsLibrary" />
+          <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+          <ScalarProperty Name="DeletedUser" ColumnName="DeletedUser" />
+          <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+          <ScalarProperty Name="UpdatedUser" ColumnName="UpdatedUser" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="CreatedUser" ColumnName="CreatedUser" />
+          <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+          <ScalarProperty Name="Video" ColumnName="Video" />
+          <ScalarProperty Name="Node" ColumnName="Node" />
+          <ScalarProperty Name="PercentWasteMaterial" ColumnName="PercentWasteMaterial" />
+          <ScalarProperty Name="PercentWasteSpecial" ColumnName="PercentWasteSpecial" />
+          <ScalarProperty Name="PercentWasteManipulation" ColumnName="PercentWasteManipulation" />
+          <ScalarProperty Name="PercentWasteEquipment" ColumnName="PercentWasteEquipment" />
+          <ScalarProperty Name="ApplyPressuresId" ColumnName="ApplyPressuresId" />
+          <ScalarProperty Name="TotalTMU" ColumnName="TotalTMU" />
+          <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+          <ScalarProperty Name="PhaseGroupId" ColumnName="PhaseGroupId" />
+          <ScalarProperty Name="WorkerLevelId" ColumnName="WorkerLevelId" />
+          <ScalarProperty Name="EquipmentId" ColumnName="EquipmentId" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Index" ColumnName="Index" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="T_Customer">
+      <EntityTypeMapping TypeName="IEDModel.T_Customer">
+        <MappingFragment StoreEntitySet="T_Customer">
+          <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+          <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+          <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="UpdatedUser" ColumnName="UpdatedUser" />
+          <ScalarProperty Name="DeletedUser" ColumnName="DeletedUser" />
+          <ScalarProperty Name="CreatedUser" ColumnName="CreatedUser" />
+          <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Id" ColumnName="Id" />

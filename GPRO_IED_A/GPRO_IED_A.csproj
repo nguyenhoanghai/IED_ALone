@@ -190,6 +190,7 @@
     <Compile Include="Controllers\AuthenticateController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
+    <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\EquipmentController.cs" />
     <Compile Include="Controllers\EquipmentGroupController.cs" />
@@ -198,6 +199,7 @@
     <Compile Include="Controllers\LineController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\MTypeController.cs" />
+    <Compile Include="Controllers\PhaseLibsController.cs" />
     <Compile Include="Controllers\ProAnaController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
@@ -1316,6 +1318,7 @@
     <Content Include="Scripts\IED\Category\C_Index.js" />
     <Content Include="Scripts\IED\Common.js" />
     <Content Include="Scripts\IED\Common.min.js" />
+    <Content Include="Scripts\IED\Customer\customer.js" />
     <Content Include="Scripts\IED\EGroup\EG_Index.js" />
     <Content Include="Scripts\IED\Employee\Employ_Index.js" />
     <Content Include="Scripts\IED\Equipment\E_Index.js" />
@@ -1328,6 +1331,7 @@
     <Content Include="Scripts\IED\Menu\M_Index.js" />
     <Content Include="Scripts\IED\MType\MT_Index.js" />
     <Content Include="Scripts\IED\PhaseGroup\PG_Index.js" />
+    <Content Include="Scripts\IED\PhaseLibs\phase-libs.js" />
     <Content Include="Scripts\IED\ProAna\PA_Index.js" />
     <Content Include="Scripts\IED\ProAna\PA_Index.min.js" />
     <Content Include="Scripts\IED\ProAna\PA_TKC.js" />
@@ -1399,6 +1403,8 @@
     <Content Include="Views\MType\MTPartial.cshtml" />
     <Content Include="Views\Menu\Index.cshtml" />
     <Content Include="Views\Shared\_MaterializeLayout.cshtml" />
+    <Content Include="Views\PhaseLibs\Index.cshtml" />
+    <Content Include="Views\Customer\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

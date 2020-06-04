@@ -13,6 +13,7 @@ namespace GPRO_IED_A.Business.Model
         public string Img { get; set; }
         public string Description { get; set; } 
         public int? CompanyId { get; set; }
+        public int CustomerId { get; set; }
         public bool IsPrivate { get; set; }
         public int ActionUser { get; set; }
     }

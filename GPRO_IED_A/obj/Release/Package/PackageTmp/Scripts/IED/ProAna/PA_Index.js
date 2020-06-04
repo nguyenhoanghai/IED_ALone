@@ -1456,7 +1456,7 @@ GPRO.ProAna = function () {
         $('#' + Global.Element.jtable_timeprepare_arr).jtable({
             title: 'Danh Sách Thời Gian Chuẩn Bị',
             paging: true,
-            pageSize: 5,
+            pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
             selectShow: true,
@@ -1548,8 +1548,8 @@ GPRO.ProAna = function () {
         $('#' + Global.Element.jtable_Timeprepare_Chooise).jtable({
             title: 'Danh Sách Thời Gian Chuẩn Bị',
             paging: true,
-            pageSize: 5,
-            pageSizeChangeTimePrepare: true,
+            pageSize: 1000,
+            pageSizeChange: true,
             sorting: true,
             selectShow: true,
             selecting: true, //Enable selecting
@@ -1613,7 +1613,7 @@ GPRO.ProAna = function () {
         $('#' + Global.Element.jtablePhase).jtable({
             title: 'Danh sách Công Đoạn',
             paging: true,
-            pageSize: 50,
+            pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
             selectShow: true,
@@ -1728,6 +1728,7 @@ GPRO.ProAna = function () {
                             $('#equiptypedefaultId').val(data.record.EquipTypeDefaultId);
                             $('#E_info').val(data.record.EquipDes);
                             $('#ApplyPressure').val(data.record.ApplyPressuresId);
+                            $('#islibs').prop('checked', data.record.IsLibrary);
                             $('#chooseApplyPressure').hide();
                             if (data.record.ApplyPressuresId != 0)
                                 $('#chooseApplyPressure').show();
@@ -1816,7 +1817,8 @@ GPRO.ProAna = function () {
             IsDetailChange: Global.Data.ManipulationVersionModel.IsDetailChange,
             actions: Global.Data.PhaseManiVerDetailArray,
             Index: ($('#phase-index').val() == '' ? (Global.Data.phaseLastIndex + 1) : parseInt( $('#phase-index').val())),
-            Video: Global.Data.Video
+            Video: Global.Data.Video,
+            IsLibrary: $('#islibs').prop('checked')
         }
         $.ajax({
             url: Global.UrlAction.SavePhase,
@@ -1843,6 +1845,7 @@ GPRO.ProAna = function () {
                         $('#TotalTMU').html('0');
                         $('#phase-Des').val('');
                         $('#phaseID').val('0');
+                        $('#islibs').prop('checked', false);
                         Global.Data.PhaseManiVerDetailArray.length = 0;
                         AddEmptyObject();
                         ReloadListMani_Arr();
@@ -2362,7 +2365,7 @@ GPRO.ProAna = function () {
         $('#' + Global.Element.JtableEquipment).jtable({
             title: 'Danh sách Thiết Bị',
             paging: true,
-            pageSize: 10,
+            pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
             selectShow: true,
@@ -2618,6 +2621,7 @@ GPRO.ProAna = function () {
                         $('#phase-name').val(data.Records.Name);
                           $('#phase-index').html(data.Records.Index);
 
+                        Global.Data.TimePrepareArray.length = 0;
                         if (data.Records.timePrepares.length > 0) {
                             $.each(data.Records.timePrepares, function (i, item) {
                                 Global.Data.TimePrepareArray.push(item);
@@ -2658,7 +2662,7 @@ GPRO.ProAna = function () {
                         ReloadListMani_Arr();
                         $('[percentequipment]').val(data.Records.PercentWasteEquipment);
                         $('[percentmanipulation]').val(data.Records.PercentWasteManipulation);
-                        $('[percentdb]').val(data.Records.PercentWasteManipulation);
+                        $('[percentdb]').val(data.Records.PercentWasteSpecial);
                         $('[percentnpl]').val(data.Records.PercentWasteMaterial);
                         UpdateIntWaste();
                         Global.Data.isInsertPhase = false;
@@ -3034,7 +3038,7 @@ GPRO.ProAna = function () {
                                     obj = {
                                         Id: item.Id,
                                         TechProcessVersionId: item.TechProcessVersionId,
-                                        PhaseId: item.PhaseId,
+                                        CA_PhaseId: item.CA_PhaseId,
                                         OrderIndex: ii,
                                         EquipmentId: null,
                                         StandardTMU: Math.round((item.StandardTMU) * 1000) / 1000,
@@ -3042,6 +3046,7 @@ GPRO.ProAna = function () {
                                         TimeByPercent: Math.round((item.TimeByPercent) * 1000) / 1000,
                                         Worker: Math.round(item.Worker * 1000) / 1000,
                                         Description: item.Description
+                                         
                                     };
                                     Global.Data.TechCycle_Arr.push(obj);
                                     tog += item.TimeByPercent;
@@ -3080,7 +3085,8 @@ GPRO.ProAna = function () {
             success: function (result) {
                 $('#loading').hide();
                 GlobalCommon.CallbackProcess(result, function () {
-                    if (result.Result == "OK") {
+                    if (result.Result != "ERROR") {
+                        $('#techId').val(result.Result)
                         if (Global.Data.AfterSave)
                             $('[techexport]').click();
                         else

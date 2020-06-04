@@ -21,7 +21,7 @@ namespace GPRO_IED_A.Controllers
                                                            MANIPULATION  
        ********************************************************************************************************************/
         [HttpPost]
-        public JsonResult Gets_(string keyword, int searchBy, int maniType, int jtStartIndex = 0, int jtPageSize = 0, string jtSorting = "")
+        public JsonResult Gets_(string keyword, int searchBy, int maniType, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
             try
             {
@@ -38,7 +38,7 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetListSmall(string keyword, int searchBy, int jtStartIndex = 0, int jtPageSize = 0, string jtSorting = "")
+        public JsonResult GetListSmall(string keyword, int searchBy, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
             try
             {
@@ -55,7 +55,7 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetManipulationEquipment(int Id, int jtStartIndex = 0, int jtPageSize = 0, string jtSorting = "")
+        public JsonResult GetManipulationEquipment(int Id, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
             try
             {

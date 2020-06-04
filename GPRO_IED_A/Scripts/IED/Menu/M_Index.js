@@ -158,7 +158,7 @@ GPRO.Menu = function () {
         $('#' + Global.Element.JtableMenu).jtable({
             title: 'Quản Lý Danh Mục',
             paging: true,
-            pageSize: 50,
+            pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
             selectShow: true,

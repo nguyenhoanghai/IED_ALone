@@ -139,7 +139,7 @@ GPRO.EGroup = function () {
         $('#' + Global.Element.JtableEGroup).jtable({
             title: 'Danh Sách Nhóm Thiết Bị',
             paging: true,
-            pageSize: 50,
+            pageSize: 1000,
             pageSizeChange : true,
             sorting: true,
             selectShow: true,
@@ -304,8 +304,8 @@ GPRO.EGroup = function () {
         $('#' + Global.Element.JtableEquipment).jtable({
             title: 'Danh sách Thiết Bị',
             paging: true,
-            pageSize: 50,
-            pageSizeChangeEquipment: true,
+            pageSize: 1000,
+            pageSizeChange: true,
             sorting: true,
             selectShow: true,
             selecting: true, //Enable selecting

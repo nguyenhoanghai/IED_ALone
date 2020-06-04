@@ -21,7 +21,6 @@
         <EntityTypeShape EntityType="IEDModel.SUserRole" Width="1.5" PointX="16.5" PointY="41.625" />
         <EntityTypeShape EntityType="IEDModel.SWorkerLevel" Width="1.5" PointX="5.25" PointY="52.25" />
         <EntityTypeShape EntityType="IEDModel.T_ApplyPressureLibrary" Width="1.5" PointX="6" PointY="11.875" />
-        <EntityTypeShape EntityType="IEDModel.T_CA_Phase" Width="1.5" PointX="7.5" PointY="29.75" />
         <EntityTypeShape EntityType="IEDModel.T_CA_Phase_Mani" Width="1.5" PointX="13.5" PointY="32" />
         <EntityTypeShape EntityType="IEDModel.T_CA_Phase_TimePrepare" Width="1.5" PointX="15.75" PointY="31.5" />
         <EntityTypeShape EntityType="IEDModel.T_CommodityAnalysis" Width="1.5" PointX="5.25" PointY="32.75" />
@@ -73,14 +72,7 @@
         <AssociationConnector Association="IEDModel.FK_SUserRole_SUser" />
         <AssociationConnector Association="IEDModel.FK_T_LabourDivision_SUser" />
         <AssociationConnector Association="IEDModel.FK_T_LabourDivision_SUser1" />
-        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_SWorkerLevel" />
         <AssociationConnector Association="IEDModel.FK_T_ManipulationLibrary_T_ApplyPressureLibrary" />
-        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_ManiVer_De_T_CA_Phase" />
-        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_T_CommodityAnalysis" />
-        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_T_Equipment" />
-        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_T_PhaseGroup" />
-        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_TimePrepare_T_CA_Phase" />
-        <AssociationConnector Association="IEDModel.FK_T_TechProcessVersionDetail_T_CA_Phase" />
         <AssociationConnector Association="IEDModel.FK_T_CA_Phase_ManiVer_De_T_ManipulationLibrary" />
         <AssociationConnector Association="IEDModel.FK_T_CA_Phase_TimePrepare_T_TimePrepare" />
         <AssociationConnector Association="IEDModel.FK_T_LabourDivision_T_CommoAna" />
@@ -112,6 +104,16 @@
         <AssociationConnector Association="IEDModel.FK_T_EquipmentTypeAttribute_T_EquipmentType" />
         <AssociationConnector Association="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType" />
         <AssociationConnector Association="IEDModel.FK_T_ManipulationLibrary_T_EquipmentType1" />
+        <EntityTypeShape EntityType="IEDModel.T_CA_Phase" Width="1.5" PointX="8.5" PointY="38.625" />
+        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_SWorkerLevel" />
+        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_ManiVer_De_T_CA_Phase" />
+        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_T_CommodityAnalysis" />
+        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_T_Equipment" />
+        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_T_PhaseGroup" />
+        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_TimePrepare_T_CA_Phase" />
+        <AssociationConnector Association="IEDModel.FK_T_TechProcessVersionDetail_T_CA_Phase" />
+        <EntityTypeShape EntityType="IEDModel.T_Customer" Width="1.5" PointX="3" PointY="57.75" />
+        <AssociationConnector Association="IEDModel.FK_T_Product_T_Customer" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

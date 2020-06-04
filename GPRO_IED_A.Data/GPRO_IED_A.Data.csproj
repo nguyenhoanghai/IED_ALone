@@ -129,6 +129,9 @@
     <Compile Include="T_CompanySkillDetail.cs">
       <DependentUpon>IEDModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="T_Customer.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="T_EmployeePhase.cs">
       <DependentUpon>IEDModel.tt</DependentUpon>
     </Compile>

@@ -83,8 +83,8 @@ GPRO.Role = function () {
         $('#' + Global.Element.JtableRole).jtable({
             title: 'Quản Lý Nhóm Quyền',
             paging: true,
-            pageSize: 10,
-            pageSizeChangeRole: true,
+            pageSize: 1000,
+            pageSizeChange: true,
             sorting: true,
             selectShow: true,
             actions: {

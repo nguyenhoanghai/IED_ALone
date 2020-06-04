@@ -45,6 +45,7 @@ namespace GPRO_IED_A.Data
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
+        public bool IsLibrary { get; set; }
     
         public virtual SWorkerLevel SWorkerLevel { get; set; }
         public virtual ICollection<T_CA_Phase_Mani> T_CA_Phase_Mani { get; set; }

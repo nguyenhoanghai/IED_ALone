@@ -70,10 +70,11 @@ namespace GPRO_IED_A.Business
                             {
                                 Id = x.Id,
                                 Name = x.Name,
-                                Code = x.Code,
+                                Code = x.T_Customer.Name,
                                 Description = x.Description,
                                 IsPrivate = (x.CompanyId == null ? true :false ),
-                                CompanyId = x.CompanyId
+                                CompanyId = x.CompanyId,
+                                CustomerId = x.CustomerId
                             }).ToList();
                         break;
                     case "2":
@@ -82,10 +83,11 @@ namespace GPRO_IED_A.Business
                             {
                                 Id = x.Id,
                                 Name = x.Name,
-                                Code = x.Code,
+                                Code = x.T_Customer.Name,
                                 Description = x.Description,
                                 IsPrivate = (x.CompanyId == null ?  true:false ),
-                                CompanyId = x.CompanyId
+                                CompanyId = x.CompanyId,
+                                CustomerId = x.CustomerId
                             }).ToList();
                         break;
                 }
@@ -108,10 +110,11 @@ namespace GPRO_IED_A.Business
                     {
                         Id = x.Id,
                         Name = x.Name,
-                        Code = x.Code,
+                        Code = x.T_Customer.Name,
                         Description = x.Description,
                         CompanyId = x.CompanyId,
-                        IsPrivate = (x.CompanyId == null ? true : false)
+                        IsPrivate = (x.CompanyId == null ? true : false),
+                        CustomerId = x.CustomerId
                     }).ToList();
                 if (productTypes != null && productTypes.Count > 0)
                     return productTypes;
@@ -138,15 +141,15 @@ namespace GPRO_IED_A.Business
                     }
                     else
                     {
-                        if (!string.IsNullOrEmpty(model.Code))
-                        {
-                            if (CheckExists(model.Code.Trim().ToUpper(), model.Id, model.CompanyId , false))
-                            {
-                                result.IsSuccess = false;
-                                result.Errors.Add(new Error() { MemberName = "Insert Product Type", Message = "Mã  Sản Phẩm này đã tồn tại. Vui lòng chọn lại Tên khác !." });
-                                return result;
-                            }
-                        }
+                        //if (!string.IsNullOrEmpty(model.Code))
+                        //{
+                        //    if (CheckExists(model.Code.Trim().ToUpper(), model.Id, model.CompanyId , false))
+                        //    {
+                        //        result.IsSuccess = false;
+                        //        result.Errors.Add(new Error() { MemberName = "Insert Product Type", Message = "Mã  Sản Phẩm này đã tồn tại. Vui lòng chọn lại Tên khác !." });
+                        //        return result;
+                        //    }
+                        //}
                         T_Product obj;
                         if (model.Id == 0)
                         {
@@ -170,6 +173,7 @@ namespace GPRO_IED_A.Business
                                 obj.CompanyId = model.CompanyId;
                                 obj.Name = model.Name;
                                 obj.Code = model.Code;
+                                obj.CustomerId = model.CustomerId;
                                 obj.Description = model.Description;
                                 obj.UpdatedUser = model.ActionUser;
                                 obj.UpdatedDate = DateTime.Now;

@@ -184,7 +184,7 @@ GPRO.Equipment = function () {
         $('#' + Global.Element.JtableEquipment).jtable({
             title: 'Danh sách Thiết Bị',
             paging: true,
-            pageSize: 50,
+            pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
             selectShow: true,

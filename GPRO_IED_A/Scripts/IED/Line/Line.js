@@ -119,7 +119,7 @@ GPRO.Line = function () {
         $('#' + Global.Element.JtableLine).jtable({
             title: 'Danh sách Chuyền',
             paging: true,
-            pageSize: 50,
+            pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
             selectShow: true,

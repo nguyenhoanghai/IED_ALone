@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GPRO_IED_A.Business
 {
@@ -41,14 +39,14 @@ namespace GPRO_IED_A.Business
                 if (techProcessInfo != null)
                 {
                     using (db = new IEDEntities())
-                    { 
+                    {
                         model = new ExportTechProcessModel();
                         Parse.CopyObject(techProcessInfo, ref model);
                         var listDetail = techProcessInfo.details;
                         if (listDetail != null && listDetail.Count > 0)
                         {
-                            var listPhaseId = listDetail.OrderBy(x => x.PhaseCode).Select(c => c.CA_PhaseId).ToList();
-                            var listPhase = db.T_CA_Phase.Where(c => listPhaseId.Contains(c.Id) && !c.IsDeleted).OrderBy(x => x.Code).ToList();
+                            var listPhaseId = listDetail.OrderBy(x => x.PhaseCode).Select(c => c.CA_PhaseId).OrderBy(x => x).ToList();
+                            var listPhase = db.T_CA_Phase.Where(c => !c.IsDeleted && listPhaseId.Contains(c.Id)).OrderBy(x => x.Code).ToList();
                             if (listPhase != null)
                             {
                                 var listPhaseGroupId = listPhase.Select(c => c.PhaseGroupId).Distinct().ToList();
@@ -115,7 +113,7 @@ namespace GPRO_IED_A.Business
                     var result = new ResponseBase();
                     T_TechProcessVersion version = null;
                     T_TechProcessVersionDetail verDetail = null;
-
+                    model.Id = 0;
                     if (model.Id == 0)
                     {
                         version = new T_TechProcessVersion();
@@ -136,6 +134,8 @@ namespace GPRO_IED_A.Business
                                 version.T_TechProcessVersionDetail.Add(verDetail);
                             }
                         }
+                        string query = "update T_TechProcessVersion set IsDeleted = 1 WHERE ParentId =" + version.ParentId;
+                        db.Database.ExecuteSqlCommand(query);
                         db.T_TechProcessVersion.Add(version);
                     }
                     else
@@ -163,7 +163,7 @@ namespace GPRO_IED_A.Business
                             version.PricePerSecond = model.PricePerSecond;
                             version.Allowance = model.Allowance;
 
-                            var details = db.T_TechProcessVersionDetail.Where(x => !x.IsDeleted && x.TechProcessVersionId == model.Id).OrderBy(x=>x.Id).ToList();
+                            var details = db.T_TechProcessVersionDetail.Where(x => !x.IsDeleted && x.TechProcessVersionId == model.Id).OrderBy(x => x.Id).ToList();
                             if (details.Count > 0)
                             {
                                 model.details = model.details.OrderBy(x => x.Id).ToList();
@@ -181,6 +181,7 @@ namespace GPRO_IED_A.Business
                         #endregion
                     }
                     db.SaveChanges();
+                    result.Data = version.Id;
                     result.IsSuccess = true;
 
                     return result;
@@ -226,10 +227,10 @@ namespace GPRO_IED_A.Business
         {
             try
             {
-                using (db = new IEDEntities())
+                using (var _db = new IEDEntities())
                 {
                     TechProcessVersionModel techVersion = null;
-                    techVersion = db.T_TechProcessVersion.Where(x => !x.IsDeleted && x.ParentId == parentId).Select(x => new TechProcessVersionModel()
+                    techVersion = _db.T_TechProcessVersion.Where(x => !x.IsDeleted && x.ParentId == parentId).Select(x => new TechProcessVersionModel()
                     {
                         Id = x.Id,
                         ProductId = x.ProductId,
@@ -252,31 +253,36 @@ namespace GPRO_IED_A.Business
                     }).FirstOrDefault();
                     if (techVersion != null)
                     {
-                        #region
-                        var details = db.T_TechProcessVersionDetail.Where(x => !x.IsDeleted && x.TechProcessVersionId == techVersion.Id).Select(x => new TechProcessVerDetailModel()
-                        {
-                            Id = x.Id,
-                            TechProcessVersionId = x.TechProcessVersionId,
-                            PhaseGroupId = x.T_CA_Phase.T_PhaseGroup.Id,
-                            CA_PhaseId = x.CA_PhaseId,
-                            PhaseCode = x.T_CA_Phase.Code,
-                            PhaseName = x.T_CA_Phase.Name,
-                            //   StandardTMU = Math.Round(x.StandardTMU, 3),
-                            StandardTMU = Math.Round(x.T_CA_Phase.TotalTMU, 3),
-                            Percent = x.Percent,
-                            EquipmentId = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.EquipmentId ?? 0 : 0,
-                            EquipmentCode = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.T_Equipment.Code : "",
-                            EquipmentName = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.T_Equipment.Name : "",
-                            EquipmentGroupCode = x.T_CA_Phase.EquipmentId.HasValue ? x.T_CA_Phase.T_Equipment.T_EquipmentGroup.GroupCode : "",
-                            TimeByPercent = Math.Round(x.TimeByPercent, 3),
-                            Worker = x.Worker,
-                            De_Percent = 0,
-                            Description = x.Description == null ? "" : x.Description,
-                            Coefficient = x.T_CA_Phase.SWorkerLevel.Coefficient,
-                            WorkerLevelId = x.T_CA_Phase.WorkerLevelId,
-                            WorkerLevelName = x.T_CA_Phase.SWorkerLevel.Name,
-                            Index = x.T_CA_Phase.Index
-                        }).OrderBy(x => x.Index).ThenBy(x => x.PhaseCode).ToList();
+                        #region 
+                        var details = (from x in _db.T_TechProcessVersionDetail
+                                       where
+                                       !x.T_CA_Phase.IsDeleted && 
+                                       x.TechProcessVersionId == techVersion.Id
+                                       select
+                                       new TechProcessVerDetailModel()
+                                       {
+                                           Id = x.Id,
+                                           TechProcessVersionId = x.TechProcessVersionId,
+                                           PhaseGroupId = x.T_CA_Phase.T_PhaseGroup.Id,
+                                           CA_PhaseId = x.CA_PhaseId,
+                                           PhaseCode = x.T_CA_Phase.Code,
+                                           PhaseName = x.T_CA_Phase.Name,
+                                           //   StandardTMU = Math.Round(x.StandardTMU, 3),
+                                           StandardTMU = Math.Round(x.T_CA_Phase.TotalTMU, 3),
+                                           Percent = x.Percent,
+                                           EquipmentId = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.EquipmentId ?? 0 : 0,
+                                           EquipmentCode = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.T_Equipment.Code : "",
+                                           EquipmentName = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.T_Equipment.Name : "",
+                                           EquipmentGroupCode = x.T_CA_Phase.EquipmentId.HasValue ? x.T_CA_Phase.T_Equipment.T_EquipmentGroup.GroupCode : "",
+                                           TimeByPercent = Math.Round(x.TimeByPercent, 3),
+                                           Worker = x.Worker,
+                                           De_Percent = 0,
+                                           Description = x.Description == null ? "" : x.Description,
+                                           Coefficient = x.T_CA_Phase.SWorkerLevel.Coefficient,
+                                           WorkerLevelId = x.T_CA_Phase.WorkerLevelId,
+                                           WorkerLevelName = x.T_CA_Phase.SWorkerLevel.Name,
+                                           Index = x.T_CA_Phase.Index
+                                       }).OrderBy(x => x.Index).ThenBy(x => x.PhaseCode).ToList();
                         techVersion.details = details;
 
                         var listEquipmentId = details.Where(c => c.EquipmentId > 0).Select(c => c.EquipmentId).Distinct().ToList();
@@ -302,7 +308,7 @@ namespace GPRO_IED_A.Business
                         var phaseIds = details.Select(x => x.CA_PhaseId).Distinct().ToList();
                         if (phaseIds != null && phaseIds.Count > 0)
                         {
-                            var timePrepares = db.T_CA_Phase_TimePrepare.Where(x => !x.IsDeleted && phaseIds.Contains(x.Commo_Ana_PhaseId)).Select(x => new Commo_Ana_Phase_TimePrepareModel()
+                            var timePrepares = _db.T_CA_Phase_TimePrepare.Where(x => !x.IsDeleted && phaseIds.Contains(x.Commo_Ana_PhaseId)).Select(x => new Commo_Ana_Phase_TimePrepareModel()
                             {
                                 Id = x.Id,
                                 Commo_Ana_PhaseId = x.Commo_Ana_PhaseId,
@@ -311,7 +317,7 @@ namespace GPRO_IED_A.Business
                             if (timePrepares != null && timePrepares.Count > 0)
                             {
                                 double tmu = 0, time = 0;
-                                var cfObj = db.T_IEDConfig.FirstOrDefault(x => !x.IsDeleted && x.Name.Trim().ToUpper().Equals(eIEDConfigName.TMU.Trim().ToUpper()));
+                                var cfObj = _db.T_IEDConfig.FirstOrDefault(x => !x.IsDeleted && x.Name.Trim().ToUpper().Equals(eIEDConfigName.TMU.Trim().ToUpper()));
                                 if (cfObj != null && !string.IsNullOrEmpty(cfObj.Value))
                                     double.TryParse(cfObj.Value, out tmu);
                                 foreach (var item in details)
@@ -322,12 +328,29 @@ namespace GPRO_IED_A.Business
                             }
                         }
 
+                        if (!string.IsNullOrEmpty(node))
+                            techVersion.details.AddRange(_db.T_CA_Phase.Where(x => !x.IsDeleted && x.Node.Contains(node) && !phaseIds.Contains(x.Id)).Select(x => new TechProcessVerDetailModel()
+                            {
+                                Id = 0,
+                                TechProcessVersionId = 0,
+                                PhaseGroupId = x.T_PhaseGroup.Id,
+                                CA_PhaseId = x.Id,
+                                PhaseCode = x.Code,
+                                Index = x.Index,
+                                PhaseName = x.Name,
+                                StandardTMU = Math.Round(x.TotalTMU, 3),
+                                EquipmentId = x.EquipmentId != null ? x.EquipmentId ?? 0 : 0,
+                                EquipmentCode = x.EquipmentId != null ? x.T_Equipment.Code : "",
+                                EquipmentName = x.EquipmentId != null ? x.T_Equipment.Name : "",
+                                EquipmentGroupCode = x.EquipmentId.HasValue ? x.T_Equipment.T_EquipmentGroup.GroupCode : "",
+                                Description = x.Description == null ? "" : x.Description,
+                            }).OrderBy(x => x.Index).ThenBy(x => x.PhaseCode).ToList());
                         #endregion
                     }
                     else
                     {
                         techVersion = new TechProcessVersionModel();
-                        techVersion.details.AddRange(db.T_CA_Phase.Where(x => !x.IsDeleted && x.Node.Contains(node)).Select(x => new TechProcessVerDetailModel()
+                        techVersion.details.AddRange(_db.T_CA_Phase.Where(x => !x.IsDeleted && x.Node.Contains(node)).Select(x => new TechProcessVerDetailModel()
                         {
                             Id = 0,
                             TechProcessVersionId = 0,

@@ -42,7 +42,7 @@ namespace GPRO_IED_A
         }
         protected void Session_End()
         {
-            GPRO.Core.Security.Authentication.Logout();
+          //  GPRO.Core.Security.Authentication.Logout();
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)        
@@ -183,60 +183,7 @@ namespace GPRO_IED_A
             {
                 return Hugate.Framework.Security.SerializeObject.Serialize(obj);
             }
-        }
-
-        //public class UserService
-        //{
-        //    public int? CompanyID { get; set; }
-        //    public string CompanyName { get; set; }
-        //    public string DepartmentName { get; set; }
-        //    public string Description { get; set; }
-        //    public string Email { get; set; }
-        //    public string EmployeeName { get; set; }
-        //    public int[] Features { get; set; }
-        //    public string ImagePath { get; set; }
-        //    public bool IsOwner { get; set; }
-        //    public string LogoCompany { get; set; }
-        //    public string[] Permissions { get; set; }
-        //    public int UserID { get; set; }
-        //    public int[] ChildCompanyId { get; set; }
-        //    public string UserName { get; set; }
-        //    public List<Module> ListModule { get; set; }
-        //    public List<MenuCategory> ListMenu { get; set; }
-        //}
-
-        //public class Module
-        //{
-        //    public string SystemName { get; set; }
-        //    public string ModuleName { get; set; }
-        //    public bool IsSystem { get; set; }
-        //    public int OrderIndex { get; set; }
-        //    public string Description { get; set; }
-        //    public string ModuleUrl { get; set; }
-        //}
-        //public class MenuCategory
-        //{
-        //    public string Category { get; set; }
-        //    public string Position { get; set; }
-        //    public int OrderIndex { get; set; }
-        //    public string Description { get; set; }
-        //    public string Icon { get; set; }
-        //    public bool IsViewIcon { get; set; }
-        //    public string Link { get; set; }
-        //    public List<Menu> ListMenu { get; set; }
-        //    public int ModuleId { get; set; }
-        //    public string ModuleName { get; set; }
-        //}
-        //public class Menu
-        //{
-        //    public string MenuName { get; set; }
-        //    public int OrderIndex { get; set; }
-        //    public string Link { get; set; }
-        //    public bool IsShow { get; set; }
-        //    public bool IsViewIcon { get; set; }
-        //    public string Icon { get; set; }
-        //    public string Description { get; set; }
-        //}
+        } 
 
     }
 

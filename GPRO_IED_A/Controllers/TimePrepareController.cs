@@ -18,7 +18,7 @@ namespace GPRO_IED_A.Controllers
 
         #region Time Repare
         [HttpPost]
-        public JsonResult Gets(int timeTypeId, int jtStartIndex = 0, int jtPageSize = 0, string jtSorting = "")
+        public JsonResult Gets(int timeTypeId, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
             try
             {
@@ -38,7 +38,7 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetLists(string keyword, int searchBy, int jtStartIndex = 0, int jtPageSize = 0, string jtSorting = "")
+        public JsonResult GetLists(string keyword, int searchBy, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
             try
             {
@@ -112,7 +112,7 @@ namespace GPRO_IED_A.Controllers
 
         #region Time Type Prepare
         [HttpPost]
-        public JsonResult Gets_(string keyword, int searchBy, int jtStartIndex = 0, int jtPageSize = 0, string jtSorting = "")
+        public JsonResult Gets_(string keyword, int searchBy, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
             try
             {

@@ -106,7 +106,7 @@ namespace GPRO.Core.Mvc
                                 {
                                     arg_212_0 = ((
                                         from c in this.UserContext.Permissions
-                                        where c.Trim().ToLower().Contains(accessingResource.Trim().ToLower())
+                                        where c.Trim().ToLower().Equals(accessingResource.Trim().ToLower())
                                         select c).FirstOrDefault<string>() != null);
                                 }
                                 else

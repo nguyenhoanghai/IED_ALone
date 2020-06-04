@@ -66,6 +66,7 @@
     <Compile Include="BLLMenu.cs" />
     <Compile Include="BLLMenuCategory.cs" />
     <Compile Include="BLLModule.cs" />
+    <Compile Include="BLLCustomer.cs" />
     <Compile Include="BLLProduct.cs" />
     <Compile Include="BLLRole.cs" />
     <Compile Include="BLLRolePermission.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Enum\eVersionObjectType.cs" />
     <Compile Include="Model\ApplyPressureLibraryModel.cs" />
     <Compile Include="Model\CategoryModel.cs" />
+    <Compile Include="Model\CustomerModel.cs" />
     <Compile Include="Model\FileUploadModel.cs" />
     <Compile Include="Model\ManipulationEquipmentModel.cs" />
     <Compile Include="Model\ManipulationLibraryModel.cs" />
@@ -135,6 +137,7 @@
     <Compile Include="Model\Module.cs" />
     <Compile Include="Model\PagedListModel.cs" />
     <Compile Include="Model\PhaseGroupModel.cs" />
+    <Compile Include="Model\PhaseLibModel.cs" />
     <Compile Include="Model\ProductModel.cs" />
     <Compile Include="Model\ResponseBase.cs" />
     <Compile Include="Model\TechProcessVerDetailGroupModel.cs" />

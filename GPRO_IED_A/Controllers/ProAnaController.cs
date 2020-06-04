@@ -23,6 +23,9 @@ namespace GPRO_IED_A.Controllers
         #region Commo Ana
         public ActionResult Index()
         {
+            var per = this.UserContext.Permissions.Where(x => x.Contains("Create-workshop")).ToArray();
+            var per1 = this.UserContext.Permissions.Where(x => x.Contains("All Allow")).ToArray();
+            ViewBag.hasPer = (per.Length > 0 && per1.Length == 0 ? "hide" : "");
             ViewBag.TMU = BLLIEDConfig.Instance.GetValueByCode("TMU");
             ViewBag.GetTMUType = BLLIEDConfig.Instance.GetValueByCode("GetTMUType");
             ViewBag.ListManipulationCode = BLLManipulationLibrary.Instance.GetListManipulationCode();
@@ -72,24 +75,18 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult Save(T_CommodityAnalysis noName)
+        public JsonResult SaveProduct(T_CommodityAnalysis noName)
         {
-            ResponseBase responseResult;
+            ResponseBase rs;
             try
             {
                 if (isAuthenticate)
                 {
-                    noName.CreatedUser = UserContext.UserID;
-                    noName.CompanyId = UserContext.CompanyId;
-                    if (noName.Id == 0)
-                        noName.CreatedDate = DateTime.Now;
-                    else
-                        noName.UpdatedDate = DateTime.Now;
-                    responseResult = BLLCommodityAnalysis.Instance.InsertOrUpdate(noName);
-                    if (!responseResult.IsSuccess)
+                    rs = Save(noName);
+                    if (!rs.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
-                        JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
                     }
                     else
                         JsonDataResult.Result = "OK";
@@ -103,18 +100,18 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult Delete(int Id)
+        public JsonResult SaveWorkshop(T_CommodityAnalysis noName)
         {
-            ResponseBase result;
+            ResponseBase rs;
             try
             {
                 if (isAuthenticate)
                 {
-                    result = BLLCommodityAnalysis.Instance.Delete(Id, UserContext.UserID);
-                    if (!result.IsSuccess)
+                    rs = Save(noName);
+                    if (!rs.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
-                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
                     }
                     else
                         JsonDataResult.Result = "OK";
@@ -125,6 +122,140 @@ namespace GPRO_IED_A.Controllers
                 throw ex;
             }
             return Json(JsonDataResult);
+        }
+
+        [HttpPost]
+        public JsonResult SavePhaseGroup(T_CommodityAnalysis noName)
+        {
+            ResponseBase rs;
+            try
+            {
+                if (isAuthenticate)
+                {
+                    rs = Save(noName);
+                    if (!rs.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JsonDataResult);
+        }
+
+        private ResponseBase Save(T_CommodityAnalysis noName)
+        {
+            ResponseBase responseResult;
+            try
+            {
+                noName.CreatedUser = UserContext.UserID;
+                noName.CompanyId = UserContext.CompanyId;
+                if (noName.Id == 0)
+                    noName.CreatedDate = DateTime.Now;
+                else
+                    noName.UpdatedDate = DateTime.Now;
+                responseResult = BLLCommodityAnalysis.Instance.InsertOrUpdate(noName);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return responseResult;
+        }
+
+        [HttpPost]
+        public JsonResult DeleteProduct(int Id)
+        {
+            ResponseBase rs;
+            try
+            {
+                if (isAuthenticate)
+                {
+                    rs = Delete(Id );
+                    if (!rs.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JsonDataResult);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteWorkshop(int Id)
+        {
+            ResponseBase rs;
+            try
+            {
+                if (isAuthenticate)
+                {
+                    rs = Delete(Id);
+                    if (!rs.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JsonDataResult);
+        }
+
+        [HttpPost]
+        public JsonResult DeletePhaseGroup(int Id)
+        {
+            ResponseBase rs;
+            try
+            {
+                if (isAuthenticate)
+                {
+                    rs = Delete(Id);
+                    if (!rs.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                    }
+                    else
+                        JsonDataResult.Result = "OK";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JsonDataResult);
+        }
+
+        private ResponseBase Delete(int Id)
+        {
+            ResponseBase result;
+            try
+            {
+                result = BLLCommodityAnalysis.Instance.Delete(Id, UserContext.UserID);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
         }
         #endregion
 
@@ -156,13 +287,13 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetPhases(string node, int jtStartIndex = 0, int jtPageSize = 0, string jtSorting = "")
+        public JsonResult GetPhases(string node, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
             try
             {
                 if (isAuthenticate)
                 {
-                    var phases = BLLCommo_Ana_Phase.Instance.GetListByNode(node, jtStartIndex, jtPageSize, jtSorting);
+                    var phases = BLLCommo_Ana_Phase.Instance.GetListByNode(node + ",", jtStartIndex, jtPageSize, jtSorting);
                     JsonDataResult.Records = phases;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = phases.TotalItemCount;
@@ -529,7 +660,7 @@ namespace GPRO_IED_A.Controllers
                         JsonDataResult.ErrorMessages.AddRange(responseResult.Errors);
                     }
                     else
-                        JsonDataResult.Result = "OK";
+                        JsonDataResult.Result = responseResult.Data.ToString();
                 }
             }
             catch (Exception ex)
@@ -818,7 +949,7 @@ namespace GPRO_IED_A.Controllers
 
                         sheet.Cells[rowIndex, 4, rowIndex, 5].Merge = true;
                         tongTG += group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent);
-                        sheet.Cells[rowIndex, 6].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent));
+                        sheet.Cells[rowIndex, 6].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent), 2);
                         sheet.Cells[rowIndex, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
                         sheet.Cells[rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                         TongLĐ += group.ListTechProcessVerDetail.Sum(x => x.Worker);
@@ -922,6 +1053,51 @@ namespace GPRO_IED_A.Controllers
 
                 #endregion
 
+                row = rowIndex;
+                rowIndex++;
+                sheet.Cells[rowIndex, 2].Value = "NĂNG SUẤT THEO PHẦN TRĂM";
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Merge = true;
+                AddCellBorder(sheet, rowIndex, 2, 10);
+                sheet.Cells[rowIndex, 2, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Color.SetColor(Color.White);
+
+                rowIndex++;
+                sheet.Cells[rowIndex, 2].Value = "STT";
+                sheet.Cells[rowIndex, 3].Value = "";
+                sheet.Cells[rowIndex, 4].Value = "70%";
+                sheet.Cells[rowIndex, 5].Value = "75%";
+                sheet.Cells[rowIndex, 6].Value = "80%";
+                sheet.Cells[rowIndex, 7].Value = "85%";
+                sheet.Cells[rowIndex, 8].Value = "90%";
+                sheet.Cells[rowIndex, 9].Value = "100%";
+                AddCellBorder(sheet, rowIndex, 2, 10);
+
+                string[] percents = new string[] { "Năng suất bình quân / Người", "Năng suất của Chuyền / giờ ", "Năng suất Chuyền / ngày" };
+                for (int iii = 0; iii < percents.Length; iii++)
+                {
+                    double num = 0;
+                    switch (iii)
+                    {
+                        case 0: num = techProcessInfo.ProOfPersonPerDay; break;
+                        case 1: num = techProcessInfo.ProOfGroupPerHour; break;
+                        case 2: num = techProcessInfo.ProOfGroupPerDay; break;
+                    }
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 2].Value = (iii + 1);
+                    sheet.Cells[rowIndex, 3].Value = percents[iii];
+                    sheet.Cells[rowIndex, 4].Value = (num > 0 ? Math.Round((num * 70) / 100) : 0).ToString();
+                    sheet.Cells[rowIndex, 5].Value = (num > 0 ? Math.Round((num * 75) / 100) : 0).ToString();
+                    sheet.Cells[rowIndex, 6].Value = (num > 0 ? Math.Round((num * 80) / 100) : 0).ToString();
+                    sheet.Cells[rowIndex, 7].Value = (num > 0 ? Math.Round((num * 85) / 100) : 0).ToString();
+                    sheet.Cells[rowIndex, 8].Value = (num > 0 ? Math.Round((num * 90) / 100) : 0).ToString();
+                    sheet.Cells[rowIndex, 9].Value = Math.Round(num);
+                    AddCellBorder(sheet, rowIndex, 2, 10);
+                }
+
+
                 #region Thông Tin Thiết Bi
                 row = rowIndex;
                 rowIndex++;
@@ -997,9 +1173,10 @@ namespace GPRO_IED_A.Controllers
                 Response.ClearContent();
                 Response.BinaryWrite(excelPackage.GetAsByteArray());
                 DateTime dateNow = DateTime.Now;
-                string fileName = "QTC_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+                string fileName = "QTC_" + techProcessInfo.ProductName + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
                 Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
                 Response.ContentType = "application/excel";
+                Response.ContentEncoding = System.Text.Encoding.UTF8;
                 Response.Flush();
                 Response.End();
             }
@@ -1436,7 +1613,7 @@ namespace GPRO_IED_A.Controllers
 
         #region thiết kế chuyền
         [HttpPost]
-        public JsonResult Gets_TKC(int parentId, int jtStartIndex, int jtPageSize, string jtSorting)
+        public JsonResult Gets_TKC(int parentId, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
             try
             {
