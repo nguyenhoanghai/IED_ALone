@@ -30,6 +30,12 @@ namespace GPRO_IED_A.Business
         private BLLTechProcessVersion() { }
         #endregion
 
+        bool checkPermis(T_TechProcessVersion obj, int actionUser, bool isOwner)
+        {
+            if (isOwner) return true;
+            return obj.CreatedUser == actionUser;
+        }
+
         public ExportTechProcessModel GetInfoForExport(int parentId)
         {
             ExportTechProcessModel model = null;
@@ -104,7 +110,8 @@ namespace GPRO_IED_A.Business
             }
             return model;
         }
-        public ResponseBase InsertOrUpdate(TechProcessVersionModel model)
+
+        public ResponseBase InsertOrUpdate(TechProcessVersionModel model, bool isOwner)
         {
             try
             {
@@ -150,31 +157,39 @@ namespace GPRO_IED_A.Business
                         }
                         else
                         {
-                            version.NumberOfWorkers = model.NumberOfWorkers;
-                            version.WorkingTimePerDay = model.WorkingTimePerDay;
-                            version.PacedProduction = model.PacedProduction;
-                            version.TimeCompletePerCommo = model.TimeCompletePerCommo;
-                            version.ProOfGroupPerDay = model.ProOfGroupPerDay;
-                            version.ProOfGroupPerHour = model.ProOfGroupPerHour;
-                            version.ProOfPersonPerDay = model.ProOfPersonPerDay;
-                            version.Note = model.Note;
-                            version.UpdatedUser = model.ActionUser;
-                            version.UpdatedDate = DateTime.Now;
-                            version.PricePerSecond = model.PricePerSecond;
-                            version.Allowance = model.Allowance;
-
-                            var details = db.T_TechProcessVersionDetail.Where(x => !x.IsDeleted && x.TechProcessVersionId == model.Id).OrderBy(x => x.Id).ToList();
-                            if (details.Count > 0)
+                            if (!checkPermis(version, model.ActionUser,isOwner))
                             {
-                                model.details = model.details.OrderBy(x => x.Id).ToList();
-                                for (int i = 0; i < details.Count(); i++)
+                                result.IsSuccess = false;
+                                result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo quy trình công nghệ này nên bạn không cập nhật được thông tin cho quy trình công nghệ này." });
+                            }
+                            else
+                            {
+                                version.NumberOfWorkers = model.NumberOfWorkers;
+                                version.WorkingTimePerDay = model.WorkingTimePerDay;
+                                version.PacedProduction = model.PacedProduction;
+                                version.TimeCompletePerCommo = model.TimeCompletePerCommo;
+                                version.ProOfGroupPerDay = model.ProOfGroupPerDay;
+                                version.ProOfGroupPerHour = model.ProOfGroupPerHour;
+                                version.ProOfPersonPerDay = model.ProOfPersonPerDay;
+                                version.Note = model.Note;
+                                version.UpdatedUser = model.ActionUser;
+                                version.UpdatedDate = DateTime.Now;
+                                version.PricePerSecond = model.PricePerSecond;
+                                version.Allowance = model.Allowance;
+
+                                var details = db.T_TechProcessVersionDetail.Where(x => !x.IsDeleted && x.TechProcessVersionId == model.Id).OrderBy(x => x.Id).ToList();
+                                if (details.Count > 0)
                                 {
-                                    details[i].Percent = model.details[i].Percent;
-                                    details[i].TimeByPercent = model.details[i].TimeByPercent;
-                                    details[i].Worker = model.details[i].Worker;
-                                    details[i].Description = model.details[i].Description;
-                                    details[i].UpdatedUser = model.ActionUser;
-                                    details[i].UpdatedDate = DateTime.Now;
+                                    model.details = model.details.OrderBy(x => x.Id).ToList();
+                                    for (int i = 0; i < details.Count(); i++)
+                                    {
+                                        details[i].Percent = model.details[i].Percent;
+                                        details[i].TimeByPercent = model.details[i].TimeByPercent;
+                                        details[i].Worker = model.details[i].Worker;
+                                        details[i].Description = model.details[i].Description;
+                                        details[i].UpdatedUser = model.ActionUser;
+                                        details[i].UpdatedDate = DateTime.Now;
+                                    }
                                 }
                             }
                         }
@@ -193,7 +208,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public ResponseBase Delete(int id, int acctionUserId)
+        public ResponseBase Delete(int id, int acctionUserId, bool isOwner)
         {
             try
             {
@@ -208,11 +223,19 @@ namespace GPRO_IED_A.Business
                     }
                     else
                     {
-                        version.IsDeleted = true;
-                        version.DeletedUser = acctionUserId;
-                        version.DeletedDate = DateTime.Now;
-                        db.SaveChanges();
-                        result.IsSuccess = true;
+                        if (!checkPermis(version, acctionUserId,isOwner))
+                        {
+                            result.IsSuccess = false;
+                            result.Errors.Add(new Error() { MemberName = "Delete", Message = "Bạn không phải là người tạo quy trình công nghệ này nên bạn không xóa được quy trình công nghệ này." });
+                        }
+                        else
+                        {
+                            version.IsDeleted = true;
+                            version.DeletedUser = acctionUserId;
+                            version.DeletedDate = DateTime.Now;
+                            db.SaveChanges();
+                            result.IsSuccess = true;
+                        }
                     }
                     return result;
                 }
@@ -256,7 +279,7 @@ namespace GPRO_IED_A.Business
                         #region 
                         var details = (from x in _db.T_TechProcessVersionDetail
                                        where
-                                       !x.T_CA_Phase.IsDeleted && 
+                                       !x.T_CA_Phase.IsDeleted &&
                                        x.TechProcessVersionId == techVersion.Id
                                        select
                                        new TechProcessVerDetailModel()

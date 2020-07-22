@@ -34,6 +34,12 @@ namespace GPRO_IED_A.Business
         private BLLEquipment() { }
         #endregion
 
+        bool checkPermis(T_Equipment obj, int actionUser, bool isOwner)
+        {
+            if (isOwner) return true;
+            return obj.CreatedUser == actionUser;
+        }
+
         public PagedList<ModelEquipment> GetList(string keyWord, int startIndexRecord, int pageSize, string sorting, int companyId)
         {
             try
@@ -208,6 +214,7 @@ namespace GPRO_IED_A.Business
             }
             return checkResult;
         }
+
         public ResponseBase Create(ModelEquipment model, int companyId, List<string> a)
         {
             ResponseBase result = new ResponseBase();
@@ -297,7 +304,7 @@ namespace GPRO_IED_A.Business
             }
             return result;
         }
-        public ResponseBase Update(ModelEquipment model, int companyId, List<string> a)
+        public ResponseBase Update(ModelEquipment model, int companyId, List<string> a, bool isOwner)
         {
 
             ResponseBase result = new ResponseBase();
@@ -316,105 +323,113 @@ namespace GPRO_IED_A.Business
                         T_Equipment obj = db.T_Equipment.FirstOrDefault(x => x.Id == model.Id && !x.IsDeleted);
                         if (obj != null)
                         {
-                            obj.Code = model.Code;
-                            obj.Name = model.Name;
-                            obj.Expend = model.Expend;
-                            obj.EquipmentGroupId = model.EquipmentGroupId;
-                            obj.EquipmentTypeId = model.EquipmentTypeId;
-                            obj.Description = model.Description;
-                            obj.CompanyId = model.CompanyId;
-                            obj.UpdatedDate = DateTime.Now;
-                            obj.UpdatedUser = model.ActionUser;
+                            if (!checkPermis(obj, model.ActionUser,isOwner))
+                            {
+                                result.IsSuccess = false;
+                                result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo thiết bị này nên bạn không cập nhật được thông tin cho thiết bị này." });
+                            }
+                            else
+                            {
+                                obj.Code = model.Code;
+                                obj.Name = model.Name;
+                                obj.Expend = model.Expend;
+                                obj.EquipmentGroupId = model.EquipmentGroupId;
+                                obj.EquipmentTypeId = model.EquipmentTypeId;
+                                obj.Description = model.Description;
+                                obj.CompanyId = model.CompanyId;
+                                obj.UpdatedDate = DateTime.Now;
+                                obj.UpdatedUser = model.ActionUser;
 
-                            var id = db.T_EquipmentAttribute.FirstOrDefault(x => !x.IsDeleted && x.EquipmentId == obj.Id).Id;
-                            var eAttr = db.T_EquipmentAttribute.FirstOrDefault(x => !x.IsDeleted && x.Id == id);
-                            eAttr.Id = id;
-                            eAttr.EquipmentTypeId = obj.EquipmentTypeId;
-                            eAttr.EquipmentId = obj.Id;
-                            if (!string.IsNullOrEmpty(a[0]))
-                            {
-                                eAttr.Column1 = a[0];
+                                var id = db.T_EquipmentAttribute.FirstOrDefault(x => !x.IsDeleted && x.EquipmentId == obj.Id).Id;
+                                var eAttr = db.T_EquipmentAttribute.FirstOrDefault(x => !x.IsDeleted && x.Id == id);
+                                eAttr.Id = id;
+                                eAttr.EquipmentTypeId = obj.EquipmentTypeId;
+                                eAttr.EquipmentId = obj.Id;
+                                if (!string.IsNullOrEmpty(a[0]))
+                                {
+                                    eAttr.Column1 = a[0];
+                                }
+                                if (!string.IsNullOrEmpty(a[1]))
+                                {
+                                    eAttr.Column2 = a[1];
+                                }
+                                if (!string.IsNullOrEmpty(a[2]))
+                                {
+                                    eAttr.Column3 = a[2];
+                                }
+                                if (!string.IsNullOrEmpty(a[3]))
+                                {
+                                    eAttr.Column4 = a[3];
+                                }
+                                if (!string.IsNullOrEmpty(a[4]))
+                                {
+                                    eAttr.Column5 = a[4];
+                                }
+                                if (!string.IsNullOrEmpty(a[5]))
+                                {
+                                    eAttr.Column6 = a[5];
+                                }
+                                if (!string.IsNullOrEmpty(a[6]))
+                                {
+                                    eAttr.Column7 = a[6];
+                                }
+                                if (!string.IsNullOrEmpty(a[7]))
+                                {
+                                    eAttr.Column8 = a[7];
+                                }
+                                if (!string.IsNullOrEmpty(a[8]))
+                                {
+                                    eAttr.Column9 = a[8];
+                                }
+                                if (!string.IsNullOrEmpty(a[9]))
+                                {
+                                    eAttr.Column10 = a[9];
+                                }
+                                if (!string.IsNullOrEmpty(a[10]))
+                                {
+                                    eAttr.Column11 = a[10];
+                                }
+                                if (!string.IsNullOrEmpty(a[11]))
+                                {
+                                    eAttr.Column12 = a[11];
+                                }
+                                if (!string.IsNullOrEmpty(a[12]))
+                                {
+                                    eAttr.Column13 = a[12];
+                                }
+                                if (!string.IsNullOrEmpty(a[13]))
+                                {
+                                    eAttr.Column14 = a[13];
+                                }
+                                if (!string.IsNullOrEmpty(a[14]))
+                                {
+                                    eAttr.Column15 = a[14];
+                                }
+                                if (!string.IsNullOrEmpty(a[15]))
+                                {
+                                    eAttr.Column16 = a[15];
+                                }
+                                if (!string.IsNullOrEmpty(a[16]))
+                                {
+                                    eAttr.Column17 = a[16];
+                                }
+                                if (!string.IsNullOrEmpty(a[17]))
+                                {
+                                    eAttr.Column18 = a[17];
+                                }
+                                if (!string.IsNullOrEmpty(a[18]))
+                                {
+                                    eAttr.Column19 = a[18];
+                                }
+                                if (!string.IsNullOrEmpty(a[19]))
+                                {
+                                    eAttr.Column20 = a[19];
+                                }
+                                eAttr.UpdatedDate = DateTime.Now;
+                                eAttr.UpdatedUser = model.ActionUser;
+                                db.SaveChanges();
+                                result.IsSuccess = true;
                             }
-                            if (!string.IsNullOrEmpty(a[1]))
-                            {
-                                eAttr.Column2 = a[1];
-                            }
-                            if (!string.IsNullOrEmpty(a[2]))
-                            {
-                                eAttr.Column3 = a[2];
-                            }
-                            if (!string.IsNullOrEmpty(a[3]))
-                            {
-                                eAttr.Column4 = a[3];
-                            }
-                            if (!string.IsNullOrEmpty(a[4]))
-                            {
-                                eAttr.Column5 = a[4];
-                            }
-                            if (!string.IsNullOrEmpty(a[5]))
-                            {
-                                eAttr.Column6 = a[5];
-                            }
-                            if (!string.IsNullOrEmpty(a[6]))
-                            {
-                                eAttr.Column7 = a[6];
-                            }
-                            if (!string.IsNullOrEmpty(a[7]))
-                            {
-                                eAttr.Column8 = a[7];
-                            }
-                            if (!string.IsNullOrEmpty(a[8]))
-                            {
-                                eAttr.Column9 = a[8];
-                            }
-                            if (!string.IsNullOrEmpty(a[9]))
-                            {
-                                eAttr.Column10 = a[9];
-                            }
-                            if (!string.IsNullOrEmpty(a[10]))
-                            {
-                                eAttr.Column11 = a[10];
-                            }
-                            if (!string.IsNullOrEmpty(a[11]))
-                            {
-                                eAttr.Column12 = a[11];
-                            }
-                            if (!string.IsNullOrEmpty(a[12]))
-                            {
-                                eAttr.Column13 = a[12];
-                            }
-                            if (!string.IsNullOrEmpty(a[13]))
-                            {
-                                eAttr.Column14 = a[13];
-                            }
-                            if (!string.IsNullOrEmpty(a[14]))
-                            {
-                                eAttr.Column15 = a[14];
-                            }
-                            if (!string.IsNullOrEmpty(a[15]))
-                            {
-                                eAttr.Column16 = a[15];
-                            }
-                            if (!string.IsNullOrEmpty(a[16]))
-                            {
-                                eAttr.Column17 = a[16];
-                            }
-                            if (!string.IsNullOrEmpty(a[17]))
-                            {
-                                eAttr.Column18 = a[17];
-                            }
-                            if (!string.IsNullOrEmpty(a[18]))
-                            {
-                                eAttr.Column19 = a[18];
-                            }
-                            if (!string.IsNullOrEmpty(a[19]))
-                            {
-                                eAttr.Column20 = a[19];
-                            }
-                            eAttr.UpdatedDate = DateTime.Now;
-                            eAttr.UpdatedUser = model.ActionUser;
-                            db.SaveChanges();
-                            result.IsSuccess = true;
                         }
                         else
                         {
@@ -431,7 +446,7 @@ namespace GPRO_IED_A.Business
             }
             return result;
         }
-        public ResponseBase Delete(int id, int userId)
+        public ResponseBase Delete(int id, int userId, bool isOwner)
         {
             ResponseBase rs;
 
@@ -443,11 +458,19 @@ namespace GPRO_IED_A.Business
                     var Equipment = db.T_Equipment.FirstOrDefault(c => !c.IsDeleted && c.Id == id);
                     if (Equipment != null)
                     {
-                        Equipment.IsDeleted = true;
-                        Equipment.DeletedUser = userId;
-                        Equipment.DeletedDate = DateTime.Now;
-                        db.SaveChanges();
-                        rs.IsSuccess = true;
+                        if (!checkPermis(Equipment, userId,isOwner))
+                        {
+                            rs.IsSuccess = false;
+                            rs.Errors.Add(new Error() { MemberName = "Delete Customer Type", Message = "Bạn không phải là người tạo thiết bị này nên bạn không xóa được xóa thiết bị này." });
+                        }
+                        else
+                        {
+                            Equipment.IsDeleted = true;
+                            Equipment.DeletedUser = userId;
+                            Equipment.DeletedDate = DateTime.Now;
+                            db.SaveChanges();
+                            rs.IsSuccess = true;
+                        }
                     }
                     else
                     {

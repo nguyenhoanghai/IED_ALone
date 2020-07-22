@@ -46,7 +46,7 @@ namespace GPRO_IED_A.Controllers
                 if (isAuthenticate)
                 {
                     phaseGroup.ActionUser = UserContext.UserID;
-                    rs = BLLPhaseGroup.Instance.InsertOrUpdate(phaseGroup);
+                    rs = BLLPhaseGroup.Instance.InsertOrUpdate(phaseGroup, isOwner);
                     if (!rs.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
@@ -71,7 +71,7 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    result = BLLPhaseGroup.Instance.Delete(Id, UserContext.UserID);
+                    result = BLLPhaseGroup.Instance.Delete(Id, UserContext.UserID, isOwner);
                     if (!result.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";

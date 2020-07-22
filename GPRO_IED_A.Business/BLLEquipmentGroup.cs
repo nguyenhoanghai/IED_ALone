@@ -31,7 +31,13 @@ namespace GPRO_IED_A.Business
         private BLLEquipmentGroup() { }
         #endregion
 
-        public ResponseBase InsertOrUpdate(T_EquipmentGroup model)
+        bool checkPermis(T_EquipmentGroup obj, int actionUser, bool isOwner)
+        {
+            if (isOwner) return true;
+            return obj.CreatedUser == actionUser;
+        }
+
+        public ResponseBase InsertOrUpdate(T_EquipmentGroup model, bool isOwner)
         {
             try
             {
@@ -62,6 +68,8 @@ namespace GPRO_IED_A.Business
                             obj = new T_EquipmentGroup();
                             Parse.CopyObject(model, ref obj);
                             db.T_EquipmentGroup.Add(obj);
+                            db.SaveChanges();
+                            result.IsSuccess = true;
                         }
                         else
                         {
@@ -74,17 +82,26 @@ namespace GPRO_IED_A.Business
                             }
                             else
                             {
-                                if (!string.IsNullOrEmpty(model.Icon))
-                                    obj.Icon = model.Icon;
-                                obj.GroupName = model.GroupName;
-                                obj.GroupCode = model.GroupCode;
-                                obj.Note = model.Note;
-                                obj.UpdatedUser = model.UpdatedUser;
-                                obj.UpdatedDate = model.UpdatedDate;
+                                if (!checkPermis(obj, model.UpdatedUser.Value,isOwner))
+                                {
+                                    result.IsSuccess = false;
+                                    result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo nhóm thiết bị này nên bạn không cập nhật được thông tin cho nhóm thiết bị này." });
+                                }
+                                else
+                                {
+                                    if (!string.IsNullOrEmpty(model.Icon))
+                                        obj.Icon = model.Icon;
+                                    obj.GroupName = model.GroupName;
+                                    obj.GroupCode = model.GroupCode;
+                                    obj.Note = model.Note;
+                                    obj.UpdatedUser = model.UpdatedUser;
+                                    obj.UpdatedDate = model.UpdatedDate;
+                                    db.SaveChanges();
+                                    result.IsSuccess = true;
+                                }
                             }
                         }
-                        db.SaveChanges();
-                        result.IsSuccess = true;
+                        
                     }
                     return result;
                 }
@@ -117,7 +134,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public ResponseBase DeleteById(int id, int acctionUserId)
+        public ResponseBase DeleteById(int id, int acctionUserId, bool isOwner)
         {
             try
             {
@@ -132,11 +149,19 @@ namespace GPRO_IED_A.Business
                     }
                     else
                     {
-                        obj.IsDeleted = true;
-                        obj.DeletedUser = acctionUserId;
-                        obj.DeletedDate = DateTime.Now;
-                        db.SaveChanges();
-                        result.IsSuccess = true;
+                        if (!checkPermis(obj, acctionUserId,isOwner))
+                        {
+                            result.IsSuccess = false;
+                            result.Errors.Add(new Error() { MemberName = "Delete Customer Type", Message = "Bạn không phải là người tạo nhóm thiết bị này nên bạn không xóa được xóa nhóm thiết bị này." });
+                        }
+                        else
+                        {
+                            obj.IsDeleted = true;
+                            obj.DeletedUser = acctionUserId;
+                            obj.DeletedDate = DateTime.Now;
+                            db.SaveChanges();
+                            result.IsSuccess = true;
+                        }
                     }
                     return result;
                 }

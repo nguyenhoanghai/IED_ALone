@@ -7,8 +7,6 @@ using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GPRO_IED_A.Business
 {
@@ -32,6 +30,12 @@ namespace GPRO_IED_A.Business
         private BLLWorkshop() { }
         #endregion
 
+        bool checkPermis(T_WorkShop obj, int actionUser, bool isOwner)
+        {
+            if (isOwner)
+                return true;
+            return obj.CreatedUser == actionUser;
+        }
         private bool CheckExists(string name, string code, int Id, int CompanyId, IEDEntities db)
         {
             try
@@ -52,7 +56,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public ResponseBase InsertOrUpdate(WorkShopModel model)
+        public ResponseBase InsertOrUpdate(WorkShopModel model, bool isOwner)
         {
             ResponseBase result = new ResponseBase();
             result.IsSuccess = false; var flag = false;
@@ -85,28 +89,40 @@ namespace GPRO_IED_A.Business
                             Parse.CopyObject(model, ref obj);
                             obj.CreatedDate = DateTime.Now;
                             db.T_WorkShop.Add(obj);
+                            db.SaveChanges();
+                            result.IsSuccess = true;
                         }
                         else
                         {
                             obj = db.T_WorkShop.FirstOrDefault(x => x.Id == model.Id && !x.IsDeleted);
                             if (obj != null)
                             {
-                                obj.Code = model.Code;
-                                obj.Name = model.Name;
-                                obj.Description = model.Description;
-                                obj.UpdatedDate = DateTime.Now;
-                                obj.UpdatedUser = model.ActionUser;
-
-                                // cap nhat ben phan tich mat hang
-                                var commoAna = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectId == obj.Id && x.ObjectType == (int)eObjectType.isWorkShop);
-                                if (commoAna != null && commoAna.Count() > 0)
+                                if (!checkPermis(obj, model.ActionUser, isOwner))
                                 {
-                                    foreach (var item in commoAna)
+                                    result.IsSuccess = false;
+                                    result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo phân xưởng này nên bạn không cập nhật được thông tin cho phân xưởng này." });
+                                }
+                                else
+                                {
+                                    obj.Code = model.Code;
+                                    obj.Name = model.Name;
+                                    obj.Description = model.Description;
+                                    obj.UpdatedDate = DateTime.Now;
+                                    obj.UpdatedUser = model.ActionUser;
+
+                                    // cap nhat ben phan tich mat hang
+                                    var commoAna = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectId == obj.Id && x.ObjectType == (int)eObjectType.isWorkShop);
+                                    if (commoAna != null && commoAna.Count() > 0)
                                     {
-                                        item.Name = obj.Name;
-                                        item.UpdatedUser = model.ActionUser;
-                                        item.UpdatedDate = DateTime.Now;
+                                        foreach (var item in commoAna)
+                                        {
+                                            item.Name = obj.Name;
+                                            item.UpdatedUser = model.ActionUser;
+                                            item.UpdatedDate = DateTime.Now;
+                                        }
                                     }
+                                    db.SaveChanges();
+                                    result.IsSuccess = true;
                                 }
                             }
                             else
@@ -115,8 +131,7 @@ namespace GPRO_IED_A.Business
                                 result.Errors.Add(new Error() { MemberName = "UpdateWorkShop", Message = "Thông tin nhập không đúng Vui lòng kiểm tra lại!" });
                             }
                         }
-                        db.SaveChanges();
-                        result.IsSuccess = true;
+                        
                     }
                 }
 
@@ -128,7 +143,7 @@ namespace GPRO_IED_A.Business
             return result;
         }
 
-        public ResponseBase Delete(int id, int userId)
+        public ResponseBase Delete(int id, int userId, bool isOwner)
         {
             ResponseBase rs;
 
@@ -140,11 +155,19 @@ namespace GPRO_IED_A.Business
                     var WorkShop = db.T_WorkShop.Where(c => !c.IsDeleted && c.Id == id).FirstOrDefault();
                     if (WorkShop != null)
                     {
-                        WorkShop.IsDeleted = true;
-                        WorkShop.DeletedUser = userId;
-                        WorkShop.DeletedDate = DateTime.Now;
-                        db.SaveChanges(); ;
-                        rs.IsSuccess = true;
+                        if (!checkPermis(WorkShop, userId, isOwner))
+                        {
+                            rs.IsSuccess = false;
+                            rs.Errors.Add(new Error() { MemberName = "Delete", Message = "Bạn không phải là người tạo phân xưởng này nên bạn không xóa được phân xưởng này." });
+                        }
+                        else
+                        {
+                            WorkShop.IsDeleted = true;
+                            WorkShop.DeletedUser = userId;
+                            WorkShop.DeletedDate = DateTime.Now;
+                            db.SaveChanges(); ;
+                            rs.IsSuccess = true;
+                        }
                     }
                     else
                     {
@@ -213,12 +236,12 @@ namespace GPRO_IED_A.Business
                     if (workshops != null && workshops.Count() > 0)
                     {
                         var WorkShops = workshops.OrderByDescending(x => x.CreatedDate).Select(c => new WorkShopModel()
-                    {
-                        Id = c.Id,
-                        Code = c.Code,
-                        Name = c.Name,
-                        Description = c.Description,
-                    }).ToList();
+                        {
+                            Id = c.Id,
+                            Code = c.Code,
+                            Name = c.Name,
+                            Description = c.Description,
+                        }).ToList();
                         return new PagedList<WorkShopModel>(WorkShops, pageNumber, pageSize);
                     }
                     else

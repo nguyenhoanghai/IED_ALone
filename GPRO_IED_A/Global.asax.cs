@@ -42,7 +42,7 @@ namespace GPRO_IED_A
         }
         protected void Session_End()
         {
-          //  GPRO.Core.Security.Authentication.Logout();
+             GPRO.Core.Security.Authentication.Logout();
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)        

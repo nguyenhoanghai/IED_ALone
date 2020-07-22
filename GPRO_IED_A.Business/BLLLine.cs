@@ -6,8 +6,6 @@ using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GPRO_IED_A.Business
 {
@@ -30,6 +28,11 @@ namespace GPRO_IED_A.Business
         }
         private BLLLine() { }
         #endregion
+        bool checkPermis(T_Line obj, int actionUser, bool isOwner)
+        {
+            if (isOwner) return true;
+            return obj.CreatedUser == actionUser;
+        }
 
         private bool CheckExists(string name, string code, int Id, int WorkShopId, IEDEntities db)
         {
@@ -54,7 +57,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public ResponseBase InsertOrUpdate(LineModel model)
+        public ResponseBase InsertOrUpdate(LineModel model, bool isOwner)
         {
             ResponseBase result = new ResponseBase();
             var flag = false;
@@ -88,19 +91,31 @@ namespace GPRO_IED_A.Business
                             obj.CreatedDate = DateTime.Now;
                             obj.CreatedUser = model.ActionUser;
                             db.T_Line.Add(obj);
+                            db.SaveChanges();
+                            result.IsSuccess = true;
                         }
                         else
                         {
                             obj = db.T_Line.FirstOrDefault(x => x.Id == model.Id && !x.IsDeleted);
                             if (obj != null)
                             {
-                                obj.Code = model.Code;
-                                obj.Name = model.Name;
-                                obj.CountOfLabours = model.CountOfLabours;
-                                obj.WorkShopId = model.WorkShopId;
-                                obj.Description = model.Description;
-                                obj.UpdatedDate = DateTime.Now;
-                                obj.UpdatedUser = model.ActionUser;
+                                if (!checkPermis(obj, model.ActionUser,isOwner))
+                                {
+                                    result.IsSuccess = false;
+                                    result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo chuyền này nên bạn không cập nhật được thông tin cho chuyền này." });
+                                }
+                                else
+                                {
+                                    obj.Code = model.Code;
+                                    obj.Name = model.Name;
+                                    obj.CountOfLabours = model.CountOfLabours;
+                                    obj.WorkShopId = model.WorkShopId;
+                                    obj.Description = model.Description;
+                                    obj.UpdatedDate = DateTime.Now;
+                                    obj.UpdatedUser = model.ActionUser;
+                                    db.SaveChanges();
+                                    result.IsSuccess = true;
+                                }
                             }
                             else
                             {
@@ -108,8 +123,7 @@ namespace GPRO_IED_A.Business
                                 result.Errors.Add(new Error() { MemberName = "UpdateLine", Message = "Chuyền này Không tồn tại hoặc đã bị xóa. Vui lòng kiểm tra lại!" });
                             }
                         }
-                        db.SaveChanges();
-                        result.IsSuccess = true;
+                      
                     }
                 }
 
@@ -121,7 +135,7 @@ namespace GPRO_IED_A.Business
             return result;
         }
 
-        public ResponseBase Delete(int id, int userId)
+        public ResponseBase Delete(int id, int userId, bool isOwner)
         {
             ResponseBase responResult;
             try
@@ -132,11 +146,19 @@ namespace GPRO_IED_A.Business
                     var obj = db.T_Line.Where(c => !c.IsDeleted && c.Id == id).FirstOrDefault();
                     if (obj != null)
                     {
-                        obj.IsDeleted = true;
-                        obj.DeletedUser = userId;
-                        obj.DeletedDate = DateTime.Now;
-                        db.SaveChanges();
-                        responResult.IsSuccess = true;
+                        if (!checkPermis(obj, userId,isOwner))
+                        {
+                            responResult.IsSuccess = false;
+                            responResult.Errors.Add(new Error() { MemberName = "Delete", Message = "Bạn không phải là người tạo chuyền này nên bạn không xóa được chuyền này." });
+                        }
+                        else
+                        {
+                            obj.IsDeleted = true;
+                            obj.DeletedUser = userId;
+                            obj.DeletedDate = DateTime.Now;
+                            db.SaveChanges();
+                            responResult.IsSuccess = true;
+                        }
                     }
                     else
                     {
@@ -191,9 +213,11 @@ namespace GPRO_IED_A.Business
                         keyWord = keyWord.Trim().ToUpper();
                         switch (searchBy)
                         {
-                            case 1: Lines = db.T_Line.Where(c => !c.IsDeleted && (c.T_WorkShop.CompanyId == null || c.T_WorkShop.CompanyId == companyId || relationCompanyId.Contains(c.T_WorkShop.CompanyId)) && c.Name.Trim().ToUpper().Contains(keyWord));
+                            case 1:
+                                Lines = db.T_Line.Where(c => !c.IsDeleted && (c.T_WorkShop.CompanyId == null || c.T_WorkShop.CompanyId == companyId || relationCompanyId.Contains(c.T_WorkShop.CompanyId)) && c.Name.Trim().ToUpper().Contains(keyWord));
                                 break;
-                            case 2: Lines = db.T_Line.Where(c => !c.IsDeleted && (c.T_WorkShop.CompanyId == null || c.T_WorkShop.CompanyId == companyId || relationCompanyId.Contains(c.T_WorkShop.CompanyId)) && c.Code.Trim().ToUpper().Contains(keyWord));
+                            case 2:
+                                Lines = db.T_Line.Where(c => !c.IsDeleted && (c.T_WorkShop.CompanyId == null || c.T_WorkShop.CompanyId == companyId || relationCompanyId.Contains(c.T_WorkShop.CompanyId)) && c.Code.Trim().ToUpper().Contains(keyWord));
                                 break;
                         }
                     }

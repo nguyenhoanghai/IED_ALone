@@ -48,7 +48,7 @@ namespace GPRO_IED_A.Controllers
                     if (!model.IsPrivate)
                         model.CompanyId = UserContext.CompanyId;
                     model.ActionUser = UserContext.UserID;
-                    responseResult = BLLProduct.Instance.InsertOrUpdate(model);
+                    responseResult = BLLProduct.Instance.InsertOrUpdate(model, isOwner);
                     if (!responseResult.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
@@ -73,7 +73,7 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    result = BLLProduct.Instance.Delete(Id, UserContext.UserID);
+                    result = BLLProduct.Instance.Delete(Id, UserContext.UserID, isOwner);
                     if (!result.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";

@@ -32,7 +32,7 @@ namespace GPRO.Core.Security
                 return result;
             }
         }
-        public static bool IsOwner { get { return Authentication.User.IsOwner; } }
+        public static bool IsOwner { get { return (Authentication.User != null ? Authentication.User.IsOwner : false); } }
 
         private static IUserService _user = null;
         public static IUserService User

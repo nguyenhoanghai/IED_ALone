@@ -55,7 +55,7 @@ namespace GPRO_IED_A.Controllers
                         E_Group.UpdatedUser = UserContext.UserID;
                         E_Group.UpdatedDate = DateTime.Now;
                     }
-                    rs = BLLEquipmentGroup.Instance.InsertOrUpdate(E_Group);
+                    rs = BLLEquipmentGroup.Instance.InsertOrUpdate(E_Group, isOwner);
                     if (!rs.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
@@ -80,7 +80,7 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    result = BLLEquipmentGroup.Instance.DeleteById(Id, UserContext.UserID);
+                    result = BLLEquipmentGroup.Instance.DeleteById(Id, UserContext.UserID, isOwner);
                     if (!result.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";

@@ -66,7 +66,7 @@ namespace GPRO_IED_A.Controllers
                 if (isAuthenticate)
                 {
                     timePrepare.ActionUser = UserContext.UserID;
-                    rs = BLLTimePrepare.Instance.InsertOrUpdate(timePrepare);
+                    rs = BLLTimePrepare.Instance.InsertOrUpdate(timePrepare, isOwner);
                     if (!rs.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
@@ -91,7 +91,7 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    result = BLLTimePrepare.Instance.Delete(Id, UserContext.UserID);
+                    result = BLLTimePrepare.Instance.Delete(Id, UserContext.UserID, isOwner);
                     if (!result.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
@@ -140,7 +140,7 @@ namespace GPRO_IED_A.Controllers
                 if (isAuthenticate)
                 {
                     model.ActionUser = UserContext.UserID;
-                    rs = BLLTimeTypePrepare.Instance.InsertOrUpdate(model);
+                    rs = BLLTimeTypePrepare.Instance.InsertOrUpdate(model, isOwner);
                     if (!rs.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
@@ -165,7 +165,7 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    result = BLLTimeTypePrepare.Instance.Delete(Id, UserContext.UserID);
+                    result = BLLTimeTypePrepare.Instance.Delete(Id, UserContext.UserID, isOwner);
                     if (!result.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";

@@ -31,6 +31,13 @@ namespace GPRO_IED_A.Business
         private BLLWorkerLevel() { }
         #endregion
 
+        bool checkPermis(SWorkerLevel obj, int actionUser, bool isOwner)
+        {
+            if (isOwner)
+                return true;
+            return obj.CreatedUser == actionUser;
+        }
+
         private bool CheckExists(string name, int Id, int companyId, int[] relationCompanyId, IEDEntities db)
         {
             try
@@ -46,7 +53,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public ResponseBase InsertOrUpdate(WorkerLevelModel model, int[] relationCompanyId)
+        public ResponseBase InsertOrUpdate(WorkerLevelModel model, int[] relationCompanyId, bool isOwner)
         {
             var result = new ResponseBase();
             result.IsSuccess = false;
@@ -74,20 +81,32 @@ namespace GPRO_IED_A.Business
                             if (model.IsPrivate)
                                 obj.CompanyId = model.CompanyId;
                             db.SWorkerLevels.Add(obj);
+                            db.SaveChanges(); ;
+                            result.IsSuccess = true;
                         }
                         else
                         {
                             obj = db.SWorkerLevels.FirstOrDefault(x => x.Id == model.Id && !x.IsDeleted);
                             if (obj != null)
                             {
-                                obj.Coefficient = model.Coefficient;
-                                obj.CompanyId = null;
-                                if (model.IsPrivate)
-                                    obj.CompanyId = model.CompanyId;
-                                obj.Name = model.Name;
-                                obj.Note = model.Note;
-                                obj.UpdatedDate = DateTime.Now;
-                                obj.UpdatedUser = model.ActionUser;
+                                if (!checkPermis(obj, model.ActionUser,isOwner))
+                                {
+                                    result.IsSuccess = false;
+                                    result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo bậc thợ này nên bạn không cập nhật được thông tin cho bậc thợ này." });
+                                }
+                                else
+                                {
+                                    obj.Coefficient = model.Coefficient;
+                                    obj.CompanyId = null;
+                                    if (model.IsPrivate)
+                                        obj.CompanyId = model.CompanyId;
+                                    obj.Name = model.Name;
+                                    obj.Note = model.Note;
+                                    obj.UpdatedDate = DateTime.Now;
+                                    obj.UpdatedUser = model.ActionUser;
+                                    db.SaveChanges(); ;
+                                    result.IsSuccess = true;
+                                }
                             }
                             else
                             {
@@ -95,8 +114,7 @@ namespace GPRO_IED_A.Business
                                 result.Errors.Add(new Error() { MemberName = "Update ", Message = "Dữ Liệu Bậc Thợ bạn đang thao tác không tồn tại hoặc đã bị xóa.\nVui lòng kiểm tra lại!" });
                             }
                         }
-                        db.SaveChanges(); ;
-                        result.IsSuccess = true;
+                        
                     }
                 }
 
@@ -108,7 +126,7 @@ namespace GPRO_IED_A.Business
             return result;
         }
 
-        public ResponseBase Delete(int id, int userId)
+        public ResponseBase Delete(int id, int userId ,bool isOwner)
         {
             ResponseBase responResult;
             try
@@ -119,11 +137,19 @@ namespace GPRO_IED_A.Business
                     var obj = db.SWorkerLevels.Where(c => !c.IsDeleted && c.Id == id).FirstOrDefault();
                     if (obj != null)
                     {
-                        obj.IsDeleted = true;
-                        obj.DeletedUser = userId;
-                        obj.DeletedDate = DateTime.Now;
-                        db.SaveChanges(); ;
-                        responResult.IsSuccess = true;
+                        if (!checkPermis(obj, userId,isOwner))
+                        {
+                            responResult.IsSuccess = false;
+                            responResult.Errors.Add(new Error() { MemberName = "Delete", Message = "Bạn không phải là người tạo bậc thợ này nên bạn không xóa được bậc thợ này." });
+                        }
+                        else
+                        {
+                            obj.IsDeleted = true;
+                            obj.DeletedUser = userId;
+                            obj.DeletedDate = DateTime.Now;
+                            db.SaveChanges(); ;
+                            responResult.IsSuccess = true;
+                        }
                     }
                     else
                     {

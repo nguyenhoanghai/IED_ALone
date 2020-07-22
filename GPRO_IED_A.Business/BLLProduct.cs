@@ -7,8 +7,6 @@ using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GPRO_IED_A.Business
 {
@@ -31,6 +29,11 @@ namespace GPRO_IED_A.Business
         }
         private BLLProduct() { }
         #endregion
+        bool checkPermis(T_Product obj, int actionUser, bool isOwner)
+        {
+            if (isOwner) return true;
+            return obj.CreatedUser == actionUser;
+        }
 
         public PagedList<ProductModel> GetList(string keyWord, string searchBy, int companyId, int[] relationCompanyId, int startIndexRecord, int pageSize, string sorting)
         {
@@ -72,7 +75,7 @@ namespace GPRO_IED_A.Business
                                 Name = x.Name,
                                 Code = x.T_Customer.Name,
                                 Description = x.Description,
-                                IsPrivate = (x.CompanyId == null ? true :false ),
+                                IsPrivate = (x.CompanyId == null ? true : false),
                                 CompanyId = x.CompanyId,
                                 CustomerId = x.CustomerId
                             }).ToList();
@@ -85,7 +88,7 @@ namespace GPRO_IED_A.Business
                                 Name = x.Name,
                                 Code = x.T_Customer.Name,
                                 Description = x.Description,
-                                IsPrivate = (x.CompanyId == null ?  true:false ),
+                                IsPrivate = (x.CompanyId == null ? true : false),
                                 CompanyId = x.CompanyId,
                                 CustomerId = x.CustomerId
                             }).ToList();
@@ -126,14 +129,14 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public ResponseBase InsertOrUpdate(ProductModel model)
+        public ResponseBase InsertOrUpdate(ProductModel model, bool isOwner)
         {
             try
             {
                 using (db = new IEDEntities())
                 {
                     var result = new ResponseBase();
-                    if (CheckExists(model.Name.Trim().ToUpper(), model.Id, model.CompanyId , true))
+                    if (CheckExists(model.Name.Trim().ToUpper(), model.Id, model.CompanyId, true))
                     {
                         result.IsSuccess = false;
                         result.Errors.Add(new Error() { MemberName = "Insert Product Type", Message = "Tên  Sản Phẩm này đã tồn tại. Vui lòng chọn lại Tên khác !." });
@@ -158,6 +161,8 @@ namespace GPRO_IED_A.Business
                             obj.CreatedDate = DateTime.Now;
                             obj.CreatedUser = model.ActionUser;
                             db.T_Product.Add(obj);
+                            db.SaveChanges();
+                            result.IsSuccess = true;
                         }
                         else
                         {
@@ -170,29 +175,38 @@ namespace GPRO_IED_A.Business
                             }
                             else
                             {
-                                obj.CompanyId = model.CompanyId;
-                                obj.Name = model.Name;
-                                obj.Code = model.Code;
-                                obj.CustomerId = model.CustomerId;
-                                obj.Description = model.Description;
-                                obj.UpdatedUser = model.ActionUser;
-                                obj.UpdatedDate = DateTime.Now;
-
-                                //  cap nhat ben phan tich mat hang
-                                var commoAna = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectId == obj.Id && x.ObjectType == (int)eObjectType.isCommodity);
-                                if (commoAna != null && commoAna.Count() > 0)
+                                if (!checkPermis(obj, model.ActionUser,isOwner))
                                 {
-                                    foreach (var item in commoAna)
+                                    result.IsSuccess = false;
+                                    result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo mã hàng này nên bạn không cập nhật được thông tin cho mã hàng này." });
+                                }
+                                else
+                                {
+                                    obj.CompanyId = model.CompanyId;
+                                    obj.Name = model.Name;
+                                    obj.Code = model.Code;
+                                    obj.CustomerId = model.CustomerId;
+                                    obj.Description = model.Description;
+                                    obj.UpdatedUser = model.ActionUser;
+                                    obj.UpdatedDate = DateTime.Now;
+
+                                    //  cap nhat ben phan tich mat hang
+                                    var commoAna = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectId == obj.Id && x.ObjectType == (int)eObjectType.isCommodity);
+                                    if (commoAna != null && commoAna.Count() > 0)
                                     {
-                                        item.Name = model.Name;
-                                        item.UpdatedUser = model.ActionUser;
-                                        item.UpdatedDate = DateTime.Now;
+                                        foreach (var item in commoAna)
+                                        {
+                                            item.Name = model.Name;
+                                            item.UpdatedUser = model.ActionUser;
+                                            item.UpdatedDate = DateTime.Now;
+                                        }
                                     }
+                                    db.SaveChanges();
+                                    result.IsSuccess = true;
                                 }
                             }
                         }
-                        db.SaveChanges();
-                        result.IsSuccess = true;
+
                         return result;
                     }
                 }
@@ -223,7 +237,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public ResponseBase Delete(int id, int acctionUserId)
+        public ResponseBase Delete(int id, int acctionUserId, bool isOwner)
         {
             try
             {
@@ -238,11 +252,29 @@ namespace GPRO_IED_A.Business
                     }
                     else
                     {
-                        productType.IsDeleted = true;
-                        productType.DeletedUser = acctionUserId;
-                        productType.DeletedDate = DateTime.Now;
-                        db.SaveChanges();
-                        result.IsSuccess = true;
+                        if (!checkPermis(productType, acctionUserId,  isOwner))
+                        {
+                            result.IsSuccess = false;
+                            result.Errors.Add(new Error() { MemberName = "Delete", Message = "Bạn không phải là người tạo mã hàng này nên bạn không xóa được mã hàng này." });
+                        }
+                        else
+                        {
+                            productType.IsDeleted = true;
+                            productType.DeletedUser = acctionUserId;
+                            productType.DeletedDate = DateTime.Now;
+
+                            var proanas = (from x in db.T_CommodityAnalysis where !x.IsDeleted && x.ObjectType == 1 && x.ObjectId == productType.Id select x) ;
+                            if(proanas != null && proanas.Count() > 0)
+                                foreach (var item in proanas)
+                                {
+                                    item.IsDeleted = true;
+                                    item.DeletedUser = acctionUserId;
+                                    item.DeletedDate = DateTime.Now;
+                                }
+
+                            db.SaveChanges();
+                            result.IsSuccess = true;
+                        }
                     }
                     return result;
                 }

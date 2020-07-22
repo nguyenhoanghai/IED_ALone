@@ -31,7 +31,12 @@ namespace GPRO_IED_A.Business
         private BLLEmployee() { }
         #endregion
 
-        public ResponseBase Delete(int Id, int actionUserId, int companyId)
+        bool checkPermis(HR_Employee obj, int actionUser, bool isOwner)
+        {
+            if (isOwner) return true;
+            return obj.CreatedUser == actionUser;
+        }
+        public ResponseBase Delete(int Id, int actionUserId, int companyId, bool isOwner)
         {
             ResponseBase result;
             try
@@ -47,11 +52,19 @@ namespace GPRO_IED_A.Business
                     }
                     else
                     {
-                        obj.IsDeleted = true;
-                        obj.DeletedUser = actionUserId;
-                        obj.DeletedDate = DateTime.Now;
-                        db.SaveChanges();
-                        result.IsSuccess = true;
+                        if (!checkPermis(obj, actionUserId,isOwner))
+                        {
+                            result.IsSuccess = false;
+                            result.Errors.Add(new Error() { MemberName = "Delete Customer Type", Message = "Bạn không phải là người tạo nhân viên này nên bạn không xóa được xóa nhân viên này." });
+                        }
+                        else
+                        {
+                            obj.IsDeleted = true;
+                            obj.DeletedUser = actionUserId;
+                            obj.DeletedDate = DateTime.Now;
+                            db.SaveChanges();
+                            result.IsSuccess = true;
+                        }
                     }
                 }
             }
@@ -61,7 +74,7 @@ namespace GPRO_IED_A.Business
             }
             return result;
         }
-        public ResponseBase CreateOrUpdate(EmployeeModel model)
+        public ResponseBase CreateOrUpdate(EmployeeModel model, bool isOwner)
         {
             ResponseBase result = null;
             HR_Employee employee = null;
@@ -90,22 +103,34 @@ namespace GPRO_IED_A.Business
                             employee.CreatedUser = model.ActionUser;
                             employee.CreatedDate = DateTime.Now;
                             db.HR_Employee.Add(employee);
+                            db.SaveChanges();
+                            result.IsSuccess = true;
                         }
                         else
                         {
                             employee = db.HR_Employee.FirstOrDefault(x => !x.IsDeleted && x.Id == model.Id && x.CompanyId == model.CompanyId);
                             if (employee != null)
                             {
-                                employee.FirstName = model.FirstName;
-                                employee.LastName = model.LastName;
-                                employee.Gender = model.Gender;
-                                employee.Birthday = model.Birthday;
-                                employee.Code = model.Code;
-                                employee.CompanyId = model.CompanyId;
-                                if (model.Image != null)
-                                    employee.Image = model.Image; // hinh
-                                employee.UpdatedUser = model.ActionUser;
-                                employee.UpdatedDate = DateTime.Now;
+                                if (!checkPermis(employee, model.ActionUser,isOwner))
+                                {
+                                    result.IsSuccess = false;
+                                    result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo nhân viên này nên bạn không cập nhật được thông tin cho nhân viên này." });
+                                }
+                                else
+                                {
+                                    employee.FirstName = model.FirstName;
+                                    employee.LastName = model.LastName;
+                                    employee.Gender = model.Gender;
+                                    employee.Birthday = model.Birthday;
+                                    employee.Code = model.Code;
+                                    employee.CompanyId = model.CompanyId;
+                                    if (model.Image != null)
+                                        employee.Image = model.Image; // hinh
+                                    employee.UpdatedUser = model.ActionUser;
+                                    employee.UpdatedDate = DateTime.Now;
+                                    db.SaveChanges();
+                                    result.IsSuccess = true;
+                                }
                             }
                             else
                             {
@@ -113,8 +138,7 @@ namespace GPRO_IED_A.Business
                                 result.Errors.Add(new Error() { MemberName = "update employee", Message = "Không tìm thấy Nhân Viên này. \nCó thể nhân viên đã bị xóa hoặc không tồn tại. \nVui lòng kiểm tra lại dữ liệu." });
                             }
                         }
-                        db.SaveChanges();
-                        result.IsSuccess = true;
+                        
                     }
                     return result;
                 }
@@ -180,7 +204,9 @@ namespace GPRO_IED_A.Business
                           Code = x.Code,
                           Email = x.Email,
                           FullName = x.LastName.Trim() + " " + x.FirstName.Trim(),
-                          Mobile = x.Mobile
+                          Mobile = x.Mobile,
+                          FirstName = x.FirstName,
+                          LastName = x.LastName
                       });
                     }
                     else
@@ -193,7 +219,9 @@ namespace GPRO_IED_A.Business
                             Code = x.Code,
                             Email = x.Email,
                             FullName = x.LastName.Trim() + " " + x.FirstName.Trim(),
-                            Mobile = x.Mobile
+                            Mobile = x.Mobile,
+                             FirstName = x.FirstName,
+                            LastName = x.LastName
                         });
                     }
 

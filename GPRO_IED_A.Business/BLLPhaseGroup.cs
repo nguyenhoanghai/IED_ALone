@@ -7,8 +7,6 @@ using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GPRO_IED_A.Business
 {
@@ -31,6 +29,12 @@ namespace GPRO_IED_A.Business
         }
         private BLLPhaseGroup() { }
         #endregion
+
+        bool checkPermis(T_PhaseGroup obj, int actionUser, bool isOwner)
+        {
+            if (isOwner) return true;
+            return obj.CreatedUser == actionUser;
+        }
 
         public PagedList<PhaseGroupModel> GetList(string keyWord, int searchBy, int startIndexRecord, int pageSize, string sorting)
         {
@@ -84,7 +88,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public ResponseBase InsertOrUpdate(PhaseGroupModel model)
+        public ResponseBase InsertOrUpdate(PhaseGroupModel model, bool isOwner)
         {
             try
             {
@@ -96,7 +100,7 @@ namespace GPRO_IED_A.Business
                     if (CheckExists(model.Name.Trim().ToUpper(), model.Id, true))
                     {
                         result.IsSuccess = false;
-                        result.Errors.Add(new Error() { MemberName = "Insert ", Message = "Tên Nhóm Công Đoạn này đã tồn tại. Vui lòng chọn lại Tên khác !." });
+                        result.Errors.Add(new Error() { MemberName = "Insert ", Message = "Tên Cụm Công Đoạn này đã tồn tại. Vui lòng chọn lại Tên khác !." });
                         flag = true;
                     }
                     if (!string.IsNullOrEmpty(model.Code))
@@ -104,7 +108,7 @@ namespace GPRO_IED_A.Business
                         if (CheckExists(model.Code.Trim().ToUpper(), model.Id, false))
                         {
                             result.IsSuccess = false;
-                            result.Errors.Add(new Error() { MemberName = "Insert", Message = "Mã Nhóm Công Đoạn này đã tồn tại. Vui lòng chọn lại Mã khác !." });
+                            result.Errors.Add(new Error() { MemberName = "Insert", Message = "Mã Cụm Công Đoạn này đã tồn tại. Vui lòng chọn lại Mã khác !." });
                             flag = true;
                         }
                     }
@@ -117,6 +121,8 @@ namespace GPRO_IED_A.Business
                             obj.CreatedDate = DateTime.Now;
                             obj.CreatedUser = model.ActionUser;
                             db.T_PhaseGroup.Add(obj);
+                            db.SaveChanges();
+                            result.IsSuccess = true;
                         }
                         else
                         {
@@ -129,29 +135,39 @@ namespace GPRO_IED_A.Business
                             }
                             else
                             {
-                                obj.Name = model.Name;
-                                obj.Code = model.Code;
-                                obj.MinLevel = model.MinLevel;
-                                obj.MaxLevel = model.MaxLevel;
-                                obj.Description = model.Description;
-                                obj.UpdatedUser = model.ActionUser;
-                                obj.UpdatedDate = DateTime.Now;
-
-                                //  cap nhat ben phan tich mat hang
-                                var commoAna = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectId == obj.Id && x.ObjectType == (int)eObjectType.isPhaseGroup);
-                                if (commoAna != null && commoAna.Count() > 0)
+                                if (!checkPermis(obj, model.ActionUser,isOwner))
                                 {
-                                    foreach (var item in commoAna)
+                                    result.IsSuccess = false;
+                                    result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo Cụm Công Đoạn này nên bạn không cập nhật được thông tin cho Cụm Công Đoạn này." });
+                                }
+                                else
+                                {
+                                    obj.Name = model.Name;
+                                    obj.Code = model.Code;
+                                    obj.MinLevel = model.MinLevel;
+                                    obj.MaxLevel = model.MaxLevel;
+                                    obj.Description = model.Description;
+                                    obj.UpdatedUser = model.ActionUser;
+                                    obj.UpdatedDate = DateTime.Now;
+
+                                    //  cap nhat ben phan tich mat hang
+                                    var commoAna = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectId == obj.Id && x.ObjectType == (int)eObjectType.isPhaseGroup);
+                                    if (commoAna != null && commoAna.Count() > 0)
                                     {
-                                        item.Name = model.Name;
-                                        item.UpdatedUser = model.ActionUser;
-                                        item.UpdatedDate = DateTime.Now;
+                                        foreach (var item in commoAna)
+                                        {
+                                            item.Name = model.Name;
+                                            item.UpdatedUser = model.ActionUser;
+                                            item.UpdatedDate = DateTime.Now;
+
+                                        }
                                     }
+                                    db.SaveChanges();
+                                    result.IsSuccess = true;
                                 }
                             }
                         }
-                        db.SaveChanges();
-                        result.IsSuccess = true;
+
                     }
                     return result;
                 }
@@ -182,7 +198,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public ResponseBase Delete(int id, int acctionUserId)
+        public ResponseBase Delete(int id, int acctionUserId, bool isOwner)
         {
             try
             {
@@ -197,11 +213,19 @@ namespace GPRO_IED_A.Business
                     }
                     else
                     {
-                        phasegroup.IsDeleted = true;
-                        phasegroup.DeletedUser = acctionUserId;
-                        phasegroup.DeletedDate = DateTime.Now;
-                        db.SaveChanges();
-                        result.IsSuccess = true;
+                        if (!checkPermis(phasegroup, acctionUserId,isOwner))
+                        {
+                            result.IsSuccess = false;
+                            result.Errors.Add(new Error() { MemberName = "Delete", Message = "Bạn không phải là người tạo Cụm Công Đoạn này nên bạn không xóa được Cụm Công Đoạn này." });
+                        }
+                        else
+                        {
+                            phasegroup.IsDeleted = true;
+                            phasegroup.DeletedUser = acctionUserId;
+                            phasegroup.DeletedDate = DateTime.Now;
+                            db.SaveChanges();
+                            result.IsSuccess = true;
+                        }
                     }
                     return result;
                 }
@@ -212,13 +236,13 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
-         
+
         public List<ModelSelectItem> Gets()
         {
             using (db = new IEDEntities())
             {
                 List<ModelSelectItem> objs = new List<ModelSelectItem>();
-                objs.Add(new ModelSelectItem() { Value = 0, Name = " - Chọn Nhóm Công Đoạn - " });
+                objs.Add(new ModelSelectItem() { Value = 0, Name = " - Chọn Cụm Công Đoạn - " });
                 try
                 {
                     objs.AddRange(db.T_PhaseGroup.Where(x => !x.IsDeleted).Select(x => new ModelSelectItem() { Value = x.Id, Name = x.Name }));

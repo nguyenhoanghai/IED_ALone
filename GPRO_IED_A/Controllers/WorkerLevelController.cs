@@ -24,7 +24,7 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    rs = BLLWorkerLevel.Instance.Delete(Id, UserContext.UserID);
+                    rs = BLLWorkerLevel.Instance.Delete(Id, UserContext.UserID, isOwner);
                     if (rs.IsSuccess)
                         JsonDataResult.Result = "OK";
                     else
@@ -72,7 +72,7 @@ namespace GPRO_IED_A.Controllers
                 {
                     obj.ActionUser = UserContext.UserID;
                     obj.CompanyId = UserContext.CompanyId;
-                    rs = BLLWorkerLevel.Instance.InsertOrUpdate(obj, UserContext.ChildCompanyId);
+                    rs = BLLWorkerLevel.Instance.InsertOrUpdate(obj, UserContext.ChildCompanyId, isOwner);
                     if (!rs.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";

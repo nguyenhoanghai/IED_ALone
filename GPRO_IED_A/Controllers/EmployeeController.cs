@@ -33,7 +33,7 @@ namespace GPRO_IED_A.Controllers
                 {
                     model.CompanyId = UserContext.CompanyId;
                     model.ActionUser = UserContext.UserID;
-                    rs = BLLEmployee.Instance.CreateOrUpdate(model);
+                    rs = BLLEmployee.Instance.CreateOrUpdate(model, isOwner);
                     if (!rs.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
@@ -81,7 +81,7 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    rs = BLLEmployee.Instance.Delete(Id, UserContext.UserID, UserContext.CompanyId);
+                    rs = BLLEmployee.Instance.Delete(Id, UserContext.UserID, UserContext.CompanyId, isOwner);
                     if (!rs.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";

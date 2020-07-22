@@ -907,8 +907,16 @@ GPRO.ProAna = function () {
         }
         Global.Data.ModelProAna.ObjectType = Global.Data.ObjectType;
         Global.Data.ModelProAna.ParentId = Global.Data.ParentID < 0 ? 0 : Global.Data.ParentID;
+        var _url = '';
+        switch (Global.Data.ObjectType) {
+            case 1: _url = '/ProAna/SaveProduct'; break;
+            case 2: 
+            case 3: _url = '/ProAna/SaveWorkshop'; break;
+            case 6:
+            case 7: _url = '/ProAna/SavePhaseGroup'; break;
+        }
         $.ajax({
-            url: Global.UrlAction.SaveProAna,
+            url: _url,
             type: 'post',
             data: ko.toJSON(Global.Data.ModelProAna),
             contentType: 'application/json',
@@ -941,8 +949,14 @@ GPRO.ProAna = function () {
     }
 
     function Delete(Id) {
+        var _url = '';
+        switch (Global.Data.ObjectType) {
+            case 2: _url = '/ProAna/DeleteProduct'; break;
+            case 3: _url = '/ProAna/DeleteWorkshop'; break;
+            case 7: _url = '/ProAna/DeletePhaseGroup'; break;
+        }
         $.ajax({
-            url: Global.UrlAction.DeleteProAna,
+            url: _url,
             type: 'POST',
             data: JSON.stringify({ 'Id': Id }),
             contentType: 'application/json charset=utf-8',
@@ -1652,7 +1666,7 @@ GPRO.ProAna = function () {
                 Name: {
                     visibility: 'fixed',
                     title: "Tên Công Đoạn",
-                    width: "10%",
+                    width: "25%",
                 },
                 WorkerLevelId: {
                     title: "Bậc thợ",
@@ -1672,7 +1686,7 @@ GPRO.ProAna = function () {
                 },
                 Description: {
                     title: "Mô Tả",
-                    width: "20%",
+                    width: "5%",
                     sorting: false
                 },
                 action: {
@@ -2612,6 +2626,7 @@ GPRO.ProAna = function () {
             contentType: 'application/json charset=utf-8',
             success: function (data) {
                 GlobalCommon.CallbackProcess(data, function () {
+                    $('#phase-suggest').val('');
                     if (data.Result == "OK") {
                         data.Records.TotalTMU = Math.round(data.Records.TotalTMU * 1000) / 1000;
                         $('#workersLevel').val(data.Records.WorkerLevelId);

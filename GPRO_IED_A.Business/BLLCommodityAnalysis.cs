@@ -4,11 +4,8 @@ using GPRO_IED_A.Business.Enum;
 using GPRO_IED_A.Business.Model;
 using GPRO_IED_A.Data;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Transactions;
 
 namespace GPRO_IED_A.Business
@@ -32,6 +29,11 @@ namespace GPRO_IED_A.Business
         }
         private BLLCommodityAnalysis() { }
         #endregion
+        bool checkPermis(T_CommodityAnalysis obj, int actionUser, bool isOwner)
+        {
+            if (isOwner) return true;
+            return obj.CreatedUser == actionUser;
+        }
 
         public CommodityAnalysisModel GetList()
         {
@@ -40,17 +42,19 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     var commoAnaModel = new CommodityAnalysisModel();
-                    var commoAnalysis = (from x in db.T_CommodityAnalysis where  !x.IsDeleted && x.ObjectType == (int)eObjectType.isCommodity select new ProAnaModel()
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        Node = x.Node,
-                        ObjectId = x.ObjectId,
-                        ObjectType = x.ObjectType,
-                        ParentId = x.ParentId,
-                        Description = x.Description,
-                        CreatedDate = x.CreatedDate
-                    });
+                    var commoAnalysis = (from x in db.T_CommodityAnalysis
+                                         where !x.IsDeleted && x.ObjectType == (int)eObjectType.isCommodity
+                                         select new ProAnaModel()
+                                         {
+                                             Id = x.Id,
+                                             Name = x.Name,
+                                             Node = x.Node,
+                                             ObjectId = x.ObjectId,
+                                             ObjectType = x.ObjectType,
+                                             ParentId = x.ParentId,
+                                             Description = x.Description,
+                                             CreatedDate = x.CreatedDate
+                                         });
                     if (commoAnalysis != null)
                     {
                         commoAnaModel.CommoAna.AddRange(commoAnalysis);
@@ -84,33 +88,37 @@ namespace GPRO_IED_A.Business
                             break;
                         case (int)eObjectType.isCommodity:
                             value_ = int.Parse(value);
-                            commoAnaModel.CommoAna.AddRange((from x in db.T_CommodityAnalysis where !x.IsDeleted && (x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId)) && x.ObjectType == (int)eObjectType.isCommodity && x.CreatedDate.Year == year && x.CreatedDate.Month == value_ select new ProAnaModel()
-                            {
-                                Id = x.Id,
-                                Name = x.Name,
-                                Node = x.Node,
-                                ObjectId = x.ObjectId,
-                                ObjectType = x.ObjectType,
-                                ParentId = x.ParentId,
-                                Description = x.Description,
-                                CreatedDate = x.CreatedDate
-                            }));
+                            commoAnaModel.CommoAna.AddRange((from x in db.T_CommodityAnalysis
+                                                             where !x.IsDeleted && (x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId)) && x.ObjectType == (int)eObjectType.isCommodity && x.CreatedDate.Year == year && x.CreatedDate.Month == value_
+                                                             select new ProAnaModel()
+                                                             {
+                                                                 Id = x.Id,
+                                                                 Name = x.Name,
+                                                                 Node = x.Node,
+                                                                 ObjectId = x.ObjectId,
+                                                                 ObjectType = x.ObjectType,
+                                                                 ParentId = x.ParentId,
+                                                                 Description = x.Description,
+                                                                 CreatedDate = x.CreatedDate
+                                                             }));
                             break;
                         case (int)eObjectType.isWorkShop:
                         case (int)eObjectType.isComponent:
                         case (int)eObjectType.isGroupVersion:
                         case (int)eObjectType.isPhaseGroup:
-                            commoAnaModel.CommoAna.AddRange((from x in db.T_CommodityAnalysis where !x.IsDeleted && x.ParentId == parentId select new ProAnaModel()
-                            {
-                                Id = x.Id,
-                                Name = x.Name,
-                                Node = x.Node,
-                                ObjectId = x.ObjectId,
-                                ObjectType = x.ObjectType,
-                                ParentId = x.ParentId,
-                                Description = x.Description,
-                                CreatedDate = x.CreatedDate,
-                            }));
+                            commoAnaModel.CommoAna.AddRange((from x in db.T_CommodityAnalysis
+                                                             where !x.IsDeleted && x.ParentId == parentId
+                                                             select new ProAnaModel()
+                                                             {
+                                                                 Id = x.Id,
+                                                                 Name = x.Name,
+                                                                 Node = x.Node,
+                                                                 ObjectId = x.ObjectId,
+                                                                 ObjectType = x.ObjectType,
+                                                                 ParentId = x.ParentId,
+                                                                 Description = x.Description,
+                                                                 CreatedDate = x.CreatedDate,
+                                                             }));
                             break;
                     }
 
@@ -145,7 +153,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public ResponseBase InsertOrUpdate(T_CommodityAnalysis noNameModel)
+        public ResponseBase InsertOrUpdate(T_CommodityAnalysis noNameModel, bool isOwner)
         {
             try
             {
@@ -233,20 +241,39 @@ namespace GPRO_IED_A.Business
                             }
                             else
                             {
-                                if (noName.ObjectType == (int)eObjectType.isPhaseGroup && noName.Description != noNameModel.Description)
+                                if (!checkPermis(noName, noNameModel.UpdatedUser.Value,isOwner))
                                 {
-                                    var phases = db.T_CA_Phase.Where(x => !x.IsDeleted && x.ParentId == noName.Id);
-                                    if (phases != null && phases.Count() > 0)
-                                        foreach (var item in phases)
-                                            item.Code = noNameModel.Description == null || noNameModel.Description == "" ? item.Index.ToString() : noNameModel.Description + "-" + item.Index;
-
+                                    result.IsSuccess = false;
+                                    switch (noName.ObjectType)
+                                    {
+                                        case (int)eObjectType.isCommodity:
+                                            result.Errors.Add(new Error() { MemberName = "update  ", Message = "Bạn không phải là người tạo mã hàng này nên bạn không cập nhật được thông tin cho mã hàng này." });
+                                            break;
+                                        case (int)eObjectType.isWorkShop:
+                                            result.Errors.Add(new Error() { MemberName = "update  ", Message = "Bạn không phải là người tạo phân xưởng này nên bạn không cập nhật được thông tin cho phân xưởng này." });
+                                            break;
+                                        case (int)eObjectType.isPhaseGroup:
+                                            result.Errors.Add(new Error() { MemberName = "update  ", Message = "Bạn không phải là người tạo nhóm công đoạn này nên bạn không cập nhật được thông tin cho nhóm công đoạn này." });
+                                            break;
+                                    }
                                 }
-                                noName.Name = noNameModel.Name;
-                                noName.Description = noNameModel.Description;
-                                noName.UpdatedUser = noNameModel.UpdatedUser;
-                                noName.UpdatedDate = noNameModel.UpdatedDate;
-                                db.SaveChanges();
-                                result.IsSuccess = true;
+                                else
+                                {
+                                    if (noName.ObjectType == (int)eObjectType.isPhaseGroup && noName.Description != noNameModel.Description)
+                                    {
+                                        var phases = db.T_CA_Phase.Where(x => !x.IsDeleted && x.ParentId == noName.Id);
+                                        if (phases != null && phases.Count() > 0)
+                                            foreach (var item in phases)
+                                                item.Code = noNameModel.Description == null || noNameModel.Description == "" ? item.Index.ToString() : noNameModel.Description + "-" + item.Index;
+
+                                    }
+                                    noName.Name = noNameModel.Name;
+                                    noName.Description = noNameModel.Description;
+                                    noName.UpdatedUser = noNameModel.UpdatedUser;
+                                    noName.UpdatedDate = noNameModel.UpdatedDate;
+                                    db.SaveChanges();
+                                    result.IsSuccess = true;
+                                }
                             }
                         }
                     }
@@ -290,7 +317,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public ResponseBase Delete(int Id, int actionUserId)
+        public ResponseBase Delete(int Id, int actionUserId, bool isOwner)
         {
             try
             {
@@ -300,37 +327,56 @@ namespace GPRO_IED_A.Business
                     var commoAna = db.T_CommodityAnalysis.FirstOrDefault(x => !x.IsDeleted && x.Id == Id);
                     if (commoAna != null)
                     {
-                        commoAna.IsDeleted = true;
-                        commoAna.DeletedUser = actionUserId;
-                        commoAna.DeletedDate = DateTime.Now;
-                        var node = commoAna.Node + Id + ",";
-                        var childCommoAna = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.Node.Trim().ToUpper().Contains(node.Trim().ToUpper()));
-                        if (childCommoAna != null && childCommoAna.Count() > 0)
+                        if (!checkPermis(commoAna,actionUserId,isOwner))
                         {
-                            foreach (var item in childCommoAna)
+                            result.IsSuccess = false;
+                            switch (commoAna.ObjectType)
                             {
-                                item.IsDeleted = true;
-                                item.DeletedUser = actionUserId;
-                                item.DeletedDate = DateTime.Now;
+                                case (int)eObjectType.isCommodity:
+                                    result.Errors.Add(new Error() { MemberName = "delete  ", Message = "Bạn không phải là người tạo mã hàng này nên bạn không xóa được xóa mã hàng này." });
+                                    break;
+                                case (int)eObjectType.isWorkShop:
+                                    result.Errors.Add(new Error() { MemberName = "delete  ", Message = "Bạn không phải là người tạo phân xưởng này nên bạn không xóa được xóa phân xưởng này." });
+                                    break;
+                                case (int)eObjectType.isPhaseGroup:
+                                    result.Errors.Add(new Error() { MemberName = "delete  ", Message = "Bạn không phải là người tạo nhóm công đoạn này nên bạn không xóa được xóa nhóm công đoạn này." });
+                                    break;
                             }
                         }
-
-                        if (commoAna.ObjectType == (int)eObjectType.isPhaseGroup)
+                        else
                         {
-                            var phases = db.T_CA_Phase.Where(x => !x.IsDeleted && x.ParentId == commoAna.Id);
-                            if (phases != null && phases.Count() > 0)
+                            commoAna.IsDeleted = true;
+                            commoAna.DeletedUser = actionUserId;
+                            commoAna.DeletedDate = DateTime.Now;
+                            var node = commoAna.Node + Id + ",";
+                            var childCommoAna = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.Node.Trim().ToUpper().Contains(node.Trim().ToUpper()));
+                            if (childCommoAna != null && childCommoAna.Count() > 0)
                             {
-                                foreach (var item in phases)
+                                foreach (var item in childCommoAna)
                                 {
                                     item.IsDeleted = true;
                                     item.DeletedUser = actionUserId;
                                     item.DeletedDate = DateTime.Now;
                                 }
                             }
+
+                            if (commoAna.ObjectType == (int)eObjectType.isPhaseGroup)
+                            {
+                                var phases = db.T_CA_Phase.Where(x => !x.IsDeleted && x.ParentId == commoAna.Id);
+                                if (phases != null && phases.Count() > 0)
+                                {
+                                    foreach (var item in phases)
+                                    {
+                                        item.IsDeleted = true;
+                                        item.DeletedUser = actionUserId;
+                                        item.DeletedDate = DateTime.Now;
+                                    }
+                                }
+                            }
+                            db.SaveChanges();
+                            result.IsSuccess = true;
+                            result.Errors.Add(new Error() { MemberName = "", Message = "Xóa Thành Công.!" });
                         }
-                        db.SaveChanges();
-                        result.IsSuccess = true;
-                        result.Errors.Add(new Error() { MemberName = "", Message = "Xóa Thành Công.!" });
                     }
                     else
                     {
@@ -482,6 +528,6 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        
+
     }
 }

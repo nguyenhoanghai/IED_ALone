@@ -6,8 +6,6 @@ using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GPRO_IED_A.Business
 {
@@ -31,8 +29,14 @@ namespace GPRO_IED_A.Business
         private BLLTimeTypePrepare() { }
         #endregion
 
+        bool checkPermis(T_TimeTypePrepare obj, int actionUser, bool isOwner)
+        {
+            if (isOwner)
+                return true;
+            return obj.CreatedUser == actionUser;
+        }
         #region method
-        public ResponseBase InsertOrUpdate(TimeTypePrepareModel model)
+        public ResponseBase InsertOrUpdate(TimeTypePrepareModel model, bool isOwner)
         {
             try
             {
@@ -65,6 +69,8 @@ namespace GPRO_IED_A.Business
                             obj.CreatedDate = DateTime.Now;
                             obj.CreatedUser = model.ActionUser;
                             db.T_TimeTypePrepare.Add(obj);
+                            db.SaveChanges();
+                            result.IsSuccess = true;
                         }
                         else
                         {
@@ -77,16 +83,25 @@ namespace GPRO_IED_A.Business
                             }
                             else
                             {
-                                obj.Name = model.Name;
-                                obj.Code = model.Code;
-                                obj.IsPublic = model.IsPublic;
-                                obj.Description = model.Description;
-                                obj.UpdatedUser = model.ActionUser;
-                                obj.UpdatedDate = DateTime.Now;
+                                if (!checkPermis(obj, model.ActionUser,isOwner))
+                                {
+                                    result.IsSuccess = false;
+                                    result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo loại thời gian chuẩn bị này nên bạn không cập nhật được thông tin cho loại thời gian chuẩn bị này." });
+                                }
+                                else
+                                {
+                                    obj.Name = model.Name;
+                                    obj.Code = model.Code;
+                                    obj.IsPublic = model.IsPublic;
+                                    obj.Description = model.Description;
+                                    obj.UpdatedUser = model.ActionUser;
+                                    obj.UpdatedDate = DateTime.Now;
+                                    db.SaveChanges();
+                                    result.IsSuccess = true;
+                                }
                             }
                         }
-                        db.SaveChanges();
-                        result.IsSuccess = true;
+                        
                     }
                     return result;
                 }
@@ -119,7 +134,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public ResponseBase Delete(int id, int acctionUserId)
+        public ResponseBase Delete(int id, int acctionUserId, bool isOwner)
         {
             try
             {
@@ -134,11 +149,19 @@ namespace GPRO_IED_A.Business
                     }
                     else
                     {
-                        timeType.IsDeleted = true;
-                        timeType.DeletedUser = acctionUserId;
-                        timeType.DeletedDate = DateTime.Now;
-                        db.SaveChanges();
-                        result.IsSuccess = true;
+                        if (!checkPermis(timeType, acctionUserId,isOwner))
+                        {
+                            result.IsSuccess = false;
+                            result.Errors.Add(new Error() { MemberName = "Delete", Message = "Bạn không phải là người tạo loại thời gian chuẩn bị này nên bạn không xóa được loại thời gian chuẩn bị này." });
+                        }
+                        else
+                        {
+                            timeType.IsDeleted = true;
+                            timeType.DeletedUser = acctionUserId;
+                            timeType.DeletedDate = DateTime.Now;
+                            db.SaveChanges();
+                            result.IsSuccess = true;
+                        }
                     }
                     return result;
                 }

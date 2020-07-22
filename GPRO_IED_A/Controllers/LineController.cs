@@ -22,7 +22,7 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    responseResult = BLLLine.Instance.Delete(Id, UserContext.UserID);
+                    responseResult = BLLLine.Instance.Delete(Id, UserContext.UserID, isOwner);
                     if (responseResult.IsSuccess)
                         JsonDataResult.Result = "OK";
                     else
@@ -70,7 +70,7 @@ namespace GPRO_IED_A.Controllers
                 if (isAuthenticate)
                 {
                     modelLine.ActionUser = UserContext.UserID;
-                    responseResult = BLLLine.Instance.InsertOrUpdate(modelLine);
+                    responseResult = BLLLine.Instance.InsertOrUpdate(modelLine, isOwner);
                     if (!responseResult.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";

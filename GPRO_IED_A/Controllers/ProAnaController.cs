@@ -154,13 +154,20 @@ namespace GPRO_IED_A.Controllers
             ResponseBase responseResult;
             try
             {
-                noName.CreatedUser = UserContext.UserID;
+
                 noName.CompanyId = UserContext.CompanyId;
                 if (noName.Id == 0)
+                {
+                    noName.CreatedUser = UserContext.UserID;
                     noName.CreatedDate = DateTime.Now;
+                }
                 else
+                {
+                    noName.UpdatedUser = UserContext.UserID;
                     noName.UpdatedDate = DateTime.Now;
-                responseResult = BLLCommodityAnalysis.Instance.InsertOrUpdate(noName);
+                }
+
+                responseResult = BLLCommodityAnalysis.Instance.InsertOrUpdate(noName, isOwner);
             }
             catch (Exception ex)
             {
@@ -177,7 +184,7 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    rs = Delete(Id );
+                    rs = Delete(Id);
                     if (!rs.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
@@ -249,7 +256,7 @@ namespace GPRO_IED_A.Controllers
             ResponseBase result;
             try
             {
-                result = BLLCommodityAnalysis.Instance.Delete(Id, UserContext.UserID);
+                result = BLLCommodityAnalysis.Instance.Delete(Id, UserContext.UserID, isOwner);
             }
             catch (Exception ex)
             {
@@ -269,7 +276,7 @@ namespace GPRO_IED_A.Controllers
                 if (isAuthenticate)
                 {
                     phase.ActionUser = UserContext.UserID;
-                    responseResult = BLLCommo_Ana_Phase.Instance.InsertOrUpdate(phase, timePrepares);
+                    responseResult = BLLCommo_Ana_Phase.Instance.InsertOrUpdate(phase, timePrepares, isOwner);
                     if (!responseResult.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
@@ -314,7 +321,7 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    result = BLLCommo_Ana_Phase.Instance.Delete(Id, UserContext.UserID);
+                    result = BLLCommo_Ana_Phase.Instance.Delete(Id, UserContext.UserID, isOwner);
                     if (!result.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
@@ -322,6 +329,47 @@ namespace GPRO_IED_A.Controllers
                     }
                     else
                     {
+                        JsonDataResult.Result = "OK";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JsonDataResult);
+        }
+
+        [HttpPost]
+        public JsonResult RemovePhaseVideo(int Id)
+        {
+            ResponseBase result;
+            try
+            {
+                if (isAuthenticate)
+                {
+                    string videoPath = "";
+                    result = BLLCommo_Ana_Phase.Instance.RemovePhaseVideo(Id, UserContext.UserID, isOwner, ref videoPath);
+                    if (!result.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            if (!string.IsNullOrEmpty(videoPath))
+                            {
+                                string directoryPath = Server.MapPath(("~" + videoPath.Split('|')[0]));
+                                if (!System.IO.File.Exists(directoryPath))
+                                    System.IO.File.Delete(directoryPath);
+                            }
+                        }
+                        catch (Exception)
+                        {   }
+
                         JsonDataResult.Result = "OK";
                         JsonDataResult.ErrorMessages.AddRange(result.Errors);
                     }
@@ -653,7 +701,7 @@ namespace GPRO_IED_A.Controllers
                     var _details = JsonConvert.DeserializeObject<List<TechProcessVerDetailModel>>(details);
                     version.details = _details;
                     version.ActionUser = UserContext.UserID;
-                    responseResult = BLLTechProcessVersion.Instance.InsertOrUpdate(version);
+                    responseResult = BLLTechProcessVersion.Instance.InsertOrUpdate(version, isOwner);
                     if (!responseResult.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
@@ -678,7 +726,7 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    result = BLLTechProcessVersion.Instance.Delete(Id, UserContext.UserID);
+                    result = BLLTechProcessVersion.Instance.Delete(Id, UserContext.UserID, isOwner);
                     if (!result.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";

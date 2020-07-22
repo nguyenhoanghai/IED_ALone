@@ -25,7 +25,7 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    rs = BLLEquipment.Instance.Delete(Id, UserContext.UserID);
+                    rs = BLLEquipment.Instance.Delete(Id, UserContext.UserID, isOwner);
                     if (rs.IsSuccess)
                         JsonDataResult.Result = "OK";
                     else
@@ -79,7 +79,7 @@ namespace GPRO_IED_A.Controllers
                     {
                         modelEquipment.CompanyId = UserContext.CompanyId;
                         modelEquipment.ActionUser = UserContext.UserID;
-                        rs = BLLEquipment.Instance.Update(modelEquipment, UserContext.CompanyId, a);
+                        rs = BLLEquipment.Instance.Update(modelEquipment, UserContext.CompanyId, a, isOwner);
                     }
                     if (!rs.IsSuccess)
                     {
