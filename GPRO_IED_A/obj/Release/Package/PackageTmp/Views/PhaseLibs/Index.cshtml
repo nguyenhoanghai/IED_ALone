@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "Công đoạn mẫu";
-     Layout = null  ;
+    Layout = null;
 }
 
 <ul class="nav nav-tabs" role="tablist">
@@ -28,5 +28,64 @@
         </div>
     </div>
 </div>
-  
+
+@*popup search*@
+<div class="modal fade   " id="phase-lib-search-popup" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modalsmall ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" pgclose data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Tìm Kiếm</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="form-group">
+                        <label class="control-label">Từ Khóa</label>
+                        <input class="form-control" id="p-l-keyword" type="text" placeholder="Nhập thông tin bạn cần tìm ..." />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button pgclose aria-hidden="true" data-dismiss="modal" class="btn">
+                    <div class="button-image image-close"></div>
+                    Đóng
+                </button>
+                <button pgsearch class="btn btn-primary">
+                    <div class="button-image image-search"></div>
+                    Tìm Kiếm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@*popup search*@
+<div class="modal fade   " id="phase-not-lib-search-popup" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modalsmall ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" pgclose data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Tìm Kiếm</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="form-group">
+                        <label class="control-label">Từ Khóa</label>
+                        <input class="form-control" id="p-n-l-keyword" type="text" placeholder="Nhập thông tin bạn cần tìm ..." />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button pgclose-not aria-hidden="true" data-dismiss="modal" class="btn">
+                    <div class="button-image image-close"></div>
+                    Đóng
+                </button>
+                <button pgsearch-not class="btn btn-primary">
+                    <div class="button-image image-search"></div>
+                    Tìm Kiếm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="~/Scripts/IED/PhaseLibs/phase-libs.js"></script>

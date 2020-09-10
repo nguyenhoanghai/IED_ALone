@@ -1987,6 +1987,7 @@ GPRO.ProAna = function () {
                 $('#loading').hide();
                 GlobalCommon.CallbackProcess(data, function () {
                     if (data.Result == "OK") {
+                        $('[cancel-create-phase]').click();
                         $('#' + Global.Element.CreatePhasePopup).modal('hide');
                         Global.Data.isInsertPhase = true;
                         ReloadListPhase_View();

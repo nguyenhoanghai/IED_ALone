@@ -402,7 +402,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public PagedList<PhaseLibModel> GetsWhichNotLib(int startIndexRecord, int pageSize, string sorting)
+        public PagedList<PhaseLibModel> GetsWhichNotLib(string keyword, int startIndexRecord, int pageSize, string sorting)
         {
             var phases = new List<PhaseLibModel>();
             try
@@ -413,7 +413,12 @@ namespace GPRO_IED_A.Business
                         sorting = "Name ASC";
 
                     var temps = (from x in db.T_CA_Phase
-                                 where !x.IsDeleted && !x.T_PhaseGroup.IsDeleted && !x.IsLibrary
+                                 where
+                                 !x.IsDeleted &&
+                                 !x.T_PhaseGroup.IsDeleted &&
+                                 !x.IsLibrary &&
+                                  (x.Code.Trim().ToUpper().Contains(keyword) ||
+                                   x.Name.Trim().ToUpper().Contains(keyword))
                                  select new PhaseLibModel()
                                  {
                                      Id = x.Id,
@@ -432,7 +437,7 @@ namespace GPRO_IED_A.Business
                         var phaseGroups = (from x in db.T_PhaseGroup where !x.IsDeleted select new { Id = x.Id, Name = x.Name }).ToList();
                         foreach (var item in temps)
                         {
-                            int[] nodeArr = item.Node.Split(',').Select(x => !string.IsNullOrEmpty(x) ? Convert.ToInt32(x) : 0).ToArray();
+                            int[] nodeArr = item.Node.Replace("0,0,", "0,").Split(',').Select(x => !string.IsNullOrEmpty(x) ? Convert.ToInt32(x) : 0).ToArray();
                             var found = masters.FirstOrDefault(x => x.id == nodeArr[1]);
                             if (found != null)
                             {
@@ -475,7 +480,7 @@ namespace GPRO_IED_A.Business
             return new PagedList<PhaseLibModel>(phases, pageNumber, pageSize);
         }
 
-        public PagedList<PhaseLibModel> GetsWhichIsLib(int startIndexRecord, int pageSize, string sorting)
+        public PagedList<PhaseLibModel> GetsWhichIsLib(string keyword, int startIndexRecord, int pageSize, string sorting)
         {
             var phases = new List<PhaseLibModel>();
             try
@@ -486,7 +491,12 @@ namespace GPRO_IED_A.Business
                         sorting = "Name ASC";
 
                     var temps = (from x in db.T_CA_Phase
-                                 where !x.IsDeleted && !x.T_PhaseGroup.IsDeleted && x.IsLibrary
+                                 where
+                                 !x.IsDeleted &&
+                                 !x.T_PhaseGroup.IsDeleted &&
+                                 x.IsLibrary &&
+                                 (x.Code.Trim().ToUpper().Contains(keyword) ||
+                                   x.Name.Trim().ToUpper().Contains(keyword))
                                  select new PhaseLibModel()
                                  {
                                      Id = x.Id,
@@ -504,8 +514,8 @@ namespace GPRO_IED_A.Business
                         var products = (from x in db.T_Product where !x.IsDeleted select new { Id = x.Id, Name = x.Name }).ToList();
                         var phaseGroups = (from x in db.T_PhaseGroup where !x.IsDeleted select new { Id = x.Id, Name = x.Name }).ToList();
                         foreach (var item in temps)
-                        {
-                            int[] nodeArr = item.Node.Split(',').Select(x => !string.IsNullOrEmpty(x) ? Convert.ToInt32(x) : 0).ToArray();
+                        { 
+                            int[] nodeArr = item.Node.Replace("0,0,","0,").Split(',').Select(x => !string.IsNullOrEmpty(x) ? Convert.ToInt32(x) : 0).ToArray();
                             var found = masters.FirstOrDefault(x => x.id == nodeArr[1]);
                             if (found != null)
                             {
@@ -520,6 +530,8 @@ namespace GPRO_IED_A.Business
                                 if (phaseGroups.FirstOrDefault(x => x.Id == found.OId) != null)
                                     item.GroupPhase = found.name;
                             }
+
+
                             if (!string.IsNullOrEmpty(item.Product) && !string.IsNullOrEmpty(item.GroupPhase))
                                 phases.Add(item);
                         }
@@ -1068,7 +1080,7 @@ namespace GPRO_IED_A.Business
         {
             var list = new List<ModelSelectItem>();
             using (var db = new IEDEntities())
-            {               
+            {
                 var phases = (from x in db.T_CA_Phase
                               where !x.IsDeleted && !x.T_CommodityAnalysis.IsDeleted &&
                               !x.T_PhaseGroup.IsDeleted &&
@@ -1095,31 +1107,31 @@ namespace GPRO_IED_A.Business
                                    }).ToList();
 
                     var products = (from x in db.T_Product
-                                    where  !x.IsDeleted  
-                                    select new
-                                    {
-                                        Id = x.Id, 
-                                        name = x.Name
-                                    }).ToList();
-                    var phaseGroups = (from x in db.T_PhaseGroup
                                     where !x.IsDeleted
                                     select new
                                     {
                                         Id = x.Id,
                                         name = x.Name
                                     }).ToList();
+                    var phaseGroups = (from x in db.T_PhaseGroup
+                                       where !x.IsDeleted
+                                       select new
+                                       {
+                                           Id = x.Id,
+                                           name = x.Name
+                                       }).ToList();
 
                     foreach (var item in phases)
                     {
-                        var arr = item.Node.Split(',').Where(x=> !string.IsNullOrEmpty(x)).Select(x=> Convert.ToInt32(x)).ToList();
+                        var arr = item.Node.Replace("0,0,","0,").Split(',').Where(x => !string.IsNullOrEmpty(x)).Select(x => Convert.ToInt32(x)).ToList();
                         var proObj = proanas.FirstOrDefault(x => x.Id == arr[1]);
                         if (proObj != null)
                         {
                             //check product
                             var pro = products.FirstOrDefault(x => x.Id == proObj.objId);
-                            if (pro!= null)
+                            if (pro != null)
                             {
-                                  proObj = proanas.FirstOrDefault(x => x.Id == arr[4]);
+                                proObj = proanas.FirstOrDefault(x => x.Id == arr[4]);
                                 if (proObj != null)
                                 {
                                     //check phase group

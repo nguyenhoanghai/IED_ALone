@@ -52,7 +52,7 @@ namespace GPRO_IED_A.Business
                         if (listDetail != null && listDetail.Count > 0)
                         {
                             var listPhaseId = listDetail.OrderBy(x => x.PhaseCode).Select(c => c.CA_PhaseId).OrderBy(x => x).ToList();
-                            var listPhase = db.T_CA_Phase.Where(c => !c.IsDeleted && listPhaseId.Contains(c.Id)).OrderBy(x => x.Code).ToList();
+                            var listPhase = db.T_CA_Phase.Where(c => !c.IsDeleted && listPhaseId.Contains(c.Id)).OrderBy(x => x.ParentId).ThenBy(x=>x.Code).ToList();
                             if (listPhase != null)
                             {
                                 var listPhaseGroupId = listPhase.Select(c => c.PhaseGroupId).Distinct().ToList();
@@ -157,7 +157,7 @@ namespace GPRO_IED_A.Business
                         }
                         else
                         {
-                            if (!checkPermis(version, model.ActionUser,isOwner))
+                            if (!checkPermis(version, model.ActionUser, isOwner))
                             {
                                 result.IsSuccess = false;
                                 result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo quy trình công nghệ này nên bạn không cập nhật được thông tin cho quy trình công nghệ này." });
@@ -223,7 +223,7 @@ namespace GPRO_IED_A.Business
                     }
                     else
                     {
-                        if (!checkPermis(version, acctionUserId,isOwner))
+                        if (!checkPermis(version, acctionUserId, isOwner))
                         {
                             result.IsSuccess = false;
                             result.Errors.Add(new Error() { MemberName = "Delete", Message = "Bạn không phải là người tạo quy trình công nghệ này nên bạn không xóa được quy trình công nghệ này." });
@@ -306,6 +306,8 @@ namespace GPRO_IED_A.Business
                                            WorkerLevelName = x.T_CA_Phase.SWorkerLevel.Name,
                                            Index = x.T_CA_Phase.Index
                                        }).OrderBy(x => x.Index).ThenBy(x => x.PhaseCode).ToList();
+
+                        details = details.GroupBy(x => x.CA_PhaseId).Select(x => x.First()).ToList();
                         techVersion.details = details;
 
                         var listEquipmentId = details.Where(c => c.EquipmentId > 0).Select(c => c.EquipmentId).Distinct().ToList();

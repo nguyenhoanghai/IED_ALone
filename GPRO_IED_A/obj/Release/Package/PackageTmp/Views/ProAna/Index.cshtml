@@ -273,6 +273,7 @@
                                     <input type="file" id="video" accept="mp4 Video;video/mp4,video/x-m4v,video/*" />
                                     <input type="hidden" id="hid_video" />
                                 </div>
+                                <span id="video-info"> </span>
 
                                 <textarea class="form-control" id="phase-Des" style="display:none"></textarea>
                             </div>
@@ -651,24 +652,17 @@
     var ProAna = new GPRO.ProAna();
     ProAna.Init();
 
-
     $('#equipment-box').hide();
     $('#jtable-phase,#techprocess').hide();
     $('#jtable-PhaseVersion').hide();
 
+    function ResetTime_Percent(index) { ProAna.ResetTime_Percent(index); }
 
-    function ResetTime_Percent(index) {
-        ProAna.ResetTime_Percent(index);
-    }
+    function refresh_Tree() { $("#jqxTree").jqxTree('refresh'); }
 
-    function refresh_Tree() {
-        $("#jqxTree").jqxTree('refresh');
-    }
+    function Change() { ProAna.TitleChange(); }
 
-    function Change() {
-        ProAna.TitleChange();
-    }
-
+    function removeVideo() { ProAna.removeVideo(); }
 </script>
 
 

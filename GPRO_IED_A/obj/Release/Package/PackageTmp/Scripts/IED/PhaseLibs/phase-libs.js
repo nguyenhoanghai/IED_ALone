@@ -27,6 +27,8 @@ GPRO.PhaseLibs = function () {
         Element: {
             tableNotLibs: 'tb-phase',
             tableIsLibs: 'tb-phase-lib',
+            search:'phase-lib-search-popup',
+            searchNot: 'phase-not-lib-search-popup'
         },
         Data: {
         }
@@ -82,6 +84,19 @@ GPRO.PhaseLibs = function () {
             if (ids != '')
                 Save(ids, true);
         });
+
+        $('[pgsearch]').click(() => {
+            ReloadListIsLibs();
+            $('[pgclose]').click();
+        });
+
+        $('[pgsearch-not]').click(() => {
+            ReloadListNotLibs();
+            $('[pgclose-not]').click();
+        });
+
+        $('[pgclose]').click(() => { $('#p-l-keyword').val('') });
+        $('[pgclose-not]').click(() => { $('#p-n-l-keyword').val('') });
     }
 
     Save = (ids, isremove) => {
@@ -121,10 +136,12 @@ GPRO.PhaseLibs = function () {
             multiselect: true, //Allow multiple selecting
             selectingCheckboxes: true, //Show checkboxes on first column
             actions: {
-                listAction: Global.UrlAction.GetWhichNotLibs
+                listAction: Global.UrlAction.GetWhichNotLibs,
+                searchAction: Global.Element.searchNot,
             },
             messages: {
-                selectShow: 'Ẩn hiện cột'
+                selectShow: 'Ẩn hiện cột',
+                searchRecord: 'Tìm kiếm',
             },
             fields: {
                 Id: {
@@ -169,7 +186,7 @@ GPRO.PhaseLibs = function () {
         });
     }
     ReloadListNotLibs = () => {
-        $('#' + Global.Element.tableNotLibs).jtable('load');
+        $('#' + Global.Element.tableNotLibs).jtable('load', { 'keyword': $('#p-n-l-keyword').val()   });
     }
 
     InitListLibs = () => {
@@ -185,10 +202,12 @@ GPRO.PhaseLibs = function () {
             multiselect: true, //Allow multiple selecting
             selectingCheckboxes: true, //Show checkboxes on first column
             actions: {
-                listAction: Global.UrlAction.GetWhichIsLibs
+                listAction: Global.UrlAction.GetWhichIsLibs,
+                searchAction: Global.Element.search,
             },
             messages: {
-                selectShow: 'Ẩn hiện cột'
+                selectShow: 'Ẩn hiện cột',
+                searchRecord: 'Tìm kiếm',
             },
             fields: {
                 Id: {
@@ -232,7 +251,7 @@ GPRO.PhaseLibs = function () {
         });
     }
     ReloadListIsLibs = () => {
-        $('#' + Global.Element.tableIsLibs).jtable('load');
+        $('#' + Global.Element.tableIsLibs).jtable('load', { 'keyword': $('#p-l-keyword').val() });
     }
 
 }

@@ -13,13 +13,13 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetWhichNotLibs(int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
+        public JsonResult GetWhichNotLibs(string keyword, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
             try
             {
                 if (isAuthenticate)
                 {
-                    var phases = BLLCommo_Ana_Phase.Instance.GetsWhichNotLib(jtStartIndex, jtPageSize, jtSorting);
+                    var phases = BLLCommo_Ana_Phase.Instance.GetsWhichNotLib(keyword, jtStartIndex, jtPageSize, jtSorting);
                     JsonDataResult.Records = phases;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = phases.TotalItemCount;
@@ -33,13 +33,13 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetWhichIsLibs(int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
+        public JsonResult GetWhichIsLibs(string keyword, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
             try
             {
                 if (isAuthenticate)
                 {
-                    var phases = BLLCommo_Ana_Phase.Instance.GetsWhichIsLib(jtStartIndex, jtPageSize, jtSorting);
+                    var phases = BLLCommo_Ana_Phase.Instance.GetsWhichIsLib(keyword, jtStartIndex, jtPageSize, jtSorting);
                     JsonDataResult.Records = phases;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = phases.TotalItemCount;
