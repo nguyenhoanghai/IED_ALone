@@ -1,11 +1,17 @@
 ﻿@using GPRO_IED_A.App_Global;
 @{
     ViewBag.Title = "Tài khoản";
-     Layout = null;
+      Layout = null;
     List<SelectListItem> items = null;
     if (ViewData["roles"] != null)
     {
         items = (List<SelectListItem>)ViewData["roles"];
+    }
+
+    List<SelectListItem> wkitems = null;
+    if (ViewData["workshops"] != null)
+    {
+        wkitems = (List<SelectListItem>)ViewData["workshops"];
     }
 } 
 <script src="~/Scripts/IED/User/User.js"></script> 
@@ -67,7 +73,11 @@
                         <label class="control-label">Quyền Tài Khoản <span class="required-class">*</span></label>
                         @Html.DropDownList("userRoles", items, null, new { @select = "userRoles", @class = "chosen-select", @multiple = "", @placeholder = "Chọn quyền cho Tài Khoản..." })
                     </div>
+                    <div class="col-md-12 " style="clear:both">
+                        <label class="control-label">Phân xưởng</label><br />
+                        @Html.DropDownList("workshops", wkitems, null, new { @select = "workshops", @class = "chosen-select", @multiple = "", @placeholder = "Chọn phân xưởng" })
 
+                    </div>
                     <div style="clear: both"></div>
                 </div>
             </div>

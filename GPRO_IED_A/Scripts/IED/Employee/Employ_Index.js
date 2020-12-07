@@ -146,6 +146,7 @@ GPRO.EmployeeList = function () {
                 Image: {
                     title: 'Hình',
                     width: '1%',
+sorting:false,
                     display: function (data) {
                         var text = $('<img style = "width:40px" src="' + data.record.Image + '"  />');
                         if (data.record.Image != null) {

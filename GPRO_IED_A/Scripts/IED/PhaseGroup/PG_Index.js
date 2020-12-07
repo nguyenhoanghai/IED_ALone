@@ -39,11 +39,8 @@ GPRO.PhaseGroup = function () {
     }
 
     this.Init = function () {
-        RegisterEvent();
-        InitList ();
-        ReloadList ();
-        BindData(null);
-        InitPopup();
+        _GetWorkshopSelect('pgworkshop');
+
     }
 
     this.reloadListPhaseGroup = function () {
@@ -66,7 +63,7 @@ GPRO.PhaseGroup = function () {
             $('div.divParent').attr('currentPoppup', Global.Element.Search.toUpperCase());
         });
 
-        $('[pgclose]').click(function () { 
+        $('[pgclose]').click(function () {
             $('#pgkeyword').val('');
             $('#pgsearchBy').val('1');
             $('div.divParent').attr('currentPoppup', '');
@@ -75,41 +72,40 @@ GPRO.PhaseGroup = function () {
         $('[pgsearch]').click(function () {
             ReloadList();
             $('[pgclose]').click();
-        });         
+        });
     }
 
     function InitViewModel(phaseGroup) {
-        var phaseGroupViewModel = {
-            Id: 0,
-            Name: '',
-            Code: '',
-            MinLevel: 0,
-            MaxLevel: 0,
-            ProductTypeId: '',
-            ProductTypeName: '',
-            Description: ''
-        };
-        if (phaseGroup != null) {
-            phaseGroupViewModel = {
-                Id: ko.observable(phaseGroup.Id),
-                Name: ko.observable(phaseGroup.Name),
-                Code: ko.observable(phaseGroup.Code),
-                MinLevel: ko.observable(phaseGroup.MinLevel),
-                MaxLevel: ko.observable(phaseGroup.MaxLevel),
-                ProductTypeId: ko.observable(phaseGroup.ProductTypeId),
-                ProductTypeName: ko.observable(phaseGroup.ProductTypeName),
-                Description: ko.observable(phaseGroup.Description)
-            };
+        if (!phaseGroup) {
+            $('#pgid').val(0);
+            $('#pgcode').val('');
+            $('#pgname').val('');
+            $('#pgMinLevel').val(0);
+            $('#pgMaxLevel').val(0);
+            $('#pgdes').val('');
+            $("#pgworkshop").data("kendoMultiSelect").value('');
         }
-        return phaseGroupViewModel;
+        else {
+            $('#pgid').val(phaseGroup.Id);
+            $('#pgcode').val(phaseGroup.Code);
+            $('#pgname').val(phaseGroup.Name);
+            $('#pgMinLevel').val(phaseGroup.MinLevel);
+            $('#pgMaxLevel').val(phaseGroup.MaxLevel);
+            $('#pgdes').val(phaseGroup.Description);
+            if (phaseGroup.intWorkshopIds != null)
+                $("#pgworkshop").data("kendoMultiSelect").value(phaseGroup.intWorkshopIds);
+            else
+                $("#pgworkshop").data("kendoMultiSelect").value('');
+        }
+        return phaseGroup;
     }
 
     function BindData(phaseGroup) {
         Global.Data.ModelPhaseGroup = InitViewModel(phaseGroup);
-        ko.applyBindings(Global.Data.ModelPhaseGroup, document.getElementById(Global.Element.PopupPhaseGroup));
+        //  ko.applyBindings(Global.Data.ModelPhaseGroup, document.getElementById(Global.Element.PopupPhaseGroup));
     }
 
-    function InitList () {
+    function InitList() {
         $('#' + Global.Element.JtablePhaseGroup).jtable({
             title: 'Danh Sách cụm công đoạn',
             paging: true,
@@ -142,8 +138,8 @@ GPRO.PhaseGroup = function () {
                 Name: {
                     visibility: 'fixed',
                     title: "Tên cụm công đoạn",
-                    width: "15%", 
-                }, 
+                    width: "15%",
+                },
                 MinLevel: {
                     title: "Cấp độ Nhỏ Nhất",
                     width: "5%",
@@ -160,7 +156,6 @@ GPRO.PhaseGroup = function () {
                         return txt;
                     }
                 },
-
                 Description: {
                     title: "Mô Tả",
                     width: "20%",
@@ -175,7 +170,7 @@ GPRO.PhaseGroup = function () {
                         text.click(function () {
                             BindData(data.record);
                             Global.Data.IsInsert = false;
-                           });
+                        });
                         return text;
                     }
                 },
@@ -198,24 +193,33 @@ GPRO.PhaseGroup = function () {
         });
     }
 
-    function ReloadList () {
+    function ReloadList() {
         var keySearch = $('#pgkeyword').val();
-        var searchBy = $('#pgsearchBy').val(); 
+        var searchBy = $('#pgsearchBy').val();
         $('#' + Global.Element.JtablePhaseGroup).jtable('load', { 'keyword': keySearch, 'searchBy': searchBy });
-      }
+    }
 
-    function SavePhaseGroup() { 
+    function SavePhaseGroup() {
+        var obj = {
+            Id: $('#pgid').val(),
+            Name: $('#pgname').val(),
+            Code: $('#pgcode').val(),
+            MinLevel: $('#pgMinLevel').val(),
+            MaxLevel: $('#pgMaxLevel').val(),
+            Description: $('#pgdes').val(),
+            WorkshopIds: $('#pgworkshop').data("kendoMultiSelect").value().toString()
+        };
         $.ajax({
             url: Global.UrlAction.SavePhaseGroup,
             type: 'post',
-            data: ko.toJSON(Global.Data.ModelPhaseGroup),
+            data: ko.toJSON(obj),
             contentType: 'application/json',
             beforeSend: function () { $('#loading').show(); },
             success: function (result) {
                 $('#loading').hide();
                 GlobalCommon.CallbackProcess(result, function () {
                     if (result.Result == "OK") {
-                        ReloadList(); 
+                        ReloadList();
                         BindData(null);
                         if (!Global.Data.IsInsert) {
                             $("#" + Global.Element.PopupPhaseGroup + ' button[pgcancel]').click();
@@ -242,7 +246,7 @@ GPRO.PhaseGroup = function () {
             success: function (data) {
                 GlobalCommon.CallbackProcess(data, function () {
                     if (data.Result == "OK") {
-                        ReloadList(); 
+                        ReloadList();
                     }
                     else
                         GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
@@ -271,25 +275,65 @@ GPRO.PhaseGroup = function () {
         else if (parseFloat($('#pgMinLevel').val()) > parseFloat($('#pgMaxLevel').val())) {
             GlobalCommon.ShowMessageDialog("Chỉ số Nhỏ nhất không được lớn hơn Chỉ Số Lớn Nhất.", function () { }, "Lỗi Nhập liệu");
             return false;
-        } 
+        }
         return true;
     }
-     
+
     function InitPopup() {
         $('#' + Global.Element.PopupPhaseGroup + ' button[pgsave]').click(function () {
-            if (CheckValidate())  
-                SavePhaseGroup(); 
+            if (CheckValidate())
+                SavePhaseGroup();
         });
 
         $('#' + Global.Element.PopupPhaseGroup + ' button[pgcancel]').click(function () {
             $("#" + Global.Element.PopupPhaseGroup).modal("hide");
-             BindData(null);
+            BindData(null);
+        });
+    }
+
+    function _GetWorkshopSelect(controlName) {
+        $.ajax({
+            url: '/Workshop/GetSelect',
+            type: 'POST',
+            data: '',
+            contentType: 'application/json charset=utf-8',
+            success: function (data) {
+                GlobalCommon.CallbackProcess(data, function () {
+                    if (data.Result == "OK") {
+                        if (data.Data.length > 0) {
+                            var str = '';
+                            if (data.Data.length > 0) {
+                                $.each(data.Data, function (index, item) {
+                                    str += ' <option value="' + item.Value + '">' + item.Name + '</option>';
+                                });
+                            }
+                            $('#' + controlName).empty().append(str);
+                            $('#' + controlName).kendoMultiSelect().data("kendoMultiSelect");
+                        }
+                    }
+                    RegisterEvent();
+                    InitList();
+                    ReloadList();
+                    InitPopup();
+                    BindData(null);
+                }, false, '', true, true, function () {
+                    var msg = GlobalCommon.GetErrorMessage(data);
+                    GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+                    RegisterEvent();
+                    InitList();
+                    ReloadList();
+                    InitPopup();
+                    BindData(null);
+                });
+            }
         });
     }
 
 }
 
 $(document).ready(function () {
+
     var PhaseGroup = new GPRO.PhaseGroup();
     PhaseGroup.Init();
+
 })

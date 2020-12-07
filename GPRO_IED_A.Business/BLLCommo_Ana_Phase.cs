@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -429,7 +430,7 @@ namespace GPRO_IED_A.Business
                                      Node = x.Node,
                                      Product = "",
                                      GroupPhase = ""
-                                 }).ToList();
+                                 }) .ToList();
                     if (temps.Count > 0)
                     {
                         var masters = (from x in db.T_CommodityAnalysis where !x.IsDeleted select new { id = x.Id, name = x.Name, OType = x.ObjectType, OId = x.ObjectId }).ToList();
@@ -667,7 +668,7 @@ namespace GPRO_IED_A.Business
                                       PercentWasteSpecial = x.PercentWasteSpecial,
                                       Video = x.Video,
                                       IsLibrary = x.IsLibrary
-                                  }).ToList();
+                                  }).OrderBy(sorting).ToList();
 
                     var pageListReturn = new PagedList<Commo_Ana_PhaseModel>(phases, pageNumber, pageSize);
                     if (pageListReturn != null && pageListReturn.Count > 0)

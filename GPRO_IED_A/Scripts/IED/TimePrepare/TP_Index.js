@@ -174,7 +174,8 @@ GPRO.TimePrepare = function () {
 
                 Description: {
                     title: "Mô Tả",
-                    width: "20%"
+                    width: "20%",
+                    sorting: false
                 },
                 Detail: {
                     title: 'DS thời gian chuẩn bị',
@@ -233,6 +234,7 @@ GPRO.TimePrepare = function () {
                                             },
                                             Description: {
                                                 title: "Mô Tả",
+                                                sorting: false,
                                                 width: "20%"
                                             },
                                             edit: {

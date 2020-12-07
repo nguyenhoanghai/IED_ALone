@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -174,7 +175,7 @@ namespace GPRO_IED_A.Business
             try
             {
                 if (string.IsNullOrEmpty(sorting))
-                    sorting = "CreatedDate DESC";
+                    sorting = "Id DESC";
                 employees = GetEmployees(keyWord, sorting, companyId);
                 var pageNumber = (startIndexRecord / pageSize) + 1;
                 pagelistReturn = new PagedList<EmployeeModel>(employees, pageNumber, pageSize);
@@ -207,7 +208,7 @@ namespace GPRO_IED_A.Business
                           Mobile = x.Mobile,
                           FirstName = x.FirstName,
                           LastName = x.LastName
-                      });
+                      }).OrderBy(sorting);
                     }
                     else
                     {
@@ -222,7 +223,7 @@ namespace GPRO_IED_A.Business
                             Mobile = x.Mobile,
                              FirstName = x.FirstName,
                             LastName = x.LastName
-                        });
+                        }).OrderBy(sorting);
                     }
 
                     if (objs != null && objs.Count() > 0)

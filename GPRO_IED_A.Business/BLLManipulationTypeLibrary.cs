@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -195,7 +196,7 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     if (string.IsNullOrEmpty(sorting))
-                        sorting = "CreatedDate DESC";
+                        sorting = "Id DESC";
 
                     var pageNumber = (startIndexRecord / pageSize) + 1;
 
@@ -218,7 +219,7 @@ namespace GPRO_IED_A.Business
                         maniTypes = db.T_ManipulationTypeLibrary.Where(x => !x.IsDeleted && x.ParentId == parentId);
 
                     if (maniTypes != null && maniTypes.Count() > 0)
-                        return new PagedList<ManipulationTypeModel>(maniTypes.OrderByDescending(x => x.CreatedDate).Select(x => new ManipulationTypeModel()
+                        return new PagedList<ManipulationTypeModel>(maniTypes .Select(x => new ManipulationTypeModel()
                         {
                             Id = x.Id,
                             ParentId = x.ParentId,
@@ -227,7 +228,7 @@ namespace GPRO_IED_A.Business
                             IsUseMachine = x.IsUseMachine,
                             Description = x.Description,
                             Code = x.Code
-                        }).ToList(), pageNumber, pageSize);
+                        }).OrderBy(sorting).ToList(), pageNumber, pageSize);
                     else
                         return new PagedList<ManipulationTypeModel>(new List<ManipulationTypeModel>(), pageNumber, pageSize);
                 }

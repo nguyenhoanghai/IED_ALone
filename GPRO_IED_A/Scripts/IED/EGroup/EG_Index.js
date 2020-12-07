@@ -172,12 +172,14 @@ GPRO.EGroup = function () {
                 },
                 Note: {
                     title: "Mô Tả Nhóm TB",
-                    width: "20%"
+                    width: "20%",
+                    sorting: false,
                 },
                 Group: {
                     visibility: 'fixed',
                     title: "chọn TB",
                     width: "20%",
+                    sorting: false,
                     display: function (data) {
                         var text = $('<a class="clickable" data-toggle="modal" data-target="#' + Global.Element.PopupAddE + '" title="Chỉnh sửa thông tin">Chọn TB</a>');
                         text.click(function () {

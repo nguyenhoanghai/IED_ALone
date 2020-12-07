@@ -37,7 +37,6 @@ namespace GPRO_IED_A.Data
         public DbSet<SPermission> SPermissions { get; set; }
         public DbSet<SRoLe> SRoLes { get; set; }
         public DbSet<SRolePermission> SRolePermissions { get; set; }
-        public DbSet<SUser> SUsers { get; set; }
         public DbSet<SUserRole> SUserRoles { get; set; }
         public DbSet<SWorkerLevel> SWorkerLevels { get; set; }
         public DbSet<T_ApplyPressureLibrary> T_ApplyPressureLibrary { get; set; }
@@ -66,7 +65,6 @@ namespace GPRO_IED_A.Data
         public DbSet<T_ManipulationLibrary> T_ManipulationLibrary { get; set; }
         public DbSet<T_ManipulationTypeLibrary> T_ManipulationTypeLibrary { get; set; }
         public DbSet<T_NatureCutsLibrary> T_NatureCutsLibrary { get; set; }
-        public DbSet<T_PhaseGroup> T_PhaseGroup { get; set; }
         public DbSet<T_Product> T_Product { get; set; }
         public DbSet<T_StopPrecisionLibrary> T_StopPrecisionLibrary { get; set; }
         public DbSet<T_TechProcessVersion> T_TechProcessVersion { get; set; }
@@ -77,5 +75,7 @@ namespace GPRO_IED_A.Data
         public DbSet<T_EquipmentType> T_EquipmentType { get; set; }
         public DbSet<T_CA_Phase> T_CA_Phase { get; set; }
         public DbSet<T_Customer> T_Customer { get; set; }
+        public DbSet<SUser> SUsers { get; set; }
+        public DbSet<T_PhaseGroup> T_PhaseGroup { get; set; }
     }
 }

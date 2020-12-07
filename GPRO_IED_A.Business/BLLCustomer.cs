@@ -7,6 +7,7 @@ using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -37,7 +38,7 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     if (string.IsNullOrEmpty(sorting))
-                        sorting = "CreatedDate DESC";
+                        sorting = "Id DESC";
 
                     List<CustomerModel> CustomerTypes = null;
                     if (string.IsNullOrEmpty(keyWord))
@@ -68,7 +69,7 @@ namespace GPRO_IED_A.Business
                                Description = x.Description,
                                IsPrivate = (x.CompanyId == null ? true : false),
                                CompanyId = x.CompanyId
-                           }).ToList();
+                           }).OrderBy(sorting).ToList();
 
                 if (CustomerTypes != null && CustomerTypes.Count > 0)
                     return CustomerTypes;
@@ -92,7 +93,7 @@ namespace GPRO_IED_A.Business
                         Description = x.Description,
                         CompanyId = x.CompanyId,
                         IsPrivate = (x.CompanyId == null ? true : false)
-                    }).ToList();
+                    }).OrderBy(sorting).ToList();
                 if (CustomerTypes != null && CustomerTypes.Count > 0)
                     return CustomerTypes;
                 return new List<CustomerModel>();

@@ -7,6 +7,7 @@ using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -42,7 +43,7 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     if (string.IsNullOrEmpty(sorting))
-                        sorting = "CreatedDate DESC";
+                        sorting = "Id DESC";
 
                     List<ProductModel> productTypes = null;
                     if (string.IsNullOrEmpty(keyWord))
@@ -78,7 +79,7 @@ namespace GPRO_IED_A.Business
                                 IsPrivate = (x.CompanyId == null ? true : false),
                                 CompanyId = x.CompanyId,
                                 CustomerId = x.CustomerId
-                            }).ToList();
+                            }).OrderBy(sorting).ToList();
                         break;
                     case "2":
                         productTypes = db.T_Product.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0)) && x.Name.Trim().ToUpper().Contains(keyWord.Trim().ToUpper())).OrderByDescending(x => x.CreatedDate).Select(
@@ -91,7 +92,7 @@ namespace GPRO_IED_A.Business
                                 IsPrivate = (x.CompanyId == null ? true : false),
                                 CompanyId = x.CompanyId,
                                 CustomerId = x.CustomerId
-                            }).ToList();
+                            }).OrderBy(sorting).ToList();
                         break;
                 }
                 if (productTypes != null && productTypes.Count > 0)
@@ -118,7 +119,7 @@ namespace GPRO_IED_A.Business
                         CompanyId = x.CompanyId,
                         IsPrivate = (x.CompanyId == null ? true : false),
                         CustomerId = x.CustomerId
-                    }).ToList();
+                    }).OrderBy(sorting).ToList();
                 if (productTypes != null && productTypes.Count > 0)
                     return productTypes;
                 return new List<ProductModel>();
@@ -284,6 +285,7 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
+
         public List<ModelSelectItem> GetSelectItem(int companyId, int[] relationCompanyId)
         {
             try

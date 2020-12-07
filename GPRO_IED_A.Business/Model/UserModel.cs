@@ -29,5 +29,9 @@ namespace GPRO_IED_A.Business.Model
         public List<int> UserRoleIds { get; set; }
         public string RoleNames { get; set; }
         public int ActionUser { get; set; }
+
+        public string WorkshopIds { get; set; }
+        public string WorkshopNames { get; set; }
+        public List<int> intWorkshopIds { get; set; }
     }
 }

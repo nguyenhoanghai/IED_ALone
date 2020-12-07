@@ -236,6 +236,7 @@ GPRO.User = function () {
             $('[txt="txtho"]').val('');
             $('[txt="email"]').val('');
             $("#userRoles").data("kendoMultiSelect").value('');
+            $("#workshops").data("kendoMultiSelect").value('');
         }
     }
 
@@ -268,7 +269,8 @@ GPRO.User = function () {
             IsLock: false,
             UserRoles: null,
             UserCategoryId: $('#UserCategory').val(),
-            ChangePic: Global.Data.ChangePic
+            ChangePic: Global.Data.ChangePic,
+            WorkshopIds: $('#workshops').data("kendoMultiSelect").value().toString()
         }
         $.ajax({
             url: Global.UrlAction.Save,
@@ -436,6 +438,11 @@ GPRO.User = function () {
                             else
                                 $("#userRoles").data("kendoMultiSelect").value('');
 
+                            if (data.record.intWorkshopIds != null)
+                                $("#workshops").data("kendoMultiSelect").value(data.record.intWorkshopIds);
+                            else
+                                $("#workshops").data("kendoMultiSelect").value('');
+
                             //do data vao modal
                             BindData(data.record);
                         });
@@ -494,6 +501,7 @@ $(document).ready(function () {
     var User = new GPRO.User();
     User.Init();
     $("#userRoles").kendoMultiSelect().data("kendoMultiSelect");
+    $("#workshops").kendoMultiSelect().data("kendoMultiSelect");
 
     // show column username when button add click
     $('.jtable-toolbar-item-add-record').click(function () {

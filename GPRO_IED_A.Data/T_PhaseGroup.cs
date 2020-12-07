@@ -25,6 +25,7 @@ namespace GPRO_IED_A.Data
         public string Description { get; set; }
         public double MaxLevel { get; set; }
         public double MinLevel { get; set; }
+        public string WorkshopIds { get; set; }
         public bool IsDeleted { get; set; }
         public int CreatedUser { get; set; }
         public Nullable<int> DeletedUser { get; set; }

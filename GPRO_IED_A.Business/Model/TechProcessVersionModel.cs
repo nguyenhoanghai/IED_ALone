@@ -26,6 +26,7 @@ namespace GPRO_IED_A.Business.Model
         public string ProductName { get; set; }
         public string WorkShopName { get; set; }        
         public string CompanyName { get; set; }
+        public string CustomerName { get; set; }
         public int ActionUser { get; set; }
         public List<TechProcessVerDetailModel> details { get; set; }
         public List<ModelEquipment> equipments { get; set; }

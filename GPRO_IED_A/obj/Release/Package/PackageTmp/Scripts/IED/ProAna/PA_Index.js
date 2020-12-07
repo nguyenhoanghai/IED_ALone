@@ -75,7 +75,7 @@ GPRO.ProAna = function () {
 
             GetTech: '/ProAna/GetTech',
             SaveTech: '/ProAna/SaveTech',
-            ExportToExcel: '/ProAna/ExportToExcel_1'
+            ExportToExcel: '/ProAna/ExportToExcel'
         },
         Element: {
             jtable_Timeprepare_Chooise: 'jtable-timeprepare',
@@ -270,6 +270,14 @@ GPRO.ProAna = function () {
     this.removeVideo = function () { removeVideo(); }
 
     var RegisterEvent = function () {
+        $('#phase-name').change(() => {
+            $('#lbTenCongDoan').html($('#phase-name').val());
+        });
+
+        $('#phase-name').keyup(() => {
+            $('#phase-name').change();
+        });
+
         $('[filelist]').select(function () {
             SavePhase();
         });
@@ -302,11 +310,16 @@ GPRO.ProAna = function () {
             GetProductsAndSetValueByProductTypeId($(this).val(), 0);
         });
         $('[save-commo]').click(function () {
-            Global.Data.ModelProAna.Description = $('#Description').val();
-            Global.Data.ModelProAna.Name = $('#caproduct option:selected').text();
-            Global.Data.ModelProAna.ObjectId = $('#caproduct option:selected').val();
-            SaveCommoAnalysis();
-            $('[cancel-commo]').click();
+            if ($('#caproduct option:selected').val() == '0') {
+                GlobalCommon.ShowMessageDialog('Bạn chưa chọn Mã hàng.', function () { }, "Lỗi nhập liệu");
+            }
+            else {
+                Global.Data.ModelProAna.Description = $('#Description').val();
+                Global.Data.ModelProAna.Name = $('#caproduct option:selected').text();
+                Global.Data.ModelProAna.ObjectId = $('#caproduct option:selected').val();
+                SaveCommoAnalysis();
+                $('[cancel-commo]').click();
+            }
         });
         $('[cancel-commo]').click(function () {
             $('#productType').val(0);
@@ -338,12 +351,12 @@ GPRO.ProAna = function () {
                 if (selectItem.id != '0') {
                     var type = 0;
                     switch (selectItem.value) {
-                        case 1:
                         case 2:
+                        case 5:
+                        case 6: type = 3; break;
+                        case 1:
                         case 3:
                         case 4:
-                        case 5:
-                        case 6:
                         case 7: type = 2; break;
                         case 11: type = 13; break;
                         case 13: type = 1; break;
@@ -406,11 +419,16 @@ GPRO.ProAna = function () {
             GetWorkshopSelect('wk-name');
         });
         $('[save-workshop]').click(function () {
-            Global.Data.ModelProAna.Description = $('#workshop-Description').val();
-            Global.Data.ModelProAna.Name = $('#wk-name option:selected').text();
-            Global.Data.ModelProAna.ObjectId = $('#wk-name option:selected').val();
-            SaveCommoAnalysis();
-            $('[cancel-workshop]').click();
+            if ($('#wk-name option:selected').val() == '' || $('#wk-name option:selected').val() == '0') {
+                GlobalCommon.ShowMessageDialog('Bạn chưa chọn Phân xưởng.', function () { }, "Lỗi nhập liệu");
+            }
+            else {
+                Global.Data.ModelProAna.Description = $('#workshop-Description').val();
+                Global.Data.ModelProAna.Name = $('#wk-name option:selected').text();
+                Global.Data.ModelProAna.ObjectId = $('#wk-name option:selected').val();
+                SaveCommoAnalysis();
+                $('[cancel-workshop]').click();
+            }
         });
         $('[cancel-workshop]').click(function () {
             $('#wk-name').val('');
@@ -427,10 +445,15 @@ GPRO.ProAna = function () {
             GetPhaseGroupSelect('phaseGroup-name');
         });
         $('[save-phasegroup]').click(function () {
-            Global.Data.ModelProAna.Description = $('#phaseGroup-Description').val();
-            Global.Data.ModelProAna.Name = $('#phaseGroup-name option:selected').text();
-            Global.Data.ModelProAna.ObjectId = $('#phaseGroup-name option:selected').val();
-            SaveCommoAnalysis();
+            if ($('#phaseGroup-name option:selected').val() == '' || $('#phaseGroup-name option:selected').val() == '0') {
+                GlobalCommon.ShowMessageDialog('Bạn chưa chọn cụm công đoạn.', function () { }, "Lỗi nhập liệu");
+            }
+            else {
+                Global.Data.ModelProAna.Description = $('#phaseGroup-Description').val();
+                Global.Data.ModelProAna.Name = $('#phaseGroup-name option:selected').text();
+                Global.Data.ModelProAna.ObjectId = $('#phaseGroup-name option:selected').val();
+                SaveCommoAnalysis();
+            }
         });
         $('[cancel-phasegroup]').click(function () {
             $('#phaseGroup-name').val(0);
@@ -535,7 +558,7 @@ GPRO.ProAna = function () {
             Global.Data.Video = '';
             $('#video').val('');
             $('#phase-index').val('');
-            $('#TotalTMU').html('0');
+            $('#TotalTMU,#TotalMay').html('0');
             $('#phase-code').html(((Global.Data.PhaseAutoCode == null || Global.Data.PhaseAutoCode == '' ? '' : (Global.Data.PhaseAutoCode + '-')) + (Global.Data.phaseLastIndex + 1)));
 
             var video = document.getElementsByTagName('video')[0];
@@ -655,7 +678,7 @@ GPRO.ProAna = function () {
 
         $('[techexport]').click(function () {
             if (Global.Data.AfterSave) {
-                window.location.href = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID;
+                window.location.href = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 3;
                 Global.Data.AfterSave = false;
             }
             else {
@@ -767,7 +790,7 @@ GPRO.ProAna = function () {
         $('#' + Global.Element.CreatePhasePopup).on('shown.bs.modal', function () {
             if (Global.Data.isInsertPhase) {
                 $('#phase-code').html(((Global.Data.PhaseAutoCode == null || Global.Data.PhaseAutoCode == '' ? '' : (Global.Data.PhaseAutoCode + '-')) + (Global.Data.phaseLastIndex + 1)));
-                $('#phase-index').val( (Global.Data.phaseLastIndex + 1) );
+                $('#phase-index').val((Global.Data.phaseLastIndex + 1));
                 $('[percentequipment],[percentdb],[percentnpl').val(0);
                 $('[percentmanipulation]').val($('#config').attr('maniexpenddefault'));
             }
@@ -826,6 +849,7 @@ GPRO.ProAna = function () {
                     $.each(Global.Data.PhaseVersiondetailArray, function (index, item) {
                         total += item.TotalTMU;
                         // alert(item.TotalTMU);
+
                     });
                     $('#pver-tmu').val((Math.round(total * 1000) / 1000));
                     Global.Data.ModelPhaseVersion.TotalTMU = Math.round(total * 1000) / 1000;
@@ -917,7 +941,7 @@ GPRO.ProAna = function () {
         var _url = '';
         switch (Global.Data.ObjectType) {
             case 1: _url = '/ProAna/SaveProduct'; break;
-            case 2: 
+            case 2:
             case 3: _url = '/ProAna/SaveWorkshop'; break;
             case 6:
             case 7: _url = '/ProAna/SavePhaseGroup'; break;
@@ -1394,6 +1418,7 @@ GPRO.ProAna = function () {
                         else {
                             if (data.Data != null && data.Data.CommoAna != null && data.Data.CommoAna.length > 0) {
                                 $.each(data.Data.CommoAna, function (i, item) {
+                                    //  if (item.Name != 'Thiết kế chuyền') {
                                     var obj = {
                                         'id': item.Id,
                                         'parentid': parentId,
@@ -1415,6 +1440,7 @@ GPRO.ProAna = function () {
                                         }
                                         $('#jqxTree').jqxTree('addTo', obj, $('#jqxTree').find("#" + item.Id)[0]);
                                     }
+                                    //}
                                 });
                             }
                         }
@@ -1662,13 +1688,12 @@ GPRO.ProAna = function () {
                     edit: false,
                     list: false
                 },
-                flag: { 
+                flag: {
                     width: "3%",
-                    display: function (data)
-                    {
+                    display: function (data) {
                         var txt = '';
                         if (data.record.IsLibrary)
-                            var txt = $('<i title="công đoạn mẫu" class="fa fa-flag red"  ></i>'); 
+                            var txt = $('<i title="công đoạn mẫu" class="fa fa-flag red"  ></i>');
                         return txt;
                     }
                 },
@@ -1744,7 +1769,7 @@ GPRO.ProAna = function () {
                             $('#TotalTMU').html(data.record.TotalTMU);
                             $('#phase-Des').val(data.record.Description);
                             $('#phaseID').val(data.record.Id);
-                            $('#phase-name').val(data.record.Name);
+                            $('#phase-name').val(data.record.Name).change(); 
                             $('#phase-code').html(data.record.Code);
                             $('#phase-index').val(data.record.Index);
 
@@ -1764,6 +1789,7 @@ GPRO.ProAna = function () {
                             if (data.record.ApplyPressuresId != 0)
                                 $('#chooseApplyPressure').show();
                             Global.Data.PhaseManiVerDetailArray.length = 0;
+
                             if (data.record.actions.length > 0) {
                                 $.each(data.record.actions, function (i, item) {
                                     item.OrderIndex = i + 1;
@@ -1796,14 +1822,13 @@ GPRO.ProAna = function () {
                             Global.Data.Video = data.record.Video;
                             var video = document.getElementsByTagName('video')[0];
                             var sources = video.getElementsByTagName('source');
-                            if (data.record.Video ) {
-                                $('#video-info').html(data.record.Video.split('|')[1] +'  <i onclick="removeVideo()" title="Gỡ video" class="fa fa-trash-o red clickable"></i>')
+                            if (data.record.Video) {
+                                $('#video-info').html(data.record.Video.split('|')[1] + '  <i onclick="removeVideo()" title="Gỡ video" class="fa fa-trash-o red clickable"></i>')
 
                                 sources[0].src = data.record.Video.split('|')[0];
                                 sources[1].src = data.record.Video.split('|')[0];
                                 video.load();
                             }
-                          
                         });
                         return text;
                     }
@@ -1850,7 +1875,7 @@ GPRO.ProAna = function () {
             ManiVerTMU: 0,
             IsDetailChange: Global.Data.ManipulationVersionModel.IsDetailChange,
             actions: Global.Data.PhaseManiVerDetailArray,
-            Index: ($('#phase-index').val() == '' ? (Global.Data.phaseLastIndex + 1) : parseInt( $('#phase-index').val())),
+            Index: ($('#phase-index').val() == '' ? (Global.Data.phaseLastIndex + 1) : parseInt($('#phase-index').val())),
             Video: Global.Data.Video,
             IsLibrary: $('#islibs').prop('checked')
         }
@@ -1874,7 +1899,8 @@ GPRO.ProAna = function () {
                             $('#' + Global.Element.CreatePhasePopup).modal('hide');
                             Global.Data.isInsertPhase = true;
                         }
-                        $('#phase-name').val('');
+                        $('#phase-name').val('').change(); 
+                        $('#lbTenCongDoan').html('');
                         $('#phase-index').val('');
                         $('#TotalTMU').html('0');
                         $('#phase-Des').val('');
@@ -1968,7 +1994,7 @@ GPRO.ProAna = function () {
                 if (data.Result == "OK") {
                     Global.Data.phaseLastIndex = data.Records;
                     $('#phase-code').html(((Global.Data.PhaseAutoCode == null || Global.Data.PhaseAutoCode == '' ? '' : (Global.Data.PhaseAutoCode + '-')) + (Global.Data.phaseLastIndex + 1)));
-                    $('#phase-index').val( (Global.Data.phaseLastIndex + 1));
+                    $('#phase-index').val((Global.Data.phaseLastIndex + 1));
                 }
                 else
                     GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
@@ -1987,6 +2013,7 @@ GPRO.ProAna = function () {
                 $('#loading').hide();
                 GlobalCommon.CallbackProcess(data, function () {
                     if (data.Result == "OK") {
+                        $('[cancel-create-phase]').click();
                         $('#' + Global.Element.CreatePhasePopup).modal('hide');
                         Global.Data.isInsertPhase = true;
                         ReloadListPhase_View();
@@ -2274,8 +2301,22 @@ GPRO.ProAna = function () {
         });
     }
     function ReloadListMani_Arr() {
+        var _totalmay = 0;
+        if (Global.Data.PhaseManiVerDetailArray.length > 0) {
+            $.each(Global.Data.PhaseManiVerDetailArray, function (i, item) {
+
+                var _code = item.ManipulationCode.trim();
+                if (_code.indexOf('SE') >= 0) {
+                    var cd = parseInt(_code.substring(2, _code.length - 1));
+                    if (!isNaN(cd)) {
+                        _totalmay += (cd * item.Loop);
+                    }
+                }
+            });
+        }
+        $('#TotalMay').html(_totalmay);
+
         $('#' + Global.Element.JtableManipulationArr).jtable('load');
-        Global.Data.PhaseManiVerDetailArray;
     }
     function AddEmptyObject() {
         var obj = {
@@ -2683,8 +2724,8 @@ GPRO.ProAna = function () {
                         $('#TotalTMU').html(data.Records.TotalTMU);
                         $('#phase-Des').val(data.Records.Description);
                         // $('#phaseID').val(data.Records.Id);
-                        $('#phase-name').val(data.Records.Name);
-                          $('#phase-index').html(data.Records.Index);
+                        $('#phase-name').val(data.Records.Name).change(); 
+                        $('#phase-index').html(data.Records.Index);
 
                         Global.Data.TimePrepareArray.length = 0;
                         if (data.Records.timePrepares.length > 0) {
@@ -3111,7 +3152,7 @@ GPRO.ProAna = function () {
                                         TimeByPercent: Math.round((item.TimeByPercent) * 1000) / 1000,
                                         Worker: Math.round(item.Worker * 1000) / 1000,
                                         Description: item.Description
-                                         
+
                                     };
                                     Global.Data.TechCycle_Arr.push(obj);
                                     tog += item.TimeByPercent;

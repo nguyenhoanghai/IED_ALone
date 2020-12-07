@@ -250,6 +250,7 @@
     <Property Name="LockedTime" Type="datetime" />
     <Property Name="LastName" Type="nvarchar" MaxLength="100" />
     <Property Name="FisrtName" Type="nvarchar" MaxLength="200" />
+    <Property Name="WorkshopIds" Type="varchar" MaxLength="250" />
     <Property Name="IsDeleted" Type="bit" Nullable="false" />
     <Property Name="CreatedUser" Type="int" Nullable="false" />
     <Property Name="CreatedDate" Type="datetime" Nullable="false" />
@@ -854,6 +855,7 @@
     <Property Name="Description" Type="nvarchar(max)" />
     <Property Name="MaxLevel" Type="float" Nullable="false" />
     <Property Name="MinLevel" Type="float" Nullable="false" />
+    <Property Name="WorkshopIds" Type="varchar" MaxLength="250" />
     <Property Name="IsDeleted" Type="bit" Nullable="false" />
     <Property Name="CreatedUser" Type="int" Nullable="false" />
     <Property Name="DeletedUser" Type="int" />

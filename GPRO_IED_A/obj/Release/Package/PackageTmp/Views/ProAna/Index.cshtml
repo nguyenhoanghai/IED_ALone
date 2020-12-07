@@ -1,6 +1,6 @@
 ﻿@{
     ViewBag.Title = "Phân Tích mã hàng";
-    //  Layout = null;
+   // Layout = null;
 }
 <link href="~/Content/split-panel/split-pane.css" rel="stylesheet" />
 <script src="~/Content/split-panel/split-pane.js"></script>
@@ -217,18 +217,26 @@
     </div>
 </div>
 
+<style>
+    #Create-Phase-Popup .nav-tabs > li > a {
+        margin-top: 5px !important
+    }
+</style>
+
 <!--   POPUP CREATE PHASE    -->
 <div class="modal   fade  " id="Create-Phase-Popup" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog  modal_full">
         <div class="modal-content">
             <div class="modal-body form-inline">
                 <div class="container-fluid">
+                    <div>Công đoạn: <label id="lbTenCongDoan"></label></div>
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#phas_infobox" aria-controls="phas_infobox" role="tab" data-toggle="tab">Thông tin chung</a></li>
                         <li role="presentation" class="@ViewBag.hasPer"><a href="#Phantich" aria-controls="Phantich" role="tab" data-toggle="tab">Phân tích</a></li>
                         <li role="presentation" class="@ViewBag.hasPer"><a href="#Haophi" aria-controls="Haophi" role="tab" data-toggle="tab">Hao phí</a></li>
                         <li role="presentation"><a>TG công đoạn :<span id="TotalTMU" class="red">0</span><input class="form-control" id="ManiVerTMU" type="hidden" /> (s)</a></li>
+                        <li role="presentation"><a>Chiều dài đường may :<span id="TotalMay" class="red">0</span> (cm)</a></li>
                         <li role="presentation" class="@ViewBag.hasPer"><a style="background: wheat; color: blue; font-weight: 600;"><input type="checkbox" id="islibs" /> chọn làm công đoạn mẫu.</a></li>
                     </ul>
 
@@ -381,7 +389,7 @@
                     </div>
 
                     <div class="clearfix"></div>
-                    <div style="position:absolute; top:11px ; right : 5px">
+                    <div style="position:absolute; top:42px ; right : 5px">
                         <button type="button" cancel-create-phase class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
                         <button type="button" save-phase class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
                     </div>

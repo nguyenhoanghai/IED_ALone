@@ -22,8 +22,8 @@ namespace GPRO_IED_A.Controllers
             try
             {
                 if (isAuthenticate)
-                {
-                    var phaseGroups = BLLPhaseGroup.Instance.GetList(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting);
+                { 
+                    var phaseGroups = BLLPhaseGroup.Instance.GetList(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting,UserContext.WorkshopIds);
                     JsonDataResult.Records = phaseGroups;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = phaseGroups.TotalItemCount;
@@ -45,7 +45,7 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    phaseGroup.ActionUser = UserContext.UserID;
+                    phaseGroup.ActionUser = UserContext.UserID; 
                     rs = BLLPhaseGroup.Instance.InsertOrUpdate(phaseGroup, isOwner);
                     if (!rs.IsSuccess)
                     {
@@ -95,7 +95,8 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                JsonDataResult.Data = BLLPhaseGroup.Instance.Gets();
+
+                JsonDataResult.Data = BLLPhaseGroup.Instance.Gets(UserContext.WorkshopIds);
                 JsonDataResult.Result = "OK";
             }
             catch (Exception ex)

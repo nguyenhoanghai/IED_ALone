@@ -6,6 +6,7 @@ using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -204,7 +205,7 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     if (string.IsNullOrEmpty(sorting))
-                        sorting = "CreatedDate DESC";
+                        sorting = "Id DESC";
 
                     IQueryable<T_Line> Lines = null;
                     List<LineModel> lines = null;
@@ -234,7 +235,7 @@ namespace GPRO_IED_A.Business
                             Description = c.Description,
                             CountOfLabours = c.CountOfLabours,
                             WorkShopName = c.T_WorkShop.Name,
-                        }).ToList();
+                        }).OrderBy(sorting).ToList();
                     }
                     else
                         lines = new List<LineModel>();

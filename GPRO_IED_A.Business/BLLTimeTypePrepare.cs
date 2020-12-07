@@ -6,6 +6,7 @@ using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -181,7 +182,7 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     if (string.IsNullOrEmpty(sorting))
-                        sorting = "CreatedDate DESC";
+                        sorting = "Id DESC";
 
                     IQueryable<T_TimeTypePrepare> timeTypes = null;
                     var pageNumber = (startIndexRecord / pageSize) + 1;
@@ -198,7 +199,6 @@ namespace GPRO_IED_A.Business
                     else
                         timeTypes = db.T_TimeTypePrepare.Where(x => !x.IsDeleted);
 
-
                     if (timeTypes != null && timeTypes.Count() > 0)
                     {
                         var returnList = timeTypes.OrderByDescending(x => x.CreatedDate).Select(x => new TimeTypePrepareModel()
@@ -208,7 +208,7 @@ namespace GPRO_IED_A.Business
                             Code = x.Code,
                             IsPublic = x.IsPublic,
                             Description = x.Description,
-                        }).ToList();
+                        }).OrderBy(sorting).ToList();
                         return new PagedList<TimeTypePrepareModel>(returnList, pageNumber, pageSize);
                     }
                     else

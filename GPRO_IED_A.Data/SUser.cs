@@ -35,6 +35,7 @@ namespace GPRO_IED_A.Data
         public Nullable<System.DateTime> LockedTime { get; set; }
         public string LastName { get; set; }
         public string FisrtName { get; set; }
+        public string WorkshopIds { get; set; }
         public bool IsDeleted { get; set; }
         public int CreatedUser { get; set; }
         public System.DateTime CreatedDate { get; set; }

@@ -69,7 +69,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public CommodityAnalysisModel GetCommoAnaItemByParentId(int parentId, string value, int Type, int companyId, int[] relationCompanyId, int year)
+        public CommodityAnalysisModel GetCommoAnaItemByParentId(int parentId, string value, int Type, int companyId, int[] relationCompanyId, int year, int[] workshopIds)
         {
             try
             {
@@ -103,6 +103,23 @@ namespace GPRO_IED_A.Business
                                                              }));
                             break;
                         case (int)eObjectType.isWorkShop:
+                            if (workshopIds != null && workshopIds.Length > 0)
+                                commoAnaModel.CommoAna.AddRange((from x in db.T_CommodityAnalysis
+                                                                 where !x.IsDeleted
+                                                                 && x.ParentId == parentId
+                                                                 && workshopIds.Contains(x.ObjectId)
+                                                                 select new ProAnaModel()
+                                                                 {
+                                                                     Id = x.Id,
+                                                                     Name = x.Name,
+                                                                     Node = x.Node,
+                                                                     ObjectId = x.ObjectId,
+                                                                     ObjectType = x.ObjectType,
+                                                                     ParentId = x.ParentId,
+                                                                     Description = x.Description,
+                                                                     CreatedDate = x.CreatedDate,
+                                                                 }));
+                            break;
                         case (int)eObjectType.isComponent:
                         case (int)eObjectType.isGroupVersion:
                         case (int)eObjectType.isPhaseGroup:
@@ -132,8 +149,8 @@ namespace GPRO_IED_A.Business
                                 commoAnaModel.CommoAna = commoAnaModel.CommoAna.Where(x => commoCheck.Contains(x.ObjectId)).ToList();
                                 break;
                             case (int)eObjectType.isWorkShop:
-                                var workshopIds = commoAnaModel.CommoAna.Select(x => x.ObjectId);
-                                var workshopCheck = db.T_WorkShop.Where(x => !x.IsDeleted && workshopIds.Contains(x.Id)).Select(x => x.Id);
+                                var _workshopIds = commoAnaModel.CommoAna.Select(x => x.ObjectId);
+                                var workshopCheck = db.T_WorkShop.Where(x => !x.IsDeleted && _workshopIds.Contains(x.Id)).Select(x => x.Id);
                                 commoAnaModel.CommoAna = commoAnaModel.CommoAna.Where(x => workshopCheck.Contains(x.ObjectId)).ToList();
                                 break;
                             case (int)eObjectType.isPhaseGroup:
@@ -197,7 +214,7 @@ namespace GPRO_IED_A.Business
                                 {
                                     T_CommodityAnalysis newObject;
                                     for (int i = 0; i < 3; i++)
-                                    {
+                                    { 
                                         newObject = new T_CommodityAnalysis();
                                         newObject.Id = 0;
                                         newObject.Node = noName.Node + noName.Id + ",";
@@ -241,7 +258,7 @@ namespace GPRO_IED_A.Business
                             }
                             else
                             {
-                                if (!checkPermis(noName, noNameModel.UpdatedUser.Value,isOwner))
+                                if (!checkPermis(noName, noNameModel.UpdatedUser.Value, isOwner))
                                 {
                                     result.IsSuccess = false;
                                     switch (noName.ObjectType)
@@ -327,7 +344,7 @@ namespace GPRO_IED_A.Business
                     var commoAna = db.T_CommodityAnalysis.FirstOrDefault(x => !x.IsDeleted && x.Id == Id);
                     if (commoAna != null)
                     {
-                        if (!checkPermis(commoAna,actionUserId,isOwner))
+                        if (!checkPermis(commoAna, actionUserId, isOwner))
                         {
                             result.IsSuccess = false;
                             switch (commoAna.ObjectType)

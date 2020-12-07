@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -180,7 +181,7 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     if (string.IsNullOrEmpty(sorting))
-                        sorting = "CreatedDate DESC";
+                        sorting = "Id DESC";
 
                     var pageNumber = (startIndexRecord / pageSize) + 1;
                     var timeTypes = db.T_TimePrepare.Where(x => !x.IsDeleted && x.TimeTypePrepareId == timeTypeId && !x.T_TimeTypePrepare.IsDeleted).OrderByDescending(x => x.CreatedDate).
@@ -193,7 +194,7 @@ namespace GPRO_IED_A.Business
                         TimeTypePrepareName = x.T_TimeTypePrepare.Name,
                         TMUNumber = x.TMUNumber,
                         Description = x.Description,
-                    }).ToList();
+                    }).OrderBy(sorting).ToList();
                     return new PagedList<TimePrepareModel>(timeTypes, pageNumber, pageSize);
                 }
             }

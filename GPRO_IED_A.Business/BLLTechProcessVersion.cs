@@ -272,7 +272,7 @@ namespace GPRO_IED_A.Business
                         Price = 0,
                         PricePerSecond = x.PricePerSecond,
                         Allowance = x.Allowance,
-
+                        CustomerName = x.T_Product.T_Customer.Name
                     }).FirstOrDefault();
                     if (techVersion != null)
                     {

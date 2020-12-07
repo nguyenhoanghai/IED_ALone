@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -174,7 +175,7 @@ namespace GPRO_IED_A.Business
                 {
                     var objs = new List<WorkerLevelModel>();
                     if (string.IsNullOrEmpty(sorting))
-                        sorting = "CreatedDate DESC";
+                        sorting = "Id DESC";
 
                     if (!string.IsNullOrEmpty(keyWord))
                         objs.AddRange(db.SWorkerLevels.Where(c => !c.IsDeleted && (c.CompanyId == null || c.CompanyId == companyId || relationCompanyId.Contains(c.CompanyId ?? 0)) && c.Name.Trim().ToUpper().Contains(keyWord.Trim().ToUpper())).OrderByDescending(x => x.CreatedDate).Select(x => new WorkerLevelModel()
@@ -185,7 +186,7 @@ namespace GPRO_IED_A.Business
                             Name = x.Name,
                             Note = x.Note,
                             IsPrivate = (x.CompanyId != null ? true : false)
-                        }).ToList());
+                        }).OrderBy(sorting).ToList());
                     else
                         objs.AddRange(db.SWorkerLevels.Where(c => !c.IsDeleted && (c.CompanyId == null || c.CompanyId == companyId || relationCompanyId.Contains(c.CompanyId ?? 0))).OrderByDescending(x => x.CreatedDate).Select(x => new WorkerLevelModel()
                         {
@@ -195,7 +196,7 @@ namespace GPRO_IED_A.Business
                             Name = x.Name,
                             Note = x.Note,
                             IsPrivate = (x.CompanyId != null ? true : false)
-                        }).ToList());
+                        }).OrderBy(sorting).ToList());
                     var pageNumber = (startIndexRecord / pageSize) + 1;
                     return new PagedList<WorkerLevelModel>(objs, pageNumber, pageSize);
                 }

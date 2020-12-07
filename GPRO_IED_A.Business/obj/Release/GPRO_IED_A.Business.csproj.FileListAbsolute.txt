@@ -28,3 +28,4 @@ E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\obj\Release\GPRO_IED_A.Business.cs
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\obj\Release\GPRO_IED_A.Business.csproj.CopyComplete
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\obj\Release\GPRO_IED_A.Business.dll
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\obj\Release\GPRO_IED_A.Business.pdb
+E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\bin\Release\Hugate.Framework.dll

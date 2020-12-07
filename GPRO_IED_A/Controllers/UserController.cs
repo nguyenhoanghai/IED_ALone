@@ -15,6 +15,7 @@ namespace GPRO_IED_A.Controllers
         {
             List<ModelSelectItem> roles = null;
             List<SelectListItem> rolesItem = new List<SelectListItem>();
+            List<SelectListItem> wksItem = new List<SelectListItem>();
             try
             {
                 roles = BLLUserRole.Instance.GetUserRolesModelByUserId(UserContext.UserID, UserContext.IsOwner, UserContext.CompanyId);
@@ -25,6 +26,12 @@ namespace GPRO_IED_A.Controllers
                 }
                 rolesItem.AddRange(roles.Select(x => new SelectListItem() { Text = x.Name, Value = x.Value.ToString() }).ToList());
                 ViewData["roles"] = rolesItem;
+               var wks =  BLLWorkshop.Instance.GetListWorkShop();
+                if (wks.Count > 0)
+                {
+                    wksItem.AddRange(wks.Select(x => new SelectListItem() { Text = x.Name, Value = x.Value.ToString() }).ToList());
+                }
+                ViewData["workshops"] = wksItem;
             }
             catch (Exception ex)
             {

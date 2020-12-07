@@ -69,6 +69,8 @@ namespace GPRO_IED_A
             public InnerUserService(UserService userService)
             {
                 this.CompanyId = userService.CompanyId;
+                this.intWorkshopIds = userService.intWorkshopIds;
+                this.WorkshopIds = userService.intWorkshopIds;
                 this.CompanyName = userService.CompanyName;
                 this.DepartmentName = userService.DepartmentName;
                 this.Description = userService.Description;
@@ -92,6 +94,8 @@ namespace GPRO_IED_A
             public object State { get; set; }
             public List<IModule> ListModule { get; set; }
             public List<IMenuCategory> ListMenu { get; set; }
+            public int[] WorkshopIds { get; set; }
+
             public IModule[] GetListModuleService(List<Module> listModule)
             {
                 var result = new List<InnerModule>();

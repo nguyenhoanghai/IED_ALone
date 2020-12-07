@@ -17,7 +17,6 @@
         <EntityTypeShape EntityType="IEDModel.SPermission" Width="1.5" PointX="13.25" PointY="1.375" />
         <EntityTypeShape EntityType="IEDModel.SRoLe" Width="1.5" PointX="13.25" PointY="13" />
         <EntityTypeShape EntityType="IEDModel.SRolePermission" Width="1.5" PointX="15.5" PointY="2.875" />
-        <EntityTypeShape EntityType="IEDModel.SUser" Width="1.5" PointX="9.25" PointY="68" />
         <EntityTypeShape EntityType="IEDModel.SUserRole" Width="1.5" PointX="16.5" PointY="41.625" />
         <EntityTypeShape EntityType="IEDModel.SWorkerLevel" Width="1.5" PointX="5.25" PointY="52.25" />
         <EntityTypeShape EntityType="IEDModel.T_ApplyPressureLibrary" Width="1.5" PointX="6" PointY="11.875" />
@@ -46,7 +45,6 @@
         <EntityTypeShape EntityType="IEDModel.T_ManipulationLibrary" Width="1.5" PointX="8.25" PointY="21.875" />
         <EntityTypeShape EntityType="IEDModel.T_ManipulationTypeLibrary" Width="1.5" PointX="6" PointY="42.625" />
         <EntityTypeShape EntityType="IEDModel.T_NatureCutsLibrary" Width="1.5" PointX="6" PointY="16.625" />
-        <EntityTypeShape EntityType="IEDModel.T_PhaseGroup" Width="1.5" PointX="5.25" PointY="47.75" />
         <EntityTypeShape EntityType="IEDModel.T_Product" Width="1.5" PointX="5.25" PointY="57.375" />
         <EntityTypeShape EntityType="IEDModel.T_StopPrecisionLibrary" Width="1.5" PointX="6" PointY="38" />
         <EntityTypeShape EntityType="IEDModel.T_TechProcessVersion" Width="1.5" PointX="7.5" PointY="56.5" />
@@ -58,7 +56,6 @@
         <AssociationConnector Association="IEDModel.FK__SMenu__MenuCateg__03F0984C" />
         <AssociationConnector Association="IEDModel.FK_SMenuCategory_SModule" />
         <AssociationConnector Association="IEDModel.FK__SCompany__Parent__3B75D760" />
-        <AssociationConnector Association="IEDModel.FK__SUser__CompanyId__3A81B327" />
         <AssociationConnector Association="IEDModel.FK_SRoLe_SCompany" />
         <AssociationConnector Association="IEDModel.FK_Table_1_SCompany" />
         <AssociationConnector Association="IEDModel.FK__SFeature__Module__3D5E1FD2" />
@@ -69,9 +66,6 @@
         <AssociationConnector Association="IEDModel.FK__SRolePerm__Pemis__412EB0B6" />
         <AssociationConnector Association="IEDModel.FK__SRolePerm__RoleI__3E52440B" />
         <AssociationConnector Association="IEDModel.FK_SUserRole_SRoLe" />
-        <AssociationConnector Association="IEDModel.FK_SUserRole_SUser" />
-        <AssociationConnector Association="IEDModel.FK_T_LabourDivision_SUser" />
-        <AssociationConnector Association="IEDModel.FK_T_LabourDivision_SUser1" />
         <AssociationConnector Association="IEDModel.FK_T_ManipulationLibrary_T_ApplyPressureLibrary" />
         <AssociationConnector Association="IEDModel.FK_T_CA_Phase_ManiVer_De_T_ManipulationLibrary" />
         <AssociationConnector Association="IEDModel.FK_T_CA_Phase_TimePrepare_T_TimePrepare" />
@@ -109,11 +103,17 @@
         <AssociationConnector Association="IEDModel.FK_T_CA_Phase_ManiVer_De_T_CA_Phase" />
         <AssociationConnector Association="IEDModel.FK_T_CA_Phase_T_CommodityAnalysis" />
         <AssociationConnector Association="IEDModel.FK_T_CA_Phase_T_Equipment" />
-        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_T_PhaseGroup" />
         <AssociationConnector Association="IEDModel.FK_T_CA_Phase_TimePrepare_T_CA_Phase" />
         <AssociationConnector Association="IEDModel.FK_T_TechProcessVersionDetail_T_CA_Phase" />
         <EntityTypeShape EntityType="IEDModel.T_Customer" Width="1.5" PointX="3" PointY="57.75" />
         <AssociationConnector Association="IEDModel.FK_T_Product_T_Customer" />
+        <EntityTypeShape EntityType="IEDModel.SUser" Width="1.5" PointX="9.25" PointY="79.875" />
+        <EntityTypeShape EntityType="IEDModel.T_PhaseGroup" Width="1.5" PointX="6.25" PointY="74.25" />
+        <AssociationConnector Association="IEDModel.FK__SUser__CompanyId__3A81B327" />
+        <AssociationConnector Association="IEDModel.FK_SUserRole_SUser" />
+        <AssociationConnector Association="IEDModel.FK_T_LabourDivision_SUser" />
+        <AssociationConnector Association="IEDModel.FK_T_LabourDivision_SUser1" />
+        <AssociationConnector Association="IEDModel.FK_T_CA_Phase_T_PhaseGroup" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

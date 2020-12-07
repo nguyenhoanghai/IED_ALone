@@ -1,7 +1,7 @@
 ﻿@{
     ViewBag.Title = "Cụm công đoạn";
-    Layout = null;
-} 
+   Layout = null;
+}
 <script src="~/Scripts/IED/PhaseGroup/PG_Index.js"></script>
 <div id="Jtable-PhaseGroup" class="table-center"></div>
 
@@ -14,7 +14,7 @@
             </div>
             <div class="modal-body form-inline">
                 <div class="container-fluid">
-                    <input data-bind="value: Id" type="hidden" />
+                    <input id="pgid" data-bind="value: Id" type="hidden" />
                     <div class="col-md-6 form-group">
                         <label class="control-label">Tên cụm công đoạn<span class="required-class">*</span></label>
                         <input class="form-control" id="pgname" data-bind="value: Name" type="text" placeholder="Nhập Tên cụm công đoạn..." />
@@ -31,7 +31,12 @@
                         <label class="control-label">Chỉ số Lớn Nhất</label><br />
                         <input class="form-control" id="pgMaxLevel" data-bind="value: MaxLevel" type="text" style="width: 70px" onkeypress=" return isNumberKey(event)" />
                     </div>
-                    <div class="col-md-12 form-group">
+                    <div class="col-md-6 form-group">
+                        <label class="control-label">Phân xưởng</label><br />
+                        <select id="pgworkshop" class="form-control chosen-select" multiple="multiple"> 
+                        </select>
+                    </div>
+                    <div class="col-md-6 form-group">
                         <label class="control-label">Mô Tả</label><br />
                         <textarea id="pgdes" class="form-control" data-bind="value: Description"></textarea>
                     </div>

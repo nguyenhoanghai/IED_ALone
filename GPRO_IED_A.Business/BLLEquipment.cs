@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using GPRO_IED_A.Business.Enum;
+using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -47,7 +48,7 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     if (string.IsNullOrEmpty(sorting))
-                        sorting = "CreatedDate DESC";
+                        sorting = "CurrentDate DESC";
 
                     IQueryable<T_Equipment> equips = null;
                     if (!string.IsNullOrEmpty(keyWord))
@@ -71,7 +72,7 @@ namespace GPRO_IED_A.Business
                         EquipmentGroupId = c.EquipmentGroupId,
                         EGroupName = c.T_EquipmentGroup.GroupName,
                         CurrentDate = c.CreatedDate ?? DateTime.Now
-                    }).OrderByDescending(x => x.CurrentDate).ToList();
+                    }).OrderBy(sorting).ToList();
 
                     var pageNumber = (startIndexRecord / pageSize) + 1;
 
@@ -306,7 +307,6 @@ namespace GPRO_IED_A.Business
         }
         public ResponseBase Update(ModelEquipment model, int companyId, List<string> a, bool isOwner)
         {
-
             ResponseBase result = new ResponseBase();
             result.IsSuccess = false;
             try
@@ -521,7 +521,6 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
-
-
+        
     }
 }

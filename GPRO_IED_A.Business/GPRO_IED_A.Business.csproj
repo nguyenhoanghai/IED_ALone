@@ -37,6 +37,9 @@
     <Reference Include="GPRO.Ultilities">
       <HintPath>..\Libs\GPRO.Ultilities.dll</HintPath>
     </Reference>
+    <Reference Include="Hugate.Framework">
+      <HintPath>..\Libs\Hugate.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="PagedList">
       <HintPath>..\Libs\PagedList.dll</HintPath>
     </Reference>

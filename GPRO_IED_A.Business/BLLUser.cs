@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -83,10 +84,19 @@ namespace GPRO_IED_A.Business
                                        ImagePath = c.ImagePath,
                                        Email = c.Email,
                                        EmployeeName = c.FisrtName + " " + c.LastName,
-                                       UserName = c.UserName
+                                       UserName = c.UserName,
+                                       WorkshopId = c.WorkshopIds
                                    }).FirstOrDefault();
                     if (user != null)
                     {
+                        if (!string.IsNullOrEmpty(user.WorkshopId))
+                        {
+                            user.intWorkshopIds = user.WorkshopId.Split(',').Select(x => Convert.ToInt32(x)).ToArray();
+                        }
+                        else
+                            user.intWorkshopIds = new int[] { };
+
+
                         // lay quyen he thong
                         var permisUrl = new List<string>();
                         var systemPer = db.SPermissions.Where(x => !x.IsDeleted && !x.SFeature.IsDeleted && x.SFeature.SystemName.Trim().ToUpper().Equals("systemfeature")).Select(x => x.Url);
@@ -175,7 +185,7 @@ namespace GPRO_IED_A.Business
                         }
                         user.ChildCompanyId = db.SCompanies.Where(x => !x.IsDeleted && x.ParentId != null && x.ParentId.Value == user.CompanyId).Select(x => x.Id).ToArray();
                         if (user.ChildCompanyId == null)
-                            user.ChildCompanyId = new int[] { };
+                            user.ChildCompanyId = new int[] { }; 
                     }
                 }
             }
@@ -242,6 +252,7 @@ namespace GPRO_IED_A.Business
                             obj.CreatedDate = DateTime.Now;
                             obj.CompanyId = model.CompanyId;
                             obj.SUserRoles = new Collection<SUserRole>();
+                            obj.WorkshopIds = model.WorkshopIds;
 
                             if (model.NoteForgotPassword != null)
                             {
@@ -274,6 +285,7 @@ namespace GPRO_IED_A.Business
                                     obj.ImagePath = model.ImagePath.Split(',').ToList().First();
                                 obj.Email = model.Email;
                                 obj.UpdatedUser = model.ActionUser;
+                                obj.WorkshopIds = model.WorkshopIds;
                                 obj.UpdatedDate = DateTime.Now;
                                 #endregion
 
@@ -546,6 +558,7 @@ namespace GPRO_IED_A.Business
             }
             return rs;
         }
+
         public PagedList<UserModel> Gets(string keyWord, int searchBy, bool isBlock, bool isRequiredChangePass, bool isTimeBlock, bool isForgotPass, int startIndexRecord, int pageSize, string sorting, int userId, int companyId, int[] relationCompanyId)
         {
             try
@@ -556,7 +569,7 @@ namespace GPRO_IED_A.Business
                     PagedList<UserModel> usersReturn = null;
                     if (string.IsNullOrEmpty(sorting))
                     {
-                        sorting = "CreatedDate DESC";
+                        sorting = "Id DESC";
                     }
                     var pageNumber = (startIndexRecord / pageSize) + 1;
 
@@ -606,8 +619,9 @@ namespace GPRO_IED_A.Business
                             ImagePath = x.ImagePath,
                             LockedTime = x.LockedTime,
                             FisrtName = x.FisrtName,
-                            LastName = x.LastName 
-                        }).ToList();
+                            LastName = x.LastName ,
+                            WorkshopIds = x.WorkshopIds
+                        }).OrderBy(sorting).ToList();
                         usersReturn = new PagedList<UserModel>(usersModel, pageNumber, pageSize);
                     }
                     else
@@ -616,7 +630,7 @@ namespace GPRO_IED_A.Business
                     if (usersReturn != null && usersReturn.Count > 0)
                     {
                         var uroles = db.SUserRoles.Where(x => !x.IsDeleted).Select(x => new UserRoleModel() { Id = x.Id, RoleId = x.RoleId, RoleName = x.SRoLe.RoleName, UserId = x.UserId }).ToList();
-                        if ((uroles != null && uroles.Count() > 0) || usersReturn != null && usersReturn.Count > 0)
+                        if ( uroles != null && uroles.Count() > 0 )
                         {
                             foreach (var item in usersReturn)
                             {
@@ -631,6 +645,31 @@ namespace GPRO_IED_A.Business
                                 }
                             }
                         }
+
+                        var wks = db.T_WorkShop.Where(x => !x.IsDeleted).ToList();
+                        if (wks != null && wks.Count() > 0)
+                        {
+                            foreach (var item in usersReturn)
+                            {
+                                item.WorkshopNames = "";
+                                if (item.WorkshopIds != null)
+                                {
+                                    item.intWorkshopIds = item.WorkshopIds.Split(',').Select(x => Convert.ToInt32(x)).ToList();
+                                    for (int i = 0; i < item.intWorkshopIds.Count; i++)
+                                    {
+                                        var f = wks.FirstOrDefault(x => x.Id == item.intWorkshopIds[i]);
+                                        if (f != null)
+                                        {
+                                            item.WorkshopNames += f.Name;
+                                            if (i < (item.intWorkshopIds.Count - 1))
+                                                item.WorkshopNames += " ; ";
+                                        }
+                                    }
+                                }
+                                else
+                                    item.intWorkshopIds = new List<int>();
+                            }
+                        }
                     }
                     return usersReturn;
                 }
@@ -640,6 +679,5 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
-
     }
 }

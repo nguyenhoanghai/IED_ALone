@@ -15,5 +15,9 @@ namespace GPRO_IED_A.Business.Model
         public double MinLevel { get; set; }
         public string ProductTypeName { get; set; }
         public int ActionUser { get; set; }
+        public string WorkshopIds { get; set; }
+        public string WorkshopNames { get; set; }
+        public List<int> intWorkshopIds { get; set; }
+
     }
 }

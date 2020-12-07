@@ -7,6 +7,7 @@ using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -213,7 +214,7 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     if (string.IsNullOrEmpty(sorting))
-                        sorting = "CreatedDate DESC";
+                        sorting = "Id DESC";
 
                     IQueryable<T_WorkShop> workshops = null;
                     var pageNumber = (startIndexRecord / pageSize) + 1;
@@ -235,13 +236,13 @@ namespace GPRO_IED_A.Business
 
                     if (workshops != null && workshops.Count() > 0)
                     {
-                        var WorkShops = workshops.OrderByDescending(x => x.CreatedDate).Select(c => new WorkShopModel()
+                        var WorkShops = workshops .Select(c => new WorkShopModel()
                         {
                             Id = c.Id,
                             Code = c.Code,
                             Name = c.Name,
                             Description = c.Description,
-                        }).ToList();
+                        }).OrderBy(sorting).ToList();
                         return new PagedList<WorkShopModel>(WorkShops, pageNumber, pageSize);
                     }
                     else

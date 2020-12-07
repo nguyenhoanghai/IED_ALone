@@ -2,18 +2,17 @@
 using GPRO.Ultilities;
 using GPRO_IED_A.Business.Model;
 using GPRO_IED_A.Data;
+using Hugate.Framework;
 using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GPRO_IED_A.Business
 {
-   public class BLLManipulationLibrary
+    public class BLLManipulationLibrary
     {
-       #region constructor
+        #region constructor
         IEDEntities db;
         static object key = new object();
         private static volatile BLLManipulationLibrary _Instance;
@@ -57,7 +56,7 @@ namespace GPRO_IED_A.Business
                 {
                     if (string.IsNullOrEmpty(sorting))
                     {
-                        sorting = "CreatedDate DESC";
+                        sorting = "Id DESC";
                     }
                     var pageNumber = (startIndexRecord / pageSize) + 1;
 
@@ -84,7 +83,7 @@ namespace GPRO_IED_A.Business
 
                     if (manipulations != null && manipulations.Count() > 0)
                     {
-                        var manis = manipulations.OrderByDescending(x=>x.CreatedDate).Select(x => new ManipulationLibraryModel()
+                        var manis = manipulations.Select(x => new ManipulationLibraryModel()
                         {
                             Id = x.Id,
                             Name = x.Name,
@@ -100,8 +99,8 @@ namespace GPRO_IED_A.Business
                             StopPrecisionId = x.StopPrecisionId,
                             ApplyPressureId = x.ApplyPressureId,
                             NatureCutsId = x.NatureCutsId,
-                            Distance = x.Distance 
-                        }) .ToList(); ;
+                            Distance = x.Distance
+                        }).OrderBy(sorting).ToList(); ;
                         return new PagedList<ManipulationLibraryModel>(manis, pageNumber, pageSize);
                     }
                     else
@@ -261,7 +260,7 @@ namespace GPRO_IED_A.Business
                                     {
                                         item.IsDeleted = true;
                                         item.DeletedUser = mani.UpdatedUser;
-                                        item.DeletedDate = mani.UpdatedDate; 
+                                        item.DeletedDate = mani.UpdatedDate;
                                     }
                                 }
                                 // add new
@@ -289,7 +288,7 @@ namespace GPRO_IED_A.Business
                                     {
                                         item.IsDeleted = true;
                                         item.DeletedUser = mani.UpdatedUser;
-                                        item.DeletedDate = mani.UpdatedDate; 
+                                        item.DeletedDate = mani.UpdatedDate;
                                     }
                                 }
 
@@ -319,11 +318,11 @@ namespace GPRO_IED_A.Business
                                     }
                                 }
                             }
-                            #endregion 
-                        #endregion
+                            #endregion
+                            #endregion
                         }
                     }
-                   db.SaveChanges();
+                    db.SaveChanges();
                     result.IsSuccess = true;
                     return result;
                 }
@@ -371,7 +370,7 @@ namespace GPRO_IED_A.Business
                     {
                         maniType.IsDeleted = true;
                         maniType.DeletedUser = actionUserId;
-                        maniType.DeletedDate = DateTime.Now; 
+                        maniType.DeletedDate = DateTime.Now;
                         db.SaveChanges();
                         result.IsSuccess = true;
                         result.Errors.Add(new Error() { MemberName = "", Message = "Xóa Thành Công.!" });
@@ -398,7 +397,7 @@ namespace GPRO_IED_A.Business
                 {
                     if (string.IsNullOrEmpty(sorting))
                     {
-                        sorting = "CreatedDate DESC";
+                        sorting = "Id DESC";
                     }
                     var pageNumber = (startIndexRecord / pageSize) + 1;
 
@@ -422,7 +421,7 @@ namespace GPRO_IED_A.Business
 
                     if (manipulations != null && manipulations.Count() > 0)
                     {
-                        var manis = manipulations.OrderByDescending(x=>x.CreatedDate).Select(x => new ManipulationLibraryModel()
+                        var manis = manipulations .Select(x => new ManipulationLibraryModel()
                         {
                             Id = x.Id,
                             Name = x.Name,
@@ -437,8 +436,8 @@ namespace GPRO_IED_A.Business
                             StopPrecisionId = x.StopPrecisionId,
                             ApplyPressureId = x.ApplyPressureId,
                             NatureCutsId = x.NatureCutsId,
-                            Distance = x.Distance 
-                        }).ToList();  
+                            Distance = x.Distance
+                        }).OrderBy(sorting).ToList();
                         return new PagedList<ManipulationLibraryModel>(manis, pageNumber, pageSize);
                     }
                     else
@@ -459,9 +458,9 @@ namespace GPRO_IED_A.Business
                 {
                     if (string.IsNullOrEmpty(sorting))
                     {
-                        sorting = "CreatedDate DESC";
+                        sorting = "Id DESC";
                     }
-                    var manis = db.T_ManipulationEquipment.Where(x => !x.IsDeleted && x.ManipulationId == Id).OrderByDescending(x=>x.CreatedDate).Select(x => new ManipulationEquipmentModel()
+                    var manis = db.T_ManipulationEquipment.Where(x => !x.IsDeleted && x.ManipulationId == Id).OrderByDescending(x => x.CreatedDate).Select(x => new ManipulationEquipmentModel()
                     {
                         Id = x.Id,
                         ManipulationId = x.ManipulationId,
@@ -469,8 +468,8 @@ namespace GPRO_IED_A.Business
                         UserTMU = x.UserTMU,
                         Note = x.Note,
                         EquipmentId = x.EquipmentId,
-                        EquipmentName = x.T_Equipment.Name  
-                    }).ToList();
+                        EquipmentName = x.T_Equipment.Name
+                    }).OrderBy(sorting).ToList();
                     var pageNumber = (startIndexRecord / pageSize) + 1;
                     return new PagedList<ManipulationEquipmentModel>(manis, pageNumber, pageSize);
                 }
@@ -487,7 +486,7 @@ namespace GPRO_IED_A.Business
             {
                 using (db = new IEDEntities())
                 {
-                    var manis = db.T_ManipulationEquipment.Where(x => !x.IsDeleted && x.ManipulationId == Id).OrderBy(x=>x.CreatedDate).Select(x => new ManipulationEquipmentModel()
+                    var manis = db.T_ManipulationEquipment.Where(x => !x.IsDeleted && x.ManipulationId == Id).OrderBy(x => x.CreatedDate).Select(x => new ManipulationEquipmentModel()
                     {
                         Id = x.Id,
                         ManipulationId = x.ManipulationId,
@@ -495,7 +494,7 @@ namespace GPRO_IED_A.Business
                         UserTMU = x.UserTMU,
                         Note = x.Note,
                         EquipmentId = x.EquipmentId,
-                        EquipmentName = x.T_Equipment.Name 
+                        EquipmentName = x.T_Equipment.Name
                     }).ToList();
                     return manis;
                 }
@@ -611,7 +610,7 @@ namespace GPRO_IED_A.Business
                                         else if (distance == 0)
                                             result.Errors.Add(new Error() { Message = "Thông tin khoảng cách may không chính xác, hoặc bằng 0.", MemberName = "GetManipulationEquipmentInfoByCode" });
                                         else
-                                        { 
+                                        {
                                             model = new ManipulationLibrarySmallModel();
                                             model.Code = code;
                                             model.Distance = distance;
@@ -640,7 +639,7 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
             return result;
-        } 
+        }
 
         public ResponseBase GetAllManipulation()
         {
@@ -671,6 +670,6 @@ namespace GPRO_IED_A.Business
             }
             return result;
         }
-  
+
     }
 }

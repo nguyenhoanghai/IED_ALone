@@ -7,6 +7,7 @@ using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -36,15 +37,16 @@ namespace GPRO_IED_A.Business
             return obj.CreatedUser == actionUser;
         }
 
-        public PagedList<PhaseGroupModel> GetList(string keyWord, int searchBy, int startIndexRecord, int pageSize, string sorting)
+        public PagedList<PhaseGroupModel> GetList(string keyWord, int searchBy, int startIndexRecord, int pageSize, string sorting, int[] workshopIds)
         {
             try
             {
                 using (db = new IEDEntities())
                 {
+                    PagedList<PhaseGroupModel> pgsReturn = null;
                     if (string.IsNullOrEmpty(sorting))
                     {
-                        sorting = "CreatedDate DESC";
+                        sorting = "Id DESC";
                     }
                     IQueryable<T_PhaseGroup> phaseGroups = null;
                     var pageNumber = (startIndexRecord / pageSize) + 1;
@@ -66,21 +68,74 @@ namespace GPRO_IED_A.Business
 
                     if (phaseGroups != null && phaseGroups.Count() > 0)
                     {
-                        var list = phaseGroups.OrderByDescending(x => x.CreatedDate).Select(x => new PhaseGroupModel()
+                        var list = phaseGroups .Select(x => new PhaseGroupModel()
                         {
                             Id = x.Id,
                             Code = x.Code,
                             Name = x.Name,
                             MinLevel = x.MinLevel,
                             MaxLevel = x.MaxLevel,
-                            Description = x.Description
-                        }).ToList();
-                        return new PagedList<PhaseGroupModel>(list, pageNumber, pageSize);
+                            Description = x.Description,
+                            WorkshopIds = x.WorkshopIds
+                        }).OrderBy(sorting).ToList();
+                        var newList = new List<PhaseGroupModel>();
+                        foreach (var item in list)
+                        {
+                            if (string.IsNullOrEmpty(item.WorkshopIds))
+                                newList.Add(item);
+                            else
+                            {
+                                if (workshopIds.Length > 0)
+                                {
+                                    for (int i = 0; i < workshopIds.Length; i++)
+                                    {
+                                        if (item.WorkshopIds.Contains((workshopIds[i] + ",")) ||
+                                            item.WorkshopIds.Contains(("," + workshopIds[i])) ||
+                                            (item.WorkshopIds.IndexOf(',') < 0 && item.WorkshopIds.Contains(workshopIds[i].ToString())))
+                                        {
+                                            newList.Add(item);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        pgsReturn = new PagedList<PhaseGroupModel>(newList, pageNumber, pageSize);
                     }
                     else
-                        return new PagedList<PhaseGroupModel>(new List<PhaseGroupModel>(), pageNumber, pageSize);
-                }
+                        pgsReturn = new PagedList<PhaseGroupModel>(new List<PhaseGroupModel>(), pageNumber, pageSize);
 
+
+                    if (pgsReturn != null && pgsReturn.Count > 0)
+                    {
+                        var wks = db.T_WorkShop.Where(x => !x.IsDeleted).ToList();
+                        if (wks != null && wks.Count() > 0)
+                        {
+                            foreach (var item in pgsReturn)
+                            {
+                                item.WorkshopNames = "";
+                                if (item.WorkshopIds != null)
+                                {
+                                    item.intWorkshopIds = item.WorkshopIds.Split(',').Select(x => Convert.ToInt32(x)).ToList();
+                                    for (int i = 0; i < item.intWorkshopIds.Count; i++)
+                                    {
+                                        var f = wks.FirstOrDefault(x => x.Id == item.intWorkshopIds[i]);
+                                        if (f != null)
+                                        {
+                                            item.WorkshopNames += f.Name;
+                                            if (i < (item.intWorkshopIds.Count - 1))
+                                                item.WorkshopNames += " ; ";
+                                        }
+                                    }
+                                }
+                                else
+                                    item.intWorkshopIds = new List<int>();
+                            }
+                        }
+                    }
+                    return pgsReturn;
+                }
             }
             catch (Exception ex)
             {
@@ -135,7 +190,7 @@ namespace GPRO_IED_A.Business
                             }
                             else
                             {
-                                if (!checkPermis(obj, model.ActionUser,isOwner))
+                                if (!checkPermis(obj, model.ActionUser, isOwner))
                                 {
                                     result.IsSuccess = false;
                                     result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo Cụm Công Đoạn này nên bạn không cập nhật được thông tin cho Cụm Công Đoạn này." });
@@ -149,6 +204,7 @@ namespace GPRO_IED_A.Business
                                     obj.Description = model.Description;
                                     obj.UpdatedUser = model.ActionUser;
                                     obj.UpdatedDate = DateTime.Now;
+                                    obj.WorkshopIds = model.WorkshopIds;
 
                                     //  cap nhat ben phan tich mat hang
                                     var commoAna = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectId == obj.Id && x.ObjectType == (int)eObjectType.isPhaseGroup);
@@ -213,7 +269,7 @@ namespace GPRO_IED_A.Business
                     }
                     else
                     {
-                        if (!checkPermis(phasegroup, acctionUserId,isOwner))
+                        if (!checkPermis(phasegroup, acctionUserId, isOwner))
                         {
                             result.IsSuccess = false;
                             result.Errors.Add(new Error() { MemberName = "Delete", Message = "Bạn không phải là người tạo Cụm Công Đoạn này nên bạn không xóa được Cụm Công Đoạn này." });
@@ -237,7 +293,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public List<ModelSelectItem> Gets()
+        public List<ModelSelectItem> Gets(int[] workshopIds)
         {
             using (db = new IEDEntities())
             {
@@ -245,7 +301,30 @@ namespace GPRO_IED_A.Business
                 objs.Add(new ModelSelectItem() { Value = 0, Name = " - Chọn Cụm Công Đoạn - " });
                 try
                 {
-                    objs.AddRange(db.T_PhaseGroup.Where(x => !x.IsDeleted).Select(x => new ModelSelectItem() { Value = x.Id, Name = x.Name }));
+                    var pgs = db.T_PhaseGroup.Where(x => !x.IsDeleted)
+                        .Select(x => new ModelSelectItem() { Value = x.Id, Name = x.Name, Code = x.WorkshopIds }).ToList();
+
+                    foreach (var item in pgs)
+                    {
+                        if (string.IsNullOrEmpty(item.Code))
+                            objs.Add(item);
+                        else
+                        {
+                            if (workshopIds.Length > 0)
+                            {
+                                for (int i = 0; i < workshopIds.Length; i++)
+                                {
+                                    if (item.Code.Contains((workshopIds[i] + ",")) ||
+                                        item.Code.Contains(("," + workshopIds[i])) ||
+                                        (item.Code.IndexOf(',') < 0 && item.Code.Contains(workshopIds[i].ToString())))
+                                    {
+                                        objs.Add(item);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {

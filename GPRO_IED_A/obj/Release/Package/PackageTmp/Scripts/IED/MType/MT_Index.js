@@ -245,13 +245,13 @@ GPRO.MType = function () {
 		});
 
 		$('#code-mani-1').on('keypress, keydown', function (event) {
-			var $field = $(this);
-			value = $(this).val();
-			if (Global.Data.defaultValue != '') {
-				if ((event.which != 37 && (event.which != 39)) && ((this.selectionStart < Global.Data.defaultValue.length) || ((this.selectionStart == Global.Data.defaultValue.length) && (event.which == 8)))) {
-					return false;
-				}
-			}
+			//var $field = $(this);
+			//value = $(this).val();
+			//if (Global.Data.defaultValue != '') {
+			//	if ((event.which != 37 && (event.which != 39)) && ((this.selectionStart < Global.Data.defaultValue.length) || ((this.selectionStart == Global.Data.defaultValue.length) && (event.which == 8)))) {
+			//		return false;
+			//	}
+			//}
 		});
 
 		$('#code-mani').on('keypress, keydown', function (event) {
@@ -373,7 +373,8 @@ GPRO.MType = function () {
 					width: "5%",
 				},
 				MTypeName: {
-					title: "Loại Thao Tác",
+                    title: "Loại Thao Tác",
+                    sorting: false,
 					width: "10%",
 				},
 				MachineType: {
@@ -422,7 +423,8 @@ GPRO.MType = function () {
                                         		},
                                         		Note: {
                                         			title: 'Thông số Thiết Bị',
-                                        			width: '20%',
+                                                    width: '20%',
+                                                    sorting: false,
                                         		}
                                         	}
                                         }, function (data) { //opened handler
@@ -465,7 +467,8 @@ GPRO.MType = function () {
 					}
 				},
 				Description: {
-					title: "Mô Tả",
+                    title: "Mô Tả",
+                    sorting: false,
 					width: "20%"
 				},
 				edit: {
