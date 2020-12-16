@@ -184,7 +184,7 @@ namespace GPRO_IED_A.Business
                         switch (noNameModel.ObjectType)
                         {
                             case (int)eObjectType.isCommodity:
-                                result.Errors.Add(new Error() { MemberName = "Insert  ", Message = "Mặt Hàng này đã được chọn. Vui lòng chọn lại Mặt Hàng khác !." });
+                                result.Errors.Add(new Error() { MemberName = "Insert  ", Message = "Mã hàng này đã có bài phân tích. Vui lòng chọn lại Mã hàng khác !." });
                                 break;
                             case (int)eObjectType.isWorkShop:
                                 result.Errors.Add(new Error() { MemberName = "Insert  ", Message = "Phân xưởng này đã được chọn. Vui lòng chọn lại Phân xưởng khác !." });
@@ -214,7 +214,7 @@ namespace GPRO_IED_A.Business
                                 {
                                     T_CommodityAnalysis newObject;
                                     for (int i = 0; i < 3; i++)
-                                    { 
+                                    {
                                         newObject = new T_CommodityAnalysis();
                                         newObject.Id = 0;
                                         newObject.Node = noName.Node + noName.Id + ",";
@@ -430,7 +430,7 @@ namespace GPRO_IED_A.Business
                             if (objExists != null)
                             {
                                 result.IsSuccess = false;
-                                result.Errors.Add(new Error() { MemberName = "", Message = "Mặt Hàng Bạn đang Phân Tích đã Tồn Tại Nhóm Công Đoạn này rồi.\nVui lòng kiểm tra lại.!" });
+                                result.Errors.Add(new Error() { MemberName = "", Message = "Mã hàng Bạn đang Phân Tích đã Tồn Tại Nhóm Công Đoạn này rồi.\nVui lòng kiểm tra lại.!" });
                             }
                             else
                             {
@@ -545,6 +545,43 @@ namespace GPRO_IED_A.Business
             }
         }
 
-
+        public CommodityAnalysisModel GetProductByCustomerId(int customerId)
+        {
+            try
+            {
+                using (db = new IEDEntities())
+                {
+                    var productIds = db.T_Product.Where(x => !x.IsDeleted && !x.T_Customer.IsDeleted && x.CustomerId == customerId).Select(x => x.Id).ToList();
+                    
+                    var commoAnaModel = new CommodityAnalysisModel();
+                    var commoAnalysis = (from x in db.T_CommodityAnalysis
+                                         where
+                                         !x.IsDeleted &&
+                                         x.ObjectType == (int)eObjectType.isCommodity &&
+                                         productIds.Contains(x.ObjectId)
+                                         select new ProAnaModel()
+                                         {
+                                             Id = x.Id,
+                                             Name = x.Name,
+                                             Node = x.Node,
+                                             ObjectId = x.ObjectId,
+                                             ObjectType = x.ObjectType,
+                                             ParentId = x.ParentId,
+                                             Description = x.Description,
+                                             CreatedDate = x.CreatedDate
+                                         });
+                    if (commoAnalysis != null)
+                    {
+                        commoAnaModel.CommoAna.AddRange(commoAnalysis);
+                        commoAnaModel.years.AddRange(commoAnalysis.Select(x => x.CreatedDate.Month).Distinct());
+                    }
+                    return commoAnaModel;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

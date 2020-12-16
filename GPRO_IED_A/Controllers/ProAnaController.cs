@@ -446,7 +446,6 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-
         public async Task<JsonResult> UploadVideo()
         {
             HttpFileCollectionBase files = Request.Files;
@@ -508,6 +507,21 @@ namespace GPRO_IED_A.Controllers
             { }
             return Json(JsonDataResult);
         }
+
+        [HttpPost]
+        public JsonResult TinhLaiCode(List<Commo_Ana_Phase_ManiModel> actions, int equipmentId, int equiptypedefaultId, int applyPressure)
+        {
+            try
+            {
+                JsonDataResult.Result = "OK";
+                var rs = BLLCommo_Ana_Phase.Instance.TinhLaiCode(actions, equipmentId, equiptypedefaultId, applyPressure);
+                JsonDataResult.Records = rs.Data;
+            }
+            catch (Exception ex)
+            { }
+            return Json(JsonDataResult);
+        }
+
         #region export excel
         public void export_PhaseManiVersion(int Id)
         {
@@ -1818,7 +1832,7 @@ namespace GPRO_IED_A.Controllers
                     sheet.Cells[rowIndex, 1, rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
 
                     rowIndex++;
-                    sheet.Cells[rowIndex, 2].Value = "  BLĐ                                            GĐXN                    "; 
+                    sheet.Cells[rowIndex, 2].Value = "  BLĐ                                            GĐXN                    ";
 
                     sheet.Cells[rowIndex, 3].Value = "P.KT-CN";
                     sheet.Cells[rowIndex, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;

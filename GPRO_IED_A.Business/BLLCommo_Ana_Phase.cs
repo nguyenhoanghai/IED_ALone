@@ -3,12 +3,12 @@ using GPRO.Ultilities;
 using GPRO_IED_A.Business.Enum;
 using GPRO_IED_A.Business.Model;
 using GPRO_IED_A.Data;
+using Hugate.Framework;
 using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -430,7 +430,7 @@ namespace GPRO_IED_A.Business
                                      Node = x.Node,
                                      Product = "",
                                      GroupPhase = ""
-                                 }) .ToList();
+                                 }).ToList();
                     if (temps.Count > 0)
                     {
                         var masters = (from x in db.T_CommodityAnalysis where !x.IsDeleted select new { id = x.Id, name = x.Name, OType = x.ObjectType, OId = x.ObjectId }).ToList();
@@ -515,8 +515,8 @@ namespace GPRO_IED_A.Business
                         var products = (from x in db.T_Product where !x.IsDeleted select new { Id = x.Id, Name = x.Name }).ToList();
                         var phaseGroups = (from x in db.T_PhaseGroup where !x.IsDeleted select new { Id = x.Id, Name = x.Name }).ToList();
                         foreach (var item in temps)
-                        { 
-                            int[] nodeArr = item.Node.Replace("0,0,","0,").Split(',').Select(x => !string.IsNullOrEmpty(x) ? Convert.ToInt32(x) : 0).ToArray();
+                        {
+                            int[] nodeArr = item.Node.Replace("0,0,", "0,").Split(',').Select(x => !string.IsNullOrEmpty(x) ? Convert.ToInt32(x) : 0).ToArray();
                             var found = masters.FirstOrDefault(x => x.id == nodeArr[1]);
                             if (found != null)
                             {
@@ -1124,7 +1124,7 @@ namespace GPRO_IED_A.Business
 
                     foreach (var item in phases)
                     {
-                        var arr = item.Node.Replace("0,0,","0,").Split(',').Where(x => !string.IsNullOrEmpty(x)).Select(x => Convert.ToInt32(x)).ToList();
+                        var arr = item.Node.Replace("0,0,", "0,").Split(',').Where(x => !string.IsNullOrEmpty(x)).Select(x => Convert.ToInt32(x)).ToList();
                         var proObj = proanas.FirstOrDefault(x => x.Id == arr[1]);
                         if (proObj != null)
                         {
@@ -1236,5 +1236,70 @@ namespace GPRO_IED_A.Business
                 }
             }
         }
+
+
+        public ResponseBase TinhLaiCode(List<Commo_Ana_Phase_ManiModel> actions, int equipmentId, int equiptypedefaultId, int applyPressure)
+        {
+            ResponseBase result = new ResponseBase();
+            try
+            {
+                using (db = new IEDEntities())
+                {
+                    for (int i = 0; i < actions.Count  ; i++)
+                    { 
+                        if (actions[i].ManipulationCode.Substring(0, 1) == "C" || actions[i].ManipulationCode.Substring(0, 2) == "SE")
+                        {
+                            if(actions[i].ManipulationCode.Length > 4)
+                            {
+                                string stopPrecisionCode = actions[i].ManipulationCode.Substring(actions[i].ManipulationCode.Length - 1, 1);
+                                var stopPrecision = db.T_StopPrecisionLibrary.FirstOrDefault(c => c.Code.Trim().ToUpper().Equals(stopPrecisionCode.Trim().ToUpper()) && !c.IsDeleted);
+                                if (stopPrecision == null)
+                                    result.Errors.Add(new Error() { Message = "Không tìm thấy thông tin độ dừng chính xác.", MemberName = "GetManipulationEquipmentInfoByCode" });
+                                else
+                                {
+                                    float distance = 0;
+                                    if (actions[i].ManipulationCode.Substring(0, 2).Equals("SE"))
+                                    {
+                                        float.TryParse(actions[i].ManipulationCode.Substring(2, actions[i].ManipulationCode.Length - 3), out distance);
+                                        if (distance == 0)
+                                            result.Errors.Add(new Error() { Message = "Thông tin khoảng cách may không chính xác, hoặc bằng 0.", MemberName = "GetManipulationEquipmentInfoByCode" });
+                                        else
+                                        {
+                                            actions[i].TMUEquipment = BLLEquipment.Instance.CalculationMachineTMU(equipmentId, equiptypedefaultId, distance, stopPrecision.TMUNumber, 0, 0);
+                                            actions[i].TotalTMU = (actions[i].TMUEquipment * actions[i].Loop)??0; 
+                                        }
+                                    }
+                                    else if (actions[i].ManipulationCode.Substring(0, 1).Equals("C"))
+                                    {
+                                        float.TryParse(actions[i].ManipulationCode.Substring(1, actions[i].ManipulationCode.Length - 3), out distance);
+                                        string natureCutCode = actions[i].ManipulationCode.Substring(actions[i].ManipulationCode.Length - 2, 1);
+                                        var natureCut = db.T_NatureCutsLibrary.FirstOrDefault(c => c.Code.Trim().ToUpper().Equals(natureCutCode.Trim().ToUpper()) && !c.IsDeleted);
+                                        if (applyPressure == 0)
+                                            result.Errors.Add(new Error() { Message = "Không tìm thấy thông tin số lớp cắt.", MemberName = "GetManipulationEquipmentInfoByCode" });
+                                        else if (natureCut == null)
+                                            result.Errors.Add(new Error() { Message = "Không tìm thấy thông tin tính chất căt.", MemberName = "GetManipulationEquipmentInfoByCode" });
+                                        else if (distance == 0)
+                                            result.Errors.Add(new Error() { Message = "Thông tin khoảng cách may không chính xác, hoặc bằng 0.", MemberName = "GetManipulationEquipmentInfoByCode" });
+                                        else
+                                        {
+
+                                            actions[i].TMUEquipment = BLLEquipment.Instance.CalculationMachineTMU(equipmentId, equiptypedefaultId, distance, stopPrecision.TMUNumber, applyPressure, natureCut.Factor);
+                                            actions[i].TotalTMU = (actions[i].TMUEquipment * actions[i].Loop)??0;                                             
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    result.Data = actions;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+
     }
 }

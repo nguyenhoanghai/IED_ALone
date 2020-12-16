@@ -48,8 +48,6 @@ GPRO.ProAna = function () {
             GetPhaseVersionByVerId: '/ProAna/GetPhaseVersionByVerId',
 
 
-
-
             GetListTimePrepare: '/TimePrepare/GetLists',
             GetListAccessories: '/Equipment/GetListAccessories',
             GetTimeTypePrepare: '/TimePrepare/GetTimeTypePreparesByWorkShopId',
@@ -75,7 +73,9 @@ GPRO.ProAna = function () {
 
             GetTech: '/ProAna/GetTech',
             SaveTech: '/ProAna/SaveTech',
-            ExportToExcel: '/ProAna/ExportToExcel'
+            ExportToExcel: '/ProAna/ExportToExcel',
+
+            TinhLaiCode: '/ProAna/TinhLaiCode'
         },
         Element: {
             jtable_Timeprepare_Chooise: 'jtable-timeprepare',
@@ -270,6 +270,222 @@ GPRO.ProAna = function () {
     this.removeVideo = function () { removeVideo(); }
 
     var RegisterEvent = function () {
+        $('#jqxTree').on('select', function (event) {
+            var args = event.args;
+            var selectItem = $('#jqxTree').jqxTree('getItem', args.element);
+            Global.Data.TreeSelectItem = selectItem;
+            type = parseInt(selectItem.value);
+            Global.Data.ObjectType = (type + 1);
+            Global.Data.ParentID = selectItem.id;
+
+            var findObj = {};
+            $.each(Global.Data.ProAnaArray, function (index, item) {
+                if (item.Id == selectItem.id) {
+                    Global.Data.ModelProAna.Node = item.Node;
+                    Global.Data.Node = item.Node;
+                    Global.Data.PhaseNode = item.Node + item.Id + ',';
+                    $('#txt_commo_anna_phase').attr('phaseNode', item.Node + item.Id + ',');
+                    Global.Data.ObjectId = item.ObjectId;
+                    findObj = item;
+                    return;
+                }
+            });
+
+            $('[type="1"]').hide();
+            $('[type="1a"]').hide();
+            $('[type="2"]').hide();
+            $('[type="2a"]').hide();
+            $('[type="6"]').hide();
+            $('[type="6a"]').hide();
+            $('#jqxMenu').css('opacity', '1');
+            $('#jqxMenu').css('height', '83px');
+            switch (type) {
+                case 11:
+                case 13:
+                    $('#jqxMenu').css('opacity', '0');
+                    break;
+                case 0:
+                    $('[type="' + (type + 1) + '"]').show();
+                    $('#jqxMenu').css('height', '30px');
+                    break;
+                case 1:
+                    $('[type="' + (type + 1) + '"]').show();
+                    $('[type="' + type + 'a"]').show();
+                    break;
+                case 2:
+                    $('[type="' + type + 'a"]').show();
+                    $("#jqxMenu").css('height', '56px');
+                    break;
+                case 3:
+                    $('#jqxMenu').css('opacity', '0');
+                    $('#' + Global.Element.jtablePhase + ',#jtable_tkc').hide();
+                    $('#' + Global.Element.jtablePhaseVersion).show();
+                    $.each(Global.Data.ProAnaArray, function (index, item) {
+                        if (item.Id == findObj.ParentId) {
+                            workshopId = item.ObjectId;
+                            $.each(Global.Data.ProAnaArray, function (ii, item1) {
+                                if (item1.Id == item.ParentId) {
+                                    Global.Data.productId = item1.ObjectId;
+                                    return;
+                                }
+                            });
+                            return;
+                        }
+                    });
+                    Global.Data.warningChuaCoQTCN = false;
+                    GetTechProcess(findObj.Node, Global.Data.ParentID);
+                    $('div.divParent').attr('currentPoppup', ('techprocess').toUpperCase());
+                    break;
+                case 5:
+                    $('[type="' + (type + 1) + '"]').show();
+                    if (Global.Data.Copy_CommoAnaPhaseGroupId != 0) {
+                        $('#paste').show();
+                        $('#jqxMenu').css('height', '56px');
+                    }
+                    else
+                        $('#jqxMenu').css('height', '30px');
+                    break;
+                case 6:
+                    $("#jqxMenu").css('height', '83px');
+                    $('[type="' + type + 'a"]').show();
+
+                    $('#' + Global.Element.jtablePhaseVersion).hide();
+
+                    // dua thong tin ra ngoai 
+                    id = parseInt(Global.Data.Node.split(',')[2]);
+                    $.each(Global.Data.ProAnaArray, function (index, item) {
+                        if (item.Id == id) {
+                            //Global.Data.WorkShopId = item.ObjectId;
+                            $('#txt_commo_anna_phase').attr('workshop', item.ObjectId);
+                            $('#txt_commo_anna_phase').attr('parentid', Global.Data.ParentID);
+                            $('#txt_commo_anna_phase').attr('phaseGroup', Global.Data.ObjectId);
+                            $('#txt_commo_anna_phase').attr('phaseNode', item.Node);
+                            return false;
+                        }
+                    });
+                    $('#txt_commo_anna_phase').change();
+                    Global.Data.PhaseAutoCode = findObj.Description;
+                    Global.Data.phaseLastIndex = 0;
+                    $('#' + Global.Element.jtablePhase).find('.jtable-title-text').html('Danh Sách Công Đoạn của Nhóm : <span class="red"> ' + selectItem.label + '</span>');
+                    //  ReloadListAccessories();/
+                    ReloadListPhase_View();
+                    ReloadListTimePrepare();
+                    GetLastPhaseIndex();
+                    $('#' + Global.Element.jtablePhase).show();
+                    $('#techprocess,#jtable_tkc').hide();
+                    $('div.divParent').attr('currentPoppup', Global.Element.jtablePhase.toUpperCase());
+                    break;
+                case 8:
+                    $('#techprocess,#jtable-phase').hide();
+                    $('#jtable_tkc').show();
+                    $('#jtable_tkc').attr('parentid', Global.Data.ParentID);
+                    $('#jtable_tkc').attr('node', findObj.Node);
+                    $('#jtable_tkc').attr('pId', findObj.ParentId);
+
+                    $.each(Global.Data.ProAnaArray, function (index, item) {
+                        if (item.Id == findObj.ParentId) {
+                            $('#jtable_tkc').attr('wkId', item.ObjectId);
+                            $('#jtable_tkc').attr('wkName', item.Name);
+                            $('#workshop_').html(item.Name);
+                            return false;
+                        }
+                    });
+                    $('#jtable_tkc').change();
+                    Global.Data.warningChuaCoQTCN = true;
+                    var _parentId = parseInt(Global.Data.ParentID) - 1;
+                    GetTechProcess(findObj.Node, _parentId);
+                    break;
+            }
+        });
+
+        $('#jqxTree').on('expand', function (event) {
+            var selectItem = $('#jqxTree').jqxTree('getItem', event.args.element);
+            if (selectItem.level == 1) {
+                Global.Data.yearStr = selectItem.label;
+            }
+            var $element = $(event.args.element);
+            var loader = false;
+            var loaderItem = null;
+            var children = $element.find('ul:first').children();
+            $.each(children, function () {
+                var item = $('#jqxTree').jqxTree('getItem', this);
+                if (item && item.label == 'Loading...') {
+                    loaderItem = item;
+                    loader = true;
+                    return false
+                };
+            });
+            if (loader) {
+                if (selectItem.id != '0') { 
+                        var type = 0;
+                        switch (selectItem.value) {
+                            case 2:
+                            case 5:
+                            case 6: type = 3; break;
+                            case 1:
+                            case 3:
+                            case 4:
+                            case 7: type = 2; break;
+                            case 11: type = 13; break;
+                            case 13: type = 1; break;
+                        }
+                        GetCommoAnaItems(selectItem.id, selectItem.label, type, loaderItem); 
+                }
+            }
+            var flag = false;
+            $.each(Global.Data.TreeExpand, function (i, item) {
+                if (parseInt(item) == selectItem.id) {
+                    flag = true;
+                    return false;
+                }
+            })
+            if (!flag)
+                Global.Data.TreeExpand.push(selectItem.id == -10001 ? "-10000" : selectItem.id);
+            if (Global.Data.position != 0)
+                Global.Data.height = Global.Data.position;
+            Global.Data.isChange = true;
+        });
+
+        $('#jqxTree').on('collapse', function (event) {
+            var selectItem = $('#jqxTree').jqxTree('getItem', event.args.element);
+            if (Global.Data.TreeExpand != null && Global.Data.TreeExpand.length > 0) {
+                $.each(Global.Data.TreeExpand, function (i, item) {
+                    if (item == selectItem.id) {
+                        var sl = 1;
+                        var flag = false;
+                        if (parseInt(item) >= -999 && item < 0) {
+                            for (var y = 1; y <= 3; y++) {
+                                if (parseInt(Global.Data.TreeExpand[i + y]) > 0 && !flag) {
+                                    sl++;
+                                }
+                                else
+                                    flag = true;
+                            }
+                        }
+                        Global.Data.TreeExpand.splice(i, sl);
+                        Global.Data.TreeExpand.sort(function (item1, item2) {
+                            if (parseInt(item1) > parseInt(item2)) {
+                                return item1 - item2;
+                            }
+                        });
+                        return false;
+                    }
+                });
+            }
+            $('#left').scrollTop(Global.Data.height >= Global.Data.position ? Global.Data.height + 50 : Global.Data.position);
+        });
+
+        $('#left').scroll(function () {
+            var position = $('#left').scrollTop();
+            if (position != 0)
+                Global.Data.position = position;
+            if (Global.Data.isChange)
+                Global.Data.position += 50;
+            $('#left').scrollTop(Global.Data.position);
+            Global.Data.isChange = false;
+        });
+
+
         $('#phase-name').change(() => {
             $('#lbTenCongDoan').html($('#phase-name').val());
         });
@@ -309,6 +525,7 @@ GPRO.ProAna = function () {
         $('#productType').change(function () {
             GetProductsAndSetValueByProductTypeId($(this).val(), 0);
         });
+
         $('[save-commo]').click(function () {
             if ($('#caproduct option:selected').val() == '0') {
                 GlobalCommon.ShowMessageDialog('Bạn chưa chọn Mã hàng.', function () { }, "Lỗi nhập liệu");
@@ -331,89 +548,7 @@ GPRO.ProAna = function () {
             $('#product').prop('disabled', false);
             $('#commodity-name').prop('disabled', false);
         });
-        $('#jqxTree').on('expand', function (event) {
-            var selectItem = $('#jqxTree').jqxTree('getItem', event.args.element);
-            if (selectItem.level == 1)
-                Global.Data.yearStr = selectItem.label;
-            var $element = $(event.args.element);
-            var loader = false;
-            var loaderItem = null;
-            var children = $element.find('ul:first').children();
-            $.each(children, function () {
-                var item = $('#jqxTree').jqxTree('getItem', this);
-                if (item && item.label == 'Loading...') {
-                    loaderItem = item;
-                    loader = true;
-                    return false
-                };
-            });
-            if (loader) {
-                if (selectItem.id != '0') {
-                    var type = 0;
-                    switch (selectItem.value) {
-                        case 2:
-                        case 5:
-                        case 6: type = 3; break;
-                        case 1:
-                        case 3:
-                        case 4:
-                        case 7: type = 2; break;
-                        case 11: type = 13; break;
-                        case 13: type = 1; break;
-                    }
-                    GetCommoAnaItems(selectItem.id, selectItem.label, type, loaderItem);
-                }
-            }
-            var flag = false;
-            $.each(Global.Data.TreeExpand, function (i, item) {
-                if (parseInt(item) == selectItem.id) {
-                    flag = true;
-                    return false;
-                }
-            })
-            if (!flag)
-                Global.Data.TreeExpand.push(selectItem.id == -10001 ? "-10000" : selectItem.id);
-            if (Global.Data.position != 0)
-                Global.Data.height = Global.Data.position;
-            Global.Data.isChange = true;
-        });
-        $('#jqxTree').on('collapse', function (event) {
-            var selectItem = $('#jqxTree').jqxTree('getItem', event.args.element);
-            if (Global.Data.TreeExpand != null && Global.Data.TreeExpand.length > 0) {
-                $.each(Global.Data.TreeExpand, function (i, item) {
-                    if (item == selectItem.id) {
-                        var sl = 1;
-                        var flag = false;
-                        if (parseInt(item) >= -999 && item < 0) {
-                            for (var y = 1; y <= 3; y++) {
-                                if (parseInt(Global.Data.TreeExpand[i + y]) > 0 && !flag) {
-                                    sl++;
-                                }
-                                else
-                                    flag = true;
-                            }
-                        }
-                        Global.Data.TreeExpand.splice(i, sl);
-                        Global.Data.TreeExpand.sort(function (item1, item2) {
-                            if (parseInt(item1) > parseInt(item2)) {
-                                return item1 - item2;
-                            }
-                        });
-                        return false;
-                    }
-                });
-            }
-            $('#left').scrollTop(Global.Data.height >= Global.Data.position ? Global.Data.height + 50 : Global.Data.position);
-        });
-        $('#left').scroll(function () {
-            var position = $('#left').scrollTop();
-            if (position != 0)
-                Global.Data.position = position;
-            if (Global.Data.isChange)
-                Global.Data.position += 50;
-            $('#left').scrollTop(Global.Data.position);
-            Global.Data.isChange = false;
-        });
+      
         /*******************            STEP 2 CREATE WORKSHOP          ****************************************/
         $('[re_wk-name]').click(function () {
             GetWorkshopSelect('wk-name');
@@ -1572,6 +1707,7 @@ GPRO.ProAna = function () {
     function ReloadListTimePrepare() {
         $('#' + Global.Element.jtable_timeprepare_arr).jtable('load');
     }
+
     function DeleteTimePrepare(id) {
         flag = false;
         if (typeof (Global.Data.TimePrepareArray) != 'undefined' && Global.Data.TimePrepareArray != null && Global.Data.TimePrepareArray.length > 0) {
@@ -1769,7 +1905,7 @@ GPRO.ProAna = function () {
                             $('#TotalTMU').html(data.record.TotalTMU);
                             $('#phase-Des').val(data.record.Description);
                             $('#phaseID').val(data.record.Id);
-                            $('#phase-name').val(data.record.Name).change(); 
+                            $('#phase-name').val(data.record.Name).change();
                             $('#phase-code').html(data.record.Code);
                             $('#phase-index').val(data.record.Index);
 
@@ -1899,7 +2035,7 @@ GPRO.ProAna = function () {
                             $('#' + Global.Element.CreatePhasePopup).modal('hide');
                             Global.Data.isInsertPhase = true;
                         }
-                        $('#phase-name').val('').change(); 
+                        $('#phase-name').val('').change();
                         $('#lbTenCongDoan').html('');
                         $('#phase-index').val('');
                         $('#TotalTMU').html('0');
@@ -1973,6 +2109,7 @@ GPRO.ProAna = function () {
             }
         });
     }
+
     function Check_Phase_Validate() {
         if ($('#phase-name').val().trim() == "") {
             GlobalCommon.ShowMessageDialog("Vui Nhập Tên Công Đoạn .", function () { }, "Lỗi Nhập liệu");
@@ -1984,6 +2121,7 @@ GPRO.ProAna = function () {
         }
         return true;
     }
+
     function GetLastPhaseIndex() {
         $.ajax({
             url: Global.UrlAction.GetLastIndex,
@@ -2300,16 +2438,18 @@ GPRO.ProAna = function () {
             }
         });
     }
+
     function ReloadListMani_Arr() {
         var _totalmay = 0;
         if (Global.Data.PhaseManiVerDetailArray.length > 0) {
             $.each(Global.Data.PhaseManiVerDetailArray, function (i, item) {
-
-                var _code = item.ManipulationCode.trim();
-                if (_code.indexOf('SE') >= 0) {
-                    var cd = parseInt(_code.substring(2, _code.length - 1));
-                    if (!isNaN(cd)) {
-                        _totalmay += (cd * item.Loop);
+                if (item.ManipulationCode) {
+                    var _code = item.ManipulationCode.trim();
+                    if (_code.indexOf('SE') >= 0) {
+                        var cd = parseInt(_code.substring(2, _code.length - 1));
+                        if (!isNaN(cd)) {
+                            _totalmay += (cd * item.Loop);
+                        }
                     }
                 }
             });
@@ -2525,25 +2665,21 @@ GPRO.ProAna = function () {
                                             arr.push(item.OrderIndex);
                                     });
                                     if (arr.length > 0) {
-                                        GlobalCommon.ShowConfirmDialog('Khi Bạn thay đổi Thiết Bị, chỉ số TMU các Mã May và Mã Cắt \nđã phân tích trước đó sẽ không còn đúng nên sẽ bị xóa \nvà Bạn sẽ Tạo lại các Mã đó.\nBạn có muốn thay đổi Thiết Bị không ?',
+                                        GlobalCommon.ShowConfirmDialog('Khi Bạn thay đổi Thiết Bị, chỉ số TMU các Mã May và Mã Cắt \nđã phân tích trước đó sẽ được tính lại.\nBạn có muốn thay đổi Thiết Bị không ?',
                                             function () {
                                                 $('#equipmentId').val(data.record.Id);
                                                 $('#equipmentName').val(data.record.Name);
                                                 $('#equiptypedefaultId').val(data.record.EquipTypeDefaultId);
                                                 $('#E_info').val(data.record.Description);
                                                 $('[percentequipment]').val(data.record.Expend);
-                                                if (data.record.EquipTypeDefaultId == Global.Data.EquipTypeDefaultId.C)
+                                                if (data.record.EquipTypeDefaultId == Global.Data.EquipTypeDefaultId.C) {
                                                     $('#chooseApplyPressure').show();
-                                                else
+                                                }
+                                                else {
                                                     $('#chooseApplyPressure').hide();
-                                                $.each(arr, function (i, item) {
-                                                    for (var j = (item - 1); j < Global.Data.PhaseManiVerDetailArray.length; j++) {
-                                                        Global.Data.PhaseManiVerDetailArray[j].OrderIndex = Global.Data.PhaseManiVerDetailArray[j].OrderIndex - 1;
-                                                    }
-                                                });
+                                                } 
 
-                                                split_Arr();
-                                                ReloadListMani_Arr();
+                                                TinhLaiCodeMayCat();
                                                 $('#' + Global.Element.PopupChooseEquipment).modal('hide');
                                                 $('#' + Global.Element.CreatePhasePopup).show();
                                             },
@@ -2570,7 +2706,6 @@ GPRO.ProAna = function () {
                                     }
                                 }
                             }
-
                         });
                         return text;
                     }
@@ -2610,6 +2745,7 @@ GPRO.ProAna = function () {
             }
         });
     }
+
     function GetManipulationEquipmentInfoByCode(code, callback) {
         var isGetTMU = false;
         var codeType = "";
@@ -2676,6 +2812,32 @@ GPRO.ProAna = function () {
             });
         }
     }
+
+    function TinhLaiCodeMayCat() {
+        var equipmentId = $('#equipmentId').val();
+        var equiptypedefaultId = $('#equiptypedefaultId').val();
+        var applyPressure = $('#ApplyPressure option:selected').attr('val');
+        var actions = Global.Data.PhaseManiVerDetailArray;
+        actions = actions.splice(0, actions.length - 1);
+
+        $.ajax({
+            url: Global.UrlAction.TinhLaiCode,
+            type: 'POST',
+            data: JSON.stringify({ 'actions': actions, 'equipmentId': equipmentId, 'equiptypedefaultId': equiptypedefaultId, 'applyPressure': applyPressure }),
+            contentType: 'application/json charset=utf-8',
+            beforeSend: function () { $('#loading').show(); },
+            success: function (data) {
+                $('#loading').hide();
+                Global.Data.PhaseManiVerDetailArray.length = 0; 
+                $.each(data.Records, function (i, item) {
+                    Global.Data.PhaseManiVerDetailArray.push(item);
+                });
+                AddEmptyObject();
+                //split_Arr();
+                ReloadListMani_Arr();
+            }
+        });
+    }
     //#endregion
 
     //#region gợi y cong đoạn
@@ -2724,7 +2886,7 @@ GPRO.ProAna = function () {
                         $('#TotalTMU').html(data.Records.TotalTMU);
                         $('#phase-Des').val(data.Records.Description);
                         // $('#phaseID').val(data.Records.Id);
-                        $('#phase-name').val(data.Records.Name).change(); 
+                        $('#phase-name').val(data.Records.Name).change();
                         $('#phase-index').html(data.Records.Index);
 
                         Global.Data.TimePrepareArray.length = 0;

@@ -199,6 +199,7 @@
     <Compile Include="Controllers\LineController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\MTypeController.cs" />
+    <Compile Include="Controllers\PhanTichController.cs" />
     <Compile Include="Controllers\PhaseLibsController.cs" />
     <Compile Include="Controllers\ProAnaController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
@@ -1330,6 +1331,7 @@
     <Content Include="Scripts\IED\Line\Line.js" />
     <Content Include="Scripts\IED\Menu\M_Index.js" />
     <Content Include="Scripts\IED\MType\MT_Index.js" />
+    <Content Include="Scripts\IED\PhanTich\phan-tich.js" />
     <Content Include="Scripts\IED\PhaseGroup\PG_Index.js" />
     <Content Include="Scripts\IED\PhaseLibs\phase-libs.js" />
     <Content Include="Scripts\IED\ProAna\PA_Index.js" />
@@ -1405,6 +1407,7 @@
     <Content Include="Views\Shared\_MaterializeLayout.cshtml" />
     <Content Include="Views\PhaseLibs\Index.cshtml" />
     <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\PhanTich\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
