@@ -812,8 +812,12 @@ GPRO.ProAna = function () {
         });
 
         $('[techexport]').click(function () {
+            //fileType
+            //1. Quy Trình Công Nghệ mẫu 1 thông tin phía trên
+            //2. Quy Trình Công Nghệ mẫu 1 thông tin phía dưới
+            //3. Mẫu may tex-giang
             if (Global.Data.AfterSave) {
-                window.location.href = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 3;
+                window.location.href = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 2;
                 Global.Data.AfterSave = false;
             }
             else {
