@@ -16,9 +16,9 @@ namespace GPRO_IED_A.Data
     {
         public T_Equipment()
         {
+            this.T_CA_Phase = new HashSet<T_CA_Phase>();
             this.T_EquipmentAttribute = new HashSet<T_EquipmentAttribute>();
             this.T_ManipulationEquipment = new HashSet<T_ManipulationEquipment>();
-            this.T_CA_Phase = new HashSet<T_CA_Phase>();
         }
     
         public int Id { get; set; }
@@ -38,10 +38,10 @@ namespace GPRO_IED_A.Data
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public Nullable<int> ObjectType { get; set; }
     
+        public virtual ICollection<T_CA_Phase> T_CA_Phase { get; set; }
         public virtual T_EquipmentGroup T_EquipmentGroup { get; set; }
+        public virtual T_EquipmentType T_EquipmentType { get; set; }
         public virtual ICollection<T_EquipmentAttribute> T_EquipmentAttribute { get; set; }
         public virtual ICollection<T_ManipulationEquipment> T_ManipulationEquipment { get; set; }
-        public virtual T_EquipmentType T_EquipmentType { get; set; }
-        public virtual ICollection<T_CA_Phase> T_CA_Phase { get; set; }
     }
 }

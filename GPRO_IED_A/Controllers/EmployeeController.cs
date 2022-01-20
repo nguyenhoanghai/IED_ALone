@@ -100,12 +100,12 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetEmployWithSkill()
+        public JsonResult GetEmployWithSkill(int lineId)
         {
             try
             {
                 JsonDataResult.Result = "OK";
-                JsonDataResult.Data = BLLEmployee.Instance.GetEmployeeWithSkills(UserContext.CompanyId);
+                JsonDataResult.Data = BLLEmployee.Instance.GetEmployeeWithSkills(UserContext.CompanyId, lineId);
             }
             catch (Exception ex)
             {

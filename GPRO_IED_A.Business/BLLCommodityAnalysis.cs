@@ -177,6 +177,57 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     var result = new ResponseBase();
+                     
+                    if(noNameModel.ObjectType == (int)eObjectType.isPhaseGroup && noNameModel.ObjectId == 0)
+                    {
+                        //tao nhóm cong doan
+                        var newPhaseGroup = db.T_PhaseGroup.FirstOrDefault(x => x.Name == noNameModel.Name && !x.IsDeleted);
+                        if(newPhaseGroup!= null)
+                        {
+                            result.IsSuccess = false;
+                            result.Errors.Add(new Error() { MemberName = "Insert ", Message = "Tên Cụm Công Đoạn này đã tồn tại. Vui lòng chọn lại Tên khác !." });
+                        }
+                        else
+                        {
+                            //getparent
+                            int _parentId = Int32.Parse(noNameModel.Node.Split(',')[2]);
+                            var parentObj = db.T_CommodityAnalysis.FirstOrDefault(x => !x.IsDeleted && x.Id == _parentId);
+
+                            newPhaseGroup = new T_PhaseGroup();
+                            newPhaseGroup.Name = noNameModel.Name; 
+                            newPhaseGroup.MinLevel = 1;
+                            newPhaseGroup.MaxLevel = 1; 
+                            newPhaseGroup.CreatedUser = noNameModel.CreatedUser;
+                            newPhaseGroup.CreatedDate = noNameModel.CreatedDate;
+                            newPhaseGroup.WorkshopIds = parentObj.ObjectId.ToString();
+                            db.T_PhaseGroup.Add(newPhaseGroup);
+                            db.SaveChanges();
+                            noNameModel.ObjectId = newPhaseGroup.Id;
+                        }
+                    }
+
+                    if (noNameModel.ObjectType == (int)eObjectType.isWorkShop && noNameModel.ObjectId == 0)
+                    {
+                        //tao phan xuong
+                        var newWorkShop = db.T_WorkShop.FirstOrDefault(x => x.Name == noNameModel.Name && !x.IsDeleted);
+                        if (newWorkShop != null)
+                        {
+                            result.IsSuccess = false;
+                            result.Errors.Add(new Error() { MemberName = "Insert ", Message = "Tên phân xưởng này đã tồn tại. Vui lòng chọn lại Tên khác !." });
+                        }
+                        else
+                        { 
+                            newWorkShop = new T_WorkShop();
+                            newWorkShop.Name = noNameModel.Name; 
+                            newWorkShop.CreatedUser = noNameModel.CreatedUser;
+                            newWorkShop.CreatedDate = noNameModel.CreatedDate;  
+                            newWorkShop.CompanyId = noNameModel.CompanyId;
+                            db.T_WorkShop.Add(newWorkShop);
+                            db.SaveChanges();
+                            noNameModel.ObjectId = newWorkShop.Id;
+                        }
+                    }
+
                     T_CommodityAnalysis noName = null;
                     if (CheckObjectExists(noNameModel.ObjectId, noNameModel.ObjectType, noNameModel.ParentId))
                     {
@@ -409,18 +460,18 @@ namespace GPRO_IED_A.Business
             }
         }
         //Ktra lai
-        public ResponseBase Copy_CommoAnaPhaseGroup(int CopyObjectId, int ObjectId, int actionUserId)
+        public ResponseBase Copy_CommoAnaPhaseGroup(int toId, int fromId, int actionUserId)
         {
             try
             {
                 using (db = new IEDEntities())
                 {
                     var result = new ResponseBase();
-                    var commoAna = db.T_CommodityAnalysis.FirstOrDefault(x => !x.IsDeleted && x.Id == ObjectId);
+                    var commoAna = db.T_CommodityAnalysis.FirstOrDefault(x => !x.IsDeleted && x.Id == fromId);
                     if (commoAna != null)
                     {
                         //ktra object copy có còn tồn tại hay không
-                        var objCopy = db.T_CommodityAnalysis.FirstOrDefault(x => !x.IsDeleted && x.Id == CopyObjectId);
+                        var objCopy = db.T_CommodityAnalysis.FirstOrDefault(x => !x.IsDeleted && x.Id == toId);
                         if (objCopy != null)
                         {
 
@@ -552,7 +603,7 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     var productIds = db.T_Product.Where(x => !x.IsDeleted && !x.T_Customer.IsDeleted && x.CustomerId == customerId).Select(x => x.Id).ToList();
-                    
+
                     var commoAnaModel = new CommodityAnalysisModel();
                     var commoAnalysis = (from x in db.T_CommodityAnalysis
                                          where
@@ -583,5 +634,359 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
+
+        public CommodityAnalysisModel GetProductByProductGroupId(int proGroupId)
+        {
+            try
+            {
+                using (db = new IEDEntities())
+                {
+                    var productIds = db.T_Product.Where(x => !x.IsDeleted && !x.T_ProductGroup.IsDeleted && x.ProductGroupId == proGroupId).Select(x => x.Id).ToList();
+
+                    var commoAnaModel = new CommodityAnalysisModel();
+                    var commoAnalysis = (from x in db.T_CommodityAnalysis
+                                         where
+                                         !x.IsDeleted &&
+                                         x.ObjectType == (int)eObjectType.isCommodity &&
+                                         productIds.Contains(x.ObjectId)
+                                         select new ProAnaModel()
+                                         {
+                                             Id = x.Id,
+                                             Name = x.Name,
+                                             Node = x.Node,
+                                             ObjectId = x.ObjectId,
+                                             ObjectType = x.ObjectType,
+                                             ParentId = x.ParentId,
+                                             Description = x.Description,
+                                             CreatedDate = x.CreatedDate
+                                         });
+                    if (commoAnalysis != null)
+                    {
+                        commoAnaModel.CommoAna.AddRange(commoAnalysis);
+                        commoAnaModel.years.AddRange(commoAnalysis.Select(x => x.CreatedDate.Month).Distinct());
+                    }
+                    return commoAnaModel;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public ResponseBase Copy_CommoAna(int fromId, int toId, int actionUserId)
+        {
+            try
+            {
+                using (db = new IEDEntities())
+                {
+                    var result = new ResponseBase();
+                    var commoAna = db.T_CommodityAnalysis.FirstOrDefault(x => !x.IsDeleted && x.Id == fromId);
+                    if (commoAna != null)
+                    {
+                        //ktra object copy có còn tồn tại hay không
+                        var objCopy = db.T_CommodityAnalysis.FirstOrDefault(x => !x.IsDeleted && x.Id == toId);
+                        if (objCopy != null)
+                        {
+                            using (TransactionScope scope = new TransactionScope())
+                            {
+                                string phanxuongNode = "0," + fromId + ",";
+                                var phanxuongs = db.T_CommodityAnalysis
+                                    .Where(x => !x.IsDeleted && x.Node == phanxuongNode)
+                                    .Select(x => new { Id = x.Id, Name = x.Name, Node = x.Node, ObjectId = x.ObjectId, ObjectType = x.ObjectType, ParentId = x.ParentId, Description = x.Description, CompanyId = x.CompanyId })
+                                    .ToList();
+                                if (phanxuongs.Count > 0)
+                                {
+                                    T_CommodityAnalysis _phanxuong, _qtcn, _tkc, _tp;
+                                    string _node = ("0," + toId + ","),
+                                         sourceNode = ("0," + fromId + ",");
+                                    for (int i = 0; i < phanxuongs.Count; i++)
+                                    {
+                                        _node = ("0," + toId + ",");
+                                        //phan xuong
+                                        _phanxuong = new T_CommodityAnalysis();
+                                        _phanxuong.Name = phanxuongs[i].Name;
+                                        _phanxuong.ObjectType = phanxuongs[i].ObjectType;
+                                        _phanxuong.ObjectId = phanxuongs[i].ObjectId;
+                                        _phanxuong.ParentId = toId;
+                                        _phanxuong.Node = _node;
+                                        _phanxuong.Description = phanxuongs[i].Description;
+                                        _phanxuong.CreatedUser = actionUserId;
+                                        _phanxuong.CreatedDate = DateTime.Now;
+                                        db.T_CommodityAnalysis.Add(_phanxuong);
+                                        db.SaveChanges();
+
+                                        _node = (_phanxuong.Node + "" + _phanxuong.Id + ",");
+                                        //quy trinh cong nghe
+                                        _qtcn = new T_CommodityAnalysis();
+                                        _qtcn.Name = "Quy trình công nghệ";
+                                        _qtcn.ObjectType = (int)eObjectType.isGroupVersion;
+                                        _qtcn.ObjectId = 0;
+                                        _qtcn.ParentId = _phanxuong.Id;
+                                        _qtcn.Node = _node;
+                                        _qtcn.CreatedUser = actionUserId;
+                                        _qtcn.CreatedDate = DateTime.Now;
+                                        db.T_CommodityAnalysis.Add(_qtcn);
+
+                                        //tkc
+                                        _tkc = new T_CommodityAnalysis();
+                                        _tkc.Name = "Thiết kế chuyền";
+                                        _tkc.ObjectType = (int)eObjectType.isLabourDivision;
+                                        _tkc.ObjectId = 0;
+                                        _tkc.ParentId = _phanxuong.Id;
+                                        _tkc.Node = _node;
+                                        _tkc.CreatedUser = actionUserId;
+                                        _tkc.CreatedDate = DateTime.Now;
+                                        db.T_CommodityAnalysis.Add(_tkc);
+
+                                        //thanh pham
+                                        _tp = new T_CommodityAnalysis();
+                                        _tp.Name = "Thành Phần";
+                                        _tp.ObjectType = (int)eObjectType.isComponent;
+                                        _tp.ObjectId = 0;
+                                        _tp.ParentId = _phanxuong.Id;
+                                        _tp.Node = _node;
+                                        _tp.CreatedUser = actionUserId;
+                                        _tp.CreatedDate = DateTime.Now;
+                                        db.T_CommodityAnalysis.Add(_tp);
+                                        db.SaveChanges();
+
+                                        //lay ds nhom cong doan
+                                        _node = phanxuongs[i].Node + "" + phanxuongs[i].Id + ",";
+                                        var phaseGroups = db.T_CommodityAnalysis
+                                                            .Where(x => !x.IsDeleted && x.Node.Contains(_node) && x.ObjectType == (int)eObjectType.isPhaseGroup)
+                                                            .Select(x => new { Id = x.Id, Name = x.Name, Node = x.Node, ObjectId = x.ObjectId, ObjectType = x.ObjectType, ParentId = x.ParentId, Description = x.Description, CompanyId = x.CompanyId })
+                                                            .ToList();
+                                        if (phaseGroups.Count > 0)
+                                        {
+                                            _node = (_tp.Node + "" + _tp.Id + ",");
+                                            for (int ii = 0; ii < phaseGroups.Count; ii++)
+                                            {
+                                                //step 1  -  copy phase group
+                                                var new_commoAna = new T_CommodityAnalysis();
+                                                new_commoAna.Name = phaseGroups[ii].Name;
+                                                new_commoAna.ObjectType = phaseGroups[ii].ObjectType;
+                                                new_commoAna.ObjectId = phaseGroups[ii].ObjectId;
+                                                new_commoAna.ParentId = _tp.Id;
+                                                new_commoAna.Node = _node;
+                                                new_commoAna.Description = phaseGroups[ii].Description;
+                                                new_commoAna.CreatedUser = actionUserId;
+                                                new_commoAna.CreatedDate = DateTime.Now;
+                                                db.T_CommodityAnalysis.Add(new_commoAna);
+                                                db.SaveChanges();
+                                                var parentid = new_commoAna.Id;
+                                                //step 2  - copy phase
+                                                int _id = phaseGroups[ii].Id;
+                                                var commo_ana_phases = db.T_CA_Phase.Where(x => !x.IsDeleted && x.ParentId == _id).OrderBy(x => x.CreatedDate);
+                                                if (commo_ana_phases != null && commo_ana_phases.Count() > 0)
+                                                {
+                                                    foreach (var item in commo_ana_phases)
+                                                    {
+                                                        var new_commoAnaPhase = new T_CA_Phase();
+                                                        new_commoAnaPhase.Index = item.Index;
+                                                        new_commoAnaPhase.Name = item.Name;
+                                                        new_commoAnaPhase.Code = item.Code;
+                                                        new_commoAnaPhase.PhaseGroupId = item.PhaseGroupId;
+                                                        new_commoAnaPhase.Description = item.Description;
+                                                        new_commoAnaPhase.EquipmentId = item.EquipmentId;
+                                                        new_commoAnaPhase.PhaseGroupId = item.PhaseGroupId;
+                                                        new_commoAnaPhase.WorkerLevelId = item.WorkerLevelId;
+                                                        new_commoAnaPhase.ParentId = new_commoAna.Id;
+                                                        new_commoAnaPhase.TotalTMU = item.TotalTMU;
+                                                        new_commoAnaPhase.ApplyPressuresId = item.ApplyPressuresId;
+                                                        new_commoAnaPhase.PercentWasteEquipment = item.PercentWasteEquipment;
+                                                        new_commoAnaPhase.PercentWasteManipulation = item.PercentWasteManipulation;
+                                                        new_commoAnaPhase.PercentWasteMaterial = item.PercentWasteMaterial;
+                                                        new_commoAnaPhase.PercentWasteSpecial = item.PercentWasteSpecial;
+                                                        new_commoAnaPhase.Node = item.Node;
+                                                        new_commoAnaPhase.Video = item.Video;
+                                                        new_commoAnaPhase.CreatedUser = actionUserId;
+                                                        new_commoAnaPhase.CreatedDate = new_commoAna.CreatedDate;
+                                                        // step 3 - copy active timeprepare                                            
+                                                        var listTimePrepareExist = db.T_CA_Phase_TimePrepare.Where(c => c.Commo_Ana_PhaseId == item.Id && !c.IsDeleted).ToList();
+                                                        if (listTimePrepareExist.Count > 0)
+                                                        {
+                                                            var listTimePrepareNew = new Collection<T_CA_Phase_TimePrepare>();
+                                                            foreach (var timePrepare in listTimePrepareExist)
+                                                            {
+                                                                listTimePrepareNew.Add(new T_CA_Phase_TimePrepare()
+                                                                {
+                                                                    Commo_Ana_PhaseId = item.Id,
+                                                                    TimePrepareId = timePrepare.TimePrepareId,
+                                                                    CreatedUser = actionUserId,
+                                                                    CreatedDate = new_commoAnaPhase.CreatedDate
+                                                                });
+                                                            }
+                                                            new_commoAnaPhase.T_CA_Phase_TimePrepare = listTimePrepareNew;
+                                                        }
+                                                        //check        
+                                                        // step 4  - copy active manipulation version
+                                                        var phaseAcc = db.T_CA_Phase_Mani.Where(x => !x.IsDeleted && x.CA_PhaseId == item.Id).ToList();
+                                                        if (phaseAcc != null && phaseAcc.Count() > 0)
+                                                        {
+                                                            new_commoAnaPhase.T_CA_Phase_Mani = new Collection<T_CA_Phase_Mani>();
+                                                            foreach (var acc in phaseAcc)
+                                                            {
+                                                                var maniC = new T_CA_Phase_Mani();
+                                                                maniC.OrderIndex = acc.OrderIndex;
+                                                                maniC.ManipulationId = acc.ManipulationId;
+                                                                maniC.ManipulationCode = acc.ManipulationCode;
+                                                                maniC.ManipulationName = acc.ManipulationName;
+                                                                maniC.TMUEquipment = acc.TMUEquipment;
+                                                                maniC.TMUManipulation = acc.TMUManipulation;
+                                                                maniC.Loop = acc.Loop;
+                                                                maniC.TotalTMU = acc.TotalTMU;
+                                                                maniC.CreatedUser = actionUserId;
+                                                                maniC.CreatedDate = new_commoAnaPhase.CreatedDate;
+                                                                maniC.T_CA_Phase = new_commoAnaPhase;
+                                                                new_commoAnaPhase.T_CA_Phase_Mani.Add(maniC);
+                                                            }
+                                                        }
+
+                                                        new_commoAnaPhase.T_CommodityAnalysis = new_commoAna;
+                                                        // new_commoAnaPhase.ParentId = parentid;
+                                                        new_commoAnaPhase.Node = new_commoAna.Node + new_commoAnaPhase.T_CommodityAnalysis.Id + ",";
+                                                        new_commoAnaPhase.CreatedUser = actionUserId;
+                                                        new_commoAnaPhase.CreatedDate = new_commoAna.CreatedDate;
+                                                        db.T_CA_Phase.Add(new_commoAnaPhase);
+                                                        db.SaveChanges();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+
+
+                                scope.Complete();
+                                result.IsSuccess = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Errors.Add(new Error() { MemberName = "", Message = "Dữ liệu bạn đang thao tác đã bị xóa hoặc không tồn tại.\nVui lòng kiểm tra lại.!" });
+                    }
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public ResponseBase Copy_CommoAnaPhaseGroupContents(int fromId, int toId, int actionUserId)
+        {
+            try
+            {
+                using (db = new IEDEntities())
+                {
+                    var result = new ResponseBase();
+                    var commoAna = db.T_CommodityAnalysis.FirstOrDefault(x => !x.IsDeleted && x.Id == toId && x.ObjectType == (int)eObjectType.isPhaseGroup);
+                    if (commoAna != null)
+                    {
+                        //ktra nhóm cong doan có còn tồn tại hay không
+                        var objCopy = db.T_CommodityAnalysis.FirstOrDefault(x => !x.IsDeleted && x.Id == fromId && x.ObjectType == (int)eObjectType.isPhaseGroup);
+                        if (objCopy != null)
+                        { 
+                            using (TransactionScope scope = new TransactionScope())
+                            { 
+                                var commo_ana_phases = db.T_CA_Phase.Where(x => !x.IsDeleted && x.ParentId == fromId).OrderBy(x => x.CreatedDate);
+                                if (commo_ana_phases != null && commo_ana_phases.Count() > 0)
+                                {
+                                    var now = DateTime.Now;
+                                    foreach (var item in commo_ana_phases)
+                                    {
+                                        var new_commoAnaPhase = new T_CA_Phase();
+                                        new_commoAnaPhase.Index = item.Index;
+                                        new_commoAnaPhase.Name = item.Name;
+                                        new_commoAnaPhase.Code = item.Code;
+                                        new_commoAnaPhase.PhaseGroupId = item.PhaseGroupId;
+                                        new_commoAnaPhase.Description = item.Description;
+                                        new_commoAnaPhase.EquipmentId = item.EquipmentId;
+                                        new_commoAnaPhase.PhaseGroupId = item.PhaseGroupId;
+                                        new_commoAnaPhase.WorkerLevelId = item.WorkerLevelId;
+                                        new_commoAnaPhase.ParentId = toId;
+                                        new_commoAnaPhase.TotalTMU = item.TotalTMU;
+                                        new_commoAnaPhase.ApplyPressuresId = item.ApplyPressuresId;
+                                        new_commoAnaPhase.PercentWasteEquipment = item.PercentWasteEquipment;
+                                        new_commoAnaPhase.PercentWasteManipulation = item.PercentWasteManipulation;
+                                        new_commoAnaPhase.PercentWasteMaterial = item.PercentWasteMaterial;
+                                        new_commoAnaPhase.PercentWasteSpecial = item.PercentWasteSpecial;
+                                        new_commoAnaPhase.Node = item.Node;
+                                        new_commoAnaPhase.Video = item.Video;
+                                        new_commoAnaPhase.CreatedUser = actionUserId;
+                                        new_commoAnaPhase.CreatedDate = now;
+                                        // step 3 - copy active timeprepare                                            
+                                        var listTimePrepareExist = db.T_CA_Phase_TimePrepare.Where(c => c.Commo_Ana_PhaseId == item.Id && !c.IsDeleted).ToList();
+                                        if (listTimePrepareExist.Count > 0)
+                                        {
+                                            var listTimePrepareNew = new Collection<T_CA_Phase_TimePrepare>();
+                                            foreach (var timePrepare in listTimePrepareExist)
+                                            {
+                                                listTimePrepareNew.Add(new T_CA_Phase_TimePrepare()
+                                                {
+                                                    Commo_Ana_PhaseId = item.Id,
+                                                    TimePrepareId = timePrepare.TimePrepareId,
+                                                    CreatedUser = actionUserId,
+                                                    CreatedDate = new_commoAnaPhase.CreatedDate
+                                                });
+                                            }
+                                            new_commoAnaPhase.T_CA_Phase_TimePrepare = listTimePrepareNew;
+                                        }
+                                        //check         // step 4  - copy active manipulation version
+                                        var phaseAcc = db.T_CA_Phase_Mani.Where(x => !x.IsDeleted && x.CA_PhaseId == item.Id).ToList();
+                                        if (phaseAcc != null && phaseAcc.Count() > 0)
+                                        {
+                                            new_commoAnaPhase.T_CA_Phase_Mani = new Collection<T_CA_Phase_Mani>();
+                                            foreach (var acc in phaseAcc)
+                                            {
+                                                var maniC = new T_CA_Phase_Mani();
+                                                maniC.OrderIndex = acc.OrderIndex;
+                                                maniC.ManipulationId = acc.ManipulationId;
+                                                maniC.ManipulationCode = acc.ManipulationCode;
+                                                maniC.ManipulationName = acc.ManipulationName;
+                                                maniC.TMUEquipment = acc.TMUEquipment;
+                                                maniC.TMUManipulation = acc.TMUManipulation;
+                                                maniC.Loop = acc.Loop;
+                                                maniC.TotalTMU = acc.TotalTMU;
+                                                maniC.CreatedUser = actionUserId;
+                                                maniC.CreatedDate = new_commoAnaPhase.CreatedDate;
+                                                maniC.T_CA_Phase = new_commoAnaPhase;
+                                                new_commoAnaPhase.T_CA_Phase_Mani.Add(maniC);
+                                            }
+                                        }
+                                          
+                                        new_commoAnaPhase.Node = commoAna.Node + commoAna.Id + ",";
+                                        new_commoAnaPhase.CreatedUser = actionUserId;
+                                        new_commoAnaPhase.CreatedDate = now;
+                                        db.T_CA_Phase.Add(new_commoAnaPhase);
+                                        db.SaveChanges();
+                                    }
+                                }
+                                scope.Complete();
+                                result.IsSuccess = true;
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Errors.Add(new Error() { MemberName = "", Message = "Dữ liệu bạn đang thao tác đã bị xóa hoặc không tồn tại.\nVui lòng kiểm tra lại.!" });
+                    }
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 }

@@ -4,11 +4,8 @@ using GPRO_IED_A.Business.Model;
 using GPRO_IED_A.Data;
 using PagedList;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GPRO_IED_A.Business
 {
@@ -201,7 +198,7 @@ namespace GPRO_IED_A.Business
                             db.SaveChanges();
                             rs.IsSuccess = true;
                         }
-                    } 
+                    }
                     return rs;
                 }
             }
@@ -227,7 +224,7 @@ namespace GPRO_IED_A.Business
                     var obj = Get(Id);
                     if (obj != null)
                     {
-                        obj.IsDeleted = true; 
+                        obj.IsDeleted = true;
                         db.SaveChanges();
                         rs.IsSuccess = true;
                     }
@@ -245,18 +242,18 @@ namespace GPRO_IED_A.Business
             return rs;
         }
 
-        public LabourDivisionModel GetById(int labourId )
+        public LabourDivisionModel GetById(int labourId)
         {
             var objReturn = new LabourDivisionModel();
             try
             {
                 using (db = new IEDEntities())
-                { 
+                {
                     var obj = Get(labourId);
                     if (obj != null)
                     {
                         Parse.CopyObject(obj, ref objReturn);
-
+                        objReturn.IsTechVersionChange = false;
                         #region positions
                         var linPos = db.T_LinePosition.Where(x => !x.IsDeleted && x.LabourDivisionId == labourId).Select(x => new LinePositionModel()
                         {
@@ -265,7 +262,7 @@ namespace GPRO_IED_A.Business
                             OrderIndex = x.OrderIndex,
                             EmployeeId = x.EmployeeId,
                             EmployeeLastName = x.HR_Employee.LastName,
-                            EmployeeName = (x.HR_Employee.FirstName + " " + x.HR_Employee.LastName),
+                            EmployeeName = (x.HR_Employee.FirstName + " " + x.HR_Employee.LastName+" ("+x.HR_Employee.Code+")"),
                             LineId = x.T_LabourDivision.LineId,
                             IsHasBTP = x.IsHasBTP,
                             IsHasExitLine = x.IsHasExitLine
@@ -275,51 +272,61 @@ namespace GPRO_IED_A.Business
                         {
                             foreach (var item in linPos)
                             {
-                                item.Details = db.T_LinePositionDetail.Where(x => !x.IsDeleted && item.Id == x.Line_PositionId).Select(x => new LinePositionDetailModel()
-                                {
-                                    Id = x.Id,
-                                    Line_PositionId = x.Line_PositionId,
-                                    TechProVerDe_Id = x.TechProVerDe_Id,
-                                    OrderIndex = x.OrderIndex,
-                                    Note = x.Note == null ? "" : x.Note,
-                                    IsPass = x.IsPass,
-                                    PhaseCode = x.T_TechProcessVersionDetail.T_CA_Phase.Code,
-                                    PhaseName = x.T_TechProcessVersionDetail.T_CA_Phase.Name,
-                                    PhaseGroupId = x.T_TechProcessVersionDetail.T_CA_Phase.T_PhaseGroup.Id,
-                                    EquipmentId = x.T_TechProcessVersionDetail.T_CA_Phase.EquipmentId ?? 0,
-                                    EquipmentCode = x.T_TechProcessVersionDetail.T_CA_Phase.EquipmentId != null ? x.T_TechProcessVersionDetail.T_CA_Phase.T_Equipment.T_EquipmentGroup.GroupCode : "",
-                                    EquipmentName = x.T_TechProcessVersionDetail.T_CA_Phase.EquipmentId != null ? x.T_TechProcessVersionDetail.T_CA_Phase.T_Equipment.T_EquipmentGroup.GroupName : "",
-                                    TotalTMU = x.T_TechProcessVersionDetail.TimeByPercent,
-                                    NumberOfLabor = ((x.T_TechProcessVersionDetail.Worker * x.DevisionPercent) / 100),
-                                    DevisionPercent = x.DevisionPercent,
-                                    DevisionPercent_Temp = x.DevisionPercent,
-                                    TotalLabor = x.T_TechProcessVersionDetail.Worker,
-                                    Index = x.T_TechProcessVersionDetail.T_CA_Phase.Index
-                                }).ToList();
+                                item.Details = db.T_LinePositionDetail
+                                    .Where(x => !x.IsDeleted && item.Id == x.Line_PositionId)
+                                    .Select(x => new LinePositionDetailModel()
+                                    {
+                                        Id = x.Id,
+                                        Line_PositionId = x.Line_PositionId,
+                                        TechProVerDe_Id = x.TechProVerDe_Id,
+                                        PhaseId = x.T_TechProcessVersionDetail.T_CA_Phase.Id,
+                                        OrderIndex = x.OrderIndex,
+                                        Note = x.Note == null ? "" : x.Note,
+                                        IsPass = x.IsPass,
+                                        PhaseCode = x.T_TechProcessVersionDetail.T_CA_Phase.Code,
+                                        PhaseName = x.T_TechProcessVersionDetail.T_CA_Phase.Name,
+                                        PhaseGroupId = x.T_TechProcessVersionDetail.T_CA_Phase.T_PhaseGroup.Id,
+                                        EquipmentId = x.T_TechProcessVersionDetail.T_CA_Phase.EquipmentId ?? 0,
+                                        EquipmentCode = x.T_TechProcessVersionDetail.T_CA_Phase.EquipmentId != null ? x.T_TechProcessVersionDetail.T_CA_Phase.T_Equipment.T_EquipmentGroup.GroupCode : "",
+                                        EquipmentName = x.T_TechProcessVersionDetail.T_CA_Phase.EquipmentId != null ? x.T_TechProcessVersionDetail.T_CA_Phase.T_Equipment.T_EquipmentGroup.GroupName : "",
+                                        TotalTMU = x.T_TechProcessVersionDetail.TimeByPercent,
+                                        NumberOfLabor = ((x.T_TechProcessVersionDetail.Worker * x.DevisionPercent) / 100),
+                                        DevisionPercent = x.DevisionPercent,
+                                        DevisionPercent_Temp = x.DevisionPercent,
+                                        TotalLabor = x.T_TechProcessVersionDetail.Worker,
+                                        Index = x.T_TechProcessVersionDetail.T_CA_Phase.Index
+                                    }).ToList();
                             }
                             objReturn.Positions.AddRange(linPos);
                         }
                         #endregion
 
                         #region thong tin TKC
-                        objReturn.TechProcess = db.T_TechProcessVersion.Where(x => !x.IsDeleted && x.Id == obj.TechProVer_Id).Select(x => new TechProcessVersionModel()
-                        {
-                            Id = x.Id,
-                            //   CommodityId = x.CommodityId,
-                            //   CommodityName = string.Empty, 
-                            TimeCompletePerCommo = x.TimeCompletePerCommo,
-                            NumberOfWorkers = x.NumberOfWorkers,
-                            WorkingTimePerDay = x.WorkingTimePerDay,
-                            PacedProduction = x.PacedProduction,
-                            ProOfGroupPerDay = x.ProOfGroupPerDay,
-                            ProOfGroupPerHour = x.ProOfGroupPerHour,
-                            ProOfPersonPerDay = x.ProOfPersonPerDay,
-                            Note = x.Note
-                        }).FirstOrDefault();
+
+                        objReturn.TechProcess = db.T_TechProcessVersion.Where(x => x.Id == obj.TechProVer_Id)
+                            .Select(x => new TechProcessVersionModel()
+                            {
+                                Id = x.Id,
+                                //   CommodityId = x.CommodityId,
+                                //   CommodityName = string.Empty, 
+                                TimeCompletePerCommo = x.TimeCompletePerCommo,
+                                NumberOfWorkers = x.NumberOfWorkers,
+                                WorkingTimePerDay = x.WorkingTimePerDay,
+                                PacedProduction = x.PacedProduction,
+                                ProOfGroupPerDay = x.ProOfGroupPerDay,
+                                ProOfGroupPerHour = x.ProOfGroupPerHour,
+                                ProOfPersonPerDay = x.ProOfPersonPerDay,
+                                Note = x.Note,
+                                ParentId = x.ParentId
+                            })
+                        .FirstOrDefault();
 
                         if (objReturn.TechProcess != null)
                         {
-                            var details = db.T_TechProcessVersionDetail.Where(x => !x.IsDeleted && x.TechProcessVersionId == obj.TechProVer_Id).Select(x => new TechProcessVerDetailModel()
+                            var currentTechVer = db.T_TechProcessVersion.FirstOrDefault(x => !x.IsDeleted && x.ParentId == objReturn.TechProcess.ParentId);
+                            if (currentTechVer.Id != objReturn.TechProVer_Id)
+                                objReturn.IsTechVersionChange = true;
+                            var details = db.T_TechProcessVersionDetail.Where(x => !x.IsDeleted && x.TechProcessVersionId == objReturn.TechProVer_Id).Select(x => new TechProcessVerDetailModel()
                             {
                                 Id = x.Id,
                                 TechProcessVersionId = x.TechProcessVersionId,
@@ -443,6 +450,116 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
             return null;
+        }
+
+        public LabourDivisionModel RefreshById(int labourId)
+        {
+            var objReturn = new LabourDivisionModel();
+            try
+            {
+                using (db = new IEDEntities())
+                {
+                    var obj = Get(labourId);
+                    if (obj != null)
+                    {
+                        var _qtcn = db.T_TechProcessVersion.FirstOrDefault(x => x.Id == obj.TechProVer_Id);
+                        var newQTCN = db.T_TechProcessVersion.FirstOrDefault(x => !x.IsDeleted && x.ParentId == _qtcn.ParentId);
+                        var newQTCN_Details = db.T_TechProcessVersionDetail
+                            .Where(x => !x.IsDeleted && x.TechProcessVersionId == newQTCN.Id)
+                            .Select(x => new TechProcessVerDetailModel()
+                            {
+                                Id = x.Id,
+                                TechProcessVersionId = x.TechProcessVersionId,
+                                PhaseGroupId = x.T_CA_Phase.T_PhaseGroup.Id,
+                                CA_PhaseId = x.CA_PhaseId,
+                                PhaseCode = x.T_CA_Phase.Code,
+                                PhaseName = x.T_CA_Phase.Name,
+                                StandardTMU = Math.Round(x.StandardTMU, 3),
+                                Percent = x.Percent,
+                                EquipmentId = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.EquipmentId ?? 0 : 0,
+                                EquipmentCode = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.T_Equipment.T_EquipmentGroup.GroupCode : string.Empty,
+                                EquipmentName = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.T_Equipment.T_EquipmentGroup.GroupName : string.Empty,
+                                EquipmentGroupCode = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.T_Equipment.T_EquipmentGroup.GroupCode : string.Empty,
+                                TimeByPercent = Math.Round(x.TimeByPercent, 3),
+                                Worker = x.Worker,
+                                De_Percent = 0,
+                                Description = x.Description == null ? "" : x.Description,
+                                Coefficient = x.T_CA_Phase.SWorkerLevel.Coefficient,
+                                WorkerLevelId = x.T_CA_Phase.WorkerLevelId,
+                                WorkerLevelName = x.T_CA_Phase.SWorkerLevel.Name,
+                                Index = x.T_CA_Phase.Index
+                            })
+                        .ToList();
+
+                        #region positions
+                        var linPos = db.T_LinePosition.Where(x => !x.IsDeleted && x.LabourDivisionId == labourId).Select(x => new LinePositionModel()
+                        {
+                            Id = x.Id,
+                            LabourDivisionId = x.LabourDivisionId,
+                            OrderIndex = x.OrderIndex,
+                            EmployeeId = x.EmployeeId,
+                            EmployeeLastName = x.HR_Employee.LastName,
+                            EmployeeName = (x.HR_Employee.FirstName + " " + x.HR_Employee.LastName),
+                            LineId = x.T_LabourDivision.LineId,
+                            IsHasBTP = x.IsHasBTP,
+                            IsHasExitLine = x.IsHasExitLine
+                        }).ToList();
+
+                        if (linPos != null && linPos.Count() > 0)
+                        {
+                            foreach (var item in linPos)
+                            {
+                                var poDetails = db.T_LinePositionDetail
+                                     .Where(x => !x.IsDeleted && item.Id == x.Line_PositionId);
+                                if (poDetails.Count() > 0)
+                                {
+                                    foreach (var subItem in poDetails)
+                                    {
+                                        var phaseObj = newQTCN_Details.FirstOrDefault(x => x.CA_PhaseId == subItem.T_TechProcessVersionDetail.CA_PhaseId);
+                                        if (phaseObj != null)
+                                        {
+                                            subItem.TechProVerDe_Id = phaseObj.Id;
+                                        }
+                                    }
+                                }
+
+                                //.Select(x => new LinePositionDetailModel()
+                                //{
+                                //    Id = x.Id,
+                                //    Line_PositionId = x.Line_PositionId,
+                                //    TechProVerDe_Id = x.TechProVerDe_Id,
+                                //    PhaseId = x.T_TechProcessVersionDetail.T_CA_Phase.Id,
+                                //    OrderIndex = x.OrderIndex,
+                                //    Note = x.Note == null ? "" : x.Note,
+                                //    IsPass = x.IsPass,
+                                //    PhaseCode = x.T_TechProcessVersionDetail.T_CA_Phase.Code,
+                                //    PhaseName = x.T_TechProcessVersionDetail.T_CA_Phase.Name,
+                                //    PhaseGroupId = x.T_TechProcessVersionDetail.T_CA_Phase.T_PhaseGroup.Id,
+                                //    EquipmentId = x.T_TechProcessVersionDetail.T_CA_Phase.EquipmentId ?? 0,
+                                //    EquipmentCode = x.T_TechProcessVersionDetail.T_CA_Phase.EquipmentId != null ? x.T_TechProcessVersionDetail.T_CA_Phase.T_Equipment.T_EquipmentGroup.GroupCode : "",
+                                //    EquipmentName = x.T_TechProcessVersionDetail.T_CA_Phase.EquipmentId != null ? x.T_TechProcessVersionDetail.T_CA_Phase.T_Equipment.T_EquipmentGroup.GroupName : "",
+                                //    TotalTMU = x.T_TechProcessVersionDetail.TimeByPercent,
+                                //    NumberOfLabor = ((x.T_TechProcessVersionDetail.Worker * x.DevisionPercent) / 100),
+                                //    DevisionPercent = x.DevisionPercent,
+                                //    DevisionPercent_Temp = x.DevisionPercent,
+                                //    TotalLabor = x.T_TechProcessVersionDetail.Worker,
+                                //    Index = x.T_TechProcessVersionDetail.T_CA_Phase.Index
+                                //}).ToList();
+                            }
+                            objReturn.Positions.AddRange(linPos);
+                        }
+                        #endregion
+
+                        obj.TechProVer_Id = newQTCN.Id;
+                        db.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return objReturn;
         }
 
     }

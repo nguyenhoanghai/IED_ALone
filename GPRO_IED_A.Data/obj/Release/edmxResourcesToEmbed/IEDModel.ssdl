@@ -21,6 +21,8 @@
     <Property Name="UpdatedDate" Type="datetime" />
     <Property Name="DeletedUser" Type="int" />
     <Property Name="DeletedDate" Type="datetime" />
+    <Property Name="WorkshopId" Type="int" />
+    <Property Name="LineId" Type="int" />
   </EntityType>
   <EntityType Name="SCategory">
     <Key>
@@ -826,25 +828,6 @@
     <Property Name="UpdatedDate" Type="datetime" />
     <Property Name="DeletedUser" Type="int" />
   </EntityType>
-  <EntityType Name="T_Product">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="CustomerId" Type="int" Nullable="false" />
-    <Property Name="Code" Type="nvarchar" MaxLength="500" />
-    <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
-    <Property Name="Img" Type="nvarchar(max)" />
-    <Property Name="Description" Type="nvarchar(max)" />
-    <Property Name="IsDeleted" Type="bit" Nullable="false" />
-    <Property Name="CompanyId" Type="int" />
-    <Property Name="CreatedUser" Type="int" Nullable="false" />
-    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
-    <Property Name="UpdatedUser" Type="int" />
-    <Property Name="UpdatedDate" Type="datetime" />
-    <Property Name="DeletedUser" Type="int" />
-    <Property Name="DeletedDate" Type="datetime" />
-  </EntityType>
   <EntityType Name="T_PhaseGroup">
     <Key>
       <PropertyRef Name="Id" />
@@ -863,6 +846,59 @@
     <Property Name="CreatedDate" Type="datetime" Nullable="false" />
     <Property Name="DeletedDate" Type="datetime" />
     <Property Name="UpdatedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="T_Product">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CustomerId" Type="int" Nullable="false" />
+    <Property Name="Code" Type="nvarchar" MaxLength="500" />
+    <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
+    <Property Name="Img" Type="nvarchar(max)" />
+    <Property Name="Description" Type="nvarchar(max)" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CompanyId" Type="int" />
+    <Property Name="CreatedUser" Type="int" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedUser" Type="int" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="DeletedUser" Type="int" />
+    <Property Name="DeletedDate" Type="datetime" />
+    <Property Name="ProductGroupId" Type="int" />
+  </EntityType>
+  <EntityType Name="T_ProductFile">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ProductId" Type="int" Nullable="false" />
+    <Property Name="FileName" Type="varchar" MaxLength="250" Nullable="false" />
+    <Property Name="FakeName" Type="varchar" MaxLength="250" Nullable="false" />
+    <Property Name="Path" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedUser" Type="int" Nullable="false" />
+    <Property Name="DeletedUser" Type="int" />
+    <Property Name="UpdatedUser" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedDate" Type="datetime" />
+    <Property Name="UpdatedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="T_ProductGroup">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedUser" Type="int" Nullable="false" />
+    <Property Name="DeletedUser" Type="int" />
+    <Property Name="UpdatedUser" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedDate" Type="datetime" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="CompanyId" Type="int" />
   </EntityType>
   <EntityType Name="T_StopPrecisionLibrary">
     <Key>
@@ -1085,6 +1121,30 @@
       </Principal>
       <Dependent Role="SUser">
         <PropertyRef Name="CompanyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HR_Employee_T_Line">
+    <End Role="T_Line" Type="Self.T_Line" Multiplicity="0..1" />
+    <End Role="HR_Employee" Type="Self.HR_Employee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_Line">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="HR_Employee">
+        <PropertyRef Name="LineId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HR_Employee_T_WorkShop">
+    <End Role="T_WorkShop" Type="Self.T_WorkShop" Multiplicity="0..1" />
+    <End Role="HR_Employee" Type="Self.HR_Employee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_WorkShop">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="HR_Employee">
+        <PropertyRef Name="WorkshopId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1604,6 +1664,42 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_T_Product_T_ProductGroup">
+    <End Role="T_ProductGroup" Type="Self.T_ProductGroup" Multiplicity="0..1" />
+    <End Role="T_Product" Type="Self.T_Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_ProductGroup">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_Product">
+        <PropertyRef Name="ProductGroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_ProductFile_T_Product">
+    <End Role="T_Product" Type="Self.T_Product" Multiplicity="1" />
+    <End Role="T_ProductFile" Type="Self.T_ProductFile" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_Product">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_ProductFile">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_ProductGroup_SCompany">
+    <End Role="SCompany" Type="Self.SCompany" Multiplicity="0..1" />
+    <End Role="T_ProductGroup" Type="Self.T_ProductGroup" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SCompany">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_ProductGroup">
+        <PropertyRef Name="CompanyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_T_TechProcessVersion_T_Product">
     <End Role="T_Product" Type="Self.T_Product" Multiplicity="1" />
     <End Role="T_TechProcessVersion" Type="Self.T_TechProcessVersion" Multiplicity="*" />
@@ -1709,8 +1805,10 @@
     <EntitySet Name="T_ManipulationLibrary" EntityType="Self.T_ManipulationLibrary" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_ManipulationTypeLibrary" EntityType="Self.T_ManipulationTypeLibrary" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_NatureCutsLibrary" EntityType="Self.T_NatureCutsLibrary" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="T_Product" EntityType="Self.T_Product" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_PhaseGroup" EntityType="Self.T_PhaseGroup" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="T_Product" EntityType="Self.T_Product" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="T_ProductFile" EntityType="Self.T_ProductFile" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="T_ProductGroup" EntityType="Self.T_ProductGroup" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_StopPrecisionLibrary" EntityType="Self.T_StopPrecisionLibrary" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_TechProcessVersion" EntityType="Self.T_TechProcessVersion" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_TechProcessVersionDetail" EntityType="Self.T_TechProcessVersionDetail" Schema="dbo" store:Type="Tables" />
@@ -1752,6 +1850,14 @@
     <AssociationSet Name="FK__SUser__CompanyId__3A81B327" Association="Self.FK__SUser__CompanyId__3A81B327">
       <End Role="SCompany" EntitySet="SCompany" />
       <End Role="SUser" EntitySet="SUser" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HR_Employee_T_Line" Association="Self.FK_HR_Employee_T_Line">
+      <End Role="T_Line" EntitySet="T_Line" />
+      <End Role="HR_Employee" EntitySet="HR_Employee" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HR_Employee_T_WorkShop" Association="Self.FK_HR_Employee_T_WorkShop">
+      <End Role="T_WorkShop" EntitySet="T_WorkShop" />
+      <End Role="HR_Employee" EntitySet="HR_Employee" />
     </AssociationSet>
     <AssociationSet Name="FK_SMenu_SModule" Association="Self.FK_SMenu_SModule">
       <End Role="SModule" EntitySet="SModule" />
@@ -1924,6 +2030,18 @@
     <AssociationSet Name="FK_T_Product_T_Customer" Association="Self.FK_T_Product_T_Customer">
       <End Role="T_Customer" EntitySet="T_Customer" />
       <End Role="T_Product" EntitySet="T_Product" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_Product_T_ProductGroup" Association="Self.FK_T_Product_T_ProductGroup">
+      <End Role="T_ProductGroup" EntitySet="T_ProductGroup" />
+      <End Role="T_Product" EntitySet="T_Product" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_ProductFile_T_Product" Association="Self.FK_T_ProductFile_T_Product">
+      <End Role="T_Product" EntitySet="T_Product" />
+      <End Role="T_ProductFile" EntitySet="T_ProductFile" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_ProductGroup_SCompany" Association="Self.FK_T_ProductGroup_SCompany">
+      <End Role="SCompany" EntitySet="SCompany" />
+      <End Role="T_ProductGroup" EntitySet="T_ProductGroup" />
     </AssociationSet>
     <AssociationSet Name="FK_T_TechProcessVersion_T_Product" Association="Self.FK_T_TechProcessVersion_T_Product">
       <End Role="T_Product" EntitySet="T_Product" />

@@ -55,6 +55,9 @@
       <HintPath>..\Libs\Hugate.Framework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PagedList, Version=1.15.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\PagedList.dll</HintPath>
@@ -126,9 +129,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net.Http.Formatting">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
@@ -203,6 +203,7 @@
     <Compile Include="Controllers\PhaseLibsController.cs" />
     <Compile Include="Controllers\ProAnaController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\ProductGroupController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\TimePrepareController.cs" />
     <Compile Include="Controllers\PhaseGroupController.cs" />
@@ -1331,6 +1332,7 @@
     <Content Include="Scripts\IED\Line\Line.js" />
     <Content Include="Scripts\IED\Menu\M_Index.js" />
     <Content Include="Scripts\IED\MType\MT_Index.js" />
+    <Content Include="Scripts\IED\PhanTich\phan-tich-3.js" />
     <Content Include="Scripts\IED\PhanTich\phan-tich.js" />
     <Content Include="Scripts\IED\PhaseGroup\PG_Index.js" />
     <Content Include="Scripts\IED\PhaseLibs\phase-libs.js" />
@@ -1340,6 +1342,7 @@
     <Content Include="Scripts\IED\ProAna\PA_TKC.min.js" />
     <Content Include="Scripts\IED\ProAna\ProAna_tkc.css" />
     <Content Include="Scripts\IED\ProAna\ProAna_tkc.min.css" />
+    <Content Include="Scripts\IED\ProductGroup\product-group.js" />
     <Content Include="Scripts\IED\Product\P_Index.js" />
     <Content Include="Scripts\IED\Role\R_Create.css" />
     <Content Include="Scripts\IED\Role\R_Create.js" />
@@ -1408,6 +1411,9 @@
     <Content Include="Views\PhaseLibs\Index.cshtml" />
     <Content Include="Views\Customer\Index.cshtml" />
     <Content Include="Views\PhanTich\Index.cshtml" />
+    <Content Include="Views\PhanTich\Index_3.cshtml" />
+    <Content Include="Views\ProductGroup\Index.cshtml" />
+    <Content Include="Views\PhanTich\TKC_Partial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

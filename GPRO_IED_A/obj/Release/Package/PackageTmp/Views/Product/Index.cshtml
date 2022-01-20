@@ -1,13 +1,57 @@
 ﻿@{
     ViewBag.Title = "Mã hàng";
-    Layout = null;
-} 
+    // Layout = null;
+}
+<style>
+    .img-box {
+        max-height: 280px;
+        overflow-y: auto;
+    }
+
+    .img-item {
+        width: 250px;
+        height: 250px;
+        float: left;
+        border: 1px solid #ccc;
+        margin: 5px;
+        border-radius: 10px;
+    }
+
+        .img-item img {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+
+    .delete {
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        background: #ffc0cb7a;
+        color: #ff005e;
+        font-weight: 600;
+        font-size: 18px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        z-index: 999999999;
+        cursor: pointer;
+        position: absolute;
+        width: 250px;
+        display: none;
+        margin-top: -40px;
+    }
+
+    .img-item:hover .delete {
+        display: block !important
+    }
+</style>
+
 <script src="~/Scripts/IED/Product/P_Index.js"></script>
 
 <div id="jtableProduct" class="table-center"></div>
 
 <div class="modal   fade  " id="popup_Product" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog  modalsmall">
+    <div class="modal-dialog modal-full">
         <div class="modal-content">
             <div class="modal-header">
                 <button aria-hidden="true" data-dismiss="modal" pcancel class="close" type="button">×</button>
@@ -15,26 +59,44 @@
             </div>
             <div class="modal-body form-inline">
                 <div class="container-fluid">
-                    <div class="form-group">
-                        <input class="form-control" id="pid" data-bind="value: Id" type="hidden" />
-                        <label class="control-label">Tên mã hàng <span class="required-class">*</span></label>
-                        <input class="form-control" id="pname" data-bind="value: Name" type="text" placeholder="Nhập Tên mã hàng..." />
-                    </div>
-                    <div class="form-group ">
-                        <label class="control-label">Khách hàng</label><br />
-                        <select class="form-control" id="pcustomer"></select>
-                        @*<input class="form-control" id="pcode" data-bind="value: Code" type="text" placeholder="Nhập Mã mã hàng..." />*@
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Hình thức sử dụng</label><br />
-                        <div>
-                            <input type="checkbox" id="proIsPrivate" data-width="130" data-toggle="toggle" data-on="Chung" data-off="Nội bộ" />
+                    <div class="form-group col-md-5  ">
+                        <div class="form-group col-md-6">
+                            <input class="form-control" id="pid" type="hidden" />
+                            <label class="control-label">Tên mã hàng <span class="required-class">*</span></label>
+                            <input class="form-control" id="pname" type="text" placeholder="Nhập Tên mã hàng..." />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Khách hàng</label><br />
+                            <select class="form-control" id="pcustomer"></select>
+                            @*<input class="form-control" id="pcode" data-bind="value: Code" type="text" placeholder="Nhập Mã mã hàng..." />*@
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Nhóm mã hàng</label><br />
+                            <select class="form-control" id="pro-group-customer"></select>
+                            @*<input class="form-control" id="pcode" data-bind="value: Code" type="text" placeholder="Nhập Mã mã hàng..." />*@
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Hình thức sử dụng</label><br />
+                            <div>
+                                <input type="checkbox" id="proIsPrivate" data-width="130" data-toggle="toggle" data-on="Chung" data-off="Nội bộ" />
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3 picture-box ">
+                            <form id="p-form-upload" name="p-form-upload" enctype="multipart/form-data" method="post">
+                                <input type="file" id="p-file-upload" multiple name="p-file-upload" filelist newurl="" style="display:none" accept="image/*" />
+                            </form>
+                            <button class="btn btn-primary" id="p-btn-file-upload" style=" margin-top:25px">Chọn ảnh mã hàng</button>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Mô Tả</label><br />
+                            <textarea id="pdes" class="form-control"></textarea>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label">Mô Tả</label><br />
-                        <textarea id="pdes" class="form-control" data-bind="value: Description"></textarea>
+                    <div class="form-group col-md-7  img-box ">
+
                     </div>
+                    <div class="clearfix"></div>
                 </div>
             </div>
 
@@ -84,3 +146,12 @@
     </div>
 </div>
 
+<script>
+
+    var Product = new GPRO.Product();
+    Product.Init();
+
+    function DeleteFile(fileId) {
+        Product.deleteFile(fileId);
+    }
+</script>

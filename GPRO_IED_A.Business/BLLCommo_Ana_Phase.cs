@@ -339,6 +339,42 @@ namespace GPRO_IED_A.Business
             }
         }
 
+        public ResponseBase UpdateName(int phaseId, string newName, bool isOwner, int actionUser)
+        {
+            try
+            {
+                using (db = new IEDEntities())
+                {
+                    var result = new ResponseBase();
+                    #region update
+                    var phase = db.T_CA_Phase.FirstOrDefault(x => !x.IsDeleted && x.Id == phaseId);
+                    if (phase != null)
+                    {
+                        if (!checkPermis(phase, actionUser, isOwner))
+                        {
+                            result.IsSuccess = false;
+                            result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo công đoạn này nên bạn không cập nhật được thông tin cho công đoạn này." });
+                        }
+                        else
+                        {
+                            phase.Name = newName;
+                            phase.UpdatedDate = DateTime.Now;
+                            phase.UpdatedUser = actionUser;
+                            db.SaveChanges();
+                            result.IsSuccess = true;
+                        }
+                    }
+                    #endregion
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
         public void ReOrderPhase(IEDEntities db, int parentId, int stt, int phaseId)
         {
             //sap xiep lai thứ tự
@@ -1245,11 +1281,11 @@ namespace GPRO_IED_A.Business
             {
                 using (db = new IEDEntities())
                 {
-                    for (int i = 0; i < actions.Count  ; i++)
-                    { 
+                    for (int i = 0; i < actions.Count; i++)
+                    {
                         if (actions[i].ManipulationCode.Substring(0, 1) == "C" || actions[i].ManipulationCode.Substring(0, 2) == "SE")
                         {
-                            if(actions[i].ManipulationCode.Length > 4)
+                            if (actions[i].ManipulationCode.Length > 4)
                             {
                                 string stopPrecisionCode = actions[i].ManipulationCode.Substring(actions[i].ManipulationCode.Length - 1, 1);
                                 var stopPrecision = db.T_StopPrecisionLibrary.FirstOrDefault(c => c.Code.Trim().ToUpper().Equals(stopPrecisionCode.Trim().ToUpper()) && !c.IsDeleted);
@@ -1266,7 +1302,7 @@ namespace GPRO_IED_A.Business
                                         else
                                         {
                                             actions[i].TMUEquipment = BLLEquipment.Instance.CalculationMachineTMU(equipmentId, equiptypedefaultId, distance, stopPrecision.TMUNumber, 0, 0);
-                                            actions[i].TotalTMU = (actions[i].TMUEquipment * actions[i].Loop)??0; 
+                                            actions[i].TotalTMU = (actions[i].TMUEquipment * actions[i].Loop) ?? 0;
                                         }
                                     }
                                     else if (actions[i].ManipulationCode.Substring(0, 1).Equals("C"))
@@ -1284,7 +1320,7 @@ namespace GPRO_IED_A.Business
                                         {
 
                                             actions[i].TMUEquipment = BLLEquipment.Instance.CalculationMachineTMU(equipmentId, equiptypedefaultId, distance, stopPrecision.TMUNumber, applyPressure, natureCut.Factor);
-                                            actions[i].TotalTMU = (actions[i].TMUEquipment * actions[i].Loop)??0;                                             
+                                            actions[i].TotalTMU = (actions[i].TMUEquipment * actions[i].Loop) ?? 0;
                                         }
                                     }
                                 }

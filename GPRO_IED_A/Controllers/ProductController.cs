@@ -90,6 +90,32 @@ namespace GPRO_IED_A.Controllers
             return Json(JsonDataResult);
         }
 
+        public JsonResult DeleteFile(int Id)
+        {
+            ResponseBase result;
+            try
+            {
+                if (isAuthenticate)
+                {
+                    result = BLLProduct.Instance.DeleteFile(Id, UserContext.UserID, isOwner);
+                    if (!result.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                    else
+                        result.IsSuccess = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+            return Json(JsonDataResult);
+        }
+
+        
+
         [HttpPost]
         public JsonResult GetSelectList()
         {

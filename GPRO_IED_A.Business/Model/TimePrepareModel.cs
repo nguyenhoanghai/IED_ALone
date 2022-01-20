@@ -18,5 +18,6 @@ namespace GPRO_IED_A.Business.Model
         public string WorkShopName { get; set; }
         public string TimeTypePrepareName { get; set; }
         public int ActionUser { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

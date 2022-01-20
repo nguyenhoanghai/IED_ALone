@@ -2314,6 +2314,31 @@ GPRO.ProAna = function () {
                                         });
                                         IsNormalCode = false;
                                     }
+                                    else if (code.substring(0, 3) == "SPT") {
+                                        if (isNaN(code.substring(3, code.length))) //ko phai số
+                                            GlobalCommon.ShowMessageDialog('Đuôi sau SPT phải là số. Vui lòng nhập lại.', function () { }, "Thông báo");
+                                        else {
+                                            var _tmu = parseInt(code.substring(3, code.length));
+                                            Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].ManipulationName = "";
+                                            Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].ManipulationCode = code;
+                                            Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TMUEquipment = _tmu;
+                                            Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TMUManipulation = 0;
+                                            Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TotalTMU = Math.round((Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].Loop * _tmu) * 1000) / 1000;
+                                            if (Global.Data.PhaseManiVerDetailArray.length == data.record.OrderIndex) {
+                                                AddEmptyObject();
+                                                $('[code_' + Global.Data.PhaseManiVerDetailArray.length + ']').focus();
+                                                $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').height());
+                                            }
+                                            else
+                                                $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').scrollTop());
+                                            ReloadListMani_Arr();
+                                            UpdateIntWaste();
+                                            $('[code_' + Global.Data.PhaseManiVerDetailArray.length + ']').focus();
+                                            $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').height());
+                                        }
+                                        IsNormalCode = false;
+                                    }
+
                                 }
                                 if (IsNormalCode) {
                                     $.each(Global.Data.ManipulationList, function (i, item) {
@@ -2375,7 +2400,7 @@ GPRO.ProAna = function () {
                                 txt.change();
                             }
                         });
-                        txt.click(function () { txt.select(); })
+                        //txt.click(function () { txt.select(); })
                         return txt;
                     }
                 },

@@ -107,6 +107,34 @@ function GetProductSelect(controlName) {
         }
     });
 }
+function GetProductGroupSelect(controlName) {
+    $.ajax({
+        url: '/Productgroup/GetSelectList',
+        type: 'POST',
+        data: '',
+        contentType: 'application/json charset=utf-8',
+        success: function (data) {
+            GlobalCommon.CallbackProcess(data, function () {
+                if (data.Result == "OK") {
+                    if (data.Data.length > 0) {
+                        var str = ' <option value="0">-- Nhóm mã hàng --</option>';
+                        if (data.Data.length > 0) {
+                            $.each(data.Data, function (index, item) {
+                                str += ' <option value="' + item.Value + '">' + item.Name + '</option>';
+                            });
+                        }
+                        $('#' + controlName).empty().append(str);
+                        $('[' + controlName + ']').empty().append(str);
+                        $('#' + controlName).trigger('liszt:updated');
+                    }
+                }
+            }, false, '', true, true, function () {
+                var msg = GlobalCommon.GetErrorMessage(data);
+                GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+            });
+        }
+    });
+}
 
 function GetCustomerSelect(controlName) {
     $.ajax({
@@ -157,6 +185,7 @@ function GetWorkshopSelect(controlName) {
                         $('#' + controlName).empty().append(str);
                         $('[' + controlName + ']').empty().append(str);
                         $('#' + controlName).trigger('liszt:updated');
+                        $('#' + controlName + ',[' + controlName + ']').change();
                     }
                 }
             }, false, '', true, true, function () {

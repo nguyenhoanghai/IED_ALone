@@ -30,6 +30,8 @@ namespace GPRO_IED_A.Business.Model
         public int ActionUser { get; set; }
         public List<TechProcessVerDetailModel> details { get; set; }
         public List<ModelEquipment> equipments { get; set; }
+        public string CreateBy { get; set; }
+        public string CreateAt { get; set; }
         public TechProcessVersionModel()
         {
             details = new List<TechProcessVerDetailModel>();

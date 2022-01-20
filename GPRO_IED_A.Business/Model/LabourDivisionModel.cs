@@ -26,5 +26,6 @@ namespace GPRO_IED_A.Business.Model
         {
             Positions = new List<LinePositionModel>(); 
         }
+        public bool IsTechVersionChange { get; set; }
     }
 }

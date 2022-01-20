@@ -14,7 +14,13 @@ namespace GPRO_IED_A.Business.Model
         public string Description { get; set; } 
         public int? CompanyId { get; set; }
         public int CustomerId { get; set; }
+        public int? ProductGroupId { get; set; }
         public bool IsPrivate { get; set; }
         public int ActionUser { get; set; }
+        public List<ModelSelectItem> Files { get; set; }
+        public ProductModel()
+        {
+            Files = new List<ModelSelectItem>();
+        }
     }
 }

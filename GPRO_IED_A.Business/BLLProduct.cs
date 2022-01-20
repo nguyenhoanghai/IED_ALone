@@ -3,11 +3,13 @@ using GPRO.Ultilities;
 using GPRO_IED_A.Business.Enum;
 using GPRO_IED_A.Business.Model;
 using GPRO_IED_A.Data;
+using Hugate.Framework;
+using Newtonsoft.Json;
 using PagedList;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -45,84 +47,70 @@ namespace GPRO_IED_A.Business
                     if (string.IsNullOrEmpty(sorting))
                         sorting = "Id DESC";
 
-                    List<ProductModel> productTypes = null;
+                    IQueryable<T_Product> productTypes = null;
                     if (string.IsNullOrEmpty(keyWord))
                         productTypes = GetAll(sorting, companyId, relationCompanyId);
                     else
                         productTypes = GetByKeyword(keyWord, searchBy, companyId, relationCompanyId, sorting);
 
                     var pageNumber = (startIndexRecord / pageSize) + 1;
-                    return new PagedList<ProductModel>(productTypes, pageNumber, pageSize);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        private List<ProductModel> GetByKeyword(string keyWord, string searchBy, int companyId, int[] relationCompanyId, string sorting)
-        {
-            try
-            {
-                List<ProductModel> productTypes = null;
-                switch (searchBy)
-                {
-                    case "1":
-                        productTypes = db.T_Product.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0)) && x.Code.Trim().ToUpper().Contains(keyWord.Trim().ToUpper())).OrderByDescending(x => x.CreatedDate).Select(
-                            x => new ProductModel()
-                            {
-                                Id = x.Id,
-                                Name = x.Name,
-                                Code = x.T_Customer.Name,
-                                Description = x.Description,
-                                IsPrivate = (x.CompanyId == null ? true : false),
-                                CompanyId = x.CompanyId,
-                                CustomerId = x.CustomerId
-                            }).OrderBy(sorting).ToList();
-                        break;
-                    case "2":
-                        productTypes = db.T_Product.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0)) && x.Name.Trim().ToUpper().Contains(keyWord.Trim().ToUpper())).OrderByDescending(x => x.CreatedDate).Select(
-                            x => new ProductModel()
-                            {
-                                Id = x.Id,
-                                Name = x.Name,
-                                Code = x.T_Customer.Name,
-                                Description = x.Description,
-                                IsPrivate = (x.CompanyId == null ? true : false),
-                                CompanyId = x.CompanyId,
-                                CustomerId = x.CustomerId
-                            }).OrderBy(sorting).ToList();
-                        break;
-                }
-                if (productTypes != null && productTypes.Count > 0)
-                    return productTypes;
-                return new List<ProductModel>();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        private List<ProductModel> GetAll(string sorting, int companyId, int[] relationCompanyId)
-        {
-            try
-            {
-                var productTypes = db.T_Product.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0))).OrderByDescending(x => x.CreatedDate).Select(
-                    x => new ProductModel()
+                    var objs = new PagedList<ProductModel>(productTypes.Select(x => new ProductModel()
                     {
                         Id = x.Id,
                         Name = x.Name,
                         Code = x.T_Customer.Name,
                         Description = x.Description,
-                        CompanyId = x.CompanyId,
                         IsPrivate = (x.CompanyId == null ? true : false),
-                        CustomerId = x.CustomerId
-                    }).OrderBy(sorting).ToList();
-                if (productTypes != null && productTypes.Count > 0)
-                    return productTypes;
-                return new List<ProductModel>();
+                        CompanyId = x.CompanyId,
+                        CustomerId = x.CustomerId,
+                        ProductGroupId = x.ProductGroupId ?? 0
+                    }).OrderBy(sorting).ToList(), pageNumber, pageSize);
+                    if (objs.Count > 0)
+                    {
+                        var ids = objs.Select(x => x.Id).ToList();
+                        var files = db.T_ProductFile
+                            .Where(x => !x.IsDeleted && ids.Contains(x.ProductId))
+                            .Select(x => new ModelSelectItem() { Value = x.Id, Name = x.FileName, Code = x.Path, Data = x.ProductId })
+                            .ToList();
+                        for (int i = 0; i < objs.Count; i++)
+                        {
+                            objs[i].Files = files.Where(x => x.Data == objs[i].Id).ToList();
+                        }
+                    }
+                    return objs;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private IQueryable<T_Product> GetByKeyword(string keyWord, string searchBy, int companyId, int[] relationCompanyId, string sorting)
+        {
+            try
+            {
+                IQueryable<T_Product> productTypes = null;
+                if (searchBy == "1")
+                    productTypes = db.T_Product
+                        .Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0)) && x.Code.Trim().ToUpper().Contains(keyWord.Trim().ToUpper())).OrderByDescending(x => x.CreatedDate);
+
+                else if (searchBy == "2")
+                    productTypes = db.T_Product.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0)) && x.Name.Trim().ToUpper().Contains(keyWord.Trim().ToUpper())).OrderByDescending(x => x.CreatedDate);
+                return productTypes;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private IQueryable<T_Product> GetAll(string sorting, int companyId, int[] relationCompanyId)
+        {
+            try
+            {
+                return db.T_Product.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0))).OrderByDescending(x => x.CreatedDate);
+
             }
             catch (Exception ex)
             {
@@ -140,21 +128,14 @@ namespace GPRO_IED_A.Business
                     if (CheckExists(model.Name.Trim().ToUpper(), model.Id, model.CompanyId, true))
                     {
                         result.IsSuccess = false;
-                        result.Errors.Add(new Error() { MemberName = "Insert Product Type", Message = "Tên  Sản Phẩm này đã tồn tại. Vui lòng chọn lại Tên khác !." });
+                        result.Errors.Add(new Error() { MemberName = "Insert Product Type", Message = "Tên  mã hàng này đã tồn tại. Vui lòng chọn lại Tên khác !." });
                         return result;
                     }
                     else
                     {
-                        //if (!string.IsNullOrEmpty(model.Code))
-                        //{
-                        //    if (CheckExists(model.Code.Trim().ToUpper(), model.Id, model.CompanyId , false))
-                        //    {
-                        //        result.IsSuccess = false;
-                        //        result.Errors.Add(new Error() { MemberName = "Insert Product Type", Message = "Mã  Sản Phẩm này đã tồn tại. Vui lòng chọn lại Tên khác !." });
-                        //        return result;
-                        //    }
-                        //}
                         T_Product obj;
+                        if (model.ProductGroupId == 0)
+                            model.ProductGroupId = null;
                         if (model.Id == 0)
                         {
                             obj = new T_Product();
@@ -171,12 +152,12 @@ namespace GPRO_IED_A.Business
                             if (obj == null)
                             {
                                 result.IsSuccess = false;
-                                result.Errors.Add(new Error() { MemberName = "Update Product Type", Message = "Loại Sản Phẩm bạn đang thao tác đã bị xóa hoặc không tồn tại. Vui lòng kiểm tra lại !." });
+                                result.Errors.Add(new Error() { MemberName = "Update Product Type", Message = "Loại mã hàng bạn đang thao tác đã bị xóa hoặc không tồn tại. Vui lòng kiểm tra lại !." });
                                 return result;
                             }
                             else
                             {
-                                if (!checkPermis(obj, model.ActionUser,isOwner))
+                                if (!checkPermis(obj, model.ActionUser, isOwner))
                                 {
                                     result.IsSuccess = false;
                                     result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo mã hàng này nên bạn không cập nhật được thông tin cho mã hàng này." });
@@ -187,6 +168,7 @@ namespace GPRO_IED_A.Business
                                     obj.Name = model.Name;
                                     obj.Code = model.Code;
                                     obj.CustomerId = model.CustomerId;
+                                    obj.ProductGroupId = model.ProductGroupId;
                                     obj.Description = model.Description;
                                     obj.UpdatedUser = model.ActionUser;
                                     obj.UpdatedDate = DateTime.Now;
@@ -205,6 +187,22 @@ namespace GPRO_IED_A.Business
                                     db.SaveChanges();
                                     result.IsSuccess = true;
                                 }
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(model.Img))
+                        {
+                            List<T_ProductFile> files = JsonConvert.DeserializeObject<List<T_ProductFile>>(model.Img);
+                            if (files != null && files.Count > 0)
+                            {
+                                foreach (var file in files)
+                                {
+                                    file.ProductId = obj.Id;
+                                    file.CreatedDate = DateTime.Now;
+                                    file.CreatedUser = model.ActionUser;
+                                    db.T_ProductFile.Add(file);
+                                }
+                                db.SaveChanges();
                             }
                         }
 
@@ -249,11 +247,11 @@ namespace GPRO_IED_A.Business
                     if (productType == null)
                     {
                         result.IsSuccess = false;
-                        result.Errors.Add(new Error() { MemberName = "Delete Product Type", Message = "Loại Sản Phẩm bạn đang thao tác đã bị xóa hoặc không tồn tại. Vui lòng kiểm tra lại !." });
+                        result.Errors.Add(new Error() { MemberName = "Delete Product Type", Message = "Loại mã hàng bạn đang thao tác đã bị xóa hoặc không tồn tại. Vui lòng kiểm tra lại !." });
                     }
                     else
                     {
-                        if (!checkPermis(productType, acctionUserId,  isOwner))
+                        if (!checkPermis(productType, acctionUserId, isOwner))
                         {
                             result.IsSuccess = false;
                             result.Errors.Add(new Error() { MemberName = "Delete", Message = "Bạn không phải là người tạo mã hàng này nên bạn không xóa được mã hàng này." });
@@ -264,8 +262,8 @@ namespace GPRO_IED_A.Business
                             productType.DeletedUser = acctionUserId;
                             productType.DeletedDate = DateTime.Now;
 
-                            var proanas = (from x in db.T_CommodityAnalysis where !x.IsDeleted && x.ObjectType == 1 && x.ObjectId == productType.Id select x) ;
-                            if(proanas != null && proanas.Count() > 0)
+                            var proanas = (from x in db.T_CommodityAnalysis where !x.IsDeleted && x.ObjectType == 1 && x.ObjectId == productType.Id select x);
+                            if (proanas != null && proanas.Count() > 0)
                                 foreach (var item in proanas)
                                 {
                                     item.IsDeleted = true;
@@ -286,6 +284,48 @@ namespace GPRO_IED_A.Business
             }
         }
 
+        public ResponseBase DeleteFile(int id, int acctionUserId, bool isOwner)
+        {
+            try
+            {
+                using (db = new IEDEntities())
+                {
+                    var result = new ResponseBase();
+                    var obj = db.T_ProductFile.FirstOrDefault(x => !x.IsDeleted && x.Id == id);
+                    if (obj == null)
+                    {
+                        result.IsSuccess = false;
+                        result.Errors.Add(new Error() { MemberName = "Delete Product Type", Message = "Hình ảnh đã bị xóa hoặc không tồn tại. Vui lòng kiểm tra lại !." });
+                    }
+                    else
+                    {
+                        if (obj.CreatedUser == acctionUserId || isOwner)
+                        {
+                            obj.IsDeleted = true;
+                            obj.DeletedUser = acctionUserId;
+                            obj.DeletedDate = DateTime.Now;
+
+                            db.SaveChanges();
+                            result.IsSuccess = true;
+                            if (File.Exists(obj.Path))
+                                File.Delete(obj.Path);
+                        }
+                        else
+                        {
+                            result.IsSuccess = false;
+                            result.Errors.Add(new Error() { MemberName = "Delete", Message = "Bạn không phải là người tải ảnh này nên bạn không xóa được ảnh này." });
+                        }
+                    }
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
         public List<ModelSelectItem> GetSelectItem(int companyId, int[] relationCompanyId)
         {
             try
@@ -293,7 +333,9 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     var listModelSelect = new List<ModelSelectItem>();
-                    var productTypes = db.T_Product.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0))).Select(
+                    var productTypes = db.T_Product.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0)))
+                        .OrderByDescending(x => x.CreatedDate)
+                        .Select(
                         x => new ModelSelectItem()
                         {
                             Value = x.Id,
@@ -302,11 +344,11 @@ namespace GPRO_IED_A.Business
 
                     if (productTypes != null && productTypes.Count() > 0)
                     {
-                        listModelSelect.Add(new ModelSelectItem() { Value = 0, Name = " - -  Chọn Sản Phẩm  - - " });
+                        listModelSelect.Add(new ModelSelectItem() { Value = 0, Name = " - -  Chọn mã hàng  - - " });
                         listModelSelect.AddRange(productTypes);
                     }
                     else
-                        listModelSelect.Add(new ModelSelectItem() { Value = 0, Name = "  Không có Sản Phẩm  " });
+                        listModelSelect.Add(new ModelSelectItem() { Value = 0, Name = "  Không có mã hàng  " });
                     return listModelSelect;
                 }
             }
@@ -315,6 +357,8 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
+
+        // public List<T_ProductFile> InsertFiles (List<T_Product> files)
 
     }
 }

@@ -42,11 +42,10 @@ GPRO.EmployeeList = function () {
     this.Init = function () {
         RegisterEvent();
         InitList();
-        ReloadList();
-        BindData(null);
-        InitPopup();
-        InitPopupSearch();
-        //   $("#EBirthday").jqxDateTimeInput({ width: '120px', height: '28px' });
+        ReloadList(); 
+        InitPopup();  
+
+        GetWorkshopSelect('eWorkshopId');
     }
 
     this.reloadListEmployeeList = function () {
@@ -71,6 +70,10 @@ GPRO.EmployeeList = function () {
         $('#' + Global.Element.PopupSearch).on('shown.bs.modal', function () {
             $('div.divParent').attr('currentPoppup', Global.Element.PopupSearch.toUpperCase());
         });
+
+        $('#eWorkshopId').change(() => {
+            GetLineSelect('eLineId', $('#eWorkshopId').val());
+        })
     }
 
     function InitViewModel(Employee) {
@@ -85,7 +88,7 @@ GPRO.EmployeeList = function () {
             Code: '',
             Email: ''
         };
-        switchInstance.check(false); 
+        switchInstance.check(false);
         if (Employee != null) {
             EmployeeViewModel = {
                 Id: ko.observable(Employee.Id),
@@ -99,7 +102,7 @@ GPRO.EmployeeList = function () {
             };
             date = new Date(parseJsonDateToDate(Employee.Birthday));
             switchInstance.check(Employee.Gender);
-  }
+        }
         return EmployeeViewModel;
     }
 
@@ -115,17 +118,25 @@ GPRO.EmployeeList = function () {
             pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
-            selectShow: true,
+            selectShow: false,
             actions: {
                 listAction: Global.UrlAction.GetList,
-                searchAction: Global.Element.PopupSearch,
-                createAction: Global.Element.PopupEmployee,
-                createObjDefault: BindData(null),
+                // searchAction: Global.Element.PopupSearch,
+                createAction: Global.Element.PopupEmployee
             },
             messages: {
                 addNewRecord: 'Thêm Nhân Viên',
-                searchRecord: 'Tìm kiếm',
-                selectShow: 'Ẩn hiện cột'
+                // searchRecord: 'Tìm kiếm',
+                //selectShow: 'Ẩn hiện cột'
+            },
+            searchInput: {
+                id: 'ekeyword',
+                className: 'search-input',
+                placeHolder: 'Nhập từ khóa ...',
+                keyup: function (evt) {
+                    if (evt.keyCode == 13)
+                        ReloadList();
+                }
             },
             fields: {
                 Id: {
@@ -146,7 +157,7 @@ GPRO.EmployeeList = function () {
                 Image: {
                     title: 'Hình',
                     width: '1%',
-sorting:false,
+                    sorting: false,
                     display: function (data) {
                         var text = $('<img style = "width:40px" src="' + data.record.Image + '"  />');
                         if (data.record.Image != null) {
@@ -190,12 +201,17 @@ sorting:false,
                     display: function (data) {
                         var text = $('<i data-toggle="modal" data-target="#' + Global.Element.PopupEmployee + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
                         text.click(function () {
-                            BindData(data.record);
-                            //if (data.record.Gender)
-                            //    $('#eGender').bootstrapToggle('on');
-                            //else
-                            //    $('#eGender').bootstrapToggle('off');
-
+                          //  BindData(data.record);
+                            $('#eId').val(data.record.Id);
+                            $('#ecode').val(data.record.Code);
+                            $('#efirst').val(data.record.FirstName);
+                            $('#elast').val(data.record.LastName);
+                            $('#eEmail').val(data.record.Email);
+                            $('#eMobile').val(data.record.Mobile);
+                            $('#eWorkshopId').val(data.record.WorkshopId);
+                            $('#eLineId').val(data.record.LineId);
+                            var switchInstance = $("#eGender").data("kendoMobileSwitch");
+                            switchInstance.check(data.record.Gender);
                             var date = new Date(parseJsonDateToDate(data.record.Birthday));
                             var datepicker = $("#EBirthday").data("kendoDatePicker");
                             datepicker.value(new Date(date.getFullYear(), date.getMonth(), date.getDate()));
@@ -282,16 +298,35 @@ sorting:false,
             GlobalCommon.ShowMessageDialog("Bạn chưa chọn ngày sinh.", function () { }, "Lỗi Nhập liệu");
             return false;
         }
+        else if ($('#eWorkshopId').val().trim() == '') {
+            GlobalCommon.ShowMessageDialog("Vui lòng chọn phân xưởng.", function () { }, "Lỗi Nhập liệu");
+            return false;
+        }
+        else if ($('#eLineId').val().trim() == '') {
+            GlobalCommon.ShowMessageDialog("Vui lòng chọn chuyền.", function () { }, "Lỗi Nhập liệu");
+            return false;
+        }
         return true;
     }
 
     function SaveEmployee() {
-        Global.Data.ModelEmployee.Gender = $("#eGender").data("kendoMobileSwitch").check();
-        Global.Data.ModelEmployee.Birthday = $("#EBirthday").data("kendoDatePicker").value();// $('#EBirthday').val();
+        var obj = {
+            Id: $('#eId').val(),
+            Code: $('#ecode').val(),
+            FirstName: $('#efirst').val(),
+            LastName: $('#elast').val(),
+            Email: $('#eEmail').val(),
+            Mobile: $('#eMobile').val(),
+            WorkshopId: $('#eWorkshopId').val(),
+            LineId: $('#eLineId').val(),
+            Gender: $("#eGender").data("kendoMobileSwitch").check(),
+            Birthday: $("#EBirthday").data("kendoDatePicker").value(),
+        }
+
         $.ajax({
             url: Global.UrlAction.SaveEmployee,
             type: 'post',
-            data: ko.toJSON(Global.Data.ModelEmployee),
+            data: ko.toJSON(obj),
             contentType: 'application/json',
             beforeSend: function () { $('#loading').show(); },
             success: function (result) {
@@ -310,23 +345,6 @@ sorting:false,
                     GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình sử lý.");
                 });
             }
-        });
-    }
-
-    function InitPopupSearch() {
-        $("#" + Global.Element.PopupSearch).modal({
-            keyboard: false,
-            show: false
-        });
-        $("#" + Global.Element.PopupSearch + ' button[esearch]').click(function () {
-            ReloadList();
-            $("#" + Global.Element.PopupSearch + ' button[eclose]').click();
-        });
-
-        $("#" + Global.Element.PopupSearch + ' button[eclose]').click(function () {
-            $("#" + Global.Element.PopupSearch).modal("hide");
-            $('#ekeyword').val('');
-            $('div.divParent').attr('currentPoppup', '');
         });
     }
 

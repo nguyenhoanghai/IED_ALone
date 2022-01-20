@@ -1,6 +1,6 @@
 ﻿@{
     ViewBag.Title = "Nhân Viên";
-    Layout = null;
+   Layout = null;
 } 
 <script src="~/Scripts/IED/Employee/Employ_Index.js"></script>
 <div id="jtableEmployee" class="table-center"></div>
@@ -14,18 +14,18 @@
             </div>
             <div class="modal-body form-inline">
                 <div class="container-fluid">
-                    <input class="form-control" type="hidden" data-bind="value: Id" />
+                    <input class="form-control" type="hidden" id="eId" />
                     <div class="col-md-6 form-group">
                         <label class="control-label">Mã nhân viên <span class="required-class"> *</span></label>
-                        <input class="form-control" id="ecode" data-bind="value :  Code" type="text" placeholder="Nhập Mã Nhân Viên." />
+                        <input class="form-control" id="ecode"   type="text" placeholder="Nhập Mã Nhân Viên." />
                     </div>
                     <div class="col-md-6 form-group">
                         <label class="control-label">Họ <span class="required-class"> *</span></label>
-                        <input class="form-control" id="efirst" data-bind="value: FirstName" type="text" placeholder="Nhập Họ Nhân Viên." />
+                        <input class="form-control" id="efirst"   type="text" placeholder="Nhập Họ Nhân Viên." />
                     </div>
                     <div class="col-md-6 form-group">
                         <label class="control-label">Tên <span class="required-class"> *</span></label>
-                        <input class="form-control" id="elast" data-bind="value: LastName" type="text" placeholder="Nhập Tên Nhân Viên." />
+                        <input class="form-control" id="elast"   type="text" placeholder="Nhập Tên Nhân Viên." />
                     </div>
                     <div class="col-md-6 form-group">
                         <label class="control-label">Giới tính  </label>
@@ -39,11 +39,19 @@
                     </div>
                     <div class="col-md-6 form-group">
                         <label class="control-label">Email  </label>
-                        <input class="form-control" data-bind="value: Email" type="text" />
+                        <input class="form-control" id="eEmail" type="text" />
                     </div>
                     <div class="col-md-6 form-group">
                         <label class="control-label">Điện thoại  </label>
-                        <input class="form-control" data-bind="value: Mobile" type="text" />
+                        <input class="form-control" id="eMobile" type="text" />
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="control-label">Phân xưởng  </label>
+                        <select class="form-control" id="eWorkshopId"  ></select>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="control-label">Chuyền  </label>
+                        <select class="form-control" id="eLineId" ></select>
                     </div>
                     <div class="clearfix">  </div>
                 </div>

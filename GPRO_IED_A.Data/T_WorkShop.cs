@@ -16,6 +16,7 @@ namespace GPRO_IED_A.Data
     {
         public T_WorkShop()
         {
+            this.HR_Employee = new HashSet<HR_Employee>();
             this.T_Line = new HashSet<T_Line>();
         }
     
@@ -32,6 +33,7 @@ namespace GPRO_IED_A.Data
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
     
+        public virtual ICollection<HR_Employee> HR_Employee { get; set; }
         public virtual ICollection<T_Line> T_Line { get; set; }
     }
 }

@@ -26,5 +26,6 @@ namespace GPRO_IED_A.Business.Model
         public int PhaseGroupId { get; set; }
         public double DevisionPercent_Temp { get; set; }
         public int Index { get; set; }
+        public int PhaseId { get; set; }
     }
 }

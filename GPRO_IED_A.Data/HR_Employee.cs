@@ -36,7 +36,11 @@ namespace GPRO_IED_A.Data
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
+        public Nullable<int> WorkshopId { get; set; }
+        public Nullable<int> LineId { get; set; }
     
+        public virtual T_Line T_Line { get; set; }
+        public virtual T_WorkShop T_WorkShop { get; set; }
         public virtual ICollection<T_LinePosition> T_LinePosition { get; set; }
     }
 }

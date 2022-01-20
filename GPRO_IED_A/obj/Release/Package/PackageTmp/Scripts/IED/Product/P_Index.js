@@ -23,6 +23,7 @@ GPRO.Product = function () {
             GetListProduct: '/Product/Gets',
             SaveProduct: '/Product/Save',
             DeleteProduct: '/Product/Delete',
+            DeleteFile: '/Product/DeleteFile'
         },
         Element: {
             JtableProduct: 'jtableProduct',
@@ -41,7 +42,7 @@ GPRO.Product = function () {
             treeSelectId: 0,
             ProDeGroupList: [],
             ProDeGroupId: 0,
-            IsInsert : true
+            IsInsert: true
         }
     }
     this.GetGlobal = function () {
@@ -53,20 +54,12 @@ GPRO.Product = function () {
         InitList();
         ReloadList();
         InitPopup();
-        BindData(null);
         GetCustomerSelect('pcustomer');
+        GetProductGroupSelect('pro-group-customer');
     }
 
-    this.reloadListProduct = function () {
-        ReloadListProduct();
-    }
-
-    this.initViewModel = function (Product) {
-        InitViewModel(Product);
-    }
-
-    this.bindData = function (Product) {
-        BindData(Product);
+    this.deleteFile = function (fileId) {
+        DeleteFile(fileId);
     }
 
     var RegisterEvent = function () {
@@ -82,7 +75,6 @@ GPRO.Product = function () {
             $('div.divParent').attr('currentPoppup', Global.Element.Search.toUpperCase());
         });
         $('[pcancel]').click(function () {
-            BindData(null); 
             $('#pdes').val('');
         });
 
@@ -92,82 +84,53 @@ GPRO.Product = function () {
             $('div.divParent').attr('currentPoppup', '');
         });
 
-        $('[psearch]').click(function () { 
-                ReloadList();
-                $('#pkeyword').val('');
-                $('[pclose]').click();
+        $('[psearch]').click(function () {
+            ReloadList();
+            $('#pkeyword').val('');
+            $('[pclose]').click();
         });
-         
-    }
 
-    //-- product type
-    function InitViewModel(Product) {
-        var switchInstance = $("#proIsPrivate").data("kendoMobileSwitch");
-        var ProductViewModel = {
-            Id: 0,
-            Name: '',
-            Code: '',
-            Description: '',
-            CTBTP: '',
-            IsPrivate: false,
-            CustomerId:0
-        };
-        switchInstance.check(true);
-        if (Product != null) {
-            ProductViewModel = {
-                Id: ko.observable(Product.Id),
-                Name: ko.observable(Product.Name),
-                Code: ko.observable(Product.Code),
-                Description: ko.observable(Product.Description),
-                CTBTP: ko.observable(Product.CTBTP),
-                IsPrivate: ko.observable(Product.IsPrivate),
-                CustomerId: 0
-            };
-            switchInstance.check(Product.IsPrivate)
-        }
-        return ProductViewModel;
-    }
-
-    function BindData(Product) {
-        Global.Data.ModelProduct = InitViewModel(Product);
-        ko.applyBindings(Global.Data.ModelProduct, document.getElementById(Global.Element.PopupProduct));
     }
 
     function SaveProduct() {
-        Global.Data.ModelProduct.IsPrivate = $("#proIsPrivate").data("kendoMobileSwitch").check();
-        Global.Data.ModelProduct.CustomerId = $("#pcustomer").val();
-        Global.Data.ModelProduct.Code = $("#pcustomer option:selected").text();
+        var obj = {
+            Id: $('#pid').val(),
+            IsPrivate: $("#proIsPrivate").data("kendoMobileSwitch").check(),
+            CustomerId: $("#pcustomer").val(),
+            Description: $("#pdes").val(),
+            Name: $("#pname").val(),
+            Code: $("#pcustomer option:selected").text(),
+            ProductGroupId: $("#pro-group-customer").val(),
+            Img: $('#p-file-upload').attr("newUrl")
+        }
         $.ajax({
             url: Global.UrlAction.SaveProduct,
             type: 'post',
-            data: ko.toJSON(Global.Data.ModelProduct),
+            data: ko.toJSON(obj),
             contentType: 'application/json',
             beforeSend: function () { $('#loading').show(); },
             success: function (result) {
                 $('#loading').hide();
-                GlobalCommon.CallbackProcess(result, function () {
-                    if (result.Result == "OK") {
-                        ReloadList(); 
-                        BindData(null);
-                        $('#pdes').val('');
-                        $("#pcustomer").val('');
-                        if (!Global.Data.IsInsert) {
-                            $("#" + Global.Element.PopupProduct + ' button[pcancel]').click();
-                            $('div.divParent').attr('currentPoppup', '');
-                        }
-                        Global.Data.IsInsert = true;
+                if (result.Result == "OK") {
+                    ReloadList();
+                    $('#pid').val(0);
+                    $('#pdes').val('');
+                    $('#pname').val('');
+                    $('#p-file-upload').attr("newUrl", '');
+                    $('#p-file-upload').val('');
+                    if (!Global.Data.IsInsert) {
+                        $("#" + Global.Element.PopupProduct + ' button[pcancel]').click();
+                        $('div.divParent').attr('currentPoppup', '');
                     }
-                    else
-                        GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
-                }, false, Global.Element.PopupModule, true, true, function () {
-                    var msg = GlobalCommon.GetErrorMessage(result);
+                    Global.Data.IsInsert = true;
+                }
+                else
                     GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
-                });
             }
         });
     }
 
-    function InitList () {
+    function InitList() {
         $('#' + Global.Element.JtableProduct).jtable({
             title: 'Quản lý mã hàng',
             paging: true,
@@ -178,7 +141,6 @@ GPRO.Product = function () {
             actions: {
                 listAction: Global.UrlAction.GetListProduct,
                 createAction: Global.Element.PopupProduct,
-                createObjDefault: InitViewModel(null),
                 searchAction: Global.Element.Search,
             },
             messages: {
@@ -196,12 +158,13 @@ GPRO.Product = function () {
                 Name: {
                     visibility: 'fixed',
                     title: "Tên mã hàng",
-                    width: "20%", 
+                    width: "20%",
                 },
                 Code: {
                     title: "Khách hàng",
                     width: "5%",
                 },
+
                 //CTBTP: {
                 //    title: 'Chi Tiết Bán Thành Phẩm',
                 //    width: '10%',
@@ -228,8 +191,26 @@ GPRO.Product = function () {
                     display: function (data) {
                         var text = $('<i data-toggle="modal" data-target="#' + Global.Element.PopupProduct + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
                         text.click(function () {
-                            BindData(data.record);
                             $("#pcustomer").val(data.record.CustomerId);
+                            $('#pro-group-customer').val(data.record.ProductGroupId);
+                            $('#pid').val(data.record.Id);
+                            $("#pcustomer").val(data.record.CustomerId);
+                            $("#pdes").val(data.record.Description);
+                            $("#pname").val(data.record.Name);
+
+                            var switchInstance = $("#proIsPrivate").data("kendoMobileSwitch");
+                            switchInstance.check(data.record.IsPrivate);
+                            var imgBox = $('.img-box');
+                            imgBox.empty();
+                            if (data.record.Files && data.record.Files.length > 0) {
+                                var files = data.record.Files;
+                                for (var i = 0; i < files.length; i++) {
+                                    imgBox.append(`<div class="img-item">
+                                    <img src="${files[i].Code}" class="img-avatar" id="img-avatar" />
+                                    <div class="delete" onClick='DeleteFile(${files[i].Value})'>xóa</div>
+                                </div> `);
+                                }
+                            }
                             Global.Data.IsInsert = false;
                         });
                         return text;
@@ -254,11 +235,11 @@ GPRO.Product = function () {
         });
     }
 
-    function ReloadList () {
+    function ReloadList() {
         var keySearch = $('#pkeyword').val();
         var searchBy = $('#psearchBy').val();
         $('#' + Global.Element.JtableProduct).jtable('load', { 'keyword': keySearch, 'searchBy': searchBy });
-      }
+    }
 
     function Delete(Id) {
         $.ajax({
@@ -266,25 +247,38 @@ GPRO.Product = function () {
             type: 'POST',
             data: JSON.stringify({ 'Id': Id }),
             contentType: 'application/json charset=utf-8',
+            beforeSend: function () { $('#loading').show(); },
             success: function (data) {
-                GlobalCommon.CallbackProcess(data, function () {
-                    if (data.Result == "OK") {
-                        ReloadList();
-                        BindData(null);
-                    }
-                    else
-                        GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
-                }, false, Global.Element.PopupProduct, true, true, function () {
+                $('#loading').hide();
+                if (data.Result == "OK") {
+                    ReloadList();
+                }
+                else
+                    GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
+            }
+        });
+    }
 
-                    var msg = GlobalCommon.GetErrorMessage(data);
-                    GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
-                });
+    function DeleteFile(fileId) {
+        $.ajax({
+            url: Global.UrlAction.DeleteFile,
+            type: 'POST',
+            data: JSON.stringify({ 'Id': fileId }),
+            contentType: 'application/json charset=utf-8',
+            beforeSend: function () { $('#loading').show(); },
+            success: function (data) {
+                $('#loading').hide();
+                if (data.Result == "OK") {
+                    $("#" + Global.Element.PopupProduct + ' button[pcancel]').click();
+                    ReloadList();
+                }
+                else
+                    GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
             }
         });
     }
 
     function InitPopup() {
-
         $("#" + Global.Element.PopupProduct).modal({
             keyboard: false,
             show: false
@@ -292,25 +286,62 @@ GPRO.Product = function () {
 
         $("#" + Global.Element.PopupProduct + ' button[psave]').click(function () {
             if (CheckValidate()) {
-                SaveProduct();
+                if ($('#p-file-upload').val() != '')
+                    UploadPicture("p-file-upload", 'p-file-upload');
+                else
+                    SaveProduct();
             }
         });
         $("#" + Global.Element.PopupProduct + ' button[pcancel]').click(function () {
             $("#" + Global.Element.PopupProduct).modal("hide");
         });
+
+        $('#p-file-upload').select(function () {
+            SaveProduct();
+        });
+
+        $('#p-btn-file-upload').click(function () {
+            $('#p-file-upload').click();
+        });
     }
-     
+
     function CheckValidate() {
         if ($('#pname').val().trim() == "") {
             GlobalCommon.ShowMessageDialog("Vui lòng nhập Tên mã hàng.", function () { }, "Lỗi Nhập liệu");
             return false;
         }
         return true;
-    }     
+    }
+
+    UploadPicture = (controlId, returnId) => {
+        if (window.FormData !== undefined) {
+            var fileUpload = $('#' + controlId).get(0);
+            var files = fileUpload.files;
+            var fileData = new FormData();
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+            $.ajax({
+                url: '/Upload/ProductFile',
+                type: "POST",
+                data: fileData,
+                beforeSend: function () { $('#loading').show(); },
+                contentType: false, // Not to set any content header  
+                processData: false, // Not to process data  
+                success: function (result) {
+                    $('#loading').hide();
+                    $('#' + returnId).attr("newUrl", result);
+                    $('#' + returnId).select();
+                },
+                error: function (err) {
+                    alert("Lỗi up hình : " + err.statusText);
+                }
+            });
+        }
+        else {
+            alert("FormData is not supported.");
+        }
+    }
 }
 
-$(document).ready(function () {
-    var Product = new GPRO.Product();
-    Product.Init(); 
-});
- 
+

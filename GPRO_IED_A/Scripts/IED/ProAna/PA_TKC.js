@@ -31,6 +31,7 @@ GPRO.LaborDivision = function () {
 
             Gets: '/ProAna/Gets_TKC',
             GetById: '/ProAna/GetTKCById',
+            RefreshTKCById: '/ProAna/RefreshTKCById',
             GetTech: '/ProAna/GetTech',
             Save: '/ProAna/SaveTKC',
             ExportExcel: '/ProAna/ExportDiagramToExcel',
@@ -258,7 +259,9 @@ GPRO.LaborDivision = function () {
                 $('.tech-info-box-but i').removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
             }
         });
-
+        $('#tkc_lineName').change(() => {
+            GetEmployeeWithSkill('tkc_Employee');
+        })
     }
 
 
@@ -362,8 +365,8 @@ GPRO.LaborDivision = function () {
 
     function ReloadList() {
         $('#' + Global.Element.Jtable).jtable('load', { 'parentId': $('#jtable_tkc').attr('pId') });
-      //  if (Global.Data.TechProVerId == null || Global.Data.TechProVerId == 0)
-      //      GlobalCommon.ShowMessageDialog('Quy trình công nghệ chưa được tạo. Bạn cần phải lưu quy trình công nghệ trước rồi mới có thể tạo thiết kế chuyền được !.', function () { }, "Lỗi thao tác");
+        //  if (Global.Data.TechProVerId == null || Global.Data.TechProVerId == 0)
+        //      GlobalCommon.ShowMessageDialog('Quy trình công nghệ chưa được tạo. Bạn cần phải lưu quy trình công nghệ trước rồi mới có thể tạo thiết kế chuyền được !.', function () { }, "Lỗi thao tác");
 
     }
 
@@ -401,6 +404,9 @@ GPRO.LaborDivision = function () {
 
 
     function GetTech(node) {
+        Global.Data.TechProcessVerDetailArray.length = 0;
+        Global.Data.PhaseList.length = 0;
+        Global.Data.BasePhases.length = 0;
         $.ajax({
             url: Global.UrlAction.GetTech,
             type: 'post',
@@ -1316,35 +1322,37 @@ GPRO.LaborDivision = function () {
     }
 
     function GetEmployeeWithSkill(controlName) {
-        $.ajax({
-            url: '/Employee/GetEmployWithSkill',
-            type: 'post',
-            data: '',
-            contentType: 'application/json',
-            beforeSend: function () { $('#loading').show(); },
-            success: function (result) {
-                GlobalCommon.CallbackProcess(result, function () {
-                    if (result.Result == "OK") {
-                        var option = '<option value="0" >Không Có Dữ Liệu Nhân Viên</option>';
-                        Global.Data.EmployeeArr.length = 0;
-                        if (result.Data.length > 0) {
-                            option = '';
-                            $.each(result.Data, function (i, item) {
-                                Global.Data.EmployeeArr.push(item);
-                                option += '<option value="' + item.EmployeeId + '" >' + item.EmployeeName + ' (' + item.EmployeeCode + ')</option>';
-                            });
-                            $('#' + controlName).empty().append(option);
-                            $('#loading').hide();
+        if ($('#tkc_lineName').val() != null)
+            $.ajax({
+                url: '/Employee/GetEmployWithSkill',
+                type: 'post',
+                data: JSON.stringify({ 'lineId': $('#tkc_lineName').val() }),
+                contentType: 'application/json',
+                beforeSend: function () { $('#loading').show(); },
+                success: function (result) {
+                    $('#loading').hide();
+                    GlobalCommon.CallbackProcess(result, function () {
+                        if (result.Result == "OK") {
+                            var option = '<option value="0" >Không Có Dữ Liệu Nhân Viên</option>';
+                            Global.Data.EmployeeArr.length = 0;
+                            if (result.Data.length > 0) {
+                                option = '';
+                                $.each(result.Data, function (i, item) {
+                                    Global.Data.EmployeeArr.push(item);
+                                    option += '<option value="' + item.EmployeeId + '" >' + item.EmployeeName + ' (' + item.EmployeeCode + ')</option>';
+                                });
+                                $('#' + controlName).empty().append(option);
+
+                            }
                         }
-                    }
-                    else
+                        else
+                            GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
+                    }, false, '', true, true, function () {
+                        var msg = GlobalCommon.GetErrorMessage(result);
                         GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
-                }, false, '', true, true, function () {
-                    var msg = GlobalCommon.GetErrorMessage(result);
-                    GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
-                });
-            }
-        });
+                    });
+                }
+            });
     }
 
     /***************************************************************************************************************** 
@@ -1384,56 +1392,78 @@ GPRO.LaborDivision = function () {
             contentType: 'application/json',
             beforeSend: function () { $('#loading').show(); },
             success: function (result) {
-                GlobalCommon.CallbackProcess(result, function () {
-                    if (result.Result == "OK") {
 
-                        $('#tkc_id').val(result.Records.Id);
-                        $('#tkc_lineName').val(result.Records.LineId);
+                if (result.Result == "OK") {
 
-                        Global.Data.TechProVerId = result.Records.TechProVer_Id;
+                    $('#tkc_id').val(result.Records.Id);
+                    $('#tkc_lineName').val(result.Records.LineId);
 
-                        Global.Data.CodeOption = '<option value="0" >Chọn ...</option>';
-                        Global.Data.NameOption = '<option value="0" >Chọn ...</option>';
-                        Global.Data.Code.length = 0;
-                        Global.Data.Name.length = 0;
-                        Global.Data.PhaseList.length = 0;
-                        if (result.Records.TechProcess != null) {
-                            $.each(result.Records.TechProcess.details, function (i, item) {
-                                Global.Data.PhaseList.push(item);
-                                Global.Data.CodeOption += '<option value="' + item.Id + '" >' + item.PhaseCode + '</option>';
-                                Global.Data.NameOption += '<option value="' + item.Id + '" >' + item.PhaseName + '</option>';
-                                Global.Data.Code.push(item.PhaseCode.trim());
-                                Global.Data.Name.push(item.PhaseName.trim());
-                            });
-                        }
+                    Global.Data.TechProVerId = result.Records.TechProVer_Id;
 
-
-                        if (result.Records.Positions != null && result.Records.Positions.length > 0) {
-                            DrawLinePositionWidthDetail(result.Records.Positions, null);
-                            $('#tkc_sl_line').val(result.Records.Positions.length);
-                        }
-
-                        //$('#time-per-commo').html(Math.round(result.Records.TechProcess.TimeCompletePerCommo * 1000) / 1000);
-                        //$('#pro-per-person').html(Math.round(result.Records.TechProcess.ProOfPersonPerDay * 1000) / 1000);
-                        //$('#pro-group-per-hour').html(Math.round(result.Records.TechProcess.ProOfGroupPerHour * 1000) / 1000);
-                        //$('#pro-group-per-day').html(Math.round(result.Records.TechProcess.ProOfGroupPerDay * 1000) / 1000);
-                        //$('#paced-product').html(Math.round(result.Records.TechProcess.PacedProduction * 1000) / 1000);
-                        //$('#workers').html(result.Records.TechProcess.NumberOfWorkers);
-                        //$('#time-per-day').html(result.Records.TechProcess.WorkingTimePerDay);
-                        //$('#note').html(result.Records.TechProcess.Note);
-
-
-
-                        $('#loading').hide();
+                    //TODO  18/1/2022
+                    Global.Data.CodeOption = '<option value="0" >Chọn ...</option>';
+                    Global.Data.NameOption = '<option value="0" >Chọn ...</option>';
+                    Global.Data.Code.length = 0;
+                    Global.Data.Name.length = 0;
+                    Global.Data.PhaseList.length = 0;
+                    if (result.Records.TechProcess != null) {
+                        $.each(result.Records.TechProcess.details, function (i, item) {
+                            Global.Data.PhaseList.push(item);
+                            Global.Data.CodeOption += '<option value="' + item.Id + '" >' + item.PhaseCode + '</option>';
+                            Global.Data.NameOption += '<option value="' + item.Id + '" >' + item.PhaseName + '</option>';
+                            Global.Data.Code.push(item.PhaseCode.trim());
+                            Global.Data.Name.push(item.PhaseName.trim());
+                        });
                     }
-                    else
-                        GlobalCommon.ShowMessageDialog('', function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
-                }, false, Global.Element.PopupModule, true, true, function () {
-                    var msg = GlobalCommon.GetErrorMessage(result);
+
+
+                    if (result.Records.Positions != null && result.Records.Positions.length > 0) {
+                        DrawLinePositionWidthDetail(result.Records.Positions, null);
+                        $('#tkc_sl_line').val(result.Records.Positions.length);
+                    }
+
+                    //$('#time-per-commo').html(Math.round(result.Records.TechProcess.TimeCompletePerCommo * 1000) / 1000);
+                    //$('#pro-per-person').html(Math.round(result.Records.TechProcess.ProOfPersonPerDay * 1000) / 1000);
+                    //$('#pro-group-per-hour').html(Math.round(result.Records.TechProcess.ProOfGroupPerHour * 1000) / 1000);
+                    //$('#pro-group-per-day').html(Math.round(result.Records.TechProcess.ProOfGroupPerDay * 1000) / 1000);
+                    //$('#paced-product').html(Math.round(result.Records.TechProcess.PacedProduction * 1000) / 1000);
+                    //$('#workers').html(result.Records.TechProcess.NumberOfWorkers);
+                    //$('#time-per-day').html(result.Records.TechProcess.WorkingTimePerDay);
+                    //$('#note').html(result.Records.TechProcess.Note);
+
+
+
+                    $('#loading').hide();
+                    if (result.Records.IsTechVersionChange)
+                        GlobalCommon.ShowConfirmDialog("Thông tin quy trình công nghệ đã thay đổi. Bạn có muốn cập nhật lại thông tin cho thiết kế chuyền không ?",
+                            () => {
+                                //cập nhật lại thông tin công đoạn cho thiết kế chuyền
+                                RefreshLaborDivisionDiagramById(id);
+                            },
+                            () => { }, "Cập nhật", "Không cập nhật", "Thông báo");
+                }
+                else
                     GlobalCommon.ShowMessageDialog('', function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
-                });
+
             }
         });
     }
 
+    function RefreshLaborDivisionDiagramById(id) {
+        $.ajax({
+            url: Global.UrlAction.RefreshTKCById,
+            type: 'post',
+            data: JSON.stringify({ 'labourId': id }),
+            contentType: 'application/json',
+            beforeSend: function () { $('#loading').show(); },
+            success: function (result) {
+                $('#loading').hide();
+                if (result.Result == "OK") {
+                    GetLaborDivisionDiagramById(id);
+                }
+                else
+                    GlobalCommon.ShowMessageDialog('Cập nhật thất bại', function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
+            }
+        });
+    }
 }

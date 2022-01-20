@@ -2,13 +2,11 @@
 using GPRO.Ultilities;
 using GPRO_IED_A.Business.Model;
 using GPRO_IED_A.Data;
+using Hugate.Framework;
 using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -53,7 +51,7 @@ namespace GPRO_IED_A.Business
                     }
                     else
                     {
-                        if (!checkPermis(obj, actionUserId,isOwner))
+                        if (!checkPermis(obj, actionUserId, isOwner))
                         {
                             result.IsSuccess = false;
                             result.Errors.Add(new Error() { MemberName = "Delete Customer Type", Message = "Bạn không phải là người tạo nhân viên này nên bạn không xóa được xóa nhân viên này." });
@@ -112,18 +110,22 @@ namespace GPRO_IED_A.Business
                             employee = db.HR_Employee.FirstOrDefault(x => !x.IsDeleted && x.Id == model.Id && x.CompanyId == model.CompanyId);
                             if (employee != null)
                             {
-                                if (!checkPermis(employee, model.ActionUser,isOwner))
+                                if (!checkPermis(employee, model.ActionUser, isOwner))
                                 {
                                     result.IsSuccess = false;
                                     result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo nhân viên này nên bạn không cập nhật được thông tin cho nhân viên này." });
                                 }
                                 else
                                 {
+                                    employee.WorkshopId = model.WorkshopId;
+                                    employee.LineId = model.LineId;
                                     employee.FirstName = model.FirstName;
                                     employee.LastName = model.LastName;
                                     employee.Gender = model.Gender;
                                     employee.Birthday = model.Birthday;
                                     employee.Code = model.Code;
+                                    employee.Email = model.Email;
+                                    employee.Mobile = model.Mobile;
                                     employee.CompanyId = model.CompanyId;
                                     if (model.Image != null)
                                         employee.Image = model.Image; // hinh
@@ -139,7 +141,7 @@ namespace GPRO_IED_A.Business
                                 result.Errors.Add(new Error() { MemberName = "update employee", Message = "Không tìm thấy Nhân Viên này. \nCó thể nhân viên đã bị xóa hoặc không tồn tại. \nVui lòng kiểm tra lại dữ liệu." });
                             }
                         }
-                        
+
                     }
                     return result;
                 }
@@ -168,18 +170,39 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
+
         public PagedList<EmployeeModel> Gets(string keyWord, int companyId, int startIndexRecord, int pageSize, string sorting)
         {
             PagedList<EmployeeModel> pagelistReturn = null;
-            List<EmployeeModel> employees = null;
+            List<EmployeeModel> employees = new List<EmployeeModel>();
             try
             {
-                if (string.IsNullOrEmpty(sorting))
-                    sorting = "Id DESC";
-                employees = GetEmployees(keyWord, sorting, companyId);
-                var pageNumber = (startIndexRecord / pageSize) + 1;
-                pagelistReturn = new PagedList<EmployeeModel>(employees, pageNumber, pageSize);
-                return pagelistReturn;
+                using (db = new IEDEntities())
+                {
+                    if (string.IsNullOrEmpty(sorting))
+                        sorting = "Id DESC";
+                    var objs = GetEmployees(keyWord, sorting, companyId, db);
+                    if (objs != null)
+                        employees = objs.Select(x => new EmployeeModel()
+                        {
+                            Gender = x.Gender,
+                            Birthday = x.Birthday,
+                            Id = x.Id,
+                            Code = x.Code,
+                            Email = x.Email,
+                            FullName = x.FirstName.Trim() + " " + x.LastName.Trim(),
+                            Mobile = x.Mobile,
+                            FirstName = x.FirstName,
+                            LastName = x.LastName,
+                            WorkshopId = x.WorkshopId ?? 0,
+                            WorkshopName = x.T_WorkShop.Name,
+                            LineId = x.LineId ?? 0,
+                            LineName = x.T_Line.Name
+                        }).OrderBy(sorting).ToList();
+                    var pageNumber = (startIndexRecord / pageSize) + 1;
+                    pagelistReturn = new PagedList<EmployeeModel>(employees, pageNumber, pageSize);
+                    return pagelistReturn;
+                }
             }
             catch (Exception ex)
             {
@@ -187,53 +210,23 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        private List<EmployeeModel> GetEmployees(string keyWord, string sorting, int companyId)
+        private IQueryable<HR_Employee> GetEmployees(string keyWord, string sorting, int companyId, IEDEntities db)
         {
+            IQueryable<HR_Employee> objs = null;
             try
             {
-                using (db = new IEDEntities())
+                objs = db.HR_Employee.Where(x => !x.IsDeleted && !x.T_WorkShop.IsDeleted && !x.T_Line.IsDeleted && x.CompanyId == companyId);
+                if (!string.IsNullOrEmpty(keyWord))
                 {
-                    IQueryable<EmployeeModel> objs;
-                    if (!string.IsNullOrEmpty(keyWord))
-                    {
-                        keyWord = keyWord.Trim().ToUpper();
-                        objs = db.HR_Employee.Where(x => !x.IsDeleted && x.CompanyId == companyId && (x.FirstName.Trim().ToUpper().Contains(keyWord) || x.LastName.Trim().ToUpper().Contains(keyWord) || x.Code.Trim().ToUpper().Contains(keyWord) || x.Mobile.Trim().ToUpper().Contains(keyWord) || x.Email.Trim().ToUpper().Contains(keyWord))).OrderByDescending(x => x.CreatedDate).Select(x => new EmployeeModel()
-                      {
-                          Gender = x.Gender,
-                          Birthday = x.Birthday,
-                          Id = x.Id,
-                          Code = x.Code,
-                          Email = x.Email,
-                          FullName = x.LastName.Trim() + " " + x.FirstName.Trim(),
-                          Mobile = x.Mobile,
-                          FirstName = x.FirstName,
-                          LastName = x.LastName
-                      }).OrderBy(sorting);
-                    }
-                    else
-                    {
-                        objs = db.HR_Employee.Where(x => !x.IsDeleted && x.CompanyId == companyId).OrderByDescending(x => x.CreatedDate).Select(x => new EmployeeModel()
-                        {
-                            Gender = x.Gender,
-                            Birthday = x.Birthday,
-                            Id = x.Id,
-                            Code = x.Code,
-                            Email = x.Email,
-                            FullName = x.LastName.Trim() + " " + x.FirstName.Trim(),
-                            Mobile = x.Mobile,
-                             FirstName = x.FirstName,
-                            LastName = x.LastName
-                        }).OrderBy(sorting);
-                    }
-
-                    if (objs != null && objs.Count() > 0)
-                        return objs.ToList();
+                    keyWord = keyWord.Trim().ToUpper();
+                    objs = objs.Where(x => (x.FirstName.Trim().ToUpper().Contains(keyWord) || x.LastName.Trim().ToUpper().Contains(keyWord) || x.Code.Trim().ToUpper().Contains(keyWord) || x.Mobile.Trim().ToUpper().Contains(keyWord) || x.Email.Trim().ToUpper().Contains(keyWord)));
                 }
+                return objs;
             }
             catch (Exception)
             {
             }
-            return new List<EmployeeModel>();
+            return objs;
         }
 
         //public List<HR_Employee> GetEmployees(int companyId)
@@ -241,17 +234,17 @@ namespace GPRO_IED_A.Business
         //    return repEmployee.GetMany(x => !x.IsDeleted && x.CompanyId == companyId).ToList();
         //}
 
-        public List<EmployeeWithSkillModel> GetEmployeeWithSkills(int companyId)
+        public List<EmployeeWithSkillModel> GetEmployeeWithSkills(int companyId, int lineId)
         {
             using (db = new IEDEntities())
             {
-                return db.HR_Employee.Where(x => !x.IsDeleted && x.CompanyId == companyId).Select(x => new EmployeeWithSkillModel()
-                           {
-                               EmployeeId = x.Id,
-                               EmployeeCode = x.Code,
-                               EmployeeName = (x.FirstName + " " + x.LastName),
-                               LastName = x.LastName
-                           }).ToList();
+                return db.HR_Employee.Where(x => !x.IsDeleted && !x.T_WorkShop.IsDeleted && !x.T_Line.IsDeleted && x.LineId == lineId && x.CompanyId == companyId).Select(x => new EmployeeWithSkillModel()
+                {
+                    EmployeeId = x.Id,
+                    EmployeeCode = x.Code,
+                    EmployeeName = (x.FirstName + " " + x.LastName),
+                    LastName = x.LastName
+                }).ToList();
             };
         }
 

@@ -33,8 +33,8 @@ namespace GPRO_IED_A.Data
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
     
-        public virtual HR_Employee HR_Employee { get; set; }
         public virtual T_LabourDivision T_LabourDivision { get; set; }
         public virtual ICollection<T_LinePositionDetail> T_LinePositionDetail { get; set; }
+        public virtual HR_Employee HR_Employee { get; set; }
     }
 }

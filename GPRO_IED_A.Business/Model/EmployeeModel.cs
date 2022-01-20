@@ -19,6 +19,11 @@ namespace GPRO_IED_A.Business.Model
         public string Mobile { get; set; }
         public string FullName { get; set; }
         public int ActionUser { get; set; }
+        public int WorkshopId { get; set; }
+        public string WorkshopName { get; set; }
+        public int LineId { get; set; }
+        public string LineName { get; set; }
+
     }
 
     public class EmployeeSmallModel

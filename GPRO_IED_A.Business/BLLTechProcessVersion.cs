@@ -52,7 +52,7 @@ namespace GPRO_IED_A.Business
                         if (listDetail != null && listDetail.Count > 0)
                         {
                             var listPhaseId = listDetail.OrderBy(x => x.PhaseCode).Select(c => c.CA_PhaseId).OrderBy(x => x).ToList();
-                            var listPhase = db.T_CA_Phase.Where(c => !c.IsDeleted && listPhaseId.Contains(c.Id)).OrderBy(x => x.ParentId).ThenBy(x=>x.Code).ToList();
+                            var listPhase = db.T_CA_Phase.Where(c => !c.IsDeleted && listPhaseId.Contains(c.Id)).OrderBy(x => x.ParentId).ThenBy(x => x.Code).ToList();
                             if (listPhase != null)
                             {
                                 var listPhaseGroupId = listPhase.Select(c => c.PhaseGroupId).Distinct().ToList();
@@ -272,7 +272,8 @@ namespace GPRO_IED_A.Business
                         Price = 0,
                         PricePerSecond = x.PricePerSecond,
                         Allowance = x.Allowance,
-                        CustomerName = x.T_Product.T_Customer.Name
+                        CustomerName = x.T_Product.T_Customer.Name,
+                        ParentId = x.ParentId
                     }).FirstOrDefault();
                     if (techVersion != null)
                     {
@@ -304,7 +305,8 @@ namespace GPRO_IED_A.Business
                                            Coefficient = x.T_CA_Phase.SWorkerLevel.Coefficient,
                                            WorkerLevelId = x.T_CA_Phase.WorkerLevelId,
                                            WorkerLevelName = x.T_CA_Phase.SWorkerLevel.Name,
-                                           Index = x.T_CA_Phase.Index
+                                           Index = x.T_CA_Phase.Index,
+                                           Node = x.T_CA_Phase.Node
                                        }).OrderBy(x => x.Index).ThenBy(x => x.PhaseCode).ToList();
 
                         details = details.GroupBy(x => x.CA_PhaseId).Select(x => x.First()).ToList();
@@ -375,22 +377,40 @@ namespace GPRO_IED_A.Business
                     else
                     {
                         techVersion = new TechProcessVersionModel();
-                        techVersion.details.AddRange(_db.T_CA_Phase.Where(x => !x.IsDeleted && x.Node.Contains(node)).Select(x => new TechProcessVerDetailModel()
+                        techVersion.details.AddRange(
+                            _db.T_CA_Phase
+                            .Where(x => !x.IsDeleted && x.Node.Contains(node))
+                            .Select(x => new TechProcessVerDetailModel()
+                            {
+                                Id = 0,
+                                TechProcessVersionId = 0,
+                                PhaseGroupId = x.T_PhaseGroup.Id,
+                                CA_PhaseId = x.Id,
+                                PhaseCode = x.Code,
+                                Index = x.Index,
+                                PhaseName = x.Name,
+                                StandardTMU = Math.Round(x.TotalTMU, 3),
+                                EquipmentId = x.EquipmentId != null ? x.EquipmentId ?? 0 : 0,
+                                EquipmentCode = x.EquipmentId != null ? x.T_Equipment.Code : "",
+                                EquipmentName = x.EquipmentId != null ? x.T_Equipment.Name : "",
+                                EquipmentGroupCode = x.EquipmentId.HasValue ? x.T_Equipment.T_EquipmentGroup.GroupCode : "",
+                                Description = x.Description == null ? "" : x.Description,
+                                Node = x.Node
+                            }).OrderBy(x => x.Index)
+                        .ThenBy(x => x.PhaseCode)
+                        .ToList());
+                    }
+
+                    if (techVersion.details.Count > 0)
+                    {
+                        int _parentId = int.Parse(techVersion.details.First().Node.Split(',')[1]);
+                        var parentObj = _db.T_CommodityAnalysis.FirstOrDefault(x => x.Id == _parentId);
+                        if(parentObj!= null)
                         {
-                            Id = 0,
-                            TechProcessVersionId = 0,
-                            PhaseGroupId = x.T_PhaseGroup.Id,
-                            CA_PhaseId = x.Id,
-                            PhaseCode = x.Code,
-                            Index = x.Index,
-                            PhaseName = x.Name,
-                            StandardTMU = Math.Round(x.TotalTMU, 3),
-                            EquipmentId = x.EquipmentId != null ? x.EquipmentId ?? 0 : 0,
-                            EquipmentCode = x.EquipmentId != null ? x.T_Equipment.Code : "",
-                            EquipmentName = x.EquipmentId != null ? x.T_Equipment.Name : "",
-                            EquipmentGroupCode = x.EquipmentId.HasValue ? x.T_Equipment.T_EquipmentGroup.GroupCode : "",
-                            Description = x.Description == null ? "" : x.Description,
-                        }).OrderBy(x => x.Index).ThenBy(x => x.PhaseCode).ToList());
+                            var user = _db.SUsers.FirstOrDefault(x => x.Id == parentObj.CreatedUser);
+                            techVersion.CreateBy = user.FisrtName + " " + user.LastName;
+                            techVersion.CreateAt = parentObj.CreatedDate.ToString("dd/MM/yyyy");
+                        }
                     }
                     return techVersion;
                 }

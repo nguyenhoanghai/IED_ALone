@@ -38,13 +38,13 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetLists(string keyword, int searchBy, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
+        public JsonResult GetLists(string keyword,  int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
             try
             {
                 if (isAuthenticate)
                 {
-                    var timePrepares = BLLTimePrepare.Instance.Gets(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting);
+                    var timePrepares = BLLTimePrepare.Instance.Gets(keyword,   jtStartIndex, jtPageSize, jtSorting);
                     JsonDataResult.Records = timePrepares;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = timePrepares.TotalItemCount;

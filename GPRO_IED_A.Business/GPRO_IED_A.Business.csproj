@@ -40,6 +40,9 @@
     <Reference Include="Hugate.Framework">
       <HintPath>..\Libs\Hugate.Framework.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PagedList">
       <HintPath>..\Libs\PagedList.dll</HintPath>
     </Reference>
@@ -70,6 +73,7 @@
     <Compile Include="BLLMenuCategory.cs" />
     <Compile Include="BLLModule.cs" />
     <Compile Include="BLLCustomer.cs" />
+    <Compile Include="BLLProductGroup.cs" />
     <Compile Include="BLLProduct.cs" />
     <Compile Include="BLLRole.cs" />
     <Compile Include="BLLRolePermission.cs" />
@@ -141,6 +145,7 @@
     <Compile Include="Model\PagedListModel.cs" />
     <Compile Include="Model\PhaseGroupModel.cs" />
     <Compile Include="Model\PhaseLibModel.cs" />
+    <Compile Include="Model\ProductGroupModel.cs" />
     <Compile Include="Model\ProductModel.cs" />
     <Compile Include="Model\ResponseBase.cs" />
     <Compile Include="Model\TechProcessVerDetailGroupModel.cs" />
@@ -165,6 +170,10 @@
       <Project>{cbcfd999-75fb-40d1-9f8d-d774d4fa09e4}</Project>
       <Name>GPRO_IED_A.Data</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

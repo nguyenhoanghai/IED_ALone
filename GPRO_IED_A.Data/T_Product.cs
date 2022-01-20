@@ -17,9 +17,11 @@ namespace GPRO_IED_A.Data
         public T_Product()
         {
             this.T_TechProcessVersion = new HashSet<T_TechProcessVersion>();
+            this.T_ProductFile = new HashSet<T_ProductFile>();
         }
     
         public int Id { get; set; }
+        public int CustomerId { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
         public string Img { get; set; }
@@ -32,9 +34,11 @@ namespace GPRO_IED_A.Data
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
-        public int CustomerId { get; set; }
+        public Nullable<int> ProductGroupId { get; set; }
     
-        public virtual ICollection<T_TechProcessVersion> T_TechProcessVersion { get; set; }
         public virtual T_Customer T_Customer { get; set; }
+        public virtual T_ProductGroup T_ProductGroup { get; set; }
+        public virtual ICollection<T_TechProcessVersion> T_TechProcessVersion { get; set; }
+        public virtual ICollection<T_ProductFile> T_ProductFile { get; set; }
     }
 }

@@ -143,3 +143,4 @@ E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\obj\Debug\GPRO_IED_A.csproj.CoreCompileInpu
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\obj\Debug\GPRO_IED_A.csproj.CopyComplete
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\obj\Debug\GPRO_IED_A.dll
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\obj\Debug\GPRO_IED_A.pdb
+E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\GPRO_IED_A.Business.dll.config

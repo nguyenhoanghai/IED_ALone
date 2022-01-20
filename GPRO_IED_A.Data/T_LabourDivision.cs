@@ -32,11 +32,11 @@ namespace GPRO_IED_A.Data
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
     
-        public virtual T_CommodityAnalysis T_CommodityAnalysis { get; set; }
-        public virtual T_Line T_Line { get; set; }
-        public virtual T_TechProcessVersion T_TechProcessVersion { get; set; }
-        public virtual ICollection<T_LinePosition> T_LinePosition { get; set; }
         public virtual SUser SUser { get; set; }
         public virtual SUser SUser1 { get; set; }
+        public virtual T_CommodityAnalysis T_CommodityAnalysis { get; set; }
+        public virtual T_TechProcessVersion T_TechProcessVersion { get; set; }
+        public virtual ICollection<T_LinePosition> T_LinePosition { get; set; }
+        public virtual T_Line T_Line { get; set; }
     }
 }

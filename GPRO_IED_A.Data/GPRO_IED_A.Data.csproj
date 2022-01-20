@@ -201,6 +201,12 @@
     <Compile Include="T_Product.cs">
       <DependentUpon>IEDModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="T_ProductFile.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_ProductGroup.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="T_StopPrecisionLibrary.cs">
       <DependentUpon>IEDModel.tt</DependentUpon>
     </Compile>

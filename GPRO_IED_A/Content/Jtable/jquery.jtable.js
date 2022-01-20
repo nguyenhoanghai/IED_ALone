@@ -33,7 +33,7 @@ THE SOFTWARE.
 (function ($) {
 
     var unloadingPage;
-    
+
     $(window).on('beforeunload', function () {
         unloadingPage = true;
     });
@@ -51,7 +51,7 @@ THE SOFTWARE.
             //Options
             actions: {},
             fields: {},
-            datas:{},
+            datas: {},
             animationsEnabled: true,
             defaultDateFormat: 'yy-mm-dd',
             dialogShowEffect: 'fade',
@@ -62,6 +62,7 @@ THE SOFTWARE.
             jqueryuiTheme: false,
             unAuthorizedRequestRedirectUrl: null,
             selectShow: false,
+            deleteAll: false,
 
             ajaxSettings: {
                 type: 'POST',
@@ -141,13 +142,13 @@ THE SOFTWARE.
 
             //Creating DOM elements
             this._createMainContainer();
-            this._createTableTitle();            
+            this._createTableTitle();
             this._createTable();
             this._createToolBar();
             this._createBusyPanel();
             this._createErrorDialogDiv();
-            this._addNoDataRow();            
-            this._cookieKeyPrefix = this._generateCookieKeyPrefix();            
+            this._addNoDataRow();
+            this._cookieKeyPrefix = this._generateCookieKeyPrefix();
         },
 
         /* Normalizes some options for all fields (sets default values).
@@ -225,7 +226,6 @@ THE SOFTWARE.
         *************************************************************************/
         _createTableTitle: function () {
             var self = this;
-
             if (!self.options.title) {
                 return;
             }
@@ -319,8 +319,8 @@ THE SOFTWARE.
             var $headerContainerDiv = $('<div />')
                 .addClass('jtable-column-header-container')
                 .append($headerTextSpan);
-
-            var $th = $('<th></th>')
+            var cls = field.headerClass ? field.headerClass : '';
+            var $th = $(`<th class='${cls}'></th>`)
                 .addClass('jtable-column-header')
                 .addClass(field.listClass)
                 .css('width', field.width)
@@ -433,7 +433,7 @@ THE SOFTWARE.
         _reloadTable: function (completeCallback) {
             var self = this;
 
-            var completeReload = function(data) {
+            var completeReload = function (data) {
                 self._hideBusy();
 
                 //Show the error message if server returns error
@@ -465,11 +465,11 @@ THE SOFTWARE.
 
                 //Check if result is a jQuery Deferred object
                 if (self._isDeferredObject(funcResult)) {
-                    funcResult.done(function(data) {
+                    funcResult.done(function (data) {
                         completeReload(data);
-                    }).fail(function() {
+                    }).fail(function () {
                         self._showError(self.options.messages.serverCommunicationError);
-                    }).always(function() {
+                    }).always(function () {
                         self._hideBusy();
                     });
                 } else { //assume it's the data we're loading
@@ -477,12 +477,11 @@ THE SOFTWARE.
                 }
 
             }
-            else if ($.isArray(self.options.actions.listAction))
-            {
+            else if ($.isArray(self.options.actions.listAction)) {
                 //Re-generate table rows
                 self._removeAllRows('reloading');
                 self._addRecordsToTable(self.options.actions.listAction);
-                
+
 
                 //Call complete callback
                 if (completeCallback) {
@@ -517,7 +516,7 @@ THE SOFTWARE.
             return this.options.actions.listAction;
         },
 
-        _createJtParamsForLoading: function() {
+        _createJtParamsForLoading: function () {
             return {
                 //Empty as default, paging, sorting or other extensions can override this method to add additional params to load request
             };
@@ -532,7 +531,6 @@ THE SOFTWARE.
                 .addClass('jtable-data-row')
                 .attr('data-record-key', this._getKeyValueOfRecord(record))
                 .data('record', record);
-
             this._addCellsToRowUsingRecord($tr);
             return $tr;
         },
@@ -550,7 +548,9 @@ THE SOFTWARE.
         /* Create a cell for given field.
         *************************************************************************/
         _createCellForRecordField: function (record, fieldName) {
-            return $('<td></td>')
+            var field = this.options.fields[fieldName];
+            var cls = field.columnClass ? field.columnClass : '';
+            return $(`<td class='${cls}'></td>`)
                 .addClass(this.options.fields[fieldName].listClass)
                 .append((this._getDisplayTextForRecordField(record, fieldName)));
         },
@@ -559,7 +559,6 @@ THE SOFTWARE.
         *************************************************************************/
         _addRecordsToTable: function (records) {
             var self = this;
-
             $.each(records, function (index, record) {
                 if ($.isArray(record))
                     self._addRecordsToTable(record);
@@ -1002,18 +1001,32 @@ THE SOFTWARE.
 
         /* TOOL BAR *************************************************************/
 
+        _createSearchInput: function () {
+            var seft = this;
+            if (seft.options.searchInput ) {
+                seft._addToolBarItem({
+                    id: seft.options.searchInput.id,
+                    type: 'input',
+                    icon: true,
+                    cssClass: seft.options.searchInput.className,
+                    placeHolder: seft.options.searchInput.placeHolder,
+                    text: 'aaaa',
+                    keyup:  function (evt) {
+                        seft.options.searchInput.keyup(evt) 
+                    }
+                });
+          }
+        },
+
         _createSearchRecord: function () {
             var seft = this;
-            if(typeof(seft.options.actions.searchAction)!='undefined' && seft.options.actions.searchAction!='')
-            {
+            if (typeof (seft.options.actions.searchAction) != 'undefined' && seft.options.actions.searchAction != '') {
                 seft._addToolBarItem({
                     icon: true,
                     cssClass: 'jtable-toolbar-item-search-record',
                     text: seft.options.messages.searchRecord,
                     click: function () {
-                        
                         $('#' + seft.options.actions.searchAction).modal('show');
-                        
                     }
                 });
             }
@@ -1021,22 +1034,21 @@ THE SOFTWARE.
 
         _createShowColumn: function () {
             var self = this;
-            if (typeof (self.options.selectShow) != 'undefined' && self.options.selectShow ==true)
-            {
+            if (typeof (self.options.selectShow) != 'undefined' && self.options.selectShow == true) {
                 self._addToolBarItem({
                     icon: true,
                     cssClass: 'jtable-toolbar-item-show-record',
                     text: self.options.messages.selectShow,
                     id: "selectShow",
-                    click: function () {                       
+                    click: function () {
                         var selectShow = $('#' + self.element.context.id + ' #selectHideShowColumn');
                         if (selectShow.css('display') == 'block')
                             selectShow.hide();
                         else {
-                            
+
                             var containerOffset = self._$mainContainer.offset();
-                            var selectionDivTop = event.clientY - containerOffset.top+30;
-                            var selectionDivLeft = event.clientX - containerOffset.left-20;
+                            var selectionDivTop = event.clientY - containerOffset.top + 30;
+                            var selectionDivLeft = event.clientX - containerOffset.left - 20;
 
                             var selectionDivMinWidth = 100; //in pixels
                             var containerWidth = self._$mainContainer.width();
@@ -1049,25 +1061,48 @@ THE SOFTWARE.
                             selectShow.css({
                                 left: selectionDivLeft,
                                 top: selectionDivTop,
-                                'min-width': selectionDivMinWidth + 'px',                                
+                                'min-width': selectionDivMinWidth + 'px',
                             });
                             selectShow.show();
                         }
                     }
                 });
             }
-            },
+        },
+
+        _createDeleteAll: function () {
+            var self = this;
+            if (typeof (self.options.deleteAll) != 'undefined' && self.options.deleteAll == true) {
+                self._addToolBarItem({
+                    icon: true,
+                    cssClass: 'jtable-toolbar-item-show-record',
+                    text: self.options.messages.deleteAll,
+                    id: "deleteAll",
+                    click: function () {
+                        if (typeof (self.options.actions.deleteActionFunction) != 'undefined') {
+                            if (typeof (self.options.datas.objectOther) != 'undefined') {
+                                var func = self.options.datas.objectOther[self.options.actions.deleteActionFunction];
+                                if (typeof (func) != 'undefined')
+                                    func();
+                            }
+                        }
+                    }
+                });
+            }
+        },
         /* Creates the toolbar.
         *************************************************************************/
         _createToolBar: function () {
             this._$toolbarDiv = $('<div />')
-            .addClass('jtable-toolbar')
-            .appendTo(this._$titleDiv);
+                .addClass('jtable-toolbar')
+                .appendTo(this._$titleDiv);
 
             for (var i = 0; i < this.options.toolbar.items.length; i++) {
                 this._addToolBarItem(this.options.toolbar.items[i]);
             }
+            this._createSearchInput();
             this._createShowColumn();
+            this._createDeleteAll();
             this._createSearchRecord();
         },
 
@@ -1081,7 +1116,12 @@ THE SOFTWARE.
                 this._logWarn(item);
                 return null;
             }
-            if (item.id != undefined) {
+            if (item.type) {
+                var $toolBarItem = $(`<input type="text" placeholder="${item.placeHolder}" id="${item.id}" name="${item.id}" />`)
+                    .addClass(item.className)
+                    .appendTo(this._$toolbarDiv);
+            }
+            else if (item.id != undefined) {
                 var $toolBarItem = $('<span id="' + item.id + '"></span>')
                     .addClass('jtable-toolbar-item')
                     .appendTo(this._$toolbarDiv);
@@ -1127,6 +1167,12 @@ THE SOFTWARE.
             if (item.click) {
                 $toolBarItem.click(function () {
                     item.click();
+                });
+            }
+
+            if (item.keyup) {
+                $toolBarItem.keyup(function (evt) {
+                    item.keyup(evt);
                 });
             }
 
@@ -1237,7 +1283,7 @@ THE SOFTWARE.
             });
         },
 
-        _unAuthorizedRequestHandler: function() {
+        _unAuthorizedRequestHandler: function () {
             if (this.options.unAuthorizedRequestRedirectUrl) {
                 location.href = this.options.unAuthorizedRequestRedirectUrl;
             } else {
@@ -1280,7 +1326,7 @@ THE SOFTWARE.
                     jqXHR.abort();
                     return;
                 }
-                
+
                 if (options.error) {
                     options.error(arguments);
                 }
@@ -1542,8 +1588,8 @@ THE SOFTWARE.
             var len = this.length;
             var from = Number(arguments[1]) || 0;
             from = (from < 0)
-                 ? Math.ceil(from)
-                 : Math.floor(from);
+                ? Math.ceil(from)
+                : Math.floor(from);
             if (from < 0)
                 from += len;
             for (; from < len; from++) {
@@ -1662,10 +1708,10 @@ THE SOFTWARE.
         *************************************************************************/
         _createDateInputForField: function (field, fieldName, value) {
             var $input = $('<input class="' + field.inputClass + '" id="Edit-' + fieldName + '" type="text" name="' + fieldName + '"></input>');
-            if(value != undefined) {
+            if (value != undefined) {
                 $input.val(value);
             }
-            
+
             var displayFormat = field.displayFormat || this.options.defaultDateFormat;
             $input.datepicker({ dateFormat: displayFormat });
             return $('<div />')
@@ -1680,7 +1726,7 @@ THE SOFTWARE.
             if (value != undefined) {
                 $textArea.val(value);
             }
-            
+
             return $('<div />')
                 .addClass('jtable-input jtable-textarea-input')
                 .append($textArea);
@@ -1693,7 +1739,7 @@ THE SOFTWARE.
             if (value != undefined) {
                 $input.val(value);
             }
-            
+
             return $('<div />')
                 .addClass('jtable-input jtable-text-input')
                 .append($input);
@@ -1706,7 +1752,7 @@ THE SOFTWARE.
             if (value != undefined) {
                 $input.val(value);
             }
-            
+
             return $('<div />')
                 .addClass('jtable-input jtable-password-input')
                 .append($input);
@@ -1796,7 +1842,7 @@ THE SOFTWARE.
 
             return $containerDiv;
         },
-        
+
         /* Fills a dropdown list with given options.
         *************************************************************************/
         _fillDropDownListWithOptions: function ($select, options, value) {
@@ -1824,11 +1870,8 @@ THE SOFTWARE.
                 if ($dependsOn.length <= 0) {
                     continue;
                 }
-
                 dependedValues[dependedField] = $dependsOn.val();
             }
-
-
             return dependedValues;
         },
 
@@ -1843,7 +1886,7 @@ THE SOFTWARE.
                 source: source
             });
 
-            $.each(options, function(i, option) {
+            $.each(options, function (i, option) {
                 var $radioButtonDiv = $('<div class=""></div>')
                     .addClass('jtable-radio-input')
                     .appendTo($containerDiv);
@@ -1933,7 +1976,7 @@ THE SOFTWARE.
                     }
 
                     var field = self.options.fields[fieldName];
-                    
+
                     //check if this combobox depends on others
                     if (!field.dependsOn) {
                         return;
@@ -2050,7 +2093,7 @@ THE SOFTWARE.
 
     //Reference to base object members
     var base = {
-        
+
         _create: $.hik.jtable.prototype._create
     };
 
@@ -2093,7 +2136,7 @@ THE SOFTWARE.
             this._createAddRecordDialogDiv();
         },
 
-        
+
         /* Creates and prepares add new record dialog div
         *************************************************************************/
         _createAddRecordDialogDiv: function () {
@@ -2113,18 +2156,18 @@ THE SOFTWARE.
                 modal: true,
                 title: self.options.messages.addNewRecord,
                 buttons:
-                        [{ //Cancel button
-                            text: self.options.messages.cancel,
-                            click: function () {
-                                self._$addRecordDiv.dialog('close');
-                            }
-                        }, { //Save button
-                            id: 'AddRecordDialogSaveButton',
-                            text: self.options.messages.save,
-                            click: function () {
-                                self._onSaveClickedOnCreateForm();
-                            }
-                        }],
+                    [{ //Cancel button
+                        text: self.options.messages.cancel,
+                        click: function () {
+                            self._$addRecordDiv.dialog('close');
+                        }
+                    }, { //Save button
+                        id: 'AddRecordDialogSaveButton',
+                        text: self.options.messages.save,
+                        click: function () {
+                            self._onSaveClickedOnCreateForm();
+                        }
+                    }],
                 close: function () {
                     var $addRecordForm = self._$addRecordDiv.find('form').first();
                     var $saveButton = self._$addRecordDiv.parent().find('#AddRecordDialogSaveButton');
@@ -2155,19 +2198,17 @@ THE SOFTWARE.
                             $('#' + self.options.actions.createAction).modal('show');
                             self._clearInputOnForm(self.options.actions.createObjDefault);
                         }
-                        else if (typeof (self.options.actions.createActionUrl) != 'undefined')
-                        {
+                        else if (typeof (self.options.actions.createActionUrl) != 'undefined') {
                             window.location.href = self.options.actions.createActionUrl;
                         }
-						else if(typeof (self.options.actions.createActionFunction) != 'undefined' ){
-						    if (typeof (self.options.datas.objectOther) != 'undefined')
-						    {						        
-						        var func = self.options.datas.objectOther[self.options.actions.createActionFunction];
-						        if (typeof (func) != 'undefined')
-						            func();
-						    }						    
-						}
-                            
+                        else if (typeof (self.options.actions.createActionFunction) != 'undefined') {
+                            if (typeof (self.options.datas.objectOther) != 'undefined') {
+                                var func = self.options.datas.objectOther[self.options.actions.createActionFunction];
+                                if (typeof (func) != 'undefined')
+                                    func();
+                            }
+                        }
+
                     }
                 });
             }
@@ -2179,14 +2220,14 @@ THE SOFTWARE.
 
         _clearInputOnForm: function (objDefault) {
             var self = this;
-            var listObjInput = $('#' + this.options.actions.createAction).find('input');            
+            var listObjInput = $('#' + this.options.actions.createAction).find('input');
             $.each(listObjInput, function (i, v) {
                 var databind = $(this).attr('data-bind');
                 var bindname = "";
                 switch (this.type) {
                     case "text": {
                         if (typeof (databind) != 'undefined') {
-                            bindname = self._getBindNameByDataBind("value:", databind);                   
+                            bindname = self._getBindNameByDataBind("value:", databind);
                             if (typeof (objDefault) != 'undefined' && objDefault != null && bindname != "") {
                                 for (x in objDefault) {
                                     if (x == bindname) {
@@ -2198,7 +2239,7 @@ THE SOFTWARE.
                         }
                         else
                             $(this).val('');
-                        
+
                         break;
                     }
                     case "checkbox": {
@@ -2218,14 +2259,14 @@ THE SOFTWARE.
                         }
                         else
                             $(this).prop('checked', false);
-                           break;
+                        break;
                     }
                     case "file": {
                         var control = $(this);
-                        control.replaceWith(control = control.clone(true));                        
+                        control.replaceWith(control = control.clone(true));
                     }
-                    default:{
-                        $(this).val('');                    
+                    default: {
+                        $(this).val('');
                     }
                 }
             });
@@ -2244,12 +2285,10 @@ THE SOFTWARE.
                 }
                 else {
                     var listOption = $(this).find('option');
-                    if (typeof (listOption) != 'undefined' && listOption.length>0)
-                    {
+                    if (typeof (listOption) != 'undefined' && listOption.length > 0) {
                         var isSelect = false;
                         $.each(listOption, function (j, item) {
-                            if ($(this).prop('selected') == true)
-                            {
+                            if ($(this).prop('selected') == true) {
                                 $select.val($(this).val());
                                 isSelect = true;
                                 return;
@@ -2261,7 +2300,7 @@ THE SOFTWARE.
                     else
                         $select.val(0);
                 }
-                
+
             });
         },
 
@@ -2310,9 +2349,9 @@ THE SOFTWARE.
             if (options.clientOnly) {
                 self._addRow(
                     self._createRowFromRecord(options.record), {
-                        isNewRow: true,
-                        animationsEnabled: options.animationsEnabled
-                    });
+                    isNewRow: true,
+                    animationsEnabled: options.animationsEnabled
+                });
 
                 options.success();
                 return;
@@ -2334,9 +2373,9 @@ THE SOFTWARE.
                 self._onRecordAdded(data);
                 self._addRow(
                     self._createRowFromRecord(data.Record), {
-                        isNewRow: true,
-                        animationsEnabled: options.animationsEnabled
-                    });
+                    isNewRow: true,
+                    animationsEnabled: options.animationsEnabled
+                });
 
                 options.success(data);
             };
@@ -2460,15 +2499,15 @@ THE SOFTWARE.
                 self._onRecordAdded(data);
                 self._addRow(
                     self._createRowFromRecord(data.Record), {
-                        isNewRow: true
-                    });
+                    isNewRow: true
+                });
                 self._$addRecordDiv.dialog("close");
             };
 
             $addRecordForm.data('submitting', true); //TODO: Why it's used, can remove? Check it.
 
             //createAction may be a function, check if it is
-            if ($.isFunction(self.options.actions.createAction)) {                
+            if ($.isFunction(self.options.actions.createAction)) {
                 //Execute the function
                 var funcResult = self.options.actions.createAction($addRecordForm.serialize());
 
@@ -2516,7 +2555,7 @@ THE SOFTWARE.
 (function ($) {
 
     //Reference to base object members
-    var base = {        
+    var base = {
         _create: $.hik.jtable.prototype._create,
         _addColumnsToHeaderRow: $.hik.jtable.prototype._addColumnsToHeaderRow,
         _addCellsToRowUsingRecord: $.hik.jtable.prototype._addCellsToRowUsingRecord
@@ -2555,11 +2594,11 @@ THE SOFTWARE.
         *************************************************************************/
         _create: function () {
             base._create.apply(this, arguments);
-            
+
             if (!this.options.actions.updateAction) {
                 return;
             }
-            
+
             this._createEditDialogDiv();
         },
 
@@ -2582,18 +2621,18 @@ THE SOFTWARE.
                 modal: true,
                 title: self.options.messages.editRecord,
                 buttons:
-                        [{  //cancel button
-                            text: self.options.messages.cancel,
-                            click: function () {
-                                self._$editDiv.dialog('close');
-                            }
-                        }, { //save button
-                            id: 'EditDialogSaveButton',
-                            text: self.options.messages.save,
-                            click: function () {
-                                self._onSaveClickedOnEditForm();
-                            }
-                        }],
+                    [{  //cancel button
+                        text: self.options.messages.cancel,
+                        click: function () {
+                            self._$editDiv.dialog('close');
+                        }
+                    }, { //save button
+                        id: 'EditDialogSaveButton',
+                        text: self.options.messages.save,
+                        click: function () {
+                            self._onSaveClickedOnEditForm();
+                        }
+                    }],
                 close: function () {
                     var $editForm = self._$editDiv.find('form:first');
                     var $saveButton = self._$editDiv.parent().find('#EditDialogSaveButton');
@@ -2608,7 +2647,7 @@ THE SOFTWARE.
         *************************************************************************/
         _onSaveClickedOnEditForm: function () {
             var self = this;
-            
+
             //row maybe removed by another source, if so, do nothing
             if (self._$editingRow.hasClass('jtable-row-removed')) {
                 self._$editDiv.dialog('close');
@@ -2817,7 +2856,7 @@ THE SOFTWARE.
                         form: $editForm
                     }));
             }
-            
+
             self._makeCascadeDropDowns($editForm, record, 'edit');
 
             $editForm.submit(function () {
@@ -2835,7 +2874,7 @@ THE SOFTWARE.
         *************************************************************************/
         _saveEditForm: function ($editForm, $saveButton) {
             var self = this;
-            
+
             var completeEdit = function (data) {
                 if (data.Result != 'OK') {
                     self._showError(data.Message);
@@ -2886,10 +2925,10 @@ THE SOFTWARE.
                 self._submitFormUsingAjax(
                     self.options.actions.updateAction,
                     $editForm.serialize(),
-                    function(data) {
+                    function (data) {
                         completeEdit(data);
                     },
-                    function() {
+                    function () {
                         self._showError(self.options.messages.serverCommunicationError);
                         self._setEnabledOfDialogButton($saveButton, true, self.options.messages.save);
                     });
@@ -2970,7 +3009,7 @@ THE SOFTWARE.
 (function ($) {
 
     //Reference to base object members
-    var base = {       
+    var base = {
         _create: $.hik.jtable.prototype._create,
         _addColumnsToHeaderRow: $.hik.jtable.prototype._addColumnsToHeaderRow,
         _addCellsToRowUsingRecord: $.hik.jtable.prototype._addCellsToRowUsingRecord
@@ -3039,37 +3078,37 @@ THE SOFTWARE.
                 modal: true,
                 title: self.options.messages.areYouSure,
                 buttons:
-                        [{  //cancel button
-                            text: self.options.messages.cancel,
-                            click: function () {
-                                self._$deleteRecordDiv.dialog("close");
-                            }
-                        }, {//delete button
-                            id: 'DeleteDialogButton',
-                            text: self.options.messages.deleteText,
-                            click: function () {
+                    [{  //cancel button
+                        text: self.options.messages.cancel,
+                        click: function () {
+                            self._$deleteRecordDiv.dialog("close");
+                        }
+                    }, {//delete button
+                        id: 'DeleteDialogButton',
+                        text: self.options.messages.deleteText,
+                        click: function () {
 
-                                //row maybe removed by another source, if so, do nothing
-                                if (self._$deletingRow.hasClass('jtable-row-removed')) {
+                            //row maybe removed by another source, if so, do nothing
+                            if (self._$deletingRow.hasClass('jtable-row-removed')) {
+                                self._$deleteRecordDiv.dialog('close');
+                                return;
+                            }
+
+                            var $deleteButton = self._$deleteRecordDiv.parent().find('#DeleteDialogButton');
+                            self._setEnabledOfDialogButton($deleteButton, false, self.options.messages.deleting);
+                            self._deleteRecordFromServer(
+                                self._$deletingRow,
+                                function () {
+                                    self._removeRowsFromTableWithAnimation(self._$deletingRow);
                                     self._$deleteRecordDiv.dialog('close');
-                                    return;
+                                },
+                                function (message) { //error
+                                    self._showError(message);
+                                    self._setEnabledOfDialogButton($deleteButton, true, self.options.messages.deleteText);
                                 }
-
-                                var $deleteButton = self._$deleteRecordDiv.parent().find('#DeleteDialogButton');
-                                self._setEnabledOfDialogButton($deleteButton, false, self.options.messages.deleting);
-                                self._deleteRecordFromServer(
-                                    self._$deletingRow,
-                                    function () {
-                                        self._removeRowsFromTableWithAnimation(self._$deletingRow);
-                                        self._$deleteRecordDiv.dialog('close');
-                                    },
-                                    function (message) { //error
-                                        self._showError(message);
-                                        self._setEnabledOfDialogButton($deleteButton, true, self.options.messages.deleteText);
-                                    }
-                                );
-                            }
-                        }],
+                            );
+                        }
+                    }],
                 close: function () {
                     var $deleteButton = self._$deleteRecordDiv.parent().find('#DeleteDialogButton');
                     self._setEnabledOfDialogButton($deleteButton, true, self.options.messages.deleteText);
@@ -3188,17 +3227,17 @@ THE SOFTWARE.
             }
 
             self._deleteRecordFromServer(
-                    $deletingRow,
-                    function (data) { //success
-                        self._removeRowsFromTableWithAnimation($deletingRow, options.animationsEnabled);
-                        options.success(data);
-                    },
-                    function (message) { //error
-                        self._showError(message);
-                        options.error(message);
-                    },
-                    options.url
-                );
+                $deletingRow,
+                function (data) { //success
+                    self._removeRowsFromTableWithAnimation($deletingRow, options.animationsEnabled);
+                    options.success(data);
+                },
+                function (message) { //error
+                    self._showError(message);
+                    options.error(message);
+                },
+                options.url
+            );
         },
 
         /************************************************************************
@@ -3302,7 +3341,7 @@ THE SOFTWARE.
         _deleteRecordFromServer: function ($row, success, error, url) {
             var self = this;
 
-            var completeDelete = function(data) {
+            var completeDelete = function (data) {
                 if (data.Result != 'OK') {
                     $row.data('deleting', false);
                     if (error) {
@@ -3328,7 +3367,7 @@ THE SOFTWARE.
 
             var postData = {};
             postData[self._keyField] = self._getKeyValueOfRecord($row.data('record'));
-            
+
             //deleteAction may be a function, check if it is
             if (!url && $.isFunction(self.options.actions.deleteAction)) {
 
@@ -3404,7 +3443,7 @@ THE SOFTWARE.
 (function ($) {
 
     //Reference to base object members
-    var base = {        
+    var base = {
         _create: $.hik.jtable.prototype._create,
         _addColumnsToHeaderRow: $.hik.jtable.prototype._addColumnsToHeaderRow,
         _addCellsToRowUsingRecord: $.hik.jtable.prototype._addCellsToRowUsingRecord,
@@ -3453,7 +3492,7 @@ THE SOFTWARE.
 
             //Call base method
             base._create.apply(this, arguments);
-            
+
         },
 
         /* Registers to keyboard events those are needed for selection
@@ -3801,7 +3840,7 @@ THE SOFTWARE.
 
     //Reference to base object members
     var base = {
-        load: $.hik.jtable.prototype.load,        
+        load: $.hik.jtable.prototype.load,
         _create: $.hik.jtable.prototype._create,
         _setOption: $.hik.jtable.prototype._setOption,
         _createRecordLoadUrl: $.hik.jtable.prototype._createRecordLoadUrl,
@@ -3852,9 +3891,9 @@ THE SOFTWARE.
 
         /* Overrides base method to do paging-specific constructions.
         *************************************************************************/
-        _create: function() {
+        _create: function () {
             base._create.apply(this, arguments);
-            
+
             if (this.options.paging) {
                 this._loadPagingSettings();
                 this._createBottomPanel();
@@ -3867,7 +3906,7 @@ THE SOFTWARE.
 
         /* Loads user preferences for paging.
         *************************************************************************/
-        _loadPagingSettings: function() {
+        _loadPagingSettings: function () {
             if (!this.options.saveUserPreferences) {
                 return;
             }
@@ -3880,7 +3919,7 @@ THE SOFTWARE.
 
         /* Creates bottom panel and adds to the page.
         *************************************************************************/
-        _createBottomPanel: function() {
+        _createBottomPanel: function () {
             this._$bottomPanel = $('<div />')
                 .addClass('jtable-bottom-panel')
                 .insertAfter(this._$table);
@@ -3893,7 +3932,7 @@ THE SOFTWARE.
 
         /* Creates page list area.
         *************************************************************************/
-        _createPageListArea: function() {
+        _createPageListArea: function () {
             this._$pagingListArea = $('<span></span>')
                 .addClass('jtable-page-list')
                 .appendTo(this._$bottomPanel.find('.jtable-left-area'));
@@ -3905,7 +3944,7 @@ THE SOFTWARE.
 
         /* Creates page list change area.
         *************************************************************************/
-        _createPageSizeSelection: function() {
+        _createPageSizeSelection: function () {
             var self = this;
 
             if (!self.options.pageSizeChangeArea) {
@@ -3915,7 +3954,7 @@ THE SOFTWARE.
             //Add current page size to page sizes list if not contains it
             if (self._findIndexInArray(self.options.pageSize, self.options.pageSizes) < 0) {
                 self.options.pageSizes.push(parseInt(self.options.pageSize));
-                self.options.pageSizes.sort(function(a, b) { return a - b; });
+                self.options.pageSizes.sort(function (a, b) { return a - b; });
             }
 
             //Add a span to contain page size change items
@@ -3938,14 +3977,14 @@ THE SOFTWARE.
             $pageSizeChangeCombobox.val(self.options.pageSize);
 
             //Change page size on combobox change
-            $pageSizeChangeCombobox.change(function() {
+            $pageSizeChangeCombobox.change(function () {
                 self._changePageSize(parseInt($(this).val()));
             });
         },
 
         /* Creates go to page area.
         *************************************************************************/
-        _createGotoPageInput: function() {
+        _createGotoPageInput: function () {
             var self = this;
 
             if (!self.options.gotoPageArea || self.options.gotoPageArea == 'none') {
@@ -3966,7 +4005,7 @@ THE SOFTWARE.
                 self._$gotoPageInput = $('<select></select>')
                     .appendTo(this._$gotoPageArea)
                     .data('pageCount', 1)
-                    .change(function() {
+                    .change(function () {
                         self._changePage(parseInt($(this).val()));
                     });
                 self._$gotoPageInput.append('<option value="1">1</option>');
@@ -3975,7 +4014,7 @@ THE SOFTWARE.
 
                 self._$gotoPageInput = $('<input type="text" maxlength="10" value="' + self._currentPageNo + '" />')
                     .appendTo(this._$gotoPageArea)
-                    .keypress(function(event) {
+                    .keypress(function (event) {
                         if (event.which == 13) { //enter
                             event.preventDefault();
                             self._changePage(parseInt(self._$gotoPageInput.val()));
@@ -3989,8 +4028,8 @@ THE SOFTWARE.
                             //Allow only digits
                             var isValid = (
                                 (47 < event.keyCode && event.keyCode < 58 && event.shiftKey == false && event.altKey == false)
-                                    || (event.keyCode == 8)
-                                    || (event.keyCode == 9)
+                                || (event.keyCode == 8)
+                                || (event.keyCode == 9)
                             );
 
                             if (!isValid) {
@@ -4004,15 +4043,15 @@ THE SOFTWARE.
 
         /*Add page info.
         ************************************************************************/
-        _addPageInfo: function(){
+        _addPageInfo: function () {
             this._$pageInfoSpan = $('<span></span>')
-               .addClass('jtable-page-info')
-               .appendTo(this._$bottomPanel.find('.jtable-left-area'));
+                .addClass('jtable-page-info')
+                .appendTo(this._$bottomPanel.find('.jtable-left-area'));
         },
 
         /* Refreshes the 'go to page' input.
         *************************************************************************/
-        _refreshGotoPageInput: function() {
+        _refreshGotoPageInput: function () {
             if (!this.options.gotoPageArea || this.options.gotoPageArea == 'none') {
                 return;
             }
@@ -4059,7 +4098,7 @@ THE SOFTWARE.
 
         /* Overrides load method to set current page to 1.
         *************************************************************************/
-        load: function() {
+        load: function () {
             this._currentPageNo = 1;
 
             base.load.apply(this, arguments);
@@ -4067,7 +4106,7 @@ THE SOFTWARE.
 
         /* Used to change options dynamically after initialization.
         *************************************************************************/
-        _setOption: function(key, value) {
+        _setOption: function (key, value) {
             base._setOption.apply(this, arguments);
 
             if (key == 'pageSize') {
@@ -4077,7 +4116,7 @@ THE SOFTWARE.
 
         /* Changes current page size with given value.
         *************************************************************************/
-        _changePageSize: function(pageSize) {
+        _changePageSize: function (pageSize) {
             if (pageSize == this.options.pageSize) {
                 return;
             }
@@ -4110,7 +4149,7 @@ THE SOFTWARE.
 
         /* Saves user preferences for paging
         *************************************************************************/
-        _savePagingSettings: function() {
+        _savePagingSettings: function () {
             if (!this.options.saveUserPreferences) {
                 return;
             }
@@ -4120,7 +4159,7 @@ THE SOFTWARE.
 
         /* Overrides _createRecordLoadUrl method to add paging info to URL.
         *************************************************************************/
-        _createRecordLoadUrl: function() {
+        _createRecordLoadUrl: function () {
             var loadUrl = base._createRecordLoadUrl.apply(this, arguments);
             loadUrl = this._addPagingInfoToUrl(loadUrl, this._currentPageNo);
             return loadUrl;
@@ -4130,7 +4169,7 @@ THE SOFTWARE.
         *************************************************************************/
         _createJtParamsForLoading: function () {
             var jtParams = base._createJtParamsForLoading.apply(this, arguments);
-            
+
             if (this.options.paging) {
                 jtParams.jtStartIndex = (this._currentPageNo - 1) * this.options.pageSize;
                 jtParams.jtPageSize = this.options.pageSize;
@@ -4308,7 +4347,7 @@ THE SOFTWARE.
                 .appendTo(this._$pagingListArea);
 
             this._jqueryuiThemeAddClass($pageNumber, 'ui-button ui-state-default', 'ui-state-hover');
-            
+
             if (this._currentPageNo == pageNumber) {
                 $pageNumber.addClass('jtable-page-number-active jtable-page-number-disabled');
                 this._jqueryuiThemeAddClass($pageNumber, 'ui-state-active');
@@ -4509,7 +4548,7 @@ THE SOFTWARE.
         *************************************************************************/
         _makeColumnSortable: function ($columnHeader, fieldName) {
             var self = this;
-            
+
             $columnHeader
                 .addClass('jtable-column-header-sortable')
                 .click(function (e) {
@@ -4518,7 +4557,7 @@ THE SOFTWARE.
                     if (!self.options.multiSorting || !e.ctrlKey) {
                         self._lastSorting = []; //clear previous sorting
                     }
-                    
+
                     self._sortTableByColumn($columnHeader);
                 });
 
@@ -4611,7 +4650,7 @@ THE SOFTWARE.
 (function ($) {
 
     //Reference to base object members
-    var base = {       
+    var base = {
         _create: $.hik.jtable.prototype._create,
         _normalizeFieldOptions: $.hik.jtable.prototype._normalizeFieldOptions,
         _createHeaderCellForField: $.hik.jtable.prototype._createHeaderCellForField,
@@ -4649,7 +4688,7 @@ THE SOFTWARE.
 
         _create: function () {
             base._create.apply(this, arguments);
-            
+
             this._createColumnResizeBar();
             this._createColumnSelection();
 
@@ -4778,7 +4817,7 @@ THE SOFTWARE.
                 if (!self.options.columnSelectable) {
                     return;
                 }
-                
+
                 e.preventDefault();
 
                 //Make an overlay div to disable page clicks
@@ -4792,13 +4831,13 @@ THE SOFTWARE.
                     .appendTo(document.body);
 
                 self._fillColumnSelection();
-                
+
                 //Calculate position of column selection list and show it
 
                 var containerOffset = self._$mainContainer.offset();
                 var selectionDivTop = e.pageY - containerOffset.top;
                 var selectionDivLeft = e.pageX - containerOffset.left;
-                
+
                 var selectionDivMinWidth = 100; //in pixels
                 var containerWidth = self._$mainContainer.width();
 
@@ -4814,7 +4853,7 @@ THE SOFTWARE.
                 }).show();
             });
         },
-        
+
         /* Prepares content of settings dialog.
         *************************************************************************/
         _fillColumnSelection: function () {
@@ -5096,12 +5135,10 @@ THE SOFTWARE.
         *************************************************************************/
         openChildTable: function ($row, tableOptions, opened) {
             var self = this;
-            if (typeof (self.options.datas.jtableId) != 'undefined')
-            {				
+            if (typeof (self.options.datas.jtableId) != 'undefined') {
                 var arrCloseButton = $('#' + self.options.datas.jtableId).find('.jtable-close-button');
-                if (typeof (arrCloseButton) != 'undefined' && arrCloseButton.length > 0)
-                {
-                    $.each(arrCloseButton, function (i,v) {
+                if (typeof (arrCloseButton) != 'undefined' && arrCloseButton.length > 0) {
+                    $.each(arrCloseButton, function (i, v) {
                         $(this).click();
                     });
                 }
@@ -5140,7 +5177,7 @@ THE SOFTWARE.
                 $childTableContainer.hide().slideDown('fast', function () {
                     if (opened) {
                         opened({
-                             childTable: $childTableContainer
+                            childTable: $childTableContainer
                         });
                     }
                 });
@@ -5151,7 +5188,7 @@ THE SOFTWARE.
         *************************************************************************/
         closeChildTable: function ($row, closed) {
             var self = this;
-            
+
             var $childRowColumn = this.getChildRow($row).children('td');
             var $childTable = $childRowColumn.data('childTable');
             if (!$childTable) {

@@ -16,8 +16,8 @@ namespace GPRO_IED_A.Data
     {
         public T_CommodityAnalysis()
         {
-            this.T_LabourDivision = new HashSet<T_LabourDivision>();
             this.T_CA_Phase = new HashSet<T_CA_Phase>();
+            this.T_LabourDivision = new HashSet<T_LabourDivision>();
         }
     
         public int Id { get; set; }
@@ -36,7 +36,7 @@ namespace GPRO_IED_A.Data
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
     
-        public virtual ICollection<T_LabourDivision> T_LabourDivision { get; set; }
         public virtual ICollection<T_CA_Phase> T_CA_Phase { get; set; }
+        public virtual ICollection<T_LabourDivision> T_LabourDivision { get; set; }
     }
 }

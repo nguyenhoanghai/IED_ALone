@@ -25,7 +25,7 @@ namespace GPRO_IED_A.Data
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
     
-        public virtual T_TimePrepare T_TimePrepare { get; set; }
         public virtual T_CA_Phase T_CA_Phase { get; set; }
+        public virtual T_TimePrepare T_TimePrepare { get; set; }
     }
 }

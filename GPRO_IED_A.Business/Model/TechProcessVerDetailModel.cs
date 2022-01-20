@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq; 
-using GPRO_IED_A.Data;
-
-namespace GPRO_IED_A.Business.Model
+﻿namespace GPRO_IED_A.Business.Model
 {
-   public class TechProcessVerDetailModel 
+    public class TechProcessVerDetailModel
     {
         public int Id { get; set; }
         public int TechProcessVersionId { get; set; }
@@ -28,6 +23,7 @@ namespace GPRO_IED_A.Business.Model
         public string WorkerLevelName { get; set; }
         public double Coefficient { get; set; }
         public double TimePrepare { get; set; }
-       public int Index { get; set; }
+        public int Index { get; set; }
+        public string Node { get; set; }
     }
 }

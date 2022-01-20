@@ -2,13 +2,10 @@
 using GPRO.Ultilities;
 using GPRO_IED_A.Business.Model;
 using GPRO_IED_A.Data;
+using Hugate.Framework;
 using PagedList;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -84,7 +81,7 @@ namespace GPRO_IED_A.Business
                             }
                             else
                             {
-                                if (!checkPermis(obj, model.ActionUser,isOwner))
+                                if (!checkPermis(obj, model.ActionUser, isOwner))
                                 {
                                     result.IsSuccess = false;
                                     result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo thời gian chuẩn bị này nên bạn không cập nhật được thông tin cho thời gian chuẩn bị này." });
@@ -103,7 +100,7 @@ namespace GPRO_IED_A.Business
                                 }
                             }
                         }
-                        
+
                     }
                     return result;
                 }
@@ -150,7 +147,7 @@ namespace GPRO_IED_A.Business
                     }
                     else
                     {
-                        if (!checkPermis(timeType, acctionUserId,isOwner))
+                        if (!checkPermis(timeType, acctionUserId, isOwner))
                         {
                             result.IsSuccess = false;
                             result.Errors.Add(new Error() { MemberName = "Delete", Message = "Bạn không phải là người tạo thời gian chuẩn bị này nên bạn không xóa được thời gian chuẩn bị này." });
@@ -186,15 +183,15 @@ namespace GPRO_IED_A.Business
                     var pageNumber = (startIndexRecord / pageSize) + 1;
                     var timeTypes = db.T_TimePrepare.Where(x => !x.IsDeleted && x.TimeTypePrepareId == timeTypeId && !x.T_TimeTypePrepare.IsDeleted).OrderByDescending(x => x.CreatedDate).
                          Select(x => new TimePrepareModel()
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        Code = x.Code,
-                        TimeTypePrepareId = x.TimeTypePrepareId,
-                        TimeTypePrepareName = x.T_TimeTypePrepare.Name,
-                        TMUNumber = x.TMUNumber,
-                        Description = x.Description,
-                    }).OrderBy(sorting).ToList();
+                         {
+                             Id = x.Id,
+                             Name = x.Name,
+                             Code = x.Code,
+                             TimeTypePrepareId = x.TimeTypePrepareId,
+                             TimeTypePrepareName = x.T_TimeTypePrepare.Name,
+                             TMUNumber = x.TMUNumber,
+                             Description = x.Description,
+                         }).OrderBy(sorting).ToList();
                     return new PagedList<TimePrepareModel>(timeTypes, pageNumber, pageSize);
                 }
             }
@@ -203,7 +200,7 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
-        public PagedList<TimePrepareModel> Gets(string keyword, int searchBy, int startIndexRecord, int pageSize, string sorting)
+        public PagedList<TimePrepareModel> Gets(string keyword, int startIndexRecord, int pageSize, string sorting)
         {
             try
             {
@@ -213,49 +210,21 @@ namespace GPRO_IED_A.Business
                         sorting = "CreatedDate DESC";
 
                     var pageNumber = (startIndexRecord / pageSize) + 1;
-                    List<TimePrepareModel> objs = null;
+                    IQueryable<T_TimePrepare> objs = db.T_TimePrepare.Where(x => !x.IsDeleted && !x.T_TimeTypePrepare.IsDeleted);
                     if (!string.IsNullOrEmpty(keyword))
+                        objs = objs.Where(x => x.Code.Trim().ToUpper().Contains(keyword) || x.Name.Trim().ToUpper().Contains(keyword));
+                    
+                    return new PagedList<TimePrepareModel>(objs.Select(x => new TimePrepareModel()
                     {
-                        switch (searchBy)
-                        {
-                            case 0:
-                                objs = db.T_TimePrepare.Where(x => !x.IsDeleted && !x.T_TimeTypePrepare.IsDeleted && x.Code.Trim().ToUpper().Contains(keyword)).OrderByDescending(x=>x.CreatedDate).Select(x => new TimePrepareModel()
-                                {
-                                    Id = x.Id,
-                                    Name = x.Name,
-                                    Code = x.Code,
-                                    TimeTypePrepareId = x.TimeTypePrepareId,
-                                    TimeTypePrepareName = x.T_TimeTypePrepare.Name,
-                                    TMUNumber = x.TMUNumber,
-                                    Description = x.Description 
-                                }).ToList();
-                                break;
-                            case 1:
-                                objs = db.T_TimePrepare.Where(x => !x.IsDeleted && !x.T_TimeTypePrepare.IsDeleted && x.Name.Trim().ToUpper().Contains(keyword)).OrderByDescending(x => x.CreatedDate).Select(x => new TimePrepareModel()
-                                {
-                                    Id = x.Id,
-                                    Name = x.Name,
-                                    Code = x.Code,
-                                    TimeTypePrepareId = x.TimeTypePrepareId,
-                                    TimeTypePrepareName = x.T_TimeTypePrepare.Name,
-                                    TMUNumber = x.TMUNumber,
-                                    Description = x.Description 
-                                }).ToList();
-                                break;
-                        }
-                    }
-                    else
-                        objs = db.T_TimePrepare.Where(x => !x.IsDeleted && !x.T_TimeTypePrepare.IsDeleted).OrderByDescending(x => x.CreatedDate).Select(x => new TimePrepareModel()
-                        {
-                            Id = x.Id,
-                            Name = x.Name,
-                            Code = x.Code,
-                            TimeTypePrepareId = x.TimeTypePrepareId,
-                            TimeTypePrepareName = x.T_TimeTypePrepare.Name,
-                            TMUNumber = x.TMUNumber,
-                            Description = x.Description 
-                        }).ToList();
-                    return new PagedList<TimePrepareModel>(objs, pageNumber, pageSize);
+                        Id = x.Id,
+                        Name = x.Name,
+                        Code = x.Code,
+                        TimeTypePrepareId = x.TimeTypePrepareId,
+                        TimeTypePrepareName = x.T_TimeTypePrepare.Name,
+                        TMUNumber = x.TMUNumber,
+                        Description = x.Description,
+                        CreatedDate = x.CreatedDate
+                    }).OrderBy(sorting).ToList(), pageNumber, pageSize);
                 }
             }
             catch (Exception ex)
@@ -263,6 +232,6 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
-   
+
     }
 }
