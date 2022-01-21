@@ -2652,6 +2652,17 @@ GPRO.PhanTich = function () {
 
                         if (!Global.Data.warningChuaCoQTCN)
                             Global.Data.warningChuaCoQTCN = true;
+
+                        var imgBox = $('.img-box');
+                        imgBox.empty();
+                        if (result.Data.productImgs && result.Data.productImgs.length > 0) {
+                            var files = result.Data.productImgs;
+                            for (var i = 0; i < files.length; i++) {
+                                imgBox.append(`<div class="img-item">
+                                    <img src="${files[i].Code}" class="img-avatar" id="img-avatar" /> 
+                                </div> `);
+                            }
+                        }
                     }
                     else
                         GlobalCommon.ShowMessageDialog('', function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");

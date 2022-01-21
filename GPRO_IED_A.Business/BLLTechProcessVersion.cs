@@ -405,11 +405,16 @@ namespace GPRO_IED_A.Business
                     {
                         int _parentId = int.Parse(techVersion.details.First().Node.Split(',')[1]);
                         var parentObj = _db.T_CommodityAnalysis.FirstOrDefault(x => x.Id == _parentId);
-                        if(parentObj!= null)
+                        if (parentObj != null)
                         {
                             var user = _db.SUsers.FirstOrDefault(x => x.Id == parentObj.CreatedUser);
                             techVersion.CreateBy = user.FisrtName + " " + user.LastName;
                             techVersion.CreateAt = parentObj.CreatedDate.ToString("dd/MM/yyyy");
+
+                            techVersion.productImgs.AddRange(_db.T_ProductFile
+                                .Where(x => !x.IsDeleted && x.ProductId == parentObj.ObjectId)
+                                .Select(x => new ModelSelectItem() { Value = x.Id, Name = x.FileName, Code = x.Path, Data = x.ProductId })
+                            .ToList());
                         }
                     }
                     return techVersion;

@@ -4,6 +4,7 @@ using GPRO_IED_A.Business.Model;
 using GPRO_IED_A.Data;
 using Newtonsoft.Json;
 using OfficeOpenXml;
+using OfficeOpenXml.Drawing;
 using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
@@ -1284,6 +1285,25 @@ namespace GPRO_IED_A.Controllers
                 sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
                 #endregion
 
+
+                if (techProcessInfo.productImgs.Count > 0)
+                {
+                    int top = 65,
+                        left = 700,
+                        iWidth = 320,
+                        iHeight = 320;
+                    for (int i = 0; i < techProcessInfo.productImgs.Count; i++)
+                    {
+                        Image img = Image.FromFile(Server.MapPath("~" + techProcessInfo.productImgs[i].Code));
+                        // Image img = Image.FromFile(Server.MapPath("http://112.197.117.97:86/" + techProcessInfo.productImgs[0].Code));
+                        ExcelPicture excelPicture = sheet.Drawings.AddPicture(techProcessInfo.productImgs[i].Name, img);
+                        excelPicture.SetPosition(top, left);
+                        excelPicture.SetSize(iWidth, iHeight);
+
+                        top += 330;
+                    }
+                }
+
                 rowIndex += 2;
                 sheet.Cells[rowIndex, 2].Value = "               GĐ ĐH 	                  GIÁM ĐỐC 	                     TP/KỸ THUẬT 	                   TRƯỞNG NHÓM QT 	                              NGƯỜI LẬP QT".ToUpper();
                 sheet.Cells[rowIndex, 2].Style.Font.Bold = true;
@@ -1308,6 +1328,7 @@ namespace GPRO_IED_A.Controllers
                 Response.End();
             }
         }
+
 
         private static void AddCellBorder(ExcelWorksheet sheet, int rowIndex, int from, int to)
         {
@@ -1708,6 +1729,24 @@ namespace GPRO_IED_A.Controllers
                 }
                 #endregion
 
+                if (techProcessInfo.productImgs.Count > 0)
+                {
+                    int top = 65,
+                        left = 700,
+                        iWidth = 320,
+                        iHeight = 320;
+                    for (int i = 0; i < techProcessInfo.productImgs.Count; i++)
+                    {
+                        Image img = Image.FromFile(Server.MapPath("~" + techProcessInfo.productImgs[i].Code));
+                        // Image img = Image.FromFile(Server.MapPath("http://112.197.117.97:86/" + techProcessInfo.productImgs[0].Code));
+                        ExcelPicture excelPicture = sheet.Drawings.AddPicture(techProcessInfo.productImgs[i].Name, img);
+                        excelPicture.SetPosition(top, left);
+                        excelPicture.SetSize(iWidth, iHeight);
+
+                        top += 330;
+                    }
+                }
+
                 rowIndex += 2;
                 sheet.Cells[rowIndex, 2].Value = "                      GĐ ĐH 	                           GIÁM ĐỐC 	                                TP/KỸ THUẬT 	                           TRƯỞNG NHÓM QT 	                              NGƯỜI LẬP QT".ToUpper();
                 sheet.Cells[rowIndex, 2].Style.Font.Bold = true;
@@ -1900,6 +1939,26 @@ namespace GPRO_IED_A.Controllers
                     sheet.Cells[rowIndex, 1, rowIndex, 8].Style.Font.Bold = true;
                     sheet.Cells[rowIndex, 1, rowIndex, 8].Style.Font.Size = 12;
 
+
+                    if (techProcessInfo.productImgs.Count > 0)
+                    {
+                        int top = 5,
+                            left = 980,
+                            iWidth = 320,
+                            iHeight = 320;
+                        for (int i = 0; i < techProcessInfo.productImgs.Count; i++)
+                        {
+                            Image img = Image.FromFile(Server.MapPath("~" + techProcessInfo.productImgs[i].Code));
+                            // Image img = Image.FromFile(Server.MapPath("http://112.197.117.97:86/" + techProcessInfo.productImgs[0].Code));
+                            ExcelPicture excelPicture = sheet.Drawings.AddPicture(techProcessInfo.productImgs[i].Name, img);
+                            excelPicture.SetPosition(top, left);
+                            excelPicture.SetSize(iWidth, iHeight);
+
+                            top += 330;
+                        }
+                         //https://www.youtube.com/watch?v=xwZW3-E4gBw
+                    }
+
                     Response.ClearContent();
                     Response.BinaryWrite(package.GetAsByteArray());
                     DateTime dateNow = DateTime.Now;
@@ -2012,7 +2071,7 @@ namespace GPRO_IED_A.Controllers
             try
             {
                 JsonDataResult.Result = "OK";
-               BLLLabourDivision.Instance.RefreshById(labourId); 
+                BLLLabourDivision.Instance.RefreshById(labourId);
             }
             catch (Exception ex)
             {
@@ -2415,7 +2474,7 @@ namespace GPRO_IED_A.Controllers
                 Response.ClearContent();
                 Response.BinaryWrite(excelPackage.GetAsByteArray());
                 DateTime dateNow = DateTime.Now;
-                string fileName = "TKC_" + (linePos[0]!= null ? linePos[0].LineName:"_") + "_"+  tech.ProductName + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+                string fileName = "TKC_" + (linePos[0] != null ? linePos[0].LineName : "_") + "_" + tech.ProductName + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
                 Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
                 Response.ContentType = "application/excel";
                 Response.Flush();

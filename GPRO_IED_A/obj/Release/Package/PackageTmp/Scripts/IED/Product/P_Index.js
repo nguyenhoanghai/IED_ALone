@@ -207,7 +207,7 @@ GPRO.Product = function () {
                                 for (var i = 0; i < files.length; i++) {
                                     imgBox.append(`<div class="img-item">
                                     <img src="${files[i].Code}" class="img-avatar" id="img-avatar" />
-                                    <div class="delete" onClick='DeleteFile(${files[i].Value})'>xóa</div>
+                                    <div class="delete" onClick='DeleteFile(${files[i].Value})'>Xóa ảnh</div>
                                 </div> `);
                                 }
                             }

@@ -75,22 +75,23 @@
                             <select class="form-control" id="pro-group-customer"></select>
                             @*<input class="form-control" id="pcode" data-bind="value: Code" type="text" placeholder="Nhập Mã mã hàng..." />*@
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-6">
                             <label class="control-label">Hình thức sử dụng</label><br />
                             <div>
                                 <input type="checkbox" id="proIsPrivate" data-width="130" data-toggle="toggle" data-on="Chung" data-off="Nội bộ" />
                             </div>
                         </div>
-                        <div class="form-group col-md-3 picture-box ">
-                            <form id="p-form-upload" name="p-form-upload" enctype="multipart/form-data" method="post">
-                                <input type="file" id="p-file-upload" multiple name="p-file-upload" filelist newurl="" style="display:none" accept="image/*" />
-                            </form>
-                            <button class="btn btn-primary" id="p-btn-file-upload" style=" margin-top:25px">Chọn ảnh mã hàng</button>
-                            <div class="clearfix"></div>
-                        </div>
+
                         <div class="form-group col-md-12">
                             <label class="control-label">Mô Tả</label><br />
                             <textarea id="pdes" class="form-control"></textarea>
+                        </div>
+                        <div class="form-group col-md-12 picture-box ">
+                            <form id="p-form-upload" name="p-form-upload" enctype="multipart/form-data" method="post">
+                                <input type="file" id="p-file-upload" multiple name="p-file-upload" filelist newurl="" style="display:none" accept="image/*" />
+                            </form>
+                            <button class="btn btn-danger" id="p-btn-file-upload" >Chọn ảnh mã hàng</button>
+                            <div class="clearfix"></div>
                         </div>
                     </div>
                     <div class="form-group col-md-7  img-box ">

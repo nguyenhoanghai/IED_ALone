@@ -23,6 +23,22 @@
     #Create-Phase-Popup .nav-tabs > li > a {
         margin-top: 5px !important
     }
+
+    .tech-info-box-main{ width:700px !important}
+        .tech-info-box-main .box-left {
+            padding-right: 0;
+            border-right: 2px solid #ccc;
+        }
+
+        .tech-info-box-main .img-box {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-left: 5px
+        }
+
+            .tech-info-box-main .img-box .img-item {
+                margin-bottom: 5px
+            }
 </style>
 
 <input id="config" type="hidden" gettmutype="@ViewBag.GetTMUType" tmu="@ViewBag.TMU" maniexpenddefault="@ViewBag.ManipulationExpendDefault" />
@@ -63,7 +79,7 @@
                 <div class="modal-header custom-header">
                     <span class="title ">Thông Tin Quy Trình Công Nghệ</span>
                     <div style="float:right">
-                        <button   class="btn btn-danger" hidden="hidden" data-toggle="modal" data-target="#popup-export-qtcn">
+                        <button class="btn btn-danger" hidden="hidden" data-toggle="modal" data-target="#popup-export-qtcn">
                             <i class="fa fa-file-excel-o"></i>
                             Xuất File Excel
                         </button>
@@ -77,53 +93,73 @@
                 <div style="padding:  5px 10px; ">
                     <div class="container-fluid">
                         <div class="tech-info-box">
-                            <div class="tech-info-box-main">
-                                <input type="hidden" id="techId" value="0" />
-                                <div>Người tạo: <label class="control-label" id="qtcn_createUser"> </label></div>
-                                <div>Ngày tạo: <label class="control-label" id="qtcn_createDate"> </label></div>
-                                <div class="col-md-6 form-group">
-                                    <label class="control-label">Thời Gian / 1 Sản Phẩm</label>
-                                    <div id="time-product" class="form-control red">  0 (s)</div>
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label class="col1 col0">Công nhân</label>
-                                    <input class="form-control" id="total-worker" value="30" type="text" />
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label class="control-label">Thời Gian / Ngày</label>
-                                    <input class="form-control" id="work-time" value="9" type="text" />
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label class="control-label">Đơn giá / s </label>
-                                    <input class="form-control" id="pricePerSecond" value="1" type="text" />
-                                </div>
+                            <div class="tech-info-box-main"  >
+                                <div class="col-md-6 form-group box-left" >
+                                    <input type="hidden" id="techId" value="0" />
+                                    <div>Người tạo: <label class="control-label" id="qtcn_createUser"> </label></div>
+                                    <div>Ngày tạo: <label class="control-label" id="qtcn_createDate"> </label></div>
+                                    <div class="col-md-6 form-group">
+                                        <label class="control-label">Thời Gian / 1 Sản Phẩm</label>
+                                        <div id="time-product" class="form-control red">  0 (s)</div>
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label class="col1 col0">Công nhân</label>
+                                        <input class="form-control" id="total-worker" value="30" type="text" />
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label class="control-label">Thời Gian / Ngày</label>
+                                        <input class="form-control" id="work-time" value="9" type="text" />
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label class="control-label">Đơn giá / s </label>
+                                        <input class="form-control" id="pricePerSecond" value="1" type="text" />
+                                    </div>
 
-                                <div class="col-md-6 form-group">
-                                    <label class="control-label">Phụ cấp (%)</label>
-                                    <input class="form-control" id="allowance" value="1" type="text" />
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label class="control-label">Nhịp độ sản xuất</label>
-                                    <div id="paced_production" class="form-control red"> 0 </div>
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label class="control-label">Năng suất tổ / 1 giờ</label>
-                                    <div class="form-control red" id="productivity"> 0 </div>
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label class="control-label">Năng suất tổ / Ngày  </label>
-                                    <div class="form-control red" id="pro_group_day">0</div>
-                                </div>
+                                    <div class="col-md-6 form-group">
+                                        <label class="control-label">Phụ cấp (%)</label>
+                                        <input class="form-control" id="allowance" value="1" type="text" />
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label class="control-label">Nhịp độ sản xuất</label>
+                                        <div id="paced_production" class="form-control red"> 0 </div>
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label class="control-label">Năng suất tổ / 1 giờ</label>
+                                        <div class="form-control red" id="productivity"> 0 </div>
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label class="control-label">Năng suất tổ / Ngày  </label>
+                                        <div class="form-control red" id="pro_group_day">0</div>
+                                    </div>
 
-                                <div class="col-md-6 form-group">
-                                    <label class="control-label">Năng suất người / Ngày</label>
-                                    <div class="form-control red" id="pro_person_day">0</div>
+                                    <div class="col-md-6 form-group">
+                                        <label class="control-label">Năng suất người / Ngày</label>
+                                        <div class="form-control red" id="pro_person_day">0</div>
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label>Ghi Chú</label>
+                                        <textarea class="form-control" id="des"></textarea>
+                                    </div>
+                                    <div class="clearfix">   </div>
                                 </div>
-                                <div class="col-md-6 form-group">
-                                    <label>Ghi Chú</label>
-                                    <textarea class="form-control" id="des"></textarea>
+                                <div class="col-md-6 form-group img-box"  >
+                                    <div class="img-item" >
+                                        <img src="http://112.197.117.97:86//UploadFile/Files/2022/1/20/ff3c6e93-651e-48bc-8038-91a673b17fe6_5e2d2497fe6f34316d7e.jpg" class="img-avatar" id="img-avatar">
+                                    </div>
+                                    <div class="img-item" >
+                                        <img src="http://112.197.117.97:86//UploadFile/Files/2022/1/20/a2113538-36e7-4725-a4b3-c45db2df30e9_6dcbf2b82b40e11eb851.jpg" class="img-avatar" id="img-avatar">
+                                    </div>
+                                    <div class="img-item" >
+                                        <img src="http://112.197.117.97:86//UploadFile/Files/2022/1/20/a5e5157c-92ba-4b4a-a446-c9f93b5b46a4_18b369a655e598bbc1f4.jpg" class="img-avatar" id="img-avatar">
+                                    </div>
+                                    <div class="img-item" >
+                                        <img src="http://112.197.117.97:86//UploadFile/Files/2022/1/20/c1e61c29-cb90-4be4-9378-b1173081fd88_80750fd03293ffcda682.jpg" class="img-avatar" id="img-avatar">
+                                    </div>
+                                    <div class="img-item" >
+                                        <img src="http://112.197.117.97:86//UploadFile/Files/2022/1/20/2d4e55fd-2a9f-47c7-ad3b-519803f089b2_863543729a8a50d4099b.jpg" class="img-avatar" id="img-avatar">
+                                    </div>
                                 </div>
-                                <div class="clearfix">   </div>
+                                <div class="clearfix"></div>
                             </div>
                             <div class="tech-info-box-but"> <i class="fa fa-angle-double-right " title="Thông tin quy trình công nghệ"></i></div>
                         </div>
@@ -424,31 +460,31 @@
     <div class="modal-dialog ">
         <div class="modal-content">
             <div class="modal-header">
-                <button aria-hidden="true" data-dismiss="modal"   class="close" type="button">×</button>
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
                 <h4 class="modal-title">Chọn mẫu quy trình công nghệ</h4>
             </div>
             <div class="modal-body form-inline">
                 <div class="container-fluid">
-                    <button aria-hidden="true" texch-export1   class="btn btn-primary">
+                    <button aria-hidden="true" texch-export1 class="btn btn-primary">
                         <i class="fa fa-file-excel-o"></i>
                         mẫu 1
                     </button>
-                    <button aria-hidden="true" texch-export2   class="btn btn-primary">
+                    <button aria-hidden="true" texch-export2 class="btn btn-primary">
                         <i class="fa fa-file-excel-o"></i>
                         mẫu 2
                     </button>
-                    <button aria-hidden="true" texch-export3   class="btn btn-primary">
+                    <button aria-hidden="true" texch-export3 class="btn btn-primary">
                         <i class="fa fa-file-excel-o"></i>
                         mẫu 3
                     </button>
                     @*<button aria-hidden="true" texch-export4   class="btn btn-primary">
-                        <i class="fa fa-file-excel-o"></i>
-                        mẫu 4
-                    </button>*@
+                            <i class="fa fa-file-excel-o"></i>
+                            mẫu 4
+                        </button>*@
                 </div>
             </div>
             <div class="modal-footer">
-                <button   aria-hidden="true" data-dismiss="modal" class="btn">
+                <button aria-hidden="true" data-dismiss="modal" class="btn">
                     <div class="button-image image-close"></div>
                     Đóng
                 </button>
@@ -457,7 +493,7 @@
     </div>
 </div>
 
- 
+
 
 <!--   POPUP TIME PREPARE  -->
 <div class="modal   fade " id="timeprepare-Popup" data-backdrop="static" data-keyboard="false">
