@@ -414,7 +414,7 @@ namespace GPRO_IED_A.Business
                         returnObj.LinePositions.AddRange(linPos);
                     }
                     int techproverId = returnObj.LinePositions[0].TechProVerId;
-                    returnObj.TechProcess = db.T_TechProcessVersion.Where(x => !x.IsDeleted && x.Id == techproverId).Select(x => new TechProcessVersionModel()
+                    returnObj.TechProcess = db.T_TechProcessVersion.Where(x =>   x.Id == techproverId).Select(x => new TechProcessVersionModel()
                     {
                         Id = x.Id,
                         ParentId = x.ParentId,
