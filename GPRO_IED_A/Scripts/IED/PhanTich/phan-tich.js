@@ -485,6 +485,12 @@ GPRO.PhanTich = function () {
         /*************************************************** PHASE ****************************************************/
         $('#' + Global.Element.CreatePhasePopup).on('shown.bs.modal', function () {
             $('div.divParent').attr('currentPoppup', Global.Element.CreatePhasePopup.toUpperCase());
+            if (Global.Data.isInsertPhase) {
+                $('#phase-code').html(((Global.Data.PhaseAutoCode == null || Global.Data.PhaseAutoCode == '' ? '' : (Global.Data.PhaseAutoCode + '-')) + (Global.Data.phaseLastIndex + 1)));
+                $('#phase-index').val((Global.Data.phaseLastIndex + 1));
+                $('[percentequipment],[percentdb],[percentnpl').val(0);
+                $('[percentmanipulation]').val($('#config').attr('maniexpenddefault'));
+            }
         });
 
         $('#hid_video').change(function () { SavePhase(); });

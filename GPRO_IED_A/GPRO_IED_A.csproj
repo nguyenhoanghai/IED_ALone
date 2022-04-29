@@ -1196,6 +1196,7 @@
     <Content Include="Content\jqwidgets-ver3.8.0\scripts\jquery.mobile-1.4.3.min.map" />
     <None Include="Properties\PublishProfiles\ied_amw.pubxml" />
     <None Include="Properties\PublishProfiles\ied_a_new.pubxml" />
+    <Content Include="ReportTemplates\QTCN_TexGiang.xlsx" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Client\Layout\js\autocomplete\countries.js" />
     <Content Include="Scripts\Client\Layout\js\autocomplete\jquery.autocomplete.js" />
@@ -1417,7 +1418,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="ReportTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

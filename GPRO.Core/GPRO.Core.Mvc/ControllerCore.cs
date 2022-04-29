@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
+using SystemGPRO.Serial;
+
 namespace GPRO.Core.Mvc
 {
     public class ControllerCore : Controller
@@ -42,23 +44,25 @@ namespace GPRO.Core.Mvc
 
                 if (!accessingResource.Contains("/Shared/UnActived"))
                 {
-                    //if (Authentication.today == null || Authentication.today != DateTime.Now.Day)
-                    //{
-                    //    SerialKey serialKey = new SerialKey();
-                    //    ModelCheckKey modelCheckKey = serialKey.CheckActive(productCode, System.Web.Hosting.HostingEnvironment.MapPath("~/bin"));
-                    //    Authentication.today = DateTime.Now.Day;
-                    //    if (!modelCheckKey.checkResult && !accessingResource.Equals("/OutOfDate"))
-                    //    {
-                    //        requestContext.HttpContext.Response.Redirect("/OutOfDate");
-                    //        Authentication.Check = false;
-                    //    }
-                    //    else
-                    //        Authentication.Check = true;
-                    //}
-                    //else if (Authentication.today == DateTime.Now.Day && !Authentication.Check)
-                    //    requestContext.HttpContext.Response.Redirect("/OutOfDate");
+                    /*
+                    if (Authentication.today == null || Authentication.today != DateTime.Now.Day)
+                    {
+                        SerialKey serialKey = new SerialKey();
+                        ModelCheckKey modelCheckKey = serialKey.CheckActive(productCode, System.Web.Hosting.HostingEnvironment.MapPath("~/bin"));
+                        Authentication.today = DateTime.Now.Day;
+                        if (!modelCheckKey.checkResult && !accessingResource.Equals("/OutOfDate"))
+                        {
+                            requestContext.HttpContext.Response.Redirect("/OutOfDate");
+                            Authentication.Check = false;
+                        }
+                        else
+                            Authentication.Check = true;
+                    }
+                    else if (Authentication.today == DateTime.Now.Day && !Authentication.Check)
+                        requestContext.HttpContext.Response.Redirect("/OutOfDate");
 
-                    if (DateTime.Now > new DateTime(2022, 1, 31))
+    */
+                    if (DateTime.Now > new DateTime(2022, 4, 30))
                     {
                         requestContext.HttpContext.Response.Redirect("/OutOfDate");
                         Authentication.Check = false;

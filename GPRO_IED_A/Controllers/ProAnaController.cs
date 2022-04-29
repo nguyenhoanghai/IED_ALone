@@ -319,7 +319,6 @@ namespace GPRO_IED_A.Controllers
             return Json(JsonDataResult);
         }
 
-
         [HttpPost]
         public JsonResult GetPhases(string node, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
@@ -840,6 +839,7 @@ namespace GPRO_IED_A.Controllers
                 case 1: ExportToExcel_1(parentId); break;
                 case 2: ExportToExcel_2(parentId); break;
                 case 3: ExportToExcel_3(parentId); break;
+                case 4: ExportToExcel_4(parentId); break;
             }
         }
 
@@ -1225,7 +1225,6 @@ namespace GPRO_IED_A.Controllers
                     AddCellBorder(sheet, rowIndex, 2, 10);
                 }
 
-
                 #region Thông Tin Thiết Bi
                 row = rowIndex;
                 rowIndex++;
@@ -1284,7 +1283,6 @@ namespace GPRO_IED_A.Controllers
                 sheet.Cells[row + 2, 2, rowIndex, 10].Style.Border.BorderAround(ExcelBorderStyle.Medium);
                 sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
                 #endregion
-
 
                 if (techProcessInfo.productImgs.Count > 0)
                 {
@@ -1790,6 +1788,8 @@ namespace GPRO_IED_A.Controllers
                     var workbook = package.Workbook;
                     var sheet = workbook.Worksheets.First();
 
+                    sheet.Cells[1, 2].Value = ConfigurationManager.AppSettings["ComName"].ToString().ToUpper();
+
                     //worksheet.Cells[5, 2].Value = "Ngày " + DateTime.Now.Day + " Tháng " + DateTime.Now.Month + " Năm " + DateTime.Now.Year;
                     sheet.Cells[5, 2].Value = ("mã hàng " + techProcessInfo.ProductName + "_kh " + techProcessInfo.CustomerName).ToUpper();
 
@@ -1956,7 +1956,7 @@ namespace GPRO_IED_A.Controllers
 
                             top += 330;
                         }
-                         //https://www.youtube.com/watch?v=xwZW3-E4gBw
+                        //https://www.youtube.com/watch?v=xwZW3-E4gBw
                     }
 
                     Response.ClearContent();
@@ -2483,6 +2483,310 @@ namespace GPRO_IED_A.Controllers
 
         }
         #endregion
+        #endregion
+
+        #region QT Công Nghệ ăn lương
+
+        /// <summary>
+        /// Quy Trình Công Nghệ Làm Lương
+        /// </summary>
+        /// <param name="techProcessVersionId"></param>
+        public void ExportToExcel_4(int parentId)
+        {
+            var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId);
+
+            var excelPackage = new ExcelPackage();
+            excelPackage.Workbook.Properties.Author = "IED";
+            excelPackage.Workbook.Properties.Title = "Quy trình công nghệ làm lương";
+            var sheet = excelPackage.Workbook.Worksheets.Add("Quy trình công nghệ làm lương");
+            sheet.Name = "Quy trình công nghệ làm lương";
+            sheet.Cells.Style.Font.Size = 12;
+            sheet.Cells.Style.Font.Name = "Times New Roman";
+             
+            sheet.Cells[1, 2].Value = ConfigurationManager.AppSettings["ComName"].ToString().ToUpper();
+            sheet.Cells[1, 2].Style.Font.Size = 13;
+            sheet.Cells[1, 2, 1, 10].Merge = true;
+            sheet.Cells[1, 2, 1, 10].Style.Font.Bold = true;
+            sheet.Cells[1, 2].Style.WrapText = true;
+            sheet.Cells[2, 2].Value = ConfigurationManager.AppSettings["ComAdd"].ToString();
+            sheet.Cells[2, 2].Style.Font.Size = 10;
+            sheet.Cells[2, 2, 2, 10].Merge = true;
+            sheet.Cells[2, 2, 2, 10].Style.Font.Bold = true;
+            sheet.Row(1).Height = 20;
+            sheet.Cells[4, 2].Value = "TIME STUDY - QUY TRÌNH CÔNG NGHỆ SẢN XUẤT : " + techProcessInfo.ProductName.ToUpper();
+            sheet.Cells[4, 2].Style.Font.Size = 14;
+            sheet.Cells[4, 2, 4, 10].Merge = true;
+            sheet.Cells[4, 2, 4, 10].Style.Font.Bold = true;
+            sheet.Cells[4, 2].Style.WrapText = true;
+            sheet.Cells[4, 2, 4, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            sheet.Cells[4, 2, 4, 10].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+            sheet.Cells[4, 2, 4, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            sheet.Cells[4, 2, 4, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+            sheet.Cells[4, 2, 4, 10].Style.Font.Color.SetColor(Color.White);
+            sheet.Row(4).Height = 40;
+
+            sheet.Cells[5, 2].Value = "Ngày " + DateTime.Now.Day + " Tháng " + DateTime.Now.Month + " Năm " + DateTime.Now.Year;
+            sheet.Cells[5, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+            sheet.Cells[5, 2].Style.Font.Bold = true;
+            sheet.Cells[5, 2, 5, 9].Merge = true;
+
+            int rowIndex = 6, row = 0;
+            double TongLĐ = 0;
+
+
+            #region Thong tin QTCN
+            if (techProcessInfo != null && techProcessInfo.ListTechProcessGroup != null && techProcessInfo.ListTechProcessGroup.Count > 0)
+            {
+                row = rowIndex;
+                sheet.Cells[rowIndex, 2].Value = "STT";
+                sheet.Cells[rowIndex, 3].Value = "Tên Công Đoạn";
+                sheet.Cells[rowIndex, 4].Value = "Bậc Thợ";
+                sheet.Cells[rowIndex, 5].Value = "Hệ số";
+                sheet.Cells[rowIndex, 6].Value = "Thiết Bị ";
+                sheet.Cells[rowIndex, 7].Value = "Lao Động";
+                sheet.Cells[rowIndex, 8].Value = "Thời gian chuẩn";
+                 sheet.Cells[rowIndex, 9].Value = "TGC theo hệ số";
+                sheet.Cells[rowIndex, 10].Value = "Tiền";
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
+                sheet.Row(rowIndex).Height = 25;
+
+                AddCellBorder(sheet, rowIndex, 2, 10);
+
+                techProcessInfo.CompanyName = UserContext.CompanyName;
+                int stt = 1;
+                int stt_group = 1;
+                rowIndex++;
+                double DMSL = 0, DMLD = 0, TGHP = 0, TGQD = 0, Money = 0;
+                foreach (var group in techProcessInfo.ListTechProcessGroup)
+                {
+                    sheet.Cells[rowIndex, 2].Value = stt_group;
+                    sheet.Cells[rowIndex, 3].Value = group.PhaseGroupName.ToUpper();
+                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Color.SetColor(Color.White);
+                    sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
+
+                    AddCellBorder(sheet, rowIndex, 2, 10);
+                    rowIndex++;
+                    if (group.ListTechProcessVerDetail != null && group.ListTechProcessVerDetail.Count > 0)
+                    {
+                        foreach (var detail in group.ListTechProcessVerDetail)
+                        {
+                            sheet.Cells[rowIndex, 2].Value = stt;
+                            sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            sheet.Cells[rowIndex, 3].Value = detail.PhaseName;
+                            sheet.Cells[rowIndex, 4].Value = detail.WorkerLevelName;
+                            sheet.Cells[rowIndex, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            sheet.Cells[rowIndex, 5].Value = detail.Coefficient;
+                            sheet.Cells[rowIndex, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            sheet.Cells[rowIndex, 6].Value = detail.EquipmentGroupCode;
+                            sheet.Cells[rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                            //var a = Math.Round((3600 * techProcessInfo.WorkingTimePerDay) / detail.TimeByPercent);
+                            //DMSL += a;
+                            //sheet.Cells[rowIndex, 6].Value = a;
+                            //sheet.Cells[rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                            DMLD += Math.Round(detail.Worker, 2);
+                            sheet.Cells[rowIndex, 7].Value = Math.Round(detail.Worker, 2);
+                            sheet.Cells[rowIndex, 7].Style.Font.Bold = true;
+                            sheet.Cells[rowIndex, 7].Style.Font.Color.SetColor(Color.Red);
+                            sheet.Cells[rowIndex, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                            TGHP += Math.Round(detail.TimeByPercent, 1);
+                            sheet.Cells[rowIndex, 8].Value = Math.Round(detail.TimeByPercent, 1);
+                            sheet.Cells[rowIndex, 8].Style.Font.Bold = true;
+                            sheet.Cells[rowIndex, 8].Style.Font.Color.SetColor(Color.Blue);
+                            sheet.Cells[rowIndex, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                            double a = 0;
+                            a = Math.Round(detail.TimeByPercent * detail.Coefficient);
+                            TGQD += a;
+                            sheet.Cells[rowIndex, 9].Value = a;
+                            sheet.Cells[rowIndex, 9].Style.Font.Bold = true;
+                            sheet.Cells[rowIndex, 9].Style.Font.Color.SetColor(Color.Red);
+                            sheet.Cells[rowIndex, 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                            a = a * techProcessInfo.PricePerSecond;
+                            Money += a;
+                            sheet.Cells[rowIndex, 10].Value = Math.Round(a, 2);
+                            sheet.Cells[rowIndex, 10].Style.Font.Bold = true;
+                            sheet.Cells[rowIndex, 10].Style.Font.Color.SetColor(Color.Blue);
+                            sheet.Cells[rowIndex, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            AddCellBorder(sheet, rowIndex, 2, 10);
+                            stt++;
+                            rowIndex++;
+                        }
+                    }
+                    stt_group++;
+                }
+                sheet.Cells[rowIndex, 2].Value = "Đơn Giá May";
+                sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                sheet.Cells[rowIndex, 2, rowIndex, 3].Merge = true;
+                sheet.Cells[rowIndex, 6].Value = Math.Round(DMSL);
+                sheet.Cells[rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                sheet.Cells[rowIndex, 7].Value = Math.Round(DMLD, 2);
+                sheet.Cells[rowIndex, 8].Value = Math.Round(TGHP, 1);
+                sheet.Cells[rowIndex, 9].Value = Math.Round(TGQD);
+                sheet.Cells[rowIndex, 10].Value = Math.Round(Money, 2);
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
+                AddCellBorder(sheet, rowIndex, 2, 10);
+                rowIndex++;
+
+                sheet.Cells[rowIndex, 2].Value = "Phụ cấp " + techProcessInfo.Allowance + "% Đơn Giá ";
+                sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                sheet.Cells[rowIndex, 2, rowIndex, 3].Merge = true;
+                var all = Math.Round((Money * techProcessInfo.Allowance) / 100, 2);
+                sheet.Cells[rowIndex, 10].Value = all;
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
+                AddCellBorder(sheet, rowIndex, 2, 10);
+                rowIndex++;
+
+                sheet.Cells[rowIndex, 2].Value = "Tổng đơn giá đã có Phụ cấp ";
+                sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                sheet.Cells[rowIndex, 2, rowIndex, 3].Merge = true;
+
+                sheet.Cells[rowIndex, 10].Value = Math.Round((Money + all), 2);
+                sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Bold = true;
+                AddCellBorder(sheet, rowIndex, 2, 10);
+                rowIndex++;
+            }
+            sheet.Cells[7, 3, rowIndex, 3].Style.WrapText = true;
+            sheet.Cells[row, 2, rowIndex - 1, 10].Style.Border.BorderAround(ExcelBorderStyle.Medium);
+
+            #endregion
+
+            #region Thông Tin Thiết Bi
+            if (techProcessInfo.equipments != null && techProcessInfo.equipments.Count > 0)
+            {
+                TongLĐ = 0;
+                for (int i = 0; i < techProcessInfo.equipments.Count; i++)
+                {
+                    var equipment = techProcessInfo.equipments[i];
+                    double tong = 0;
+                    foreach (var item in techProcessInfo.ListTechProcessGroup)
+                    {
+                        tong += item.ListTechProcessVerDetail.Where(x => x.EquipmentId == equipment.Id).Select(x => x.Worker).Sum();
+                    }
+                    TongLĐ += tong;
+                }
+            }
+            #endregion
+
+            #region TTchung
+            rowIndex += 2;
+            if (techProcessInfo != null)
+            {
+                row = rowIndex;
+                sheet.Cells[rowIndex, 2].Value = "THÔNG TIN QUY TRÌNH ";
+                sheet.Cells[rowIndex, 2, rowIndex, 5].Merge = true;
+                sheet.Cells[rowIndex, 2, rowIndex, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                sheet.Cells[rowIndex, 2, rowIndex, 5].Style.Font.Bold = true;
+                AddCellBorder(sheet, rowIndex, 2, 5);
+
+                rowIndex++;
+                sheet.Cells[rowIndex, 2].Value = 1;
+                sheet.Cells[rowIndex, 3].Value = "Thời gian hoàn thành 1 sản phẩm ";
+                sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.TimeCompletePerCommo);
+                sheet.Cells[rowIndex, 5].Value = "Giây/SP";
+                AddCellBorder(sheet, rowIndex, 2, 5);
+
+                rowIndex++;
+                sheet.Cells[rowIndex, 2].Value = 2;
+                sheet.Cells[rowIndex, 3].Value = "Tổng số lao động";
+                sheet.Cells[rowIndex, 4].Value = techProcessInfo.NumberOfWorkers;
+                sheet.Cells[rowIndex, 5].Value = "LĐ";
+                AddCellBorder(sheet, rowIndex, 2, 5);
+
+                rowIndex++;
+                sheet.Cells[rowIndex, 2].Value = 3;
+                sheet.Cells[rowIndex, 3].Value = "Nhịp độ sản xuất Chuyền";
+                sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.PacedProduction);
+                sheet.Cells[rowIndex, 5].Value = "Giây/SP/LĐ";
+                AddCellBorder(sheet, rowIndex, 2, 5);
+
+                rowIndex++;
+                sheet.Cells[rowIndex, 2].Value = 4;
+                sheet.Cells[rowIndex, 3].Value = "Năng suất của Chuyền / giờ  ";
+                sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.ProOfGroupPerHour);
+                sheet.Cells[rowIndex, 5].Value = "SP";
+                AddCellBorder(sheet, rowIndex, 2, 5);
+
+                rowIndex++;
+                sheet.Cells[rowIndex, 2].Value = 5;
+                sheet.Cells[rowIndex, 3].Value = "Năng suất Lao Động / ngày  ";
+                sheet.Cells[rowIndex, 4].Value = Math.Round((3600 * techProcessInfo.WorkingTimePerDay) / techProcessInfo.TimeCompletePerCommo);
+                sheet.Cells[rowIndex, 5].Value = "SP";
+                AddCellBorder(sheet, rowIndex, 2, 5);
+
+                rowIndex++;
+                sheet.Cells[rowIndex, 2].Value = 6;
+                sheet.Cells[rowIndex, 3].Value = "Năng suất Chuyền / ngày  ";
+                sheet.Cells[rowIndex, 4].Value = Math.Round(techProcessInfo.ProOfGroupPerDay);
+                sheet.Cells[rowIndex, 5].Value = "SP";
+                AddCellBorder(sheet, rowIndex, 2, 5);
+
+                rowIndex++;
+                sheet.Cells[rowIndex, 2].Value = 7;
+                sheet.Cells[rowIndex, 3].Value = "Tổng sản lượng Mã Hàng";
+                sheet.Cells[rowIndex, 4].Value = techProcessInfo.Quantities;
+                sheet.Cells[rowIndex, 5].Value = "SP";
+                AddCellBorder(sheet, rowIndex, 2, 5);
+
+                //var moneyObj =   App_Global.AppGlobal.Account.GetService().GetMoneyTypeById(techProcessInfo.MoneyTypeId);
+                //var moneyName = moneyObj != null ? moneyObj.Name : "";
+                rowIndex++;
+                sheet.Cells[rowIndex, 2].Value = 8;
+                sheet.Cells[rowIndex, 3].Value = "Đơn giá của Mã Hàng";
+                sheet.Cells[rowIndex, 4].Value = techProcessInfo.Price;
+                //sheet.Cells[rowIndex, 5].Value = moneyName;
+                AddCellBorder(sheet, rowIndex, 2, 5);
+
+                rowIndex++;
+                sheet.Cells[rowIndex, 2].Value = 9;
+                sheet.Cells[rowIndex, 3].Value = "Đơn giá giây";
+                sheet.Cells[rowIndex, 4].Value = techProcessInfo.PricePerSecond;
+                //sheet.Cells[rowIndex, 5].Value = moneyName;
+                AddCellBorder(sheet, rowIndex, 2, 5);
+
+                rowIndex++;
+                sheet.Cells[rowIndex, 2].Value = 10;
+                sheet.Cells[rowIndex, 3].Value = "Tổng số máy trên chuyền";
+                sheet.Cells[rowIndex, 4].Value = Math.Round(TongLĐ);
+                sheet.Cells[rowIndex, 5].Value = "";
+                sheet.Cells[row, 3, rowIndex, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                AddCellBorder(sheet, rowIndex, 2, 5);
+            }
+            #endregion
+
+            rowIndex += 2;
+            sheet.Cells[rowIndex, 2].Value = "                      GĐ ĐH 	                           GIÁM ĐỐC 	                                TP/KỸ THUẬT 	                           TRƯỞNG NHÓM QT 	                              NGƯỜI LẬP QT".ToUpper();
+            sheet.Cells[rowIndex, 2].Style.Font.Bold = true;
+            sheet.Cells[rowIndex, 2, rowIndex, 10].Merge = true;
+            sheet.Cells[rowIndex, 2].Style.Font.Size = 10;
+
+            rowIndex += 7;
+            sheet.Cells[rowIndex, 2].Value = "                        PT.KỸ THUẬT XN 	                     KT.TRIỂN KHAI".ToUpper();
+            sheet.Cells[rowIndex, 2].Style.Font.Bold = true;
+            sheet.Cells[rowIndex, 2, rowIndex, 10].Merge = true;
+            sheet.Cells[rowIndex, 2].Style.Font.Size = 10;
+
+            sheet.Cells.AutoFitColumns(5);
+            sheet.Column(3).Width = 50;
+            sheet.Column(14).Style.WrapText = true;
+            Response.ClearContent();
+            Response.BinaryWrite(excelPackage.GetAsByteArray());
+            DateTime dateNow = DateTime.Now;
+            //string fileName = "QTC_" + techProcessInfo. + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+            string fileName = "QTC_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+            Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
+            Response.ContentType = "application/excel";
+            Response.Flush();
+            Response.End();
+        }
+
         #endregion
 
     }

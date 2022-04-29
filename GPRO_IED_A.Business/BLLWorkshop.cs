@@ -88,6 +88,7 @@ namespace GPRO_IED_A.Business
                         {
                             obj = new T_WorkShop();
                             Parse.CopyObject(model, ref obj);
+                            obj.CreatedUser = model.ActionUser;
                             obj.CreatedDate = DateTime.Now;
                             db.T_WorkShop.Add(obj);
                             db.SaveChanges();

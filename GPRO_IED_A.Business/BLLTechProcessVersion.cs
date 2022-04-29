@@ -306,7 +306,7 @@ namespace GPRO_IED_A.Business
                                            WorkerLevelId = x.T_CA_Phase.WorkerLevelId,
                                            WorkerLevelName = x.T_CA_Phase.SWorkerLevel.Name,
                                            Index = x.T_CA_Phase.Index,
-                                           Node = x.T_CA_Phase.Node
+                                           Node = x.T_CA_Phase.Node 
                                        }).OrderBy(x => x.Index).ThenBy(x => x.PhaseCode).ToList();
 
                         details = details.GroupBy(x => x.CA_PhaseId).Select(x => x.First()).ToList();
@@ -371,6 +371,8 @@ namespace GPRO_IED_A.Business
                                 EquipmentName = x.EquipmentId != null ? x.T_Equipment.Name : "",
                                 EquipmentGroupCode = x.EquipmentId.HasValue ? x.T_Equipment.T_EquipmentGroup.GroupCode : "",
                                 Description = x.Description == null ? "" : x.Description,
+                                Coefficient = x.SWorkerLevel.Coefficient,
+                                WorkerLevelName = x.SWorkerLevel.Name
                             }).OrderBy(x => x.Index).ThenBy(x => x.PhaseCode).ToList());
                         #endregion
                     }
@@ -395,8 +397,11 @@ namespace GPRO_IED_A.Business
                                 EquipmentName = x.EquipmentId != null ? x.T_Equipment.Name : "",
                                 EquipmentGroupCode = x.EquipmentId.HasValue ? x.T_Equipment.T_EquipmentGroup.GroupCode : "",
                                 Description = x.Description == null ? "" : x.Description,
-                                Node = x.Node
-                            }).OrderBy(x => x.Index)
+                                Node = x.Node,
+                                Coefficient = x.SWorkerLevel.Coefficient,
+                                WorkerLevelName = x.SWorkerLevel.Name
+                            })
+                            .OrderBy(x => x.Index)
                         .ThenBy(x => x.PhaseCode)
                         .ToList());
                     }
@@ -425,6 +430,6 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
-
+         
     }
 }
