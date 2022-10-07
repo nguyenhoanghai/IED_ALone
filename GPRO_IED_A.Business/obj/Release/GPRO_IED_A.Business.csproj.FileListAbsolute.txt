@@ -22,7 +22,6 @@ E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\bin\Release\System.Web.Mvc.dll
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\bin\Release\GPRO.Core.pdb
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\bin\Release\GPRO_IED_A.Data.pdb
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\bin\Release\GPRO_IED_A.Data.dll.config
-E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\obj\Release\GPRO_IED_A.Business.csprojAssemblyReference.cache
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\obj\Release\GPRO_IED_A.Business.csproj.CoreCompileInputs.cache
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\obj\Release\GPRO_IED_A.Business.csproj.CopyComplete
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\obj\Release\GPRO_IED_A.Business.dll
@@ -31,3 +30,5 @@ E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\bin\Release\Hugate.Framework.dll
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\bin\Release\GPRO_IED_A.Business.dll.config
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\bin\Release\Newtonsoft.Json.dll
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\bin\Release\Newtonsoft.Json.xml
+E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\bin\Release\SystemGPRO.Serial.dll
+E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\obj\Release\GPRO_IED_A.Business.csproj.AssemblyReference.cache

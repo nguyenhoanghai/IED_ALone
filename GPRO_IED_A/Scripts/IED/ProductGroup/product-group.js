@@ -21,15 +21,15 @@ GPRO.ProductGroup = function () {
     var Global = {
         UrlAction: {
             Gets: '/ProductGroup/Gets',
-            Save : '/ProductGroup/Save',
-            Delete : '/ProductGroup/Delete', 
+            Save: '/ProductGroup/Save',
+            Delete: '/ProductGroup/Delete',
         },
         Element: {
             Jtable: 'jtableProGroup',
-            Popup: 'popup_ProGroup', 
+            Popup: 'popup_ProGroup',
         },
-        Data: { 
-            IsInsert : true
+        Data: {
+            IsInsert: true
         }
     }
     this.GetGlobal = function () {
@@ -40,11 +40,11 @@ GPRO.ProductGroup = function () {
         RegisterEvent();
         InitList();
         ReloadList();
-        InitPopup(); 
+        InitPopup();
     }
-     
+
     var RegisterEvent = function () {
-        $("#proIsPrivate").kendoMobileSwitch({
+        $("#pro-group-isPrivate").kendoMobileSwitch({
             onLabel: "Tất cả",
             offLabel: "Nội bộ"
         });
@@ -57,26 +57,26 @@ GPRO.ProductGroup = function () {
             $('div.divParent').attr('currentPoppup', Global.Element.Search.toUpperCase());
         });
 
-        $('[pcancel]').click(function () {
+        $('[pro-group-cancel]').click(function () {
             setToDefault();
         });
-                 
+
     }
 
     setToDefault = () => {
-        var switchInstance = $("#proIsPrivate").data("kendoMobileSwitch");
+        var switchInstance = $("#pro-group-isPrivate").data("kendoMobileSwitch");
         switchInstance.check(true);
-        $('#pid').val(0);
-        $('#pname').val('');
-        $('#pdes').val(''); 
+        $('#pro-group-id').val(0);
+        $('#pro-group-name').val('');
+        $('#pro-group-des').val('');
     }
-     
-    function Save() { 
+
+    function Save() {
         var obj = {
-            Id: $('#pid').val(),
-            Name: $('#pname').val(), 
-            Description: $('#pdes').val(), 
-            IsPrivate: $("#proIsPrivate").data("kendoMobileSwitch").check()
+            Id: $('#pro-group-id').val(),
+            Name: $('#pro-group-name').val(),
+            Description: $('#pro-group-des').val(),
+            IsPrivate: $("#pro-group-isPrivate").data("kendoMobileSwitch").check()
         };
         $.ajax({
             url: Global.UrlAction.Save,
@@ -91,10 +91,10 @@ GPRO.ProductGroup = function () {
                         ReloadList();
                         setToDefault();
 
-                        if (!Global.Data.IsInsert) {
-                            $("#" + Global.Element.Popup + ' button[pcancel]').click();
+                        //if (!Global.Data.IsInsert) {
+                            $("#" + Global.Element.Popup + ' button[pro-group-cancel]').click();
                             $('div.divParent').attr('currentPoppup', '');
-                        }
+                      //  }
                         Global.Data.IsInsert = true;
                     }
                     else
@@ -107,9 +107,9 @@ GPRO.ProductGroup = function () {
         });
     }
 
-    function InitList () {
+    function InitList() {
         $('#' + Global.Element.Jtable).jtable({
-            title: 'Quản lý nhóm mã hàng',
+            title: 'Quản lý chủng loại hàng',
             paging: true,
             pageSize: 1000,
             pageSizeChange: true,
@@ -117,13 +117,13 @@ GPRO.ProductGroup = function () {
             selectShow: false,
             actions: {
                 listAction: Global.UrlAction.Gets,
-                createAction: Global.Element.Popup, 
-               // searchAction: Global.Element.Search,
+                createAction: Global.Element.Popup,
+                // searchAction: Global.Element.Search,
             },
             messages: {
                 addNewRecord: 'Thêm mới',
-               // searchRecord: 'Tìm kiếm',
-               // selectShow: 'Ẩn hiện cột'
+                // searchRecord: 'Tìm kiếm',
+                // selectShow: 'Ẩn hiện cột'
             },
             searchInput: {
                 id: 'pro-group-keyword',
@@ -143,9 +143,9 @@ GPRO.ProductGroup = function () {
                 },
                 Name: {
                     visibility: 'fixed',
-                    title: "Tên nhóm mã hàng",
-                    width: "20%", 
-                }, 
+                    title: "Tên chủng loại hàng",
+                    width: "20%",
+                },
                 Description: {
                     title: "Mô Tả ",
                     width: "20%",
@@ -156,41 +156,36 @@ GPRO.ProductGroup = function () {
                     width: '1%',
                     sorting: false,
                     display: function (data) {
+                        var div = $('<div class="table-action"></div>')
                         var text = $('<i data-toggle="modal" data-target="#' + Global.Element.Popup + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
-                        text.click(function () {  
-                            var switchInstance = $("#proIsPrivate").data("kendoMobileSwitch");
+                        text.click(function () {
+                            var switchInstance = $("#pro-group-isPrivate").data("kendoMobileSwitch");
                             switchInstance.check(data.record.IsPrivate);
-                            $('#pid').val(data.record.Id);
-                            $('#pname').val(data.record.Name);
-                            $('#pdes').val(data.record.Description); 
+                            $('#pro-group-id').val(data.record.Id);
+                            $('#pro-group-name').val(data.record.Name);
+                            $('#pro-group-des').val(data.record.Description);
                             Global.Data.IsInsert = false;
                         });
-                        return text;
-                    }
-                },
-                Delete: {
-                    title: '',
-                    width: "3%",
-                    sorting: false,
-                    display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
-                        text.click(function () {
+                        div.append(text);
+
+                        var btnDelete = $('<i title="Xóa" class="fa fa-trash-o"></i>');
+                        btnDelete.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 Delete(data.record.Id);
                             }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
                         });
-                        return text;
-
+                        div.append(btnDelete);
+                        return div;
                     }
-                }
+                } 
             }
         });
     }
 
-    function ReloadList () {
-        var keySearch = $('#pro-group-keyword').val(); 
-        $('#' + Global.Element.Jtable).jtable('load', { 'keyword': keySearch  });
-      }
+    function ReloadList() {
+        var keySearch = $('#pro-group-keyword').val();
+        $('#' + Global.Element.Jtable).jtable('load', { 'keyword': keySearch });
+    }
 
     function Delete(Id) {
         $.ajax({
@@ -202,7 +197,6 @@ GPRO.ProductGroup = function () {
                 GlobalCommon.CallbackProcess(data, function () {
                     if (data.Result == "OK") {
                         ReloadList();
-                        BindData(null);
                     }
                     else
                         GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
@@ -221,28 +215,27 @@ GPRO.ProductGroup = function () {
             show: false
         });
 
-        $("#" + Global.Element.Popup + ' button[psave]').click(function () {
+        $("#" + Global.Element.Popup + ' button[pro-group-save]').click(function () {
             if (CheckValidate()) {
                 Save();
             }
         });
-        $("#" + Global.Element.Popup + ' button[pcancel]').click(function () {
+        $("#" + Global.Element.Popup + ' button[pro-group-cancel]').click(function () {
             $("#" + Global.Element.Popup).modal("hide");
         });
     }
-     
+
     function CheckValidate() {
-        if ($('#pname').val().trim() == "") {
-            GlobalCommon.ShowMessageDialog("Vui lòng nhập Tên nhóm mã hàng.", function () { }, "Lỗi Nhập liệu");
+        if ($('#pro-group-name').val().trim() == "") {
+            GlobalCommon.ShowMessageDialog("Vui lòng nhập Tên chủng loại hàng.", function () { }, "Lỗi Nhập liệu");
             return false;
         }
         return true;
     }
-     
+
 }
 
 $(document).ready(function () {
     var ProductGroup = new GPRO.ProductGroup();
-    ProductGroup.Init(); 
+    ProductGroup.Init();
 });
- 

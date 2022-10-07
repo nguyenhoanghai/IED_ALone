@@ -84,7 +84,7 @@ namespace GPRO_IED_A.Business
                             }
                             else
                             {
-                                if (!checkPermis(obj, model.ActionUser,isOwner))
+                                if (!checkPermis(obj, model.ActionUser, isOwner))
                                 {
                                     result.IsSuccess = false;
                                     result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo loại thời gian chuẩn bị này nên bạn không cập nhật được thông tin cho loại thời gian chuẩn bị này." });
@@ -102,7 +102,7 @@ namespace GPRO_IED_A.Business
                                 }
                             }
                         }
-                        
+
                     }
                     return result;
                 }
@@ -150,7 +150,7 @@ namespace GPRO_IED_A.Business
                     }
                     else
                     {
-                        if (!checkPermis(timeType, acctionUserId,isOwner))
+                        if (!checkPermis(timeType, acctionUserId, isOwner))
                         {
                             result.IsSuccess = false;
                             result.Errors.Add(new Error() { MemberName = "Delete", Message = "Bạn không phải là người tạo loại thời gian chuẩn bị này nên bạn không xóa được loại thời gian chuẩn bị này." });
@@ -175,7 +175,7 @@ namespace GPRO_IED_A.Business
         }
 
 
-        public PagedList<TimeTypePrepareModel> Gets(string keyWord, int searchBy, int startIndexRecord, int pageSize, string sorting)
+        public PagedList<TimeTypePrepareModel> Gets(string keyWord, int startIndexRecord, int pageSize, string sorting)
         {
             try
             {
@@ -184,20 +184,10 @@ namespace GPRO_IED_A.Business
                     if (string.IsNullOrEmpty(sorting))
                         sorting = "Id DESC";
 
-                    IQueryable<T_TimeTypePrepare> timeTypes = null;
+                    IQueryable<T_TimeTypePrepare> timeTypes = db.T_TimeTypePrepare.Where(x => !x.IsDeleted);
                     var pageNumber = (startIndexRecord / pageSize) + 1;
                     if (!string.IsNullOrEmpty(keyWord))
-                        switch (searchBy)
-                        {
-                            case 1:
-                                timeTypes = db.T_TimeTypePrepare.Where(x => !x.IsDeleted && x.Name.Trim().ToUpper().Contains(keyWord.Trim().ToUpper()));
-                                break;
-                            case 2:
-                                timeTypes = db.T_TimeTypePrepare.Where(x => !x.IsDeleted && x.Code.Trim().ToUpper().Contains(keyWord.Trim().ToUpper()));
-                                break;
-                        }
-                    else
-                        timeTypes = db.T_TimeTypePrepare.Where(x => !x.IsDeleted);
+                        timeTypes = timeTypes.Where(x => x.Name.Trim().ToUpper().Contains(keyWord.Trim().ToUpper()) || x.Code.Trim().ToUpper().Contains(keyWord.Trim().ToUpper()));
 
                     if (timeTypes != null && timeTypes.Count() > 0)
                     {

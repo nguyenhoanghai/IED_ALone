@@ -168,10 +168,16 @@
     <Compile Include="T_IEDConfig.cs">
       <DependentUpon>IEDModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="T_LabourDevision_Ver.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="T_LabourDivision.cs">
       <DependentUpon>IEDModel.tt</DependentUpon>
     </Compile>
     <Compile Include="T_Line.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_LinePoDailyQuantities.cs">
       <DependentUpon>IEDModel.tt</DependentUpon>
     </Compile>
     <Compile Include="T_LinePosition.cs">
@@ -196,6 +202,9 @@
       <DependentUpon>IEDModel.tt</DependentUpon>
     </Compile>
     <Compile Include="T_PhaseGroup.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_PhaseGroupDailyProduction.cs">
       <DependentUpon>IEDModel.tt</DependentUpon>
     </Compile>
     <Compile Include="T_Product.cs">

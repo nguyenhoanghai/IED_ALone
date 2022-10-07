@@ -31,7 +31,7 @@ namespace GPRO_IED_A.Business
         private BLLCustomer() { }
         #endregion
 
-        public PagedList<CustomerModel> GetList(string keyWord,   int companyId, int[] relationCompanyId, int startIndexRecord, int pageSize, string sorting)
+        public PagedList<CustomerModel> GetList(string keyWord, int companyId, int[] relationCompanyId, int startIndexRecord, int pageSize, string sorting)
         {
             try
             {
@@ -40,28 +40,13 @@ namespace GPRO_IED_A.Business
                     if (string.IsNullOrEmpty(sorting))
                         sorting = "Id DESC";
 
-                    List<CustomerModel> CustomerTypes = null;
-                    if (string.IsNullOrEmpty(keyWord))
-                        CustomerTypes = GetAll(sorting, companyId, relationCompanyId);
-                    else
-                        CustomerTypes = GetByKeyword(keyWord, companyId, relationCompanyId, sorting);
-
+                    var _custs = db.T_Customer.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0)));
+                    if (!string.IsNullOrEmpty(keyWord))
+                        _custs = _custs.Where(x => x.Name.Trim().ToUpper().Contains(keyWord.Trim().ToUpper()));
+                     
                     var pageNumber = (startIndexRecord / pageSize) + 1;
-                    return new PagedList<CustomerModel>(CustomerTypes, pageNumber, pageSize);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        private List<CustomerModel> GetByKeyword(string keyWord,  int companyId, int[] relationCompanyId, string sorting)
-        {
-            try
-            {
-                List<CustomerModel> CustomerTypes = null;
-                CustomerTypes = db.T_Customer.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0)) && x.Name.Trim().ToUpper().Contains(keyWord.Trim().ToUpper())).OrderByDescending(x => x.CreatedDate).Select(
+                    return new PagedList<CustomerModel>(_custs.OrderBy(sorting)
+                        .Select(
                            x => new CustomerModel()
                            {
                                Id = x.Id,
@@ -69,41 +54,15 @@ namespace GPRO_IED_A.Business
                                Description = x.Description,
                                IsPrivate = (x.CompanyId == null ? true : false),
                                CompanyId = x.CompanyId
-                           }).OrderBy(sorting).ToList();
-
-                if (CustomerTypes != null && CustomerTypes.Count > 0)
-                    return CustomerTypes;
-                return new List<CustomerModel>();
+                           }).ToList(), pageNumber, pageSize);
+                }
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
-
-        private List<CustomerModel> GetAll(string sorting, int companyId, int[] relationCompanyId)
-        {
-            try
-            {
-                var CustomerTypes = db.T_Customer.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0))).OrderByDescending(x => x.CreatedDate).Select(
-                    x => new CustomerModel()
-                    {
-                        Id = x.Id,
-                        Name = x.Name, 
-                        Description = x.Description,
-                        CompanyId = x.CompanyId,
-                        IsPrivate = (x.CompanyId == null ? true : false)
-                    }).OrderBy(sorting).ToList();
-                if (CustomerTypes != null && CustomerTypes.Count > 0)
-                    return CustomerTypes;
-                return new List<CustomerModel>();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
+         
         public ResponseBase InsertOrUpdate(CustomerModel model, bool isOwner)
         {
             try
@@ -118,7 +77,7 @@ namespace GPRO_IED_A.Business
                         return result;
                     }
                     else
-                    { 
+                    {
                         T_Customer obj;
                         if (model.Id == 0)
                         {
@@ -141,7 +100,7 @@ namespace GPRO_IED_A.Business
                             }
                             else
                             {
-                                if (!checkPermis(obj, model.ActionUser,isOwner))
+                                if (!checkPermis(obj, model.ActionUser, isOwner))
                                 {
                                     result.IsSuccess = false;
                                     result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo khách hàng này nên bạn không cập nhật được thông tin cho khách hàng này." });
@@ -170,7 +129,7 @@ namespace GPRO_IED_A.Business
                                 }
                             }
                         }
-                       
+
                         return result;
                     }
                 }
@@ -181,12 +140,12 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        private bool CheckExists(string code, int? id, int? companyId )
+        private bool CheckExists(string code, int? id, int? companyId)
         {
             try
             {
-                T_Customer obj = null; 
-                    obj = db.T_Customer.FirstOrDefault(x => !x.IsDeleted && x.CompanyId == companyId && x.Name.Trim().ToUpper().Equals(code) && x.Id != id);
+                T_Customer obj = null;
+                obj = db.T_Customer.FirstOrDefault(x => !x.IsDeleted && x.CompanyId == companyId && x.Name.Trim().ToUpper().Equals(code) && x.Id != id);
 
                 if (obj == null)
                     return false;
@@ -213,7 +172,7 @@ namespace GPRO_IED_A.Business
                     }
                     else
                     {
-                        if (!checkPermis(obj, acctionUserId,isOwner))
+                        if (!checkPermis(obj, acctionUserId, isOwner))
                         {
                             result.IsSuccess = false;
                             result.Errors.Add(new Error() { MemberName = "Delete", Message = "Bạn không phải là người tạo khách hàng này nên bạn không xóa được khách hàng này." });
@@ -266,7 +225,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        bool checkPermis(T_Customer obj,int actionUser, bool isOwner)
+        bool checkPermis(T_Customer obj, int actionUser, bool isOwner)
         {
             if (isOwner) return true;
             return obj.CreatedUser == actionUser;

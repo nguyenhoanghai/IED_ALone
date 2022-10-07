@@ -49,7 +49,7 @@ GPRO.User = function () {
         RegisterEvent();
         InitList();
         ReloadList();
-        InitPopup(); 
+        InitPopup();
     }
 
     this.BindindUsercontextId = function (userContextId) {
@@ -58,10 +58,10 @@ GPRO.User = function () {
 
     this.reloadListUser = function () {
         ReloadListUser();
-    } 
+    }
 
     var RegisterEvent = function () {
-         
+
         $('[btn="updatePassword"]').click(function () {
             if (checkValidateUpdatePass()) {
                 ChangePassword();
@@ -175,21 +175,13 @@ GPRO.User = function () {
             return false;
         }
         else if (($('[txt="txtpass"]').val() != $('[txt="txtcpass"]').val() && $('[txt="userId"]').val() == "0") || ($('[txt="txtpass"]').val() != $('[txt="txtcpass"]').val() && $('[txt="userId"]').val() != "0" && $('#required').val() == "1")) {
-            GlobalCommon.ShowMessageDialog("Mật Khẩu không khớp.", function () { }, "Lỗi Nhập liệu");
+            GlobalCommon.ShowMessageDialog("Xác nhận mật khẩu không khớp.", function () { }, "Lỗi Nhập liệu");
             return false;
         }
-        else if ($('[txt="txtho"]').val() == "") {
-            GlobalCommon.ShowMessageDialog("Vui lòng nhập Họ.", function () { }, "Lỗi Nhập liệu");
+        else if ($('[txt="txtName"]').val() == "") {
+            GlobalCommon.ShowMessageDialog("Vui lòng nhập họ tên.", function () { }, "Lỗi Nhập liệu");
             return false;
         }
-        else if ($('[txt="txtTen"]').val() == "") {
-            GlobalCommon.ShowMessageDialog("Vui lòng nhập Tên.", function () { }, "Lỗi Nhập liệu");
-            return false;
-        }
-        //else if ($('[select="categoryId"]').val() == "") {
-        //    GlobalCommon.ShowMessageDialog("Vui lòng chọn Menu Category.", function () { }, "Lỗi Nhập liệu");
-        //    return false;
-        //}
         return true;
     }
 
@@ -203,7 +195,7 @@ GPRO.User = function () {
             return false;
         }
         else if ($('[txt="txtConfirmNewPass"]').val() != $('[txt="txtNewPass"]').val()) {
-            GlobalCommon.ShowMessageDialog("Mật Khẩu không giống nhau.", function () { }, "Lỗi Nhập liệu");
+            GlobalCommon.ShowMessageDialog("Xác nhận mật khẩu không khớp.", function () { }, "Lỗi Nhập liệu");
             return false;
         }
         return true;
@@ -218,22 +210,20 @@ GPRO.User = function () {
         $('#istimeblock').prop('checked', false);
         $('#isforgotpass').prop('checked', false);
     }
- 
+
     function BindData(user) {
         if (user) {
             $('[txt="userId"]').val(user.Id);
             $('[txt="userName"]').val(user.UserName);
             $('[txt="txtpass"]').val(user.PassWord);
-            $('[txt="txtTen"]').val(user.LastName);
-            $('[txt="txtho"]').val(user.FisrtName);
-            $('[txt="email"]').val(user.Email); 
+            $('[txt="txtName"]').val(user.Name);
+            $('[txt="email"]').val(user.Email);
         }
         else {
             $('[txt="userId"]').val(0);
             $('[txt="userName"]').val('');
             $('[txt="txtpass"]').val('');
-            $('[txt="txtTen"]').val('');
-            $('[txt="txtho"]').val('');
+            $('[txt="txtName"]').val('');
             $('[txt="email"]').val('');
             $("#userRoles").data("kendoMultiSelect").value('');
             $("#workshops").data("kendoMultiSelect").value('');
@@ -252,6 +242,18 @@ GPRO.User = function () {
             $("#" + Global.Element.popupCreateUser).modal("hide");
             BindData(null);
             $('div.divParent').attr('currentPoppup', '');
+            $('#user-img-avatar').attr('src', '/Images/no_image.png');
+
+            $('#uploader').attr("newUrl", '');
+            $('#uploader').val('');
+        });
+
+        $('#user-btn-file-upload').click(function () {
+            $('#uploader').click();
+        });
+
+        $('#uploader').change(function () {
+            readURL(this, 'user-img-avatar');
         });
     }
 
@@ -260,10 +262,9 @@ GPRO.User = function () {
             Id: $('[txt="userId"]').val(),
             UserName: $('[txt="userName"]').val(),
             PassWord: $('[txt="txtpass"]').val(),
-            LastName: $('[txt="txtTen"]').val(),
-            FisrtName: $('[txt="txtho"]').val(),
+            Name: $('[txt="txtName"]').val(),
             Email: $('[txt="email"]').val(),
-            ImagePath: $('[filelist]').attr('newurl'),
+            ImagePath: $('#uploader').attr('newurl'),
             IsForgotPassword: false,
             NoteForgotPassword: $('#userRoles').data("kendoMultiSelect").value().toString(),
             IsLock: false,
@@ -302,16 +303,22 @@ GPRO.User = function () {
             pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
-            selectShow: true,
+            selectShow: false,
             actions: {
                 listAction: Global.UrlAction.GetList,
-                createAction: Global.Element.popupCreateUser,
-                searchAction: Global.Element.popupSearch
+                createAction: Global.Element.popupCreateUser
             },
             messages: {
                 addNewRecord: 'Thêm Tài Khoản',
-                searchRecord: 'Tìm kiếm',
-                selectShow: 'Ẩn hiện cột',
+            },
+            searchInput: {
+                id: 'user-keyword',
+                className: 'search-input',
+                placeHolder: 'Nhập từ khóa ...',
+                keyup: function (evt) {
+                    if (evt.keyCode == 13)
+                        ReloadList();
+                }
             },
             fields: {
                 Id: {
@@ -320,6 +327,7 @@ GPRO.User = function () {
                     edit: false,
                     list: false
                 },
+                /*
                 LockedTime: {
                     title: '',
                     width: '3%',
@@ -352,6 +360,18 @@ GPRO.User = function () {
                         }
                     }
                 },
+                */
+                ImagePath: {
+                    title: "Hình",
+                    width: "3%",
+                    sorting: false,
+                    display: function (data) {
+                        var text = $('<img src="' + data.record.ImagePath + '" width="40"/>');
+                        if (data.record.ImagePath != null) {
+                            return text;
+                        }
+                    }
+                },
                 UserName: {
                     visibility: 'fixed',
                     title: "Tên Đăng Nhập",
@@ -362,30 +382,24 @@ GPRO.User = function () {
                     display: function (data) {
                         var text = '<span >' + data.record.RoleNames + '</span> ';
                         return text;
-                    }
+                    },
+                    sorting:false
                 },
-                FisrtName: {
+                Name: {
                     title: "Họ Tên",
                     width: "20%",
-                    display: function (data) {
-                        txt = data.record.FisrtName + ' ' + data.record.LastName;
-                        return txt;
-                    }
+                },
+                WorkshopNames: {
+                    title: 'Phân xưởng',
+                    width: '20%',
+                    sorting:false
                 },
                 Email: {
                     title: "Email",
                     width: "20%",
                 },
-                ImagePath: {
-                    title: "Hình",
-                    width: "3%",
-                    display: function (data) {
-                        var text = $('<img src="' + data.record.ImagePath + '" width="40"/>');
-                        if (data.record.ImagePath != null) {
-                            return text;
-                        }
-                    }
-                },
+
+              
                 IsRequireChangePW: {
                     visibility: 'hidden',
                     title: 'YC đổi MK',
@@ -423,14 +437,15 @@ GPRO.User = function () {
                     width: '1%',
                     sorting: false,
                     display: function (data) {
-                        var text = $('<i data-toggle="modal" data-target="#' + Global.Element.popupCreateUser + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
-                        text.click(function () {
+                        var div = $('<div class="table-action text-center"></div>');
+                        var btnEdit = $('<i data-toggle="modal" data-target="#' + Global.Element.popupCreateUser + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
+                        btnEdit.click(function () {
                             if (data.record.IsRequireChangePW) {
                                 $('#passwordRow').show();
                                 data.record.PassWord = '';
                                 $('#required').val('1')
                             }
-                           // $('#rowUsername').hide();
+                            // $('#rowUsername').hide();
                             $('[txt="userName"]').prop('disabled', true);
 
                             if (data.record.UserRoleIds != null)
@@ -445,30 +460,31 @@ GPRO.User = function () {
 
                             //do data vao modal
                             BindData(data.record);
+
+                            if (data.record.ImagePath)
+                                $('#user-img-avatar').attr('src', data.record.ImagePath); 
+
                         });
-                        return text;
+                        div.append(btnEdit);
+
+                        if (!data.record.IsOwner) {
+                            var btnDelete = $('<i title="Xóa" class="fa fa-trash-o"></i>');
+                            btnDelete.click(function () {
+                                GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
+                                    Delete(data.record.Id);
+                                }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
+                            });
+                            div.append(btnDelete);
+                        }
+                        return div;
                     }
-                },
-                Delete: {
-                    title: '',
-                    width: "3%",
-                    sorting: false,
-                    display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
-                        text.click(function () {
-                            GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
-                                Delete(data.record.Id);
-                            }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
-                        });
-                        return text;
-                    }
-                }
+                }, 
             }
         });
     }
 
     function ReloadList() {
-        $('#' + Global.Element.JtableUser).jtable('load', { 'keyword': $('#keyword').val(), 'searchBy': $('#searchBy').val(), 'isBlock': $('#isblock').is(':checked'), 'isRequiredChangePass': $('#ischangepass').is(':checked'), 'isTimeBlock': $('#istimeblock').is(':checked'), 'isForgotPass': $('#isforgotpass').is(':checked') });
+        $('#' + Global.Element.JtableUser).jtable('load', { 'keyword': $('#user-keyword').val(), 'searchBy': 0, 'isBlock': $('#isblock').is(':checked'), 'isRequiredChangePass': $('#ischangepass').is(':checked'), 'isTimeBlock': $('#istimeblock').is(':checked'), 'isForgotPass': $('#isforgotpass').is(':checked') });
         $('#' + Global.Element.popupSearch).modal('hide');
     }
 
@@ -494,7 +510,7 @@ GPRO.User = function () {
             }
         });
     }
-    
+
 }
 
 $(document).ready(function () {
@@ -505,7 +521,7 @@ $(document).ready(function () {
 
     // show column username when button add click
     $('.jtable-toolbar-item-add-record').click(function () {
-      //  $('#rowUsername').show();
+        //  $('#rowUsername').show();
         $('[txt="userName"]').prop('disabled', false);
         $('#passwordRow').show();
     });

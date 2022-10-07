@@ -490,7 +490,7 @@ GPRO.MType = function () {
 					width: "3%",
 					sorting: false,
 					display: function (data) {
-						var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
+						var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
 						text.click(function () {
 							GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
 								DeleteManipulation(data.record.Id);
@@ -1033,7 +1033,7 @@ GPRO.MType = function () {
 					width: "3%",
 					sorting: false,
 					display: function (data) {
-						var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
+						var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
 						text.click(function () {
 							GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
 								Delete(data.record.Id);

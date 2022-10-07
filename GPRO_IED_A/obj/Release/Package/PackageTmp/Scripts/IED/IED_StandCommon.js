@@ -16,7 +16,7 @@
                         });
                     }
                     $('[' + controlId + ']').empty().append(str);
-                    $('#' + controlId   ).empty().append(str);
+                    $('#' + controlId).empty().append(str);
                     $('[' + controlId + ']').trigger('liszt:updated');
                 }
                 else
@@ -117,7 +117,7 @@ function GetProductGroupSelect(controlName) {
             GlobalCommon.CallbackProcess(data, function () {
                 if (data.Result == "OK") {
                     if (data.Data.length > 0) {
-                        var str = ' <option value="0">-- Nhóm mã hàng --</option>';
+                        var str = ' <option value="0">-- chủng loại --</option>';
                         if (data.Data.length > 0) {
                             $.each(data.Data, function (index, item) {
                                 str += ' <option value="' + item.Value + '">' + item.Name + '</option>';
@@ -306,6 +306,38 @@ function GetEGroupSelect(controlName) {
     });
 }
 
+function GetEmployeeSelect(controlName, lineId) {
+    $.ajax({
+        url: '/employee/GetSelectList',
+        type: 'POST',
+        data: JSON.stringify({ 'lineId': lineId }),
+        contentType: 'application/json charset=utf-8',
+        success: function (data) {
+            GlobalCommon.CallbackProcess(data, function () {
+                if (data.Result == "OK") {
+                    if (data.Data.length > 0) {
+                        var str = '';
+                        if (data.Data.length > 0) {
+                            $.each(data.Data, function (index, item) {
+                                if (item.Value == 0)
+                                    str += ` <option value="${item.Value}">${item.Name}</option>`;
+                                else
+                                str += ` <option value="${item.Value}">${item.Code} - ${item.Name}</option>`;
+                            });
+                        }
+                        $(`#${controlName},[${controlName}]`).empty().append(str).change();
+                        $('#' + controlName).trigger('liszt:updated');
+                    }
+                }
+            }, false, '', true, true, function () {
+                var msg = GlobalCommon.GetErrorMessage(data);
+                GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+            });
+        }
+    });
+}
+
+
 function GetLineSelect(controlName, id) {
     $.ajax({
         url: '/Line/GetSelect',
@@ -322,9 +354,95 @@ function GetLineSelect(controlName, id) {
                                 str += ' <option labours = "' + item.Data + '" value="' + item.Value + '">' + item.Name + '</option>';
                             });
                         }
+                        $('#' + controlName).empty().append(str).change();
+                        $('[' + controlName + ']').empty().append(str).change();
+                        $('#' + controlName).trigger('liszt:updated');
+                    }
+                }
+            }, false, '', true, true, function () {
+                var msg = GlobalCommon.GetErrorMessage(data);
+                GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+            });
+        }
+    });
+}
+
+function GetLevelCompanySelect(controlName ) {
+    $.ajax({
+        url: '/LevelCompany/GetSelectList',
+        type: 'POST',
+        data: null,
+        contentType: 'application/json charset=utf-8',
+        success: function (data) {
+            GlobalCommon.CallbackProcess(data, function () {
+                if (data.Result == "OK") {
+                    if (data.Data.length > 0) {
+                        var str = '';
+                        if (data.Data.length > 0) {
+                            $.each(data.Data, function (index, item) {
+                                str += ' <option  value="' + item.Value + '">' + item.Name + '</option>';
+                            });
+                        }
                         $('#' + controlName).empty().append(str);
                         $('[' + controlName + ']').empty().append(str);
                         $('#' + controlName).trigger('liszt:updated');
+                    }
+                }
+            }, false, '', true, true, function () {
+                var msg = GlobalCommon.GetErrorMessage(data);
+                GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+            });
+        }
+    });
+}
+
+function GetProAnaSelect(controlName, type, parentId) {
+    $.ajax({
+        url: '/proana/GetSelectList',
+        type: 'POST',
+        data: JSON.stringify({ 'type': type, 'parentId': parentId }),
+        contentType: 'application/json charset=utf-8',
+        success: function (data) {
+            GlobalCommon.CallbackProcess(data, function () {
+                if (data.Result == "OK") {
+                    if (data.Data.length > 0) {
+                        var str = '';
+                        if (data.Data.length > 0) {
+                            $.each(data.Data, function (index, item) {
+                                str += `<option objId="${item.Data}" quantities="${ item.Double }" value="${ item.Value }">${item.Name}</option>`;
+                            });
+                        }
+                        $('#' + controlName + ',[' + controlName + ']').empty().append(str);
+                        $('#' + controlName).trigger('liszt:updated');
+                        $('#' + controlName + ',[' + controlName + ']').change();
+                    }
+                }
+            }, false, '', true, true, function () {
+                var msg = GlobalCommon.GetErrorMessage(data);
+                GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+            });
+        }
+    });
+}
+
+function GetTKCLineSelect(controlName, parentId) {
+    $.ajax({
+        url: '/TKCInsert/GetTKCLineSelectList',
+        type: 'POST',
+        data: JSON.stringify({ 'parentId': parentId }),
+        contentType: 'application/json charset=utf-8',
+        success: function (data) {
+            GlobalCommon.CallbackProcess(data, function () {
+                if (data.Result == "OK") {
+                    if (data.Data.length > 0) {
+                        var str = '';
+                        if (data.Data.length > 0) {
+                            $.each(data.Data, function (index, item) {
+                                str += ` <option lineId ="${item.Data}"  value="${item.Value}">${item.Name}</option>`;
+                            });
+                        }
+                        $('#' + controlName + ',[' + controlName + ']').empty().append(str).change();
+                        $('#' + controlName).trigger('liszt:updated'); 
                     }
                 }
             }, false, '', true, true, function () {

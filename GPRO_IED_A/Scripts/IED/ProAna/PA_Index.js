@@ -41,6 +41,8 @@ GPRO.ProAna = function () {
             GetPhaseVersionManipulationByManipulationVersionId: '/ProAna/GetPhaseVersionManipulationByManipulationVersionId',
             Copy_CommoAnaPhaseGroup: '/ProAna/Copy_CommoAnaPhaseGroup',
 
+            Export_CommoAnaPhaseGroup: '/ProAna/Export_CommoAnaPhaseGroup',
+
             ActivePhaseVersion: '/ProAna/ActivePhaseVersion',
             SavePhaseVersion: '/ProAna/SavePhaseVersion',
             DeletePhaseVersion: '/ProAna/DeletePhaseVersion',
@@ -110,7 +112,7 @@ GPRO.ProAna = function () {
             jtablePhase_Chooise: 'jtable-PhaseVersionChooise',
             PopupChooisePhase: 'Popup_ChooisePhase',
 
-
+            popupExportQTCN: 'popup-export-qtcn',
 
             /*******************************************************/
 
@@ -204,7 +206,11 @@ GPRO.ProAna = function () {
             TechProcessVersion: {},
             productId: 0,
             AfterSave: false,
-            warningChuaCoQTCN: true
+            warningChuaCoQTCN: true,
+            techExportUrl: '',
+            leftScrollValue: 0,
+            leftScrollEventValue: 0,
+            lastLeftScroll: -1
         }
     }
     this.GetGlobal = function () {
@@ -257,6 +263,7 @@ GPRO.ProAna = function () {
         AddEmptyObject();
         ReloadListMani_Arr();
         UpdateIntWaste();
+        InitPopupExportQTCN();
     }
 
     this.ResetTime_Percent = function (index) {
@@ -298,7 +305,7 @@ GPRO.ProAna = function () {
             $('[type="6"]').hide();
             $('[type="6a"]').hide();
             $('#jqxMenu').css('opacity', '1');
-            $('#jqxMenu').css('height', '83px');
+            $('#jqxMenu').css('height', '86px');
             switch (type) {
                 case 11:
                 case 13:
@@ -346,7 +353,7 @@ GPRO.ProAna = function () {
                         $('#jqxMenu').css('height', '30px');
                     break;
                 case 6:
-                    $("#jqxMenu").css('height', '83px');
+                    $("#jqxMenu").css('height', '113px');
                     $('[type="' + type + 'a"]').show();
 
                     $('#' + Global.Element.jtablePhaseVersion).hide();
@@ -399,6 +406,10 @@ GPRO.ProAna = function () {
         });
 
         $('#jqxTree').on('expand', function (event) {
+
+            Global.Data.leftScrollValue = $("#div-left-panel").scrollTop();
+            console.log('tree expand : ' + Global.Data.leftScrollValue)
+
             var selectItem = $('#jqxTree').jqxTree('getItem', event.args.element);
             if (selectItem.level == 1) {
                 Global.Data.yearStr = selectItem.label;
@@ -416,22 +427,32 @@ GPRO.ProAna = function () {
                 };
             });
             if (loader) {
-                if (selectItem.id != '0') { 
-                        var type = 0;
-                        switch (selectItem.value) {
-                            case 2:
-                            case 5:
-                            case 6: type = 3; break;
-                            case 1:
-                            case 3:
-                            case 4:
-                            case 7: type = 2; break;
-                            case 11: type = 13; break;
-                            case 13: type = 1; break;
-                        }
-                        GetCommoAnaItems(selectItem.id, selectItem.label, type, loaderItem); 
+                if (selectItem.id != '0') {
+                   
+
+                    var type = 0;
+                    switch (selectItem.value) {
+                        case 2:
+                        case 5:
+                        case 6: type = 3; break;
+                        case 1:
+                        case 3:
+                        case 4:
+                        case 7: type = 2; break;
+                        case 11: type = 13; break;
+                        case 13: type = 1; break;
+                    }
+                    GetCommoAnaItems(selectItem.id, selectItem.label, type, loaderItem);
                 }
             }
+            else {
+                setTimeout(() => {
+                    console.log('set expand without loader: ' + Global.Data.leftScrollValue)
+                    $('#div-left-panel').scrollTop(Global.Data.leftScrollValue);
+                }, 30)
+
+            }
+
             var flag = false;
             $.each(Global.Data.TreeExpand, function (i, item) {
                 if (parseInt(item) == selectItem.id) {
@@ -444,9 +465,14 @@ GPRO.ProAna = function () {
             if (Global.Data.position != 0)
                 Global.Data.height = Global.Data.position;
             Global.Data.isChange = true;
+
+
         });
 
         $('#jqxTree').on('collapse', function (event) {
+            //Global.Data.leftScrollEventValue = $("#div-left-panel").scrollTop();
+            //           console.log('event collapse: ' + Global.Data.leftScrollEventValue)
+
             var selectItem = $('#jqxTree').jqxTree('getItem', event.args.element);
             if (Global.Data.TreeExpand != null && Global.Data.TreeExpand.length > 0) {
                 $.each(Global.Data.TreeExpand, function (i, item) {
@@ -473,16 +499,24 @@ GPRO.ProAna = function () {
                 });
             }
             $('#left').scrollTop(Global.Data.height >= Global.Data.position ? Global.Data.height + 50 : Global.Data.position);
+
+            //  setTimeout(() => {
+            console.log('set collapse: ' + Global.Data.leftScrollValue)
+            $('#div-left-panel').scrollTop(Global.Data.leftScrollValue);
+            //}, 1000)
+
         });
 
-        $('#left').scroll(function () {
-            var position = $('#left').scrollTop();
-            if (position != 0)
-                Global.Data.position = position;
-            if (Global.Data.isChange)
-                Global.Data.position += 50;
-            $('#left').scrollTop(Global.Data.position);
-            Global.Data.isChange = false;
+        $('#div-left-panel').scroll(function () {
+
+
+            //var position = $('#left').scrollTop();
+            //if (position != 0)
+            //    Global.Data.position = position;
+            //if (Global.Data.isChange)
+            //    Global.Data.position += 50;
+            //$('#left').scrollTop(Global.Data.position);
+            //Global.Data.isChange = false;
         });
 
 
@@ -548,7 +582,7 @@ GPRO.ProAna = function () {
             $('#product').prop('disabled', false);
             $('#commodity-name').prop('disabled', false);
         });
-      
+
         /*******************            STEP 2 CREATE WORKSHOP          ****************************************/
         $('[re_wk-name]').click(function () {
             GetWorkshopSelect('wk-name');
@@ -643,12 +677,19 @@ GPRO.ProAna = function () {
                     Global.Data.PhaseModel.IsTimePrepareChange = true;
                     UpdateTotalTimeVersion();
                 }
+
+
+                if (Global.Data.TimePrepareArray && Global.Data.TimePrepareArray.length > 0)
+                    $('#time-repare-name').val(`${Global.Data.TimePrepareArray[0].Name} - TMU: ${Global.Data.TimePrepareArray[0].TMUNumber}`);
+                else
+                    $('#time-repare-name').val('');
                 $('div.divParent').attr('currentPoppup', Global.Element.jtablePhase.toUpperCase());
             }
             else {
                 GlobalCommon.ShowMessageDialog("Không có Thời Gian Chuẩn Bị nào được chọn. Vui lòng kiểm tra lại.!", function () { }, "Thông báo Chưa chọn Thời Gian Chuẩn Bị");
             }
         });
+
         $('[close-time]').click(function () {
             $('#' + Global.Element.CreatePhasePopup).show();
             $('div.divParent').attr('currentPoppup', Global.Element.CreatePhasePopup.toUpperCase());
@@ -674,6 +715,7 @@ GPRO.ProAna = function () {
             $('div.divParent').attr('currentPoppup', Global.Element.CreatePhasePopup.toUpperCase());
         });
         $('#hid_video').change(function () { SavePhase(); });
+
         $('[save-phase]').click(function () {
             if (Check_Phase_Validate()) {
                 if ($('#video').val() != '')
@@ -682,6 +724,7 @@ GPRO.ProAna = function () {
                     SavePhase();
             }
         });
+
         $('[cancel-create-phase]').click(function () {
             Global.Data.TimePrepareArray.length = 0;
             ReloadListTimePrepare();
@@ -702,6 +745,23 @@ GPRO.ProAna = function () {
             sources[1].src = '';
             video.load();
 
+
+            GetLastPhaseIndex();
+            ReloadListPhase_View();
+
+            $('#phaseName_label').html('');
+            Global.Data.Commo_Ana_PhaseId = 0;
+
+            $('#phase-name').val('').change();
+            $('#lbTenCongDoan').html('');
+            $('#phase-index').val('');
+            $('#TotalTMU').html('0');
+            $('#phase-Des').val('');
+            $('#phaseID').val('0');
+            $('#islibs').prop('checked', false);
+
+            // $('#phase-code').html(((Global.Data.PhaseAutoCode == null || Global.Data.PhaseAutoCode == '' ? '' : (Global.Data.PhaseAutoCode + '-')) + (Global.Data.phaseLastIndex + 1)));
+
         });
 
         $('#remove-video').click(() => {
@@ -714,10 +774,12 @@ GPRO.ProAna = function () {
             $('#' + Global.Element.PopupChooseEquipment).css('z-index', 0);
             $('div.divParent').attr('currentPoppup', Global.Element.PopupSearchEquipment.toUpperCase());
         });
+
         $('[searchEquipment]').click(function () {
             ReloadListEquipment();
             $('[cancel_search_equip]').click();
         });
+
         $('[cancel_search_equip]').click(function () {
             $('#keywordequipment').val('');
             $("#" + Global.Element.PopupSearchEquipment).modal("hide");
@@ -802,6 +864,7 @@ GPRO.ProAna = function () {
 
         $('#work-time').change(function () {
             ResetWorkingBox(0);
+
         });
 
         $('[techsave]').click(function () {
@@ -811,20 +874,20 @@ GPRO.ProAna = function () {
             // }
         });
 
-        $('[techexport]').click(function () {
-            //fileType
-            //1. Quy Trình Công Nghệ mẫu 1 thông tin phía trên
-            //2. Quy Trình Công Nghệ mẫu 1 thông tin phía dưới
-            //3. Mẫu may tex-giang
-            if (Global.Data.AfterSave) {
-                window.location.href = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 2;
-                Global.Data.AfterSave = false;
-            }
-            else {
-                Global.Data.AfterSave = true;
-                $('[techsave]').click();
-            }
+        $('#percent,#pricePerSecond').change(function () {
+            ResetThanhTien()
+        });
 
+        $('[techexport]').click(function () {
+            //if (Global.Data.AfterSave) {
+            //    window.location.href = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 3;
+            //    Global.Data.AfterSave = false;
+            //}
+            //else {
+            //    Global.Data.AfterSave = true;
+            //    $('[techsave]').click();
+            //}
+            $('#' + Global.Element.popupExportQTCN).show();
         });
         //#endregion
 
@@ -1033,6 +1096,12 @@ GPRO.ProAna = function () {
             }
         });
         //#endregion
+
+        $('#btn-browse-file').click(function () {
+            $('#video').click();
+        })
+
+
     }
 
     /********************************************************************************************************************        
@@ -1068,6 +1137,9 @@ GPRO.ProAna = function () {
     }
 
     function SaveCommoAnalysis() {
+        Global.Data.lastLeftScroll = $("#div-left-panel").scrollTop();
+        console.log('last tree expand : ' + Global.Data.lastLeftScroll)
+
         if (Global.Data.ModelProAna.Id == 0) {
             $.each(Global.Data.ProAnaArray, function (index, item) {
                 if (item.Id == Global.Data.ParentID) {
@@ -1361,6 +1433,10 @@ GPRO.ProAna = function () {
                 Global.Data.ParentID = selectedItem.id;
                 Copy_CommoAnaPhaseGroup();
                 break;
+            case "Xuất excel cụm công đoạn":
+                $("#jqxMenu").jqxMenu('close');
+                window.location.href = Global.UrlAction.Export_CommoAnaPhaseGroup + "?id=" + selectedItem.id;
+                break;
         }
         if (Global.Data.position != 0)
             Global.Data.height = Global.Data.position;
@@ -1410,7 +1486,7 @@ GPRO.ProAna = function () {
         $('[type="6"]').hide();
         $('[type="6a"]').hide();
         $('#jqxMenu').css('opacity', '1');
-        $('#jqxMenu').css('height', '83px');
+        $('#jqxMenu').css('height', '86px');
         switch (type) {
             case 11:
             case 13:
@@ -1458,7 +1534,7 @@ GPRO.ProAna = function () {
                     $('#jqxMenu').css('height', '30px');
                 break;
             case 6:
-                $("#jqxMenu").css('height', '83px');
+                $("#jqxMenu").css('height', '113px');
                 $('[type="' + type + 'a"]').show();
 
                 $('#' + Global.Element.jtablePhaseVersion).hide();
@@ -1598,10 +1674,23 @@ GPRO.ProAna = function () {
                                     return false;
                                 }
                                 else if (i == Global.Data.index && Global.Data.index == Global.Data.TreeExpand.length - 1) {
+
                                     $('#left').scrollTop(Global.Data.height >= Global.Data.position ? Global.Data.height + 50 : Global.Data.position);
+
+                                    console.log('set last: ' + Global.Data.lastLeftScroll)
+                                    Global.Data.leftScrollValue = Global.Data.lastLeftScroll;
+                                    Global.Data.lastLeftScroll = -1;
                                 }
                             });
                         }
+                         
+                        if (Global.Data.lastLeftScroll == -1) {
+                            console.log('set: ' + Global.Data.leftScrollValue)
+                          //  if (Global.Data.leftScrollValue > 0)
+                          //      Global.Data.leftScrollValue += 30;
+                            $('#div-left-panel').scrollTop(Global.Data.leftScrollValue);
+                        }
+
                     }
                 }, false, Global.Element.PopupPosition, true, true, function () {
                     var msg = GlobalCommon.GetErrorMessage(data);
@@ -1696,7 +1785,7 @@ GPRO.ProAna = function () {
                     width: "3%",
                     sorting: false,
                     display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
+                        var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
                         text.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 DeleteTimePrepare(data.record.TimePrepareId);
@@ -1738,10 +1827,10 @@ GPRO.ProAna = function () {
             pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
-            selectShow: true,
-            selecting: true, //Enable selecting
-            multiselect: true, //Allow multiple selecting
-            selectingCheckboxes: true, //Show checkboxes on first column
+            selectShow: false,
+            selecting: false, //Enable selecting
+            multiselect: false, //Allow multiple selecting
+            selectingCheckboxes: false, //Show checkboxes on first column
             actions: {
                 listAction: Global.UrlAction.GetListTimePrepare,
                 searchAction: Global.Element.timeprepare_Popup_Search,
@@ -1762,7 +1851,31 @@ GPRO.ProAna = function () {
                     title: "Tên ",
                     width: "20%",
                     display: function (data) {
-                        var txt = '<span class="blue bold">' + data.record.Name + '</span>';
+                        var txt = $('<a class="clickable"  data-target="#' + Global.Element.timeprepare_Popup + '" >' + data.record.Name + '</a>');
+                        txt.click(function () {
+                            var record = data.record;
+                            Global.Data.TimePrepareArray.length = 0;
+                            var obj = {
+                                Id: record.Id,
+                                TimePrepareId: record.Id,
+                                Name: record.Name,
+                                Code: record.Code,
+                                TimeTypePrepareName: record.TimeTypePrepareName,
+                                Description: record.Description,
+                                TMUNumber: record.TMUNumber
+                            }
+                            Global.Data.TimePrepareArray.push(obj);
+
+                            $('#' + Global.Element.timeprepare_Popup).modal('hide');
+                            $('#' + Global.Element.CreatePhasePopup).show();
+                            ReloadListTimePrepare();
+
+                            Global.Data.PhaseModel.IsTimePrepareChange = true;
+                            UpdateTotalTimeVersion();
+                            $('#time-repare-name').val(`${obj.Name} - TMU: ${obj.TMUNumber}`);
+
+                            $('div.divParent').attr('currentPoppup', Global.Element.jtablePhase.toUpperCase());
+                        })
                         return txt;
                     }
                 },
@@ -1969,6 +2082,11 @@ GPRO.ProAna = function () {
                                 sources[1].src = data.record.Video.split('|')[0];
                                 video.load();
                             }
+                            else {
+                                $('#video-info').html('');
+                                sources[0].src = '';
+                                video.load();
+                            }
                         });
                         return text;
                     }
@@ -1978,7 +2096,7 @@ GPRO.ProAna = function () {
                     width: "3%",
                     sorting: false,
                     display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
+                        var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
                         text.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 DeletePhase(data.record.Id);
@@ -2029,6 +2147,11 @@ GPRO.ProAna = function () {
                 $('#loading').hide();
                 GlobalCommon.CallbackProcess(result, function () {
                     if (result.Result == "OK") {
+                        if (obj.Id == 0) {
+                            $('#phaseID').val(result.Data);
+                        }
+
+                        /*
                         GetLastPhaseIndex();
                         ReloadListPhase_View();
                         Global.Data.TimePrepareArray.length = 0;
@@ -2050,6 +2173,7 @@ GPRO.ProAna = function () {
                         AddEmptyObject();
                         ReloadListMani_Arr();
                         $('#phase-code').html(((Global.Data.PhaseAutoCode == null || Global.Data.PhaseAutoCode == '' ? '' : (Global.Data.PhaseAutoCode + '-')) + (Global.Data.phaseLastIndex + 1)));
+                       */
                         UpdateIntWaste();
                         GetPhasesForSuggest();
                     }
@@ -2210,13 +2334,13 @@ GPRO.ProAna = function () {
             title: 'Danh Sách Thao Tác',
             pageSize: 100,
             pageSizeChange: true,
-            selectShow: true,
+            selectShow: false,
             sorting: false,
             actions: {
                 listAction: Global.Data.PhaseManiVerDetailArray,
             },
             messages: {
-                selectShow: 'Ẩn hiện cột'
+
             },
             fields: {
                 Id: {
@@ -2229,7 +2353,7 @@ GPRO.ProAna = function () {
                     title: "STT",
                     width: "5%",
                     display: function (data) {
-                        var txt = $('<input class="form-control center" stt type="text" value =\'' + data.record.OrderIndex + '\' />');
+                        var txt = $('<input class="form-control text-center" stt type="text" value =\'' + data.record.OrderIndex + '\' />');
                         txt.change(function () {
                             if (data.record.OrderIndex == Global.Data.PhaseManiVerDetailArray.length) {
                                 GlobalCommon.ShowMessageDialog('Đây là Thao Tác rỗng không thể thay đỗi Chèn vào vị trí khác được.',
@@ -2274,7 +2398,7 @@ GPRO.ProAna = function () {
                                 }
                             }
                         });
-                        txt.click(function () { txt.select(); })
+                        //txt.click(function () { txt.select(); })
                         return txt;
                     }
                 },
@@ -2382,7 +2506,7 @@ GPRO.ProAna = function () {
                                 txt.change();
                             }
                         });
-                        txt.click(function () { txt.select(); })
+                        //txt.click(function () { txt.select(); })
                         return txt;
                     }
                 },
@@ -2400,7 +2524,7 @@ GPRO.ProAna = function () {
                                 txt.change();
                             }
                         });
-                        //txt.click(function () { txt.select(); })
+                        txt.click(function () { txt.select(); })
                         return txt;
                     }
                 },
@@ -2408,7 +2532,7 @@ GPRO.ProAna = function () {
                     title: "Tần Suất",
                     width: "5%",
                     display: function (data) {
-                        var txt = $('<input class="form-control center" loop type="text" value="' + data.record.Loop + '"  onkeypress="return isNumberKey(event)"/>');
+                        var txt = $('<input class="form-control text-center" loop type="text" value="' + data.record.Loop + '"  onkeypress="return isNumberKey(event)"/>');
                         txt.change(function () {
                             var loop = parseFloat(txt.val());
                             Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].Loop = txt.val();
@@ -2416,7 +2540,7 @@ GPRO.ProAna = function () {
                             ReloadListMani_Arr();
                             UpdateIntWaste();
                         });
-                        txt.click(function () { txt.select(); })
+                        //txt.click(function () { txt.select(); })
                         return txt;
                     }
                 },
@@ -2449,7 +2573,7 @@ GPRO.ProAna = function () {
                     width: "3%",
                     sorting: false,
                     display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
+                        var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
                         text.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 var oldIndex = data.record.OrderIndex - 1;
@@ -2487,6 +2611,7 @@ GPRO.ProAna = function () {
 
         $('#' + Global.Element.JtableManipulationArr).jtable('load');
     }
+
     function AddEmptyObject() {
         var obj = {
             Id: 0,
@@ -2706,7 +2831,7 @@ GPRO.ProAna = function () {
                                                 }
                                                 else {
                                                     $('#chooseApplyPressure').hide();
-                                                } 
+                                                }
 
                                                 TinhLaiCodeMayCat();
                                                 $('#' + Global.Element.PopupChooseEquipment).modal('hide');
@@ -2857,7 +2982,7 @@ GPRO.ProAna = function () {
             beforeSend: function () { $('#loading').show(); },
             success: function (data) {
                 $('#loading').hide();
-                Global.Data.PhaseManiVerDetailArray.length = 0; 
+                Global.Data.PhaseManiVerDetailArray.length = 0;
                 $.each(data.Records, function (i, item) {
                     Global.Data.PhaseManiVerDetailArray.push(item);
                 });
@@ -3012,7 +3137,7 @@ GPRO.ProAna = function () {
         $.ajax({
             url: Global.UrlAction.Copy_CommoAnaPhaseGroup,
             type: 'POST',
-            data: JSON.stringify({ 'CopyObjectId': Global.Data.Copy_CommoAnaPhaseGroupId, 'ObjectId': Global.Data.ParentID }),
+            data: JSON.stringify({ 'CopyObjectId': Global.Data.Copy_CommoAnaPhaseGroupId, 'ObjectId': Global.Data.ParentID, 'copyFull': true }),
             contentType: 'application/json charset=utf-8',
             beforeSend: function () { $('#loading').show(); },
             success: function (data) {
@@ -3032,26 +3157,6 @@ GPRO.ProAna = function () {
             }
         });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -3196,7 +3301,10 @@ GPRO.ProAna = function () {
                 },
                 EquipmentId: {
                     title: "Thiết Bị",
-                    width: "5%"
+                    width: "5%",
+                    display: function (data) {
+                        return data.record.EquipmentName;
+                    }
                 },
                 TotalTMU: {
                     title: "TGian Chuẩn(s)",
@@ -3261,12 +3369,12 @@ GPRO.ProAna = function () {
                                 var total_time_Product = 0;
                                 $.each(result.Data.details, function (index, item) {
                                     var ii = index + 1;
-                                    item.EquipmentCode = item.EquipmentCode == null ? '' : item.EquipmentCode;
+                                    item.EquipmentName = item.EquipmentName == null ? '' : item.EquipmentName;
                                     str += '<tr>';
                                     str += '<td >' + ii + '</td>';
                                     str += '<td >' + item.PhaseCode + '</td>';
                                     str += '<td class="red">' + item.PhaseName + '</td>';
-                                    str += '<td class="blue">' + item.EquipmentCode + '</td>';
+                                    str += '<td class="blue">' + item.EquipmentName + '</td>';
                                     str += '<td>' + Math.round((item.StandardTMU) * 1000) / 1000 + '</td>';
                                     str += '<td><input class="form-control" percent type="text" id="percent' + ii + '" value="100" onchange ="ResetTime_Percent(\'' + ii + '\')" /></td>';
                                     str += '<td>' + Math.round(((item.StandardTMU)) * 1000) / 1000 + '</td>';
@@ -3314,6 +3422,12 @@ GPRO.ProAna = function () {
                             $('#pro_group_day').html(Math.round(result.Data.ProOfGroupPerDay * 1000) / 1000);
                             $('#productivity').html(Math.round(result.Data.ProOfGroupPerHour * 1000) / 1000);
                             $('#pro_person_day').html(Math.round(result.Data.ProOfPersonPerDay * 1000) / 1000);
+
+                            var _thanhtien = Global.Data.TimeProductPerCommodity * result.Data.PricePerSecond;
+                            var _percentTotal = ((Global.Data.TimeProductPerCommodity * 100) / (parseFloat($('#percent').val()))) * result.Data.PricePerSecond;
+                            $('#total-price-percent').html(_percentTotal.toFixed(1));
+                            $('#total-price').html(_thanhtien.toFixed(1));
+
                             $('#des').val(result.Data.Note);
 
                             if (result.Data.details.length > 0) {
@@ -3325,7 +3439,7 @@ GPRO.ProAna = function () {
                                     str += '<td>' + ii + '</td>';
                                     str += '<td>' + item.PhaseCode + '</td>';
                                     str += '<td>' + item.PhaseName + '</td>';
-                                    str += '<td><a class="blue" title="' + item.EquipmentName + '">' + item.EquipmentCode + '</a></td>';
+                                    str += '<td><a class="blue" title="' + item.EquipmentName + '">' + item.EquipmentName + '</a></td>';
                                     str += '<td>' + Math.round((item.StandardTMU) * 1000) / 1000 + '</td>';
                                     str += '<td><input class="form-control" percent type="text" id="percent' + ii + '" value="' + item.Percent + '" onchange ="ResetTime_Percent(\'' + ii + '\')" /></td>';
                                     str += '<td>' + Math.round((item.TimeByPercent) * 1000) / 1000 + '</td>';
@@ -3351,7 +3465,8 @@ GPRO.ProAna = function () {
                                 Global.Data.TimeProductPerCommodity = Math.round((tog) * 1000) / 1000;
                                 $('#' + Global.Element.JtableTech_Cycle).find('tbody').empty().append(str);
                                 ResetWorkingBox(0);
-                                $('#tile-parent').change();
+
+                                $('#tile-parent').val(result.Data.PercentWorker)//.change();
                             }
                         }
 
@@ -3384,8 +3499,10 @@ GPRO.ProAna = function () {
                 GlobalCommon.CallbackProcess(result, function () {
                     if (result.Result != "ERROR") {
                         $('#techId').val(result.Result)
-                        if (Global.Data.AfterSave)
-                            $('[techexport]').click();
+                        if (Global.Data.AfterSave) {
+                            window.location.href = Global.Data.techExportUrl;
+                            Global.Data.AfterSave = false;
+                        }
                         else
                             GlobalCommon.ShowMessageDialog('Lưu thành công.', function () { }, "Thông báo");
                     }
@@ -3405,6 +3522,7 @@ GPRO.ProAna = function () {
             ParentId: Global.Data.ParentID,
             PricePerSecond: $('#pricePerSecond').val(),
             Allowance: $('#allowance').val(),
+            PercentWorker: $('#tile-parent').val(),
             NumberOfWorkers: $('#total-worker').val(),
             WorkingTimePerDay: parseFloat($('#work-time').val()),
             PacedProduction: parseFloat($('#paced_production').html()),
@@ -3459,6 +3577,8 @@ GPRO.ProAna = function () {
             });
             // alert(tong);
         }
+
+        ResetThanhTien();
     }
 
     function ResetTime_Percent(index) {
@@ -3477,6 +3597,78 @@ GPRO.ProAna = function () {
         Global.Data.TechCycle_Arr[i - 1].TimeByPercent = timeByPercent;
         Global.Data.TimeProductPerCommodity = new_Value;
         ResetWorkingBox(index);
+    }
+
+
+    function InitPopupExportQTCN() {
+        $("#" + Global.Element.popupExportQTCN).modal({
+            keyboard: false,
+            show: false
+        });
+
+        $("#" + Global.Element.popupExportQTCN + ' button[close]').click(function () {
+            $("#" + Global.Element.popupExportQTCN).modal("hide");
+        });
+
+        $('#' + Global.Element.popupExportQTCN).on('shown.bs.modal', function () {
+            //    $('#' + Global.Element.PopupChooseEquipment).css('z-index', 0);
+            $('div.divParent').attr('currentPoppup', Global.Element.popupExportQTCN.toUpperCase());
+        });
+
+        $('[texch-export1]').click(function () {
+            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 1;
+            if (Global.Data.AfterSave) {
+                window.location.href = Global.Data.techExportUrl;
+                Global.Data.AfterSave = false;
+            }
+            else {
+                Global.Data.AfterSave = true;
+
+                $('[techsave]').click();
+            }
+        });
+        $('[texch-export2]').click(function () {
+            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 2;
+            if (Global.Data.AfterSave) {
+                window.location.href = Global.Data.techExportUrl;
+                Global.Data.AfterSave = false;
+            }
+            else {
+                Global.Data.AfterSave = true;
+
+                $('[techsave]').click();
+            }
+        });
+        $('[texch-export3]').click(function () {
+            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 3;
+            if (Global.Data.AfterSave) {
+                window.location.href = Global.Data.techExportUrl;
+                Global.Data.AfterSave = false;
+            }
+            else {
+                Global.Data.AfterSave = true;
+
+                $('[techsave]').click();
+            }
+        });
+        $('[texch-export4]').click(function () {
+            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 4;
+            if (Global.Data.AfterSave) {
+                window.location.href = Global.Data.techExportUrl;
+                Global.Data.AfterSave = false;
+            }
+            else {
+                Global.Data.AfterSave = true;
+                $('[techsave]').click();
+            }
+        });
+    }
+
+    function ResetThanhTien() {
+        var _thanhtien = Global.Data.TimeProductPerCommodity * (parseFloat($('#pricePerSecond').val()));
+        var _percentTotal = ((Global.Data.TimeProductPerCommodity * 100) / (parseFloat($('#percent').val()))) * (parseFloat($('#pricePerSecond').val()));
+        $('#total-price-percent').html(_percentTotal.toFixed(1));
+        $('#total-price').html(_thanhtien.toFixed(1));
     }
 
     /************************        thiết kế chuyền           *************************/

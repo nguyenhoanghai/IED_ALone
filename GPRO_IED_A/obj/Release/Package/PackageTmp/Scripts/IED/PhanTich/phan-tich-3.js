@@ -532,6 +532,12 @@ GPRO.PhanTich = function () {
         /*************************************************** PHASE ****************************************************/
         $('#' + Global.Element.CreatePhasePopup).on('shown.bs.modal', function () {
             $('div.divParent').attr('currentPoppup', Global.Element.CreatePhasePopup.toUpperCase());
+            if (Global.Data.isInsertPhase) {
+                $('#phase-code').html(((Global.Data.PhaseAutoCode == null || Global.Data.PhaseAutoCode == '' ? '' : (Global.Data.PhaseAutoCode + '-')) + (Global.Data.phaseLastIndex + 1)));
+                $('#phase-index').val((Global.Data.phaseLastIndex + 1));
+                $('[percentequipment],[percentdb],[percentnpl').val(0);
+                $('[percentmanipulation]').val($('#config').attr('maniexpenddefault'));
+            }
         });
 
         $('#hid_video').change(function () { SavePhase(); });
@@ -1259,7 +1265,7 @@ GPRO.PhanTich = function () {
                     width: "3%",
                     sorting: false,
                     display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
+                        var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
                         text.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 DeletePhase(data.record.Id);
@@ -1651,7 +1657,7 @@ GPRO.PhanTich = function () {
                     width: "3%",
                     sorting: false,
                     display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
+                        var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
                         text.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 DeleteTimePrepare(data.record.TimePrepareId);
@@ -1996,7 +2002,7 @@ GPRO.PhanTich = function () {
                                 }
                             }
                         });
-                        txt.click(function () { txt.select(); })
+                        //txt.click(function () { txt.select(); })
                         return txt;
                     }
                 },
@@ -2121,7 +2127,7 @@ GPRO.PhanTich = function () {
                                 txt.change();
                             }
                         });
-                        //txt.click(function () { txt.select(); })
+                         txt.click(function () { txt.select(); })
                         return txt;
                     }
                 },
@@ -2137,7 +2143,7 @@ GPRO.PhanTich = function () {
                             ReloadListMani_Arr();
                             UpdateIntWaste();
                         });
-                        txt.click(function () { txt.select(); })
+                        //txt.click(function () { txt.select(); })
                         return txt;
                     }
                 },
@@ -2170,7 +2176,7 @@ GPRO.PhanTich = function () {
                     width: "3%",
                     sorting: false,
                     display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
+                        var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
                         text.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 var oldIndex = data.record.OrderIndex - 1;

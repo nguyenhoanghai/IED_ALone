@@ -37,7 +37,7 @@ namespace GPRO_IED_A.Business
             return obj.CreatedUser == actionUser;
         }
 
-        public PagedList<PhaseGroupModel> GetList(string keyWord, int searchBy, int startIndexRecord, int pageSize, string sorting, int[] workshopIds)
+        public PagedList<PhaseGroupModel> GetList(string keyWord, int startIndexRecord, int pageSize, string sorting, int[] workshopIds)
         {
             try
             {
@@ -48,27 +48,17 @@ namespace GPRO_IED_A.Business
                     {
                         sorting = "Id DESC";
                     }
-                    IQueryable<T_PhaseGroup> phaseGroups = null;
+                    IQueryable<T_PhaseGroup> phaseGroups = db.T_PhaseGroup.Where(c => !c.IsDeleted);
                     var pageNumber = (startIndexRecord / pageSize) + 1;
                     if (!string.IsNullOrEmpty(keyWord))
                     {
                         keyWord = keyWord.Trim().ToUpper();
-                        switch (searchBy)
-                        {
-                            case 1:
-                                phaseGroups = db.T_PhaseGroup.Where(c => !c.IsDeleted && c.Name.Trim().ToUpper().Contains(keyWord));
-                                break;
-                            case 2:
-                                phaseGroups = db.T_PhaseGroup.Where(c => !c.IsDeleted && c.Code.Trim().ToUpper().Contains(keyWord));
-                                break;
-                        }
+                        phaseGroups = db.T_PhaseGroup.Where(c => c.Name.Trim().ToUpper().Contains(keyWord) || c.Code.Trim().ToUpper().Contains(keyWord));
                     }
-                    else
-                        phaseGroups = db.T_PhaseGroup.Where(c => !c.IsDeleted);
 
                     if (phaseGroups != null && phaseGroups.Count() > 0)
                     {
-                        var list = phaseGroups .Select(x => new PhaseGroupModel()
+                        var list = phaseGroups.Select(x => new PhaseGroupModel()
                         {
                             Id = x.Id,
                             Code = x.Code,

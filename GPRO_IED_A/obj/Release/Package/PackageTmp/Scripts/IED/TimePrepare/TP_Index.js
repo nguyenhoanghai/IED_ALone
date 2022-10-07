@@ -40,7 +40,7 @@ GPRO.TimePrepare = function () {
             Model: {},
             Model_: {},
             ParentId: 0,
-            IsInsert:true
+            IsInsert: true
         }
     }
     this.GetGlobal = function () {
@@ -66,15 +66,15 @@ GPRO.TimePrepare = function () {
         });
 
         //search
-        $('[closetype]').click(function () { 
-            $('#tpsearchBy').val('1'); 
+        $('[closetype]').click(function () {
+            $('#tpsearchBy').val('1');
             $('div.divParent').attr('currentPoppup', '');
         });
 
-        $('[searchtype]').click(function () { 
-                ReloadList();
-                $('[closetype]').click();
-                $('#tpkeyword').val('');
+        $('[searchtype]').click(function () {
+            ReloadList();
+            $('[closetype]').click();
+            $('#tpkeyword').val('');
         });
         $('#' + Global.Element.Popup).on('shown.bs.modal', function () {
             $('div.divParent').attr('currentPoppup', Global.Element.Popup.toUpperCase());
@@ -122,17 +122,26 @@ GPRO.TimePrepare = function () {
             pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
-            selectShow: true,
+            selectShow: false,
             actions: {
                 listAction: Global.UrlAction.GetList,
                 createAction: Global.Element.Popup,
                 createObjDefault: BindData(null),
-                searchAction: Global.Element.PopupSearch,
+                // searchAction: Global.Element.PopupSearch,
             },
             messages: {
                 addNewRecord: 'Thêm mới',
-                searchRecord: 'Tìm kiếm',
-                selectShow: 'Ẩn hiện cột'
+                // searchRecord: 'Tìm kiếm',
+                //selectShow: 'Ẩn hiện cột'
+            },
+            searchInput: {
+                id: 'time-pre-keyword',
+                className: 'search-input',
+                placeHolder: 'Nhập từ khóa ...',
+                keyup: function (evt) {
+                    if (evt.keyCode == 13)
+                        ReloadList();
+                }
             },
             rowInserted: function (event, data) {
                 if (data.record.Id == Global.Data.ParentId) {
@@ -187,99 +196,95 @@ GPRO.TimePrepare = function () {
                         $img.click(function () {
                             Global.Data.ParentId = parent.record.Id;
                             $('#' + Global.Element.Jtable).jtable('openChildTable',
-                                    $img.closest('tr'),
-                                    {
-                                        title: '<span class="red">Danh sách thời gian chuẩn bị thuộc loại : ' + parent.record.Name + '</span>',
-                                        paging: true,
-                                        pageSize: 1000,
-                                        pageSizeChange: true,
-                                        sorting: true,
-                                        selectShow: true,
-                                        actions: {
-                                            listAction: Global.UrlAction.GetList_ + '' + parent.record.Id,
-                                            createAction: Global.Element.Popup_,
-                                            createObjDefault: BindData_(null),
+                                $img.closest('tr'),
+                                {
+                                    title: '<span class="red">Danh sách thời gian chuẩn bị thuộc loại : ' + parent.record.Name + '</span>',
+                                    paging: true,
+                                    pageSize: 1000,
+                                    pageSizeChange: true,
+                                    sorting: true,
+                                    selectShow: true,
+                                    actions: {
+                                        listAction: Global.UrlAction.GetList_ + '' + parent.record.Id,
+                                        createAction: Global.Element.Popup_,
+                                        createObjDefault: BindData_(null),
+                                    },
+                                    messages: {
+                                        addNewRecord: 'Thêm mới',
+                                        selectShow: 'Ẩn hiện cột'
+                                    },
+                                    fields: {
+                                        ParentId: {
+                                            type: 'hidden',
+                                            defaultValue: parent.record.Id
                                         },
-                                        messages: {
-                                            addNewRecord: 'Thêm mới',
-                                            selectShow: 'Ẩn hiện cột'
+                                        Id: {
+                                            key: true,
+                                            create: false,
+                                            edit: false,
+                                            list: false
                                         },
-                                        fields: {
-                                            ParentId: {
-                                                type: 'hidden',
-                                                defaultValue: parent.record.Id
-                                            },
-                                            Id: {
-                                                key: true,
-                                                create: false,
-                                                edit: false,
-                                                list: false
-                                            },
-                                            Name: {
-                                                visibility: 'fixed',
-                                                title: "Tên ",
-                                                width: "20%",
-                                            },
-                                            //Code: {
-                                            //    title: "Mã",
-                                            //    width: "5%",
-                                            //}, 
-                                            TMUNumber: {
-                                                title: "Chỉ số TMU",
-                                                width: "20%",
-                                                display: function (data) {
-                                                    txt = ParseStringToCurrency(data.record.TMUNumber);
-                                                    return txt;
-                                                }
-                                            },
-                                            Description: {
-                                                title: "Mô Tả",
-                                                sorting: false,
-                                                width: "20%"
-                                            },
-                                            edit: {
-                                                title: '',
-                                                width: '1%',
-                                                sorting: false,
-                                                display: function (data) {
-                                                    var text = $('<i data-toggle="modal" data-target="#' + Global.Element.Popup_ + '" title="Chỉnh sửa thông tin" class="fa fa_tb fa-pencil-square-o clickable blue"  ></i>');
-                                                    text.click(function () {
-                                                        BindData_(data.record);
-                                                        $('#tptimeTypeId').val(data.record.TimeTypePrepareId);
-                                                        $('#tpTMU').val(data.record.TMUNumber);
-                                                        Global.Data.IsInsert = false;
-                                                    });
-                                                    return text;
-                                                }
-                                            },
-                                            Delete: {
-                                                title: '',
-                                                width: "3%",
-                                                sorting: false,
-                                                display: function (data) {
-                                                    var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
-                                                    text.click(function () {
-                                                        GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
-                                                            Delete_(data.record.Id);
-                                                        }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
-                                                    });
-                                                    return text;
+                                        Name: {
+                                            visibility: 'fixed',
+                                            title: "Tên ",
+                                            width: "20%",
+                                        },
+                                        //Code: {
+                                        //    title: "Mã",
+                                        //    width: "5%",
+                                        //}, 
+                                        TMUNumber: {
+                                            title: "Chỉ số TMU",
+                                            width: "20%",
+                                            display: function (data) {
+                                                txt = ParseStringToCurrency(data.record.TMUNumber);
+                                                return txt;
+                                            }
+                                        },
+                                        Description: {
+                                            title: "Mô Tả",
+                                            sorting: false,
+                                            width: "20%"
+                                        },
+                                        edit: {
+                                            title: '',
+                                            width: '5%',
+                                            sorting: false,
+                                            display: function (data) {
+                                                var div = $('<div class="table-action"></div>')
+                                                var text = $('<i data-toggle="modal" data-target="#' + Global.Element.Popup_ + '" title="Chỉnh sửa thông tin" class="fa fa_tb fa-pencil-square-o clickable blue"  ></i>');
+                                                text.click(function () {
+                                                    BindData_(data.record);
+                                                    $('#tptimeTypeId').val(data.record.TimeTypePrepareId);
+                                                    $('#tpTMU').val(data.record.TMUNumber);
+                                                    Global.Data.IsInsert = false;
+                                                });
+                                                div.append(text)
 
-                                                }
+                                                var _text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
+                                                _text.click(function () {
+                                                    GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
+                                                        Delete_(data.record.Id);
+                                                    }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
+                                                });
+                                                div.append(_text)
+                                                return div;
                                             }
                                         }
-                                    }, function (data) { //opened handler
-                                        data.childTable.jtable('load');
-                                    });
+                                    }
+                                }, function (data) { //opened handler
+                                    data.childTable.jtable('load');
+                                });
                         });
                         return $img;
                     }
                 },
                 edit: {
                     title: '',
-                    width: '1%',
+                    width: '5%',
                     sorting: false,
                     display: function (data) {
+                        var div = $('<div class="table-action"></div>')
                         var text = $('<i data-toggle="modal" data-target="#' + Global.Element.Popup + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
                         text.click(function () {
                             BindData(data.record);
@@ -288,24 +293,18 @@ GPRO.TimePrepare = function () {
                             else
                                 $('#timetypeisPublic').bootstrapToggle('off');
 
-                              Global.Data.IsInsert = false;
+                            Global.Data.IsInsert = false;
                         });
-                        return text;
-                    }
-                },
-                Delete: {
-                    title: '',
-                    width: "3%",
-                    sorting: false,
-                    display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
-                        text.click(function () {
+                        div.append(text)
+
+                        var _text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
+                        _text.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 Delete(data.record.Id);
                             }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
                         });
-                        return text;
-
+                        div.append(_text)
+                        return div;
                     }
                 }
             }
@@ -313,13 +312,12 @@ GPRO.TimePrepare = function () {
     }
 
     function ReloadList() {
-        var keySearch = $('#tpkeyword').val();
-        var searchBy = $('#tpsearchBy').val();
-        $('#' + Global.Element.Jtable).jtable('load', { 'keyword': keySearch, 'searchBy': parseInt(searchBy) });
+        var keySearch = $('#time-pre-keyword').val();
+        $('#' + Global.Element.Jtable).jtable('load', { 'keyword': keySearch });
     }
 
     function Save() {
-        Global.Data.Model.IsPublic =$("#timetypeisPublic").data("kendoMobileSwitch").check();
+        Global.Data.Model.IsPublic = $("#timetypeisPublic").data("kendoMobileSwitch").check();
         $.ajax({
             url: Global.UrlAction.Save,
             type: 'post',
@@ -333,7 +331,7 @@ GPRO.TimePrepare = function () {
                         ReloadList();
                         BindData(null);
                         GetTimeTypePrepareSelect('tptimeTypeId');
-                        if (!Global.Data.IsInsert)
+                       // if (!Global.Data.IsInsert)
                             $("#" + Global.Element.Popup + ' button[cancel-type]').click();
                         Global.Data.IsInsert = true;
                     }
@@ -393,7 +391,7 @@ GPRO.TimePrepare = function () {
             $('div.divParent').attr('currentPoppup', '');
         });
     }
-     
+
     /**********************************************************************************************************************
                                                             TIME PREPARE
     ***********************************************************************************************************************/
@@ -440,7 +438,7 @@ GPRO.TimePrepare = function () {
                     if (result.Result == "OK") {
                         ReloadList();
                         BindData_(null);
-                        if (!Global.Data.IsInsert)
+                       // if (!Global.Data.IsInsert)
                             $("#" + Global.Element.Popup_ + ' button[cancel-time]').click();
                         Global.Data.IsInsert = true;
                     }

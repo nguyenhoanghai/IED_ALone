@@ -3,7 +3,12 @@ using System.Collections.Generic;
 namespace GPRO.Core.Interface
 {
 	public interface IUserService
-	{
+	{ 
+		string Name
+		{
+			get;
+			set;
+		}
 		string UserName
 		{
 			get;

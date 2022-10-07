@@ -8,6 +8,7 @@ namespace GPRO_IED_A.Business.Model
     public class UserService
     {
         public int CompanyId { get; set; }
+        public string Name { get; set; } 
         public string CompanyName { get; set; }
         public string DepartmentName { get; set; }
         public string Description { get; set; }

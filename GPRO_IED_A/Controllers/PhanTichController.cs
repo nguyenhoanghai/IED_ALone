@@ -1,4 +1,5 @@
 ﻿using GPRO_IED_A.Business;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Web.Mvc;
@@ -21,7 +22,7 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProductByCustomerId(  int customerId)
+        public JsonResult GetProductByCustomerId(int customerId)
         {
             try
             {
@@ -72,6 +73,54 @@ namespace GPRO_IED_A.Controllers
                     var noName = BLLCommodityAnalysis.Instance.GetProductByProductGroupId(progroupId);
                     JsonDataResult.Data = noName;
                     JsonDataResult.Result = "OK";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JsonDataResult);
+        }
+
+        [HttpPost]
+        public JsonResult GetSampleProAnaByProductId(int productId)
+        {
+            try
+            {
+                if (isAuthenticate)
+                {
+                    var rs = BLLCommodityAnalysis.Instance.GetSampleProAna(productId, UserContext.WorkshopIds);
+                    if (rs.IsSuccess)
+                    {
+                        JsonDataResult.Data = JsonConvert.SerializeObject(rs.Records);
+                        JsonDataResult.Result = "OK";
+                    }
+                    else 
+                        JsonDataResult.Result = "ERROR";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JsonDataResult);
+        }
+
+        [HttpPost]
+        public JsonResult GetProAnaByProductId(int productId)
+        {
+            try
+            {
+                if (isAuthenticate)
+                {
+                    var rs = BLLCommodityAnalysis.Instance.GetSampleProAna(productId, UserContext.WorkshopIds);
+                    if (rs.IsSuccess)
+                    {
+                        JsonDataResult.Data = JsonConvert.SerializeObject(rs.Records);
+                        JsonDataResult.Result = "OK";
+                    }
+                    else
+                        JsonDataResult.Result = "ERROR";
                 }
             }
             catch (Exception ex)

@@ -92,8 +92,51 @@ label {
     padding: 6px;
     border-radius: 5px;
     border-color: #ccc;
-    width: 90%;
+    width: calc(100% - 20px);
     height: 34px;
+}
+
+.select-box i{
+    cursor:pointer
+}
+
+.select-box i.fa-refresh { 
+    color: red
+}
+
+.select-box i.fa-plus-circle { 
+    color: blue
+}
+
+.modal-footer i.fa-times {
+    color:red
+}
+
+
+.password-box {
+    display: inline-flex !important;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    justify-items: center
+}
+
+    .password-box input {
+        width: calc(100% - 20px);
+        height: 32px;
+        padding: 0 5px;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .password-box i {
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+.modal-small {
+    min-width: 300px !important;
+    width: 25%
 }
 
 @media (min-width: 992px) {
@@ -376,7 +419,7 @@ body.nav-sm .menu_section {
     float: left;
     background: #EDEDED;
     border-bottom: 1px solid #D9DEE4;
-    margin-bottom: 10px;
+    /*margin-bottom: 10px;*/
     width: 100%;
     position: relative;
 }
@@ -698,7 +741,8 @@ table.no-margin .progress {
     min-height: 1px;
     float: left;
     padding-right: 10px;*/
-    padding-left: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
     margin-bottom: 10px !important;
 }
 
@@ -6479,9 +6523,51 @@ ul.notifications {
     width: 100%;
     height: 2px;
 }
+
 .modal-full {
     width: 100%;
     min-width: 1200px;
 }
 
- 
+.group-box {
+    border: 2px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.group-box-title {
+    border-bottom: 2px solid blue;
+    padding: 0 5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: blue;
+    font-size: 13px;
+}
+
+.group-box-body {
+    padding-top: 10px;
+}
+
+.table-action {
+    min-width:100px
+}
+
+    .table-action i {
+        padding: 0 3px;
+        cursor: pointer
+    }
+
+        .table-action i.fa-file-excel-o,
+        .table-action i.fa-trash-o {
+            color: red
+        }
+
+        .table-action i.fa-pencil-square-o {
+            color: blue
+        }
+
+.k-multiselect-wrap{
+    height: 33px !important
+}

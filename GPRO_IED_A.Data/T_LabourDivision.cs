@@ -16,14 +16,15 @@ namespace GPRO_IED_A.Data
     {
         public T_LabourDivision()
         {
-            this.T_LinePosition = new HashSet<T_LinePosition>();
+            this.T_LabourDevision_Ver = new HashSet<T_LabourDevision_Ver>();
+            this.T_LinePoDailyQuantities = new HashSet<T_LinePoDailyQuantities>();
         }
     
         public int Id { get; set; }
         public int TechProVer_Id { get; set; }
         public int ParentId { get; set; }
         public int LineId { get; set; }
-        public Nullable<int> TotalPosition { get; set; }
+        public int TotalPosition { get; set; }
         public bool IsDeleted { get; set; }
         public int CreatedUser { get; set; }
         public System.DateTime CreatedDate { get; set; }
@@ -32,11 +33,12 @@ namespace GPRO_IED_A.Data
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
     
+        public virtual T_CommodityAnalysis T_CommodityAnalysis { get; set; }
+        public virtual T_Line T_Line { get; set; }
+        public virtual ICollection<T_LabourDevision_Ver> T_LabourDevision_Ver { get; set; }
+        public virtual ICollection<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
+        public virtual T_TechProcessVersion T_TechProcessVersion { get; set; }
         public virtual SUser SUser { get; set; }
         public virtual SUser SUser1 { get; set; }
-        public virtual T_CommodityAnalysis T_CommodityAnalysis { get; set; }
-        public virtual T_TechProcessVersion T_TechProcessVersion { get; set; }
-        public virtual ICollection<T_LinePosition> T_LinePosition { get; set; }
-        public virtual T_Line T_Line { get; set; }
     }
 }

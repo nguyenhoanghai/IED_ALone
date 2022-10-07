@@ -38,7 +38,7 @@ namespace GPRO_IED_A.Business
             return obj.CreatedUser == actionUser;
         }
 
-        public PagedList<ProductModel> GetList(string keyWord, string searchBy, int companyId, int[] relationCompanyId, int startIndexRecord, int pageSize, string sorting)
+        public PagedList<ProductModel> GetList(string keyWord, int companyId, int[] relationCompanyId, int startIndexRecord, int pageSize, string sorting)
         {
             try
             {
@@ -47,14 +47,12 @@ namespace GPRO_IED_A.Business
                     if (string.IsNullOrEmpty(sorting))
                         sorting = "Id DESC";
 
-                    IQueryable<T_Product> productTypes = null;
-                    if (string.IsNullOrEmpty(keyWord))
-                        productTypes = GetAll(sorting, companyId, relationCompanyId);
-                    else
-                        productTypes = GetByKeyword(keyWord, searchBy, companyId, relationCompanyId, sorting);
+                    IQueryable<T_Product> _products = db.T_Product.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0)));
+                    if (!string.IsNullOrEmpty(keyWord))
+                        _products = _products.Where(x => (x.Code.Trim().ToUpper().Contains(keyWord.Trim().ToUpper()) || x.Name.Trim().ToUpper().Contains(keyWord.Trim().ToUpper())));
 
                     var pageNumber = (startIndexRecord / pageSize) + 1;
-                    var objs = new PagedList<ProductModel>(productTypes.Select(x => new ProductModel()
+                    var objs = new PagedList<ProductModel>(_products.Select(x => new ProductModel()
                     {
                         Id = x.Id,
                         Name = x.Name,
@@ -63,7 +61,8 @@ namespace GPRO_IED_A.Business
                         IsPrivate = (x.CompanyId == null ? true : false),
                         CompanyId = x.CompanyId,
                         CustomerId = x.CustomerId,
-                        ProductGroupId = x.ProductGroupId ?? 0
+                        ProductGroupId = x.ProductGroupId ?? 0,
+                        ProGroupName = (x.ProductGroupId.HasValue ? x.T_ProductGroup.Name : "")
                     }).OrderBy(sorting).ToList(), pageNumber, pageSize);
                     if (objs.Count > 0)
                     {
@@ -85,39 +84,7 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
-
-        private IQueryable<T_Product> GetByKeyword(string keyWord, string searchBy, int companyId, int[] relationCompanyId, string sorting)
-        {
-            try
-            {
-                IQueryable<T_Product> productTypes = null;
-                if (searchBy == "1")
-                    productTypes = db.T_Product
-                        .Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0)) && x.Code.Trim().ToUpper().Contains(keyWord.Trim().ToUpper())).OrderByDescending(x => x.CreatedDate);
-
-                else if (searchBy == "2")
-                    productTypes = db.T_Product.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0)) && x.Name.Trim().ToUpper().Contains(keyWord.Trim().ToUpper())).OrderByDescending(x => x.CreatedDate);
-                return productTypes;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        private IQueryable<T_Product> GetAll(string sorting, int companyId, int[] relationCompanyId)
-        {
-            try
-            {
-                return db.T_Product.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0))).OrderByDescending(x => x.CreatedDate);
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
+         
         public ResponseBase InsertOrUpdate(ProductModel model, bool isOwner)
         {
             try
@@ -128,86 +95,91 @@ namespace GPRO_IED_A.Business
                     if (CheckExists(model.Name.Trim().ToUpper(), model.Id, model.CompanyId, true))
                     {
                         result.IsSuccess = false;
-                        result.Errors.Add(new Error() { MemberName = "Insert Product Type", Message = "Tên  mã hàng này đã tồn tại. Vui lòng chọn lại Tên khác !." });
+                        result.Errors.Add(new Error() { MemberName = "Insert Product Type", Message = "Tên mã hàng này đã tồn tại. Vui lòng chọn lại Tên khác !." });
                         return result;
+                    }
+                    if (model.CustomerId == 0)
+                    {
+                        result.IsSuccess = false;
+                        result.Errors.Add(new Error() { MemberName = "Insert Product Type", Message = "Khách hàng không được để trống.!" });
+                        return result;
+                    }
+
+                    T_Product obj;
+                    if (model.ProductGroupId == 0)
+                        model.ProductGroupId = null;
+                    if (model.Id == 0)
+                    {
+                        obj = new T_Product();
+                        Parse.CopyObject(model, ref obj);
+                        obj.CreatedDate = DateTime.Now;
+                        obj.CreatedUser = model.ActionUser;
+                        db.T_Product.Add(obj);
+                        db.SaveChanges();
+                        result.IsSuccess = true;
                     }
                     else
                     {
-                        T_Product obj;
-                        if (model.ProductGroupId == 0)
-                            model.ProductGroupId = null;
-                        if (model.Id == 0)
+                        obj = db.T_Product.FirstOrDefault(x => !x.IsDeleted && x.Id == model.Id);
+                        if (obj == null)
                         {
-                            obj = new T_Product();
-                            Parse.CopyObject(model, ref obj);
-                            obj.CreatedDate = DateTime.Now;
-                            obj.CreatedUser = model.ActionUser;
-                            db.T_Product.Add(obj);
-                            db.SaveChanges();
-                            result.IsSuccess = true;
+                            result.IsSuccess = false;
+                            result.Errors.Add(new Error() { MemberName = "Update Product Type", Message = "Loại mã hàng bạn đang thao tác đã bị xóa hoặc không tồn tại. Vui lòng kiểm tra lại !." });
+                            return result;
                         }
                         else
                         {
-                            obj = db.T_Product.FirstOrDefault(x => !x.IsDeleted && x.Id == model.Id);
-                            if (obj == null)
+                            if (!checkPermis(obj, model.ActionUser, isOwner))
                             {
                                 result.IsSuccess = false;
-                                result.Errors.Add(new Error() { MemberName = "Update Product Type", Message = "Loại mã hàng bạn đang thao tác đã bị xóa hoặc không tồn tại. Vui lòng kiểm tra lại !." });
-                                return result;
+                                result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo mã hàng này nên bạn không cập nhật được thông tin cho mã hàng này." });
                             }
                             else
                             {
-                                if (!checkPermis(obj, model.ActionUser, isOwner))
-                                {
-                                    result.IsSuccess = false;
-                                    result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo mã hàng này nên bạn không cập nhật được thông tin cho mã hàng này." });
-                                }
-                                else
-                                {
-                                    obj.CompanyId = model.CompanyId;
-                                    obj.Name = model.Name;
-                                    obj.Code = model.Code;
-                                    obj.CustomerId = model.CustomerId;
-                                    obj.ProductGroupId = model.ProductGroupId;
-                                    obj.Description = model.Description;
-                                    obj.UpdatedUser = model.ActionUser;
-                                    obj.UpdatedDate = DateTime.Now;
+                                obj.CompanyId = model.CompanyId;
+                                obj.Name = model.Name;
+                                obj.Code = model.Code;
+                                obj.CustomerId = model.CustomerId;
+                                obj.ProductGroupId = model.ProductGroupId;
+                                obj.Description = model.Description;
+                                obj.UpdatedUser = model.ActionUser;
+                                obj.UpdatedDate = DateTime.Now;
 
-                                    //  cap nhat ben phan tich mat hang
-                                    var commoAna = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectId == obj.Id && x.ObjectType == (int)eObjectType.isCommodity);
-                                    if (commoAna != null && commoAna.Count() > 0)
+                                //  cap nhat ben phan tich mat hang
+                                var commoAna = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectId == obj.Id && x.ObjectType == (int)eObjectType.isCommodity);
+                                if (commoAna != null && commoAna.Count() > 0)
+                                {
+                                    foreach (var item in commoAna)
                                     {
-                                        foreach (var item in commoAna)
-                                        {
-                                            item.Name = model.Name;
-                                            item.UpdatedUser = model.ActionUser;
-                                            item.UpdatedDate = DateTime.Now;
-                                        }
+                                        item.Name = model.Name;
+                                        item.UpdatedUser = model.ActionUser;
+                                        item.UpdatedDate = DateTime.Now;
                                     }
-                                    db.SaveChanges();
-                                    result.IsSuccess = true;
-                                }
-                            }
-                        }
-
-                        if (!string.IsNullOrEmpty(model.Img))
-                        {
-                            List<T_ProductFile> files = JsonConvert.DeserializeObject<List<T_ProductFile>>(model.Img);
-                            if (files != null && files.Count > 0)
-                            {
-                                foreach (var file in files)
-                                {
-                                    file.ProductId = obj.Id;
-                                    file.CreatedDate = DateTime.Now;
-                                    file.CreatedUser = model.ActionUser;
-                                    db.T_ProductFile.Add(file);
                                 }
                                 db.SaveChanges();
+                                result.IsSuccess = true;
                             }
                         }
-
-                        return result;
                     }
+
+                    if (!string.IsNullOrEmpty(model.Img))
+                    {
+                        List<T_ProductFile> files = JsonConvert.DeserializeObject<List<T_ProductFile>>(model.Img);
+                        if (files != null && files.Count > 0)
+                        {
+                            foreach (var file in files)
+                            {
+                                file.ProductId = obj.Id;
+                                file.CreatedDate = DateTime.Now;
+                                file.CreatedUser = model.ActionUser;
+                                db.T_ProductFile.Add(file);
+                            }
+                            db.SaveChanges();
+                        }
+                    }
+
+                    return result;
+
                 }
             }
             catch (Exception ex)

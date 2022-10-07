@@ -48,6 +48,7 @@ namespace GPRO_IED_A.Business
                     {
                         model = new ExportTechProcessModel();
                         Parse.CopyObject(techProcessInfo, ref model);
+                        model.LastRow = 4;
                         var listDetail = techProcessInfo.details;
                         if (listDetail != null && listDetail.Count > 0)
                         {
@@ -76,6 +77,7 @@ namespace GPRO_IED_A.Business
                                                 techProcessGroup.PhaseGroupName = phaseGroup.Name;
                                                 techProcessGroup.ListTechProcessVerDetail = listDetail.Where(c => listPhaseIdOfGroup.Contains(c.CA_PhaseId)).ToList();
                                                 model.ListTechProcessGroup.Add(techProcessGroup);
+                                                model.LastRow += techProcessGroup.ListTechProcessVerDetail.Count + 1;
                                             }
                                             else
                                             {
@@ -171,10 +173,12 @@ namespace GPRO_IED_A.Business
                                 version.ProOfGroupPerDay = model.ProOfGroupPerDay;
                                 version.ProOfGroupPerHour = model.ProOfGroupPerHour;
                                 version.ProOfPersonPerDay = model.ProOfPersonPerDay;
+                                version.PercentWorker = model.PercentWorker;
                                 version.Note = model.Note;
                                 version.UpdatedUser = model.ActionUser;
                                 version.UpdatedDate = DateTime.Now;
                                 version.PricePerSecond = model.PricePerSecond;
+                                version.PricePerMinute = model.PricePerMinute;
                                 version.Allowance = model.Allowance;
 
                                 var details = db.T_TechProcessVersionDetail.Where(x => !x.IsDeleted && x.TechProcessVersionId == model.Id).OrderBy(x => x.Id).ToList();
@@ -252,7 +256,8 @@ namespace GPRO_IED_A.Business
             {
                 using (var _db = new IEDEntities())
                 {
-                    TechProcessVersionModel techVersion = null;
+                    TechProcessVersionModel techVersion = null;                     
+
                     techVersion = _db.T_TechProcessVersion.Where(x => !x.IsDeleted && x.ParentId == parentId).Select(x => new TechProcessVersionModel()
                     {
                         Id = x.Id,
@@ -265,12 +270,14 @@ namespace GPRO_IED_A.Business
                         ProOfGroupPerDay = x.ProOfGroupPerDay,
                         ProOfGroupPerHour = x.ProOfGroupPerHour,
                         ProOfPersonPerDay = x.ProOfPersonPerDay,
+                        PercentWorker = x.PercentWorker,
                         //WorkshopId = x.WorkshopId,
                         //WorkShopName = x.T_WorkShop.Name,
                         Note = x.Note,
                         Quantities = 0,
                         Price = 0,
                         PricePerSecond = x.PricePerSecond,
+                        PricePerMinute = x.PricePerMinute,
                         Allowance = x.Allowance,
                         CustomerName = x.T_Product.T_Customer.Name,
                         ParentId = x.ParentId
@@ -280,7 +287,8 @@ namespace GPRO_IED_A.Business
                         #region 
                         var details = (from x in _db.T_TechProcessVersionDetail
                                        where
-                                       !x.T_CA_Phase.IsDeleted &&
+                                       !x.T_CA_Phase.IsDeleted && 
+                                       !x.T_CA_Phase.T_PhaseGroup.IsDeleted &&
                                        x.TechProcessVersionId == techVersion.Id
                                        select
                                        new TechProcessVerDetailModel()
@@ -295,10 +303,10 @@ namespace GPRO_IED_A.Business
                                            StandardTMU = Math.Round(x.T_CA_Phase.TotalTMU, 3),
                                            Percent = x.Percent,
                                            EquipmentId = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.EquipmentId ?? 0 : 0,
-                                           EquipmentCode = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.T_Equipment.Code : "",
+                                         //  EquipmentCode = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.T_Equipment.Code : "",
                                            EquipmentName = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.T_Equipment.Name : "",
                                            EquipmentGroupCode = x.T_CA_Phase.EquipmentId.HasValue ? x.T_CA_Phase.T_Equipment.T_EquipmentGroup.GroupCode : "",
-                                           TimeByPercent = Math.Round(x.TimeByPercent, 3),
+                                           TimeByPercent = Math.Round(((x.T_CA_Phase.TotalTMU *100)/ x.Percent) , 3),
                                            Worker = x.Worker,
                                            De_Percent = 0,
                                            Description = x.Description == null ? "" : x.Description,
@@ -306,11 +314,13 @@ namespace GPRO_IED_A.Business
                                            WorkerLevelId = x.T_CA_Phase.WorkerLevelId,
                                            WorkerLevelName = x.T_CA_Phase.SWorkerLevel.Name,
                                            Index = x.T_CA_Phase.Index,
-                                           Node = x.T_CA_Phase.Node 
-                                       }).OrderBy(x => x.Index).ThenBy(x => x.PhaseCode).ToList();
+                                           Node = x.T_CA_Phase.Node ,
+                                           ParentId = x.T_CA_Phase.ParentId
+                                       }).OrderBy(x=> x.ParentId).ThenBy(x => x.Index).ToList();
 
                         details = details.GroupBy(x => x.CA_PhaseId).Select(x => x.First()).ToList();
                         techVersion.details = details;
+                        techVersion.TimeCompletePerCommo = details.Sum(x => x.TimeByPercent);
 
                         var listEquipmentId = details.Where(c => c.EquipmentId > 0).Select(c => c.EquipmentId).Distinct().ToList();
                         if (listEquipmentId.Count > 0)
@@ -367,7 +377,7 @@ namespace GPRO_IED_A.Business
                                 PhaseName = x.Name,
                                 StandardTMU = Math.Round(x.TotalTMU, 3),
                                 EquipmentId = x.EquipmentId != null ? x.EquipmentId ?? 0 : 0,
-                                EquipmentCode = x.EquipmentId != null ? x.T_Equipment.Code : "",
+                              //  EquipmentCode = x.EquipmentId != null ? x.T_Equipment.Code : "",
                                 EquipmentName = x.EquipmentId != null ? x.T_Equipment.Name : "",
                                 EquipmentGroupCode = x.EquipmentId.HasValue ? x.T_Equipment.T_EquipmentGroup.GroupCode : "",
                                 Description = x.Description == null ? "" : x.Description,
@@ -393,7 +403,7 @@ namespace GPRO_IED_A.Business
                                 PhaseName = x.Name,
                                 StandardTMU = Math.Round(x.TotalTMU, 3),
                                 EquipmentId = x.EquipmentId != null ? x.EquipmentId ?? 0 : 0,
-                                EquipmentCode = x.EquipmentId != null ? x.T_Equipment.Code : "",
+                               // EquipmentCode = x.EquipmentId != null ? x.T_Equipment.Code : "",
                                 EquipmentName = x.EquipmentId != null ? x.T_Equipment.Name : "",
                                 EquipmentGroupCode = x.EquipmentId.HasValue ? x.T_Equipment.T_EquipmentGroup.GroupCode : "",
                                 Description = x.Description == null ? "" : x.Description,
@@ -413,7 +423,7 @@ namespace GPRO_IED_A.Business
                         if (parentObj != null)
                         {
                             var user = _db.SUsers.FirstOrDefault(x => x.Id == parentObj.CreatedUser);
-                            techVersion.CreateBy = user.FisrtName + " " + user.LastName;
+                            techVersion.CreateBy = user.Name  ;
                             techVersion.CreateAt = parentObj.CreatedDate.ToString("dd/MM/yyyy");
 
                             techVersion.productImgs.AddRange(_db.T_ProductFile

@@ -21,6 +21,7 @@ namespace GPRO_IED_A.Controllers
             modelE.LogoCompany = UserContext.LogoCompany != null ? UserContext.LogoCompany.ToString() : "";
             modelE.Email = UserContext.Email == null ? "" : UserContext.Email.ToString();
             modelE.ImagePath = UserContext.ImagePath == null ? "" : UserContext.ImagePath.ToString();
+            modelE.Name = UserContext.Name  ; 
             ViewData["userInfo"] = modelE;
             return PartialView(UserContext);
         }

@@ -18,6 +18,7 @@ namespace GPRO_IED_A.Data
         {
             this.T_CA_Phase = new HashSet<T_CA_Phase>();
             this.T_LabourDivision = new HashSet<T_LabourDivision>();
+            this.T_PhaseGroupDailyProduction = new HashSet<T_PhaseGroupDailyProduction>();
         }
     
         public int Id { get; set; }
@@ -38,5 +39,6 @@ namespace GPRO_IED_A.Data
     
         public virtual ICollection<T_CA_Phase> T_CA_Phase { get; set; }
         public virtual ICollection<T_LabourDivision> T_LabourDivision { get; set; }
+        public virtual ICollection<T_PhaseGroupDailyProduction> T_PhaseGroupDailyProduction { get; set; }
     }
 }

@@ -26,9 +26,7 @@ GPRO.PhaseLibs = function () {
         },
         Element: {
             tableNotLibs: 'tb-phase',
-            tableIsLibs: 'tb-phase-lib',
-            search:'phase-lib-search-popup',
-            searchNot: 'phase-not-lib-search-popup'
+            tableIsLibs: 'tb-phase-lib', 
         },
         Data: {
         }
@@ -130,18 +128,24 @@ GPRO.PhaseLibs = function () {
             pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
-            selectShow: true,
+            selectShow: false,
             sorting: true,
             selecting: true, //Enable selecting
             multiselect: true, //Allow multiple selecting
             selectingCheckboxes: true, //Show checkboxes on first column
             actions: {
-                listAction: Global.UrlAction.GetWhichNotLibs,
-                searchAction: Global.Element.searchNot,
+                listAction: Global.UrlAction.GetWhichNotLibs, 
             },
-            messages: {
-                selectShow: 'Ẩn hiện cột',
-                searchRecord: 'Tìm kiếm',
+            messages: { 
+            },
+            searchInput: {
+                id: 'phase-not-lib-keyword',
+                className: 'search-input',
+                placeHolder: 'Nhập từ khóa ...',
+                keyup: function (evt) {
+                    if (evt.keyCode == 13)
+                        ReloadListNotLibs();
+                }
             },
             fields: {
                 Id: {
@@ -186,7 +190,7 @@ GPRO.PhaseLibs = function () {
         });
     }
     ReloadListNotLibs = () => {
-        $('#' + Global.Element.tableNotLibs).jtable('load', { 'keyword': $('#p-n-l-keyword').val()   });
+        $('#' + Global.Element.tableNotLibs).jtable('load', { 'keyword': $('#phase-not-lib-keyword').val()   });
     }
 
     InitListLibs = () => {
@@ -196,18 +200,24 @@ GPRO.PhaseLibs = function () {
             pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
-            selectShow: true,
+            selectShow: false,
             sorting: true,
             selecting: true, //Enable selecting
             multiselect: true, //Allow multiple selecting
             selectingCheckboxes: true, //Show checkboxes on first column
             actions: {
-                listAction: Global.UrlAction.GetWhichIsLibs,
-                searchAction: Global.Element.search,
+                listAction: Global.UrlAction.GetWhichIsLibs, 
             },
-            messages: {
-                selectShow: 'Ẩn hiện cột',
-                searchRecord: 'Tìm kiếm',
+            messages: { 
+            },
+            searchInput: {
+                id: 'phase-lib-keyword',
+                className: 'search-input',
+                placeHolder: 'Nhập từ khóa ...',
+                keyup: function (evt) {
+                    if (evt.keyCode == 13)
+                        ReloadListIsLibs();
+                }
             },
             fields: {
                 Id: {
@@ -251,7 +261,7 @@ GPRO.PhaseLibs = function () {
         });
     }
     ReloadListIsLibs = () => {
-        $('#' + Global.Element.tableIsLibs).jtable('load', { 'keyword': $('#p-l-keyword').val() });
+        $('#' + Global.Element.tableIsLibs).jtable('load', { 'keyword': $('#phase-lib-keyword').val() });
     }
 
 }

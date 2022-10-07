@@ -30,8 +30,11 @@ namespace GPRO_IED_A.Data
         public double ProOfGroupPerHour { get; set; }
         public double ProOfGroupPerDay { get; set; }
         public double ProOfPersonPerDay { get; set; }
+        public double PricePerMinute { get; set; }
         public double PricePerSecond { get; set; }
         public double Allowance { get; set; }
+        public int PercentWorker { get; set; }
+        public int Percent { get; set; }
         public string Note { get; set; }
         public bool IsDeleted { get; set; }
         public int CreatedUser { get; set; }
@@ -42,7 +45,7 @@ namespace GPRO_IED_A.Data
         public Nullable<System.DateTime> DeletedDate { get; set; }
     
         public virtual ICollection<T_LabourDivision> T_LabourDivision { get; set; }
-        public virtual ICollection<T_TechProcessVersionDetail> T_TechProcessVersionDetail { get; set; }
         public virtual T_Product T_Product { get; set; }
+        public virtual ICollection<T_TechProcessVersionDetail> T_TechProcessVersionDetail { get; set; }
     }
 }

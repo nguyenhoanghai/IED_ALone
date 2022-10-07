@@ -6,8 +6,7 @@
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Code" Type="varchar" MaxLength="500" Nullable="false" />
-    <Property Name="FirstName" Type="nvarchar" MaxLength="550" Nullable="false" />
-    <Property Name="LastName" Type="nvarchar" MaxLength="550" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="550" Nullable="false" />
     <Property Name="Birthday" Type="datetime" Nullable="false" />
     <Property Name="Gender" Type="bit" Nullable="false" />
     <Property Name="CompanyId" Type="int" />
@@ -250,8 +249,7 @@
     <Property Name="Email" Type="nvarchar" MaxLength="250" />
     <Property Name="ImagePath" Type="nvarchar" MaxLength="200" />
     <Property Name="LockedTime" Type="datetime" />
-    <Property Name="LastName" Type="nvarchar" MaxLength="100" />
-    <Property Name="FisrtName" Type="nvarchar" MaxLength="200" />
+    <Property Name="Name" Type="nvarchar" MaxLength="200" />
     <Property Name="WorkshopIds" Type="varchar" MaxLength="250" />
     <Property Name="IsDeleted" Type="bit" Nullable="false" />
     <Property Name="CreatedUser" Type="int" Nullable="false" />
@@ -508,7 +506,6 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Code" Type="varchar" MaxLength="500" />
     <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
     <Property Name="Expend" Type="float" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" />
@@ -564,8 +561,8 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="GroupName" Type="nvarchar(max)" Nullable="false" />
     <Property Name="GroupCode" Type="nvarchar" MaxLength="500" Nullable="false" />
+    <Property Name="GroupName" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Icon" Type="nvarchar" MaxLength="500" />
     <Property Name="Note" Type="nvarchar(max)" />
     <Property Name="IsDeleted" Type="bit" Nullable="false" />
@@ -662,6 +659,19 @@
     <Property Name="DeletedUser" Type="int" />
     <Property Name="DeletedDate" Type="datetime" />
   </EntityType>
+  <EntityType Name="T_LabourDevision_Ver">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="LabourDivisionId" Type="int" Nullable="false" />
+    <Property Name="TotalPosition" Type="int" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedUser" Type="int" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedUser" Type="int" />
+    <Property Name="DeletedDate" Type="datetime" />
+  </EntityType>
   <EntityType Name="T_LabourDivision">
     <Key>
       <PropertyRef Name="Id" />
@@ -670,7 +680,7 @@
     <Property Name="TechProVer_Id" Type="int" Nullable="false" />
     <Property Name="ParentId" Type="int" Nullable="false" />
     <Property Name="LineId" Type="int" Nullable="false" />
-    <Property Name="TotalPosition" Type="int" />
+    <Property Name="TotalPosition" Type="int" Nullable="false" />
     <Property Name="IsDeleted" Type="bit" Nullable="false" />
     <Property Name="CreatedUser" Type="int" Nullable="false" />
     <Property Name="CreatedDate" Type="datetime" Nullable="false" />
@@ -697,12 +707,28 @@
     <Property Name="DeletedUser" Type="int" />
     <Property Name="DeletedDate" Type="datetime" />
   </EntityType>
+  <EntityType Name="T_LinePoDailyQuantities">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Date" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="LabourDevisionId" Type="int" Nullable="false" />
+    <Property Name="LabourDevision_VerId" Type="int" Nullable="false" />
+    <Property Name="LinePo_DetailId" Type="int" Nullable="false" />
+    <Property Name="ComandType" Type="int" Nullable="false" />
+    <Property Name="Quantities" Type="int" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedUser" Type="int" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="PhaseId" Type="int" Nullable="false" />
+  </EntityType>
   <EntityType Name="T_LinePosition">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="LabourDivisionId" Type="int" Nullable="false" />
+    <Property Name="LabourDivisionVerId" Type="int" Nullable="false" />
     <Property Name="OrderIndex" Type="int" Nullable="false" />
     <Property Name="EmployeeId" Type="int" />
     <Property Name="IsHasBTP" Type="bit" Nullable="false" />
@@ -847,6 +873,20 @@
     <Property Name="DeletedDate" Type="datetime" />
     <Property Name="UpdatedDate" Type="datetime" />
   </EntityType>
+  <EntityType Name="T_PhaseGroupDailyProduction">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Date" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="ComAnaId" Type="int" Nullable="false" />
+    <Property Name="PhaseGroupId" Type="int" Nullable="false" />
+    <Property Name="ComandType" Type="int" Nullable="false" />
+    <Property Name="Quantities" Type="int" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedUser" Type="int" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+  </EntityType>
   <EntityType Name="T_Product">
     <Key>
       <PropertyRef Name="Id" />
@@ -933,8 +973,11 @@
     <Property Name="ProOfGroupPerHour" Type="float" Nullable="false" />
     <Property Name="ProOfGroupPerDay" Type="float" Nullable="false" />
     <Property Name="ProOfPersonPerDay" Type="float" Nullable="false" />
+    <Property Name="PricePerMinute" Type="float" Nullable="false" />
     <Property Name="PricePerSecond" Type="float" Nullable="false" />
     <Property Name="Allowance" Type="float" Nullable="false" />
+    <Property Name="PercentWorker" Type="int" Nullable="false" />
+    <Property Name="Percent" Type="int" Nullable="false" />
     <Property Name="Note" Type="nvarchar(max)" />
     <Property Name="IsDeleted" Type="bit" Nullable="false" />
     <Property Name="CreatedUser" Type="int" Nullable="false" />
@@ -1145,6 +1188,18 @@
       </Principal>
       <Dependent Role="HR_Employee">
         <PropertyRef Name="WorkshopId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SCompany_SLevelCompany">
+    <End Role="SLevelCompany" Type="Self.SLevelCompany" Multiplicity="1" />
+    <End Role="SCompany" Type="Self.SCompany" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SLevelCompany">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SCompany">
+        <PropertyRef Name="LevelCompanyId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1400,6 +1455,30 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_T_LabourDevision_Ver_SUser">
+    <End Role="SUser" Type="Self.SUser" Multiplicity="1" />
+    <End Role="T_LabourDevision_Ver" Type="Self.T_LabourDevision_Ver" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LabourDevision_Ver">
+        <PropertyRef Name="CreatedUser" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_LabourDevision_Ver_T_LabourDivision">
+    <End Role="T_LabourDivision" Type="Self.T_LabourDivision" Multiplicity="1" />
+    <End Role="T_LabourDevision_Ver" Type="Self.T_LabourDevision_Ver" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_LabourDivision">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LabourDevision_Ver">
+        <PropertyRef Name="LabourDivisionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_T_LabourDivision_SUser">
     <End Role="SUser" Type="Self.SUser" Multiplicity="1" />
     <End Role="T_LabourDivision" Type="Self.T_LabourDivision" Multiplicity="*" />
@@ -1472,6 +1551,54 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_T_LinePoDailyQuantities_T_CA_Phase">
+    <End Role="T_CA_Phase" Type="Self.T_CA_Phase" Multiplicity="1" />
+    <End Role="T_LinePoDailyQuantities" Type="Self.T_LinePoDailyQuantities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_CA_Phase">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LinePoDailyQuantities">
+        <PropertyRef Name="PhaseId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_LinePoDailyQuantities_T_LabourDevision_Ver">
+    <End Role="T_LabourDevision_Ver" Type="Self.T_LabourDevision_Ver" Multiplicity="1" />
+    <End Role="T_LinePoDailyQuantities" Type="Self.T_LinePoDailyQuantities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_LabourDevision_Ver">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LinePoDailyQuantities">
+        <PropertyRef Name="LabourDevision_VerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_LinePoDailyQuantities_T_LabourDivision">
+    <End Role="T_LabourDivision" Type="Self.T_LabourDivision" Multiplicity="1" />
+    <End Role="T_LinePoDailyQuantities" Type="Self.T_LinePoDailyQuantities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_LabourDivision">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LinePoDailyQuantities">
+        <PropertyRef Name="LabourDevisionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_LinePoDailyQuantities_T_LinePositionDetail">
+    <End Role="T_LinePositionDetail" Type="Self.T_LinePositionDetail" Multiplicity="1" />
+    <End Role="T_LinePoDailyQuantities" Type="Self.T_LinePoDailyQuantities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_LinePositionDetail">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LinePoDailyQuantities">
+        <PropertyRef Name="LinePo_DetailId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_T_LinePosition_HR_Employee">
     <End Role="HR_Employee" Type="Self.HR_Employee" Multiplicity="0..1" />
     <End Role="T_LinePosition" Type="Self.T_LinePosition" Multiplicity="*" />
@@ -1485,14 +1612,14 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_T_LinePosition_T_LabourDivision">
-    <End Role="T_LabourDivision" Type="Self.T_LabourDivision" Multiplicity="1" />
+    <End Role="T_LabourDevision_Ver" Type="Self.T_LabourDevision_Ver" Multiplicity="1" />
     <End Role="T_LinePosition" Type="Self.T_LinePosition" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="T_LabourDivision">
+      <Principal Role="T_LabourDevision_Ver">
         <PropertyRef Name="Id" />
       </Principal>
       <Dependent Role="T_LinePosition">
-        <PropertyRef Name="LabourDivisionId" />
+        <PropertyRef Name="LabourDivisionVerId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1652,6 +1779,42 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_T_PhaseGroupDailyProduction_SUser">
+    <End Role="SUser" Type="Self.SUser" Multiplicity="1" />
+    <End Role="T_PhaseGroupDailyProduction" Type="Self.T_PhaseGroupDailyProduction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_PhaseGroupDailyProduction">
+        <PropertyRef Name="CreatedUser" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_PhaseGroupDailyProduction_T_CommodityAnalysis">
+    <End Role="T_CommodityAnalysis" Type="Self.T_CommodityAnalysis" Multiplicity="1" />
+    <End Role="T_PhaseGroupDailyProduction" Type="Self.T_PhaseGroupDailyProduction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_CommodityAnalysis">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_PhaseGroupDailyProduction">
+        <PropertyRef Name="ComAnaId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_PhaseGroupDailyProduction_T_PhaseGroup">
+    <End Role="T_PhaseGroup" Type="Self.T_PhaseGroup" Multiplicity="1" />
+    <End Role="T_PhaseGroupDailyProduction" Type="Self.T_PhaseGroupDailyProduction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_PhaseGroup">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_PhaseGroupDailyProduction">
+        <PropertyRef Name="PhaseGroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_T_Product_T_Customer">
     <End Role="T_Customer" Type="Self.T_Customer" Multiplicity="1" />
     <End Role="T_Product" Type="Self.T_Product" Multiplicity="*" />
@@ -1796,8 +1959,10 @@
     <EntitySet Name="T_EquipTypeAttr_Default" EntityType="Self.T_EquipTypeAttr_Default" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_File" EntityType="Self.T_File" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_IEDConfig" EntityType="Self.T_IEDConfig" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="T_LabourDevision_Ver" EntityType="Self.T_LabourDevision_Ver" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_LabourDivision" EntityType="Self.T_LabourDivision" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_Line" EntityType="Self.T_Line" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="T_LinePoDailyQuantities" EntityType="Self.T_LinePoDailyQuantities" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_LinePosition" EntityType="Self.T_LinePosition" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_LinePositionDetail" EntityType="Self.T_LinePositionDetail" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_ManipulationEquipment" EntityType="Self.T_ManipulationEquipment" Schema="dbo" store:Type="Tables" />
@@ -1806,6 +1971,7 @@
     <EntitySet Name="T_ManipulationTypeLibrary" EntityType="Self.T_ManipulationTypeLibrary" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_NatureCutsLibrary" EntityType="Self.T_NatureCutsLibrary" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_PhaseGroup" EntityType="Self.T_PhaseGroup" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="T_PhaseGroupDailyProduction" EntityType="Self.T_PhaseGroupDailyProduction" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_Product" EntityType="Self.T_Product" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_ProductFile" EntityType="Self.T_ProductFile" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="T_ProductGroup" EntityType="Self.T_ProductGroup" Schema="dbo" store:Type="Tables" />
@@ -1858,6 +2024,10 @@
     <AssociationSet Name="FK_HR_Employee_T_WorkShop" Association="Self.FK_HR_Employee_T_WorkShop">
       <End Role="T_WorkShop" EntitySet="T_WorkShop" />
       <End Role="HR_Employee" EntitySet="HR_Employee" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SCompany_SLevelCompany" Association="Self.FK_SCompany_SLevelCompany">
+      <End Role="SLevelCompany" EntitySet="SLevelCompany" />
+      <End Role="SCompany" EntitySet="SCompany" />
     </AssociationSet>
     <AssociationSet Name="FK_SMenu_SModule" Association="Self.FK_SMenu_SModule">
       <End Role="SModule" EntitySet="SModule" />
@@ -1943,6 +2113,14 @@
       <End Role="T_EquipType_Default" EntitySet="T_EquipType_Default" />
       <End Role="T_EquipTypeAttr_Default" EntitySet="T_EquipTypeAttr_Default" />
     </AssociationSet>
+    <AssociationSet Name="FK_T_LabourDevision_Ver_SUser" Association="Self.FK_T_LabourDevision_Ver_SUser">
+      <End Role="SUser" EntitySet="SUser" />
+      <End Role="T_LabourDevision_Ver" EntitySet="T_LabourDevision_Ver" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_LabourDevision_Ver_T_LabourDivision" Association="Self.FK_T_LabourDevision_Ver_T_LabourDivision">
+      <End Role="T_LabourDivision" EntitySet="T_LabourDivision" />
+      <End Role="T_LabourDevision_Ver" EntitySet="T_LabourDevision_Ver" />
+    </AssociationSet>
     <AssociationSet Name="FK_T_LabourDivision_SUser" Association="Self.FK_T_LabourDivision_SUser">
       <End Role="SUser" EntitySet="SUser" />
       <End Role="T_LabourDivision" EntitySet="T_LabourDivision" />
@@ -1967,12 +2145,28 @@
       <End Role="T_WorkShop" EntitySet="T_WorkShop" />
       <End Role="T_Line" EntitySet="T_Line" />
     </AssociationSet>
+    <AssociationSet Name="FK_T_LinePoDailyQuantities_T_CA_Phase" Association="Self.FK_T_LinePoDailyQuantities_T_CA_Phase">
+      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
+      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_LinePoDailyQuantities_T_LabourDevision_Ver" Association="Self.FK_T_LinePoDailyQuantities_T_LabourDevision_Ver">
+      <End Role="T_LabourDevision_Ver" EntitySet="T_LabourDevision_Ver" />
+      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_LinePoDailyQuantities_T_LabourDivision" Association="Self.FK_T_LinePoDailyQuantities_T_LabourDivision">
+      <End Role="T_LabourDivision" EntitySet="T_LabourDivision" />
+      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_LinePoDailyQuantities_T_LinePositionDetail" Association="Self.FK_T_LinePoDailyQuantities_T_LinePositionDetail">
+      <End Role="T_LinePositionDetail" EntitySet="T_LinePositionDetail" />
+      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
+    </AssociationSet>
     <AssociationSet Name="FK_T_LinePosition_HR_Employee" Association="Self.FK_T_LinePosition_HR_Employee">
       <End Role="HR_Employee" EntitySet="HR_Employee" />
       <End Role="T_LinePosition" EntitySet="T_LinePosition" />
     </AssociationSet>
     <AssociationSet Name="FK_T_LinePosition_T_LabourDivision" Association="Self.FK_T_LinePosition_T_LabourDivision">
-      <End Role="T_LabourDivision" EntitySet="T_LabourDivision" />
+      <End Role="T_LabourDevision_Ver" EntitySet="T_LabourDevision_Ver" />
       <End Role="T_LinePosition" EntitySet="T_LinePosition" />
     </AssociationSet>
     <AssociationSet Name="FK_T_LinePositionDetail_T_LinePosition" Association="Self.FK_T_LinePositionDetail_T_LinePosition">
@@ -2026,6 +2220,18 @@
     <AssociationSet Name="FK_T_ManipulationLibrary_T_StopPrecisionLibrary" Association="Self.FK_T_ManipulationLibrary_T_StopPrecisionLibrary">
       <End Role="T_StopPrecisionLibrary" EntitySet="T_StopPrecisionLibrary" />
       <End Role="T_ManipulationLibrary" EntitySet="T_ManipulationLibrary" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_PhaseGroupDailyProduction_SUser" Association="Self.FK_T_PhaseGroupDailyProduction_SUser">
+      <End Role="SUser" EntitySet="SUser" />
+      <End Role="T_PhaseGroupDailyProduction" EntitySet="T_PhaseGroupDailyProduction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_PhaseGroupDailyProduction_T_CommodityAnalysis" Association="Self.FK_T_PhaseGroupDailyProduction_T_CommodityAnalysis">
+      <End Role="T_CommodityAnalysis" EntitySet="T_CommodityAnalysis" />
+      <End Role="T_PhaseGroupDailyProduction" EntitySet="T_PhaseGroupDailyProduction" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_PhaseGroupDailyProduction_T_PhaseGroup" Association="Self.FK_T_PhaseGroupDailyProduction_T_PhaseGroup">
+      <End Role="T_PhaseGroup" EntitySet="T_PhaseGroup" />
+      <End Role="T_PhaseGroupDailyProduction" EntitySet="T_PhaseGroupDailyProduction" />
     </AssociationSet>
     <AssociationSet Name="FK_T_Product_T_Customer" Association="Self.FK_T_Product_T_Customer">
       <End Role="T_Customer" EntitySet="T_Customer" />

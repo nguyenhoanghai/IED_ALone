@@ -17,13 +17,13 @@ namespace GPRO_IED_A.Controllers
             return View();
         }
         [HttpPost]
-        public JsonResult Gets(string keyword, string searchBy, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
+        public JsonResult Gets(string keyword,  int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
             try
             {
                 if (isAuthenticate)
                 {
-                    var productTypes = BLLProduct.Instance.GetList(keyword, searchBy, UserContext.CompanyId, UserContext.ChildCompanyId, jtStartIndex, jtPageSize, jtSorting);
+                    var productTypes = BLLProduct.Instance.GetList(keyword,   UserContext.CompanyId, UserContext.ChildCompanyId, jtStartIndex, jtPageSize, jtSorting);
                     JsonDataResult.Records = productTypes;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = productTypes.TotalItemCount;

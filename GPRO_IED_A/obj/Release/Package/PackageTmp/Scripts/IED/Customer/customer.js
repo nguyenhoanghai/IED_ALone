@@ -21,16 +21,16 @@ GPRO.Customer = function () {
     var Global = {
         UrlAction: {
             Gets: '/Customer/Gets',
-            Save : '/Customer/Save',
-            Delete : '/Customer/Delete', 
+            Save: '/Customer/Save',
+            Delete: '/Customer/Delete',
         },
         Element: {
             Jtable: 'jtableCustomer',
             Popup: 'popup_Customer',
-            Search: 'pSearch_Popup' 
+            Search: 'pSearch_Popup'
         },
-        Data: { 
-            IsInsert : true
+        Data: {
+            IsInsert: true
         }
     }
     this.GetGlobal = function () {
@@ -41,11 +41,11 @@ GPRO.Customer = function () {
         RegisterEvent();
         InitList();
         ReloadList();
-        InitPopup(); 
+        InitPopup();
     }
-     
+
     var RegisterEvent = function () {
-        $("#proIsPrivate").kendoMobileSwitch({
+        $("#cust-isPrivate").kendoMobileSwitch({
             onLabel: "Tất cả",
             offLabel: "Nội bộ"
         });
@@ -58,36 +58,30 @@ GPRO.Customer = function () {
             $('div.divParent').attr('currentPoppup', Global.Element.Search.toUpperCase());
         });
 
-        $('[pcancel]').click(function () {
+        $('[cust-cancel]').click(function () {
             setToDefault();
         });
 
-        $('[pclose]').click(function () {
-            $('#pkeyword').val('');
+        $('[cust-close]').click(function () {
             $('div.divParent').attr('currentPoppup', '');
         });
 
-        $('[psearch]').click(function () { 
-                ReloadList();
-                $('#pkeyword').val('');
-                $('[pclose]').click();
-        });         
     }
 
     setToDefault = () => {
-        var switchInstance = $("#proIsPrivate").data("kendoMobileSwitch");
+        var switchInstance = $("#cust-isPrivate").data("kendoMobileSwitch");
         switchInstance.check(true);
-        $('#pid').val(0);
-        $('#pname').val('');
-        $('#pdes').val(''); 
+        $('#cust-id').val(0);
+        $('#cust-name').val('');
+        $('#cust-des').val('');
     }
-     
-    function Save() { 
+
+    function Save() {
         var obj = {
-            Id: $('#pid').val(),
-            Name: $('#pname').val(), 
-            Description: $('#pdes').val(), 
-            IsPrivate: $("#proIsPrivate").data("kendoMobileSwitch").check()
+            Id: $('#cust-id').val(),
+            Name: $('#cust-name').val(),
+            Description: $('#cust-des').val(),
+            IsPrivate: $("#cust-isPrivate").data("kendoMobileSwitch").check()
         };
         $.ajax({
             url: Global.UrlAction.Save,
@@ -102,10 +96,10 @@ GPRO.Customer = function () {
                         ReloadList();
                         setToDefault();
 
-                        if (!Global.Data.IsInsert) {
-                            $("#" + Global.Element.Popup + ' button[pcancel]').click();
+                       // if (!Global.Data.IsInsert) {
+                            $("#" + Global.Element.Popup + ' button[cust-cancel]').click();
                             $('div.divParent').attr('currentPoppup', '');
-                        }
+                       // }
                         Global.Data.IsInsert = true;
                     }
                     else
@@ -118,23 +112,32 @@ GPRO.Customer = function () {
         });
     }
 
-    function InitList () {
+    function InitList() {
         $('#' + Global.Element.Jtable).jtable({
             title: 'Quản lý khách hàng',
             paging: true,
             pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
-            selectShow: true,
+            selectShow: false,
             actions: {
                 listAction: Global.UrlAction.Gets,
-                createAction: Global.Element.Popup, 
-                searchAction: Global.Element.Search,
+                createAction: Global.Element.Popup,
+                // searchAction: Global.Element.Search,
             },
             messages: {
                 addNewRecord: 'Thêm mới',
-                searchRecord: 'Tìm kiếm',
-                selectShow: 'Ẩn hiện cột'
+                // searchRecord: 'Tìm kiếm',
+                //selectShow: 'Ẩn hiện cột'
+            },
+            searchInput: {
+                id: 'cust-keyword',
+                className: 'search-input',
+                placeHolder: 'Nhập từ khóa ...',
+                keyup: function (evt) {
+                    if (evt.keyCode == 13)
+                        ReloadList();
+                }
             },
             fields: {
                 Id: {
@@ -146,8 +149,8 @@ GPRO.Customer = function () {
                 Name: {
                     visibility: 'fixed',
                     title: "Tên khách hàng",
-                    width: "20%", 
-                }, 
+                    width: "20%",
+                },
                 Description: {
                     title: "Mô Tả ",
                     width: "20%",
@@ -155,44 +158,40 @@ GPRO.Customer = function () {
                 },
                 edit: {
                     title: '',
-                    width: '1%',
+                    width: '5%',
                     sorting: false,
                     display: function (data) {
-                        var text = $('<i data-toggle="modal" data-target="#' + Global.Element.Popup + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
-                        text.click(function () {  
-                            var switchInstance = $("#proIsPrivate").data("kendoMobileSwitch");
+                        var div = $('<div class="table-action"></div>')
+
+                        var btnEdit = $('<i data-toggle="modal" data-target="#' + Global.Element.Popup + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
+                        btnEdit.click(function () {
+                            var switchInstance = $("#cust-isPrivate").data("kendoMobileSwitch");
                             switchInstance.check(data.record.IsPrivate);
-                            $('#pid').val(data.record.Id);
-                            $('#pname').val(data.record.Name);
-                            $('#pdes').val(data.record.Description); 
+                            $('#cust-id').val(data.record.Id);
+                            $('#cust-name').val(data.record.Name);
+                            $('#cust-des').val(data.record.Description);
                             Global.Data.IsInsert = false;
                         });
-                        return text;
-                    }
-                },
-                Delete: {
-                    title: '',
-                    width: "3%",
-                    sorting: false,
-                    display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
-                        text.click(function () {
+                        div.append(btnEdit);
+
+                        var btnDelete = $('<i title="Xóa" class="fa fa-trash-o"></i>');
+                        btnDelete.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 Delete(data.record.Id);
                             }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
                         });
-                        return text;
-
+                        div.append(btnDelete);
+                        return div;
                     }
-                }
+                } 
             }
         });
     }
 
-    function ReloadList () {
-        var keySearch = $('#pkeyword').val(); 
-        $('#' + Global.Element.Jtable).jtable('load', { 'keyword': keySearch  });
-      }
+    function ReloadList() {
+        var keySearch = $('#cust-keyword').val();
+        $('#' + Global.Element.Jtable).jtable('load', { 'keyword': keySearch });
+    }
 
     function Delete(Id) {
         $.ajax({
@@ -223,28 +222,27 @@ GPRO.Customer = function () {
             show: false
         });
 
-        $("#" + Global.Element.Popup + ' button[psave]').click(function () {
+        $("#" + Global.Element.Popup + ' button[cust-save]').click(function () {
             if (CheckValidate()) {
                 Save();
             }
         });
-        $("#" + Global.Element.Popup + ' button[pcancel]').click(function () {
+        $("#" + Global.Element.Popup + ' button[cust-cancel]').click(function () {
             $("#" + Global.Element.Popup).modal("hide");
         });
     }
-     
+
     function CheckValidate() {
-        if ($('#pname').val().trim() == "") {
+        if ($('#cust-name').val().trim() == "") {
             GlobalCommon.ShowMessageDialog("Vui lòng nhập Tên khách hàng.", function () { }, "Lỗi Nhập liệu");
             return false;
         }
         return true;
     }
-     
+
 }
 
 $(document).ready(function () {
     var Customer = new GPRO.Customer();
-    Customer.Init(); 
+    Customer.Init();
 });
- 

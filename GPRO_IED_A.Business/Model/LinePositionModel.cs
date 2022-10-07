@@ -13,8 +13,7 @@ namespace GPRO_IED_A.Business.Model
         public Nullable<int> EmployeeId { get; set; }
         public bool IsHasBTP { get; set; }
         public bool IsHasExitLine { get; set; }
-        public List<LinePositionDetailModel> Details { get; set; }
-        public string EmployeeLastName { get; set; }
+        public List<LinePositionDetailModel> Details { get; set; } 
         public string EmployeeName { get; set; }
         public int LineId { get; set; }
         public string LineName { get; set; }

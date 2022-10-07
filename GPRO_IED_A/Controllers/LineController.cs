@@ -41,13 +41,13 @@ namespace GPRO_IED_A.Controllers
             return Json(JsonDataResult);
         }
 
-        public JsonResult Gets(string keyword, int searchBy, int jtStartIndex = 0, int jtPageSize=1000, string jtSorting="")
+        public JsonResult Gets(string keyword,  int jtStartIndex = 0, int jtPageSize=1000, string jtSorting="")
         {
             try
             {
                 if (isAuthenticate)
                 {
-                    var listLine = BLLLine.Instance.Gets(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting, UserContext.CompanyId, UserContext.ChildCompanyId);
+                    var listLine = BLLLine.Instance.Gets(keyword,   jtStartIndex, jtPageSize, jtSorting, UserContext.CompanyId, UserContext.ChildCompanyId);
                     JsonDataResult.Records = listLine;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = listLine.TotalItemCount;
@@ -60,7 +60,6 @@ namespace GPRO_IED_A.Controllers
             }
             return Json(JsonDataResult);
         }
-
 
         public JsonResult Save(LineModel modelLine)
         {
@@ -88,7 +87,6 @@ namespace GPRO_IED_A.Controllers
             }
             return Json(JsonDataResult);
         }
-
 
         [HttpPost]
         public JsonResult GetSelect(int workshopId)

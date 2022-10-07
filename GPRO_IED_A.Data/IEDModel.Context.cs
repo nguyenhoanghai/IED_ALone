@@ -26,7 +26,6 @@ namespace GPRO_IED_A.Data
         }
     
         public DbSet<SCategory> SCategories { get; set; }
-        public DbSet<SCompany> SCompanies { get; set; }
         public DbSet<SCompanyModule> SCompanyModules { get; set; }
         public DbSet<SConfig> SConfigs { get; set; }
         public DbSet<SFeature> SFeatures { get; set; }
@@ -36,7 +35,6 @@ namespace GPRO_IED_A.Data
         public DbSet<SPermission> SPermissions { get; set; }
         public DbSet<SRoLe> SRoLes { get; set; }
         public DbSet<SRolePermission> SRolePermissions { get; set; }
-        public DbSet<SUser> SUsers { get; set; }
         public DbSet<SUserRole> SUserRoles { get; set; }
         public DbSet<SWorkerLevel> SWorkerLevels { get; set; }
         public DbSet<T_ApplyPressureLibrary> T_ApplyPressureLibrary { get; set; }
@@ -50,17 +48,13 @@ namespace GPRO_IED_A.Data
         public DbSet<T_Employee_CompanySkill> T_Employee_CompanySkill { get; set; }
         public DbSet<T_Employee_PhaseGroupSkill> T_Employee_PhaseGroupSkill { get; set; }
         public DbSet<T_EmployeePhase> T_EmployeePhase { get; set; }
-        public DbSet<T_Equipment> T_Equipment { get; set; }
         public DbSet<T_EquipmentAttribute> T_EquipmentAttribute { get; set; }
-        public DbSet<T_EquipmentGroup> T_EquipmentGroup { get; set; }
         public DbSet<T_EquipmentType> T_EquipmentType { get; set; }
         public DbSet<T_EquipmentTypeAttribute> T_EquipmentTypeAttribute { get; set; }
         public DbSet<T_EquipType_Default> T_EquipType_Default { get; set; }
         public DbSet<T_EquipTypeAttr_Default> T_EquipTypeAttr_Default { get; set; }
         public DbSet<T_File> T_File { get; set; }
         public DbSet<T_IEDConfig> T_IEDConfig { get; set; }
-        public DbSet<T_LabourDivision> T_LabourDivision { get; set; }
-        public DbSet<T_LinePosition> T_LinePosition { get; set; }
         public DbSet<T_LinePositionDetail> T_LinePositionDetail { get; set; }
         public DbSet<T_ManipulationEquipment> T_ManipulationEquipment { get; set; }
         public DbSet<T_ManipulationFile> T_ManipulationFile { get; set; }
@@ -70,14 +64,23 @@ namespace GPRO_IED_A.Data
         public DbSet<T_PhaseGroup> T_PhaseGroup { get; set; }
         public DbSet<T_ProductGroup> T_ProductGroup { get; set; }
         public DbSet<T_StopPrecisionLibrary> T_StopPrecisionLibrary { get; set; }
-        public DbSet<T_TechProcessVersion> T_TechProcessVersion { get; set; }
         public DbSet<T_TechProcessVersionDetail> T_TechProcessVersionDetail { get; set; }
         public DbSet<T_TimePrepare> T_TimePrepare { get; set; }
         public DbSet<T_TimeTypePrepare> T_TimeTypePrepare { get; set; }
-        public DbSet<HR_Employee> HR_Employee { get; set; }
         public DbSet<T_Line> T_Line { get; set; }
         public DbSet<T_WorkShop> T_WorkShop { get; set; }
         public DbSet<T_Product> T_Product { get; set; }
         public DbSet<T_ProductFile> T_ProductFile { get; set; }
+        public DbSet<T_LinePosition> T_LinePosition { get; set; }
+        public DbSet<T_LabourDivision> T_LabourDivision { get; set; }
+        public DbSet<T_LabourDevision_Ver> T_LabourDevision_Ver { get; set; }
+        public DbSet<T_PhaseGroupDailyProduction> T_PhaseGroupDailyProduction { get; set; }
+        public DbSet<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
+        public DbSet<T_Equipment> T_Equipment { get; set; }
+        public DbSet<T_EquipmentGroup> T_EquipmentGroup { get; set; }
+        public DbSet<SCompany> SCompanies { get; set; }
+        public DbSet<T_TechProcessVersion> T_TechProcessVersion { get; set; }
+        public DbSet<HR_Employee> HR_Employee { get; set; }
+        public DbSet<SUser> SUsers { get; set; }
     }
 }

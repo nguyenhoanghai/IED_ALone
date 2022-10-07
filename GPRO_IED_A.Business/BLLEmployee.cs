@@ -119,8 +119,7 @@ namespace GPRO_IED_A.Business
                                 {
                                     employee.WorkshopId = model.WorkshopId;
                                     employee.LineId = model.LineId;
-                                    employee.FirstName = model.FirstName;
-                                    employee.LastName = model.LastName;
+                                    employee.Name = model.Name;
                                     employee.Gender = model.Gender;
                                     employee.Birthday = model.Birthday;
                                     employee.Code = model.Code;
@@ -189,11 +188,9 @@ namespace GPRO_IED_A.Business
                             Birthday = x.Birthday,
                             Id = x.Id,
                             Code = x.Code,
-                            Email = x.Email,
-                            FullName = x.FirstName.Trim() + " " + x.LastName.Trim(),
+                            Email = x.Email, 
                             Mobile = x.Mobile,
-                            FirstName = x.FirstName,
-                            LastName = x.LastName,
+                            Name = x.Name,
                             WorkshopId = x.WorkshopId ?? 0,
                             WorkshopName = x.T_WorkShop.Name,
                             LineId = x.LineId ?? 0,
@@ -219,7 +216,7 @@ namespace GPRO_IED_A.Business
                 if (!string.IsNullOrEmpty(keyWord))
                 {
                     keyWord = keyWord.Trim().ToUpper();
-                    objs = objs.Where(x => (x.FirstName.Trim().ToUpper().Contains(keyWord) || x.LastName.Trim().ToUpper().Contains(keyWord) || x.Code.Trim().ToUpper().Contains(keyWord) || x.Mobile.Trim().ToUpper().Contains(keyWord) || x.Email.Trim().ToUpper().Contains(keyWord)));
+                    objs = objs.Where(x => (x.Name.Trim().ToUpper().Contains(keyWord) || x.Code.Trim().ToUpper().Contains(keyWord) || x.Mobile.Trim().ToUpper().Contains(keyWord) || x.Email.Trim().ToUpper().Contains(keyWord)));
                 }
                 return objs;
             }
@@ -242,10 +239,40 @@ namespace GPRO_IED_A.Business
                 {
                     EmployeeId = x.Id,
                     EmployeeCode = x.Code,
-                    EmployeeName = (x.FirstName + " " + x.LastName),
-                    LastName = x.LastName
+                    EmployeeName =  x.Name  , 
                 }).ToList();
             };
+        }
+
+        public List<ModelSelectItem> GetSelectItem(int lineId)
+        {
+            try
+            {
+                using (db = new IEDEntities())
+                {
+                    var objs = new List<ModelSelectItem>();
+                    var _objs = db.HR_Employee.Where(x => !x.IsDeleted && x.LineId == lineId).Select(
+                        x => new ModelSelectItem()
+                        {
+                            Value = x.Id,
+                            Code = x.Code,
+                            Name =  x.Name  
+                        }).ToList();
+
+                    if (_objs != null && _objs.Count() > 0)
+                    {
+                        objs.Add(new ModelSelectItem() { Value = 0, Name = " - -  Chọn nhân viên  - - " });
+                        objs.AddRange(_objs);
+                    }
+                    else
+                        objs.Add(new ModelSelectItem() { Value = 0, Name = "  Không có nhân viên  " });
+                    return objs;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
     }

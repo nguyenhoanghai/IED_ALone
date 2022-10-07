@@ -173,7 +173,7 @@ namespace GPRO_IED_A.Business
             }
         }
          
-        public PagedList<EquipmentGroupModel> GetList(string keyWord, int searchBy, int startIndexRecord, int pageSize, string sorting)
+        public PagedList<EquipmentGroupModel> GetList(string keyWord,  int startIndexRecord, int pageSize, string sorting)
         {
             try
             {
@@ -182,20 +182,11 @@ namespace GPRO_IED_A.Business
                     if (string.IsNullOrEmpty(sorting))
                         sorting = "Id DESC";
 
-                    IQueryable<T_EquipmentGroup> E_Groups = null;
+                    IQueryable<T_EquipmentGroup> E_Groups = db.T_EquipmentGroup.Where(x => !x.IsDeleted) ;
                     var pageNumber = (startIndexRecord / pageSize) + 1;
-                    if (string.IsNullOrEmpty(keyWord))
-                        E_Groups = db.T_EquipmentGroup.Where(x => !x.IsDeleted);
-                    else
-                        switch (searchBy)
-                        {
-                            case 1:
-                                E_Groups = db.T_EquipmentGroup.Where(x => !x.IsDeleted && x.GroupName.Trim().ToUpper().Contains(keyWord.Trim().ToUpper()));
-                                break;
-                            case 2:
-                                E_Groups = db.T_EquipmentGroup.Where(x => !x.IsDeleted && x.GroupCode.Trim().ToUpper().Contains(keyWord.Trim().ToUpper()));
-                                break;
-                        }
+                    if (!string.IsNullOrEmpty(keyWord))
+                        E_Groups = E_Groups.Where(x=> ( x.GroupName.Trim().ToUpper().Contains(keyWord.Trim().ToUpper()) || x.GroupCode.Trim().ToUpper().Contains(keyWord.Trim().ToUpper())));
+                    
                     if (E_Groups != null && E_Groups.Count() > 0)
                     {
                         var returnList = E_Groups.Select(x => new EquipmentGroupModel()

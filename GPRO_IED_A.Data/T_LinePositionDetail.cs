@@ -14,6 +14,11 @@ namespace GPRO_IED_A.Data
     
     public partial class T_LinePositionDetail
     {
+        public T_LinePositionDetail()
+        {
+            this.T_LinePoDailyQuantities = new HashSet<T_LinePoDailyQuantities>();
+        }
+    
         public int Id { get; set; }
         public int Line_PositionId { get; set; }
         public int TechProVerDe_Id { get; set; }
@@ -30,7 +35,8 @@ namespace GPRO_IED_A.Data
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
     
-        public virtual T_LinePosition T_LinePosition { get; set; }
         public virtual T_TechProcessVersionDetail T_TechProcessVersionDetail { get; set; }
+        public virtual T_LinePosition T_LinePosition { get; set; }
+        public virtual ICollection<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
     }
 }

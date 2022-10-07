@@ -133,7 +133,7 @@ namespace GPRO_IED_A.Business
                                 result.Errors.Add(new Error() { MemberName = "UpdateWorkShop", Message = "Thông tin nhập không đúng Vui lòng kiểm tra lại!" });
                             }
                         }
-                        
+
                     }
                 }
 
@@ -208,7 +208,7 @@ namespace GPRO_IED_A.Business
 
         }
 
-        public PagedList<WorkShopModel> GetList(string keyWord, int searchBy, int startIndexRecord, int pageSize, string sorting, int companyId)
+        public PagedList<WorkShopModel> GetList(string keyWord, int startIndexRecord, int pageSize, string sorting, int companyId)
         {
             try
             {
@@ -222,22 +222,14 @@ namespace GPRO_IED_A.Business
                     if (!string.IsNullOrEmpty(keyWord))
                     {
                         keyWord = keyWord.Trim().ToUpper();
-                        switch (searchBy)
-                        {
-                            case 1:
-                                workshops = db.T_WorkShop.Where(c => !c.IsDeleted && c.CompanyId == companyId && c.Name.Trim().ToUpper().Contains(keyWord));
-                                break;
-                            case 2:
-                                workshops = db.T_WorkShop.Where(c => !c.IsDeleted && c.CompanyId == companyId && c.Code.Trim().ToUpper().Contains(keyWord));
-                                break;
-                        }
+                        workshops = db.T_WorkShop.Where(c => !c.IsDeleted && c.CompanyId == companyId && (c.Name.Trim().ToUpper().Contains(keyWord) || c.Code.Trim().ToUpper().Contains(keyWord)));
                     }
                     else
                         workshops = db.T_WorkShop.Where(c => !c.IsDeleted && c.CompanyId == companyId);
 
                     if (workshops != null && workshops.Count() > 0)
                     {
-                        var WorkShops = workshops .Select(c => new WorkShopModel()
+                        var WorkShops = workshops.Select(c => new WorkShopModel()
                         {
                             Id = c.Id,
                             Code = c.Code,

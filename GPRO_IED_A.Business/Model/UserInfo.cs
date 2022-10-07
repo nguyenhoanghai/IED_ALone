@@ -12,5 +12,6 @@ namespace GPRO_IED_A.Business.Model
         public string LogoCompany { get; set; }
         public string EmployeeName { get; set; }
         public string Email { get; set; }
+        public string Name { get; set; } 
     }
 }

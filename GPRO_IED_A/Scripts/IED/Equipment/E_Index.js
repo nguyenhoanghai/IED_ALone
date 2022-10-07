@@ -166,10 +166,10 @@ GPRO.Equipment = function () {
                     $('#loading').hide();
                     if (result.Result == "OK") {
                         ReloadList();
-                        if (!Global.Data.IsInsert) {
+                       // if (!Global.Data.IsInsert) {
                             $("#" + Global.Element.PopupEquipment + ' button[ecancel]').click();
                             $('div.divParent').attr('currentPoppup', '');
-                        }
+                       // }
                         Global.Data.IsInsert = true;
                     }
                 }, false, Global.Element.PopupEquipment, true, true, function () {
@@ -187,17 +187,26 @@ GPRO.Equipment = function () {
             pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
-            selectShow: true,
+            selectShow: false,
             actions: {
                 listAction: Global.UrlAction.GetListEquipment,
                 createAction: Global.Element.PopupEquipment,
                 createObjDefault: InitViewModel(null),
-                searchAction: Global.Element.PopupSearch,
+                // searchAction: Global.Element.PopupSearch,
             },
             messages: {
                 addNewRecord: 'Thêm mới',
-                searchRecord: 'Tìm kiếm',
-                selectShow: 'Ẩn hiện cột'
+                //searchRecord: 'Tìm kiếm',
+                //selectShow: 'Ẩn hiện cột'
+            },
+            searchInput: {
+                id: 'equip-keyword',
+                className: 'search-input',
+                placeHolder: 'Nhập từ khóa ...',
+                keyup: function (evt) {
+                    if (evt.keyCode == 13)
+                        ReloadList();
+                }
             },
             fields: {
                 Id: {
@@ -211,10 +220,10 @@ GPRO.Equipment = function () {
                     title: "Tên Thiết Bị",
                     width: "20%",
                 },
-                Code: {
-                    title: "Mã Thiết Bị",
-                    width: "5%",
-                },
+                //Code: {
+                //    title: "Mã Thiết Bị",
+                //    width: "5%",
+                //},
                 EquipmentTypeName: {
                     title: "Loại Thiết Bị",
                     width: "10%",
@@ -238,9 +247,10 @@ GPRO.Equipment = function () {
                 },
                 edit: {
                     title: '',
-                    width: '1%',
+                    width: '5%',
                     sorting: false,
                     display: function (data) {
+                        var div = $('<div class="table-action"></div>')
                         var text = $('<i data-toggle="modal" data-target="#' + Global.Element.PopupEquipment + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
                         text.click(function () {
                             Global.Data.IsInsert = false;
@@ -268,29 +278,24 @@ GPRO.Equipment = function () {
                             }
                             $('#myTable').empty().append(str);
                         });
-                        return text;
-                    }
-                },
-                Delete: {
-                    title: 'Xóa',
-                    width: "3%",
-                    sorting: false,
-                    display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
-                        text.click(function () {
+                        div.append(text)
+
+                        var _text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
+                        _text.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 Delete(data.record.Id);
                             }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
                         });
-                        return text;
+                        div.append(_text)
+                        return div;
                     }
-                }
+                } 
             }
         });
     }
 
     function ReloadList() {
-        $('#' + Global.Element.JtableEquipment).jtable('load', { 'keyword': $('#ekeyword').val(), 'searchBy': $('#esearchBy').val() });
+        $('#' + Global.Element.JtableEquipment).jtable('load', { 'keyword': $('#equip-keyword').val() });
         $('#' + Global.Element.PopupSearch).modal('hide');
     }
 

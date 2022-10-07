@@ -20,7 +20,7 @@ namespace GPRO_IED_A.Data
         }
     
         public int Id { get; set; }
-        public int LabourDivisionId { get; set; }
+        public int LabourDivisionVerId { get; set; }
         public int OrderIndex { get; set; }
         public Nullable<int> EmployeeId { get; set; }
         public bool IsHasBTP { get; set; }
@@ -33,8 +33,8 @@ namespace GPRO_IED_A.Data
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
     
-        public virtual T_LabourDivision T_LabourDivision { get; set; }
         public virtual ICollection<T_LinePositionDetail> T_LinePositionDetail { get; set; }
+        public virtual T_LabourDevision_Ver T_LabourDevision_Ver { get; set; }
         public virtual HR_Employee HR_Employee { get; set; }
     }
 }

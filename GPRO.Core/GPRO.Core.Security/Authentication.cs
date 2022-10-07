@@ -158,7 +158,7 @@ namespace GPRO.Core.Security
                 objUser.SesssionId = HttpContext.Current.Session.SessionID;
                 Authentication.UserOnline.Add(objUser);
                 HttpContext.Current.Session["SS_AUTHENTICATION"] = objUser;
-                // HttpContext.Current.Session.Timeout = 2;
+                //HttpContext.Current.Session.Timeout = 1;
                 //HttpContext.Current.Session.Timeout = 600;
             }
         }

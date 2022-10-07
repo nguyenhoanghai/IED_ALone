@@ -22,8 +22,8 @@ E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\System.Net.Http.dll
 E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\System.Net.Http.Formatting.dll
 E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\System.Web.Mvc.dll
 E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\SystemGPRO.Serial.dll
-E:\Hai_GPRO\Git IED_Alone\GPRO.Core\obj\Debug\GPRO.Core.csprojAssemblyReference.cache
 E:\Hai_GPRO\Git IED_Alone\GPRO.Core\obj\Debug\GPRO.Core.csproj.CoreCompileInputs.cache
 E:\Hai_GPRO\Git IED_Alone\GPRO.Core\obj\Debug\GPRO.Core.csproj.CopyComplete
 E:\Hai_GPRO\Git IED_Alone\GPRO.Core\obj\Debug\GPRO.Core.dll
 E:\Hai_GPRO\Git IED_Alone\GPRO.Core\obj\Debug\GPRO.Core.pdb
+E:\Hai_GPRO\Git IED_Alone\GPRO.Core\obj\Debug\GPRO.Core.csproj.AssemblyReference.cache

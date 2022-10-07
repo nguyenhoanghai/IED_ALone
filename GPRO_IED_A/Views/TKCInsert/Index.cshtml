@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewBag.Title = "Nhập Năng xuất công đoạn";
+    //Layout = null;
+}
+
+<link href="~/Scripts/IED/TKCInsert/tkc-insert.css" rel="stylesheet" />
+<link href="~/Scripts/IED/ProAna/ProAna_tkc.css" rel="stylesheet" />
+
+<div class="container">
+    <div class="main-box">
+        <div class="head">Nhập Năng xuất công đoạn</div>
+        <div class="filter">
+            <div class="form-group col-md-3">
+                <label class="control-label">Mã hàng</label>
+                <div class="select-box">
+                    <select id="tkc-insert-product"></select>
+                    <i id="re-tkc-insert-product" class="fa fa-refresh clickable red"></i>
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                <label class="control-label">Phân xưởng</label>
+                <div class="select-box">
+                    <select id="tkc-insert-workshop"></select>
+                    <i id="re-tkc-insert-workshop" class="fa fa-refresh clickable red"></i>
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                <label class="control-label">Chuyền</label>
+                <div class="select-box">
+                    <select id="tkc-insert-line"></select>
+                    <i id="re-tkc-insert-line" class="fa fa-refresh clickable red"></i>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+
+        <div>
+
+            <div class="form-group col-md-6" style="padding:10px">
+                <div class="box-title">Thông tin thiết kế chuyền</div>
+                <div style="padding:10px">
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Ngày tạo thiết kế chuyền</label>
+                        <span class="form-control" disabled id="create-date"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Tổng thời gian</label>
+                        <span class="form-control" disabled id="time-per-commo"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">NS BQ ĐẦU NGƯỜI (sp)</label>
+                        <span class="form-control" disabled id="pro-per-person"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">NS TỔ/ 1H (sp)</label>
+                        <span class="form-control" disabled id="pro-group-per-hour"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">NS TỔ/ NGÀY (<span id="time-per-day" class="blue">0</span>H) (sp)</label>
+                        <span class="form-control" disabled id="pro-group-per-day"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Nhịp Sản Xuất (s)</label>
+                        <span class="form-control" disabled id="paced-product"></span>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">Lao Động</label>
+                        <span class="form-control" disabled id="workers"></span>
+                    </div>
+                    <div class="form-group col-md-10">
+                        <label class="control-label">Ghi chú</label>
+                        <span class="form-control" disabled id="note"></span>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="form-group col-md-6" style="padding:10px">
+                <div class="box-title">Thông tin năng xuất</div>
+                <div style="padding:10px">
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Ngày sản xuất</label>
+                        <span class="form-control" disabled id="today-date"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Vị trí sản xuất</label>
+                        <div class="select-box">
+                            <select id="tkc-insert-line-position"></select>
+                            <i id="re-tkc-insert-line-position" class="fa fa-refresh clickable red"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Công đoạn</label>
+                        <select class="form-control" id="tkc-insert-line-position-phase"></select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Năng xuất trong ngày</label>
+                        <label id="total" class="form-control" type="text" disabled>0</label>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Năng xuất</label>
+                        <input id="quantities" class="form-control" type="text" value="0" />
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Hình thức</label>
+                        <select id="command-type" class="form-control">
+                            <option value="1">Tăng</option>
+                            <option value="2">Giảm</option>
+                        </select>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="form-group col-md-12 text-right action-box">
+                        <button id="btn-insert" class="btn btn-danger">Thêm năng xuất</button>
+                        <button id="btn-clear" class="btn btn-default"Làm mới</button>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="content">
+            <div id="line-box"></div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+
+
+</div>
+
+<script src="~/Scripts/IED/TKCInsert/tkc-insert.js"></script>

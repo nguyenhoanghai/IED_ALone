@@ -42,8 +42,8 @@ GPRO.EmployeeList = function () {
     this.Init = function () {
         RegisterEvent();
         InitList();
-        ReloadList(); 
-        InitPopup();  
+        ReloadList();
+        InitPopup();
 
         GetWorkshopSelect('eWorkshopId');
     }
@@ -196,12 +196,13 @@ GPRO.EmployeeList = function () {
                 },
                 edit: {
                     title: '',
-                    width: '1%',
+                    width: '5%',
                     sorting: false,
                     display: function (data) {
+                        var div = $('<div class="table-action"></div>')
                         var text = $('<i data-toggle="modal" data-target="#' + Global.Element.PopupEmployee + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
                         text.click(function () {
-                          //  BindData(data.record);
+                            //  BindData(data.record);
                             $('#eId').val(data.record.Id);
                             $('#ecode').val(data.record.Code);
                             $('#efirst').val(data.record.FirstName);
@@ -218,23 +219,18 @@ GPRO.EmployeeList = function () {
                             datepicker.trigger("change");
                             Global.Data.IsInsert = false;
                         });
-                        return text;
-                    }
-                },
-                Delete: {
-                    title: '',
-                    width: "3%",
-                    sorting: false,
-                    display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
-                        text.click(function () {
+                        div.append(text)
+
+                        var _text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
+                        _text.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 Delete(data.record.Id);
                             }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
                         });
-                        return text;
+                        div.append(_text);
+                        return div;
                     }
-                }
+                } 
             }
         });
     }
@@ -334,7 +330,7 @@ GPRO.EmployeeList = function () {
                 GlobalCommon.CallbackProcess(result, function () {
                     if (result.Result == "OK") {
                         ReloadList();
-                        if (!Global.Data.IsInsert)
+                       // if (!Global.Data.IsInsert)
                             $("#" + Global.Element.PopupEmployee + ' button[ecancel]').click();
                         Global.Data.IsInsert = true;
                     }

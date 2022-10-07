@@ -25,5 +25,6 @@
         public double TimePrepare { get; set; }
         public int Index { get; set; }
         public string Node { get; set; }
+        public int ParentId { get; set; }
     }
 }

@@ -14,6 +14,11 @@ namespace GPRO_IED_A.Data
     
     public partial class SLevelCompany
     {
+        public SLevelCompany()
+        {
+            this.SCompanies = new HashSet<SCompany>();
+        }
+    
         public int Id { get; set; }
         public string LevelName { get; set; }
         public int OrderIndex { get; set; }
@@ -25,5 +30,7 @@ namespace GPRO_IED_A.Data
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
+    
+        public virtual ICollection<SCompany> SCompanies { get; set; }
     }
 }

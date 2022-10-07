@@ -22,7 +22,6 @@ namespace GPRO_IED_A.Data
         }
     
         public int Id { get; set; }
-        public string Code { get; set; }
         public string Name { get; set; }
         public double Expend { get; set; }
         public string Description { get; set; }
@@ -39,9 +38,9 @@ namespace GPRO_IED_A.Data
         public Nullable<int> ObjectType { get; set; }
     
         public virtual ICollection<T_CA_Phase> T_CA_Phase { get; set; }
-        public virtual T_EquipmentGroup T_EquipmentGroup { get; set; }
         public virtual T_EquipmentType T_EquipmentType { get; set; }
         public virtual ICollection<T_EquipmentAttribute> T_EquipmentAttribute { get; set; }
         public virtual ICollection<T_ManipulationEquipment> T_ManipulationEquipment { get; set; }
+        public virtual T_EquipmentGroup T_EquipmentGroup { get; set; }
     }
 }

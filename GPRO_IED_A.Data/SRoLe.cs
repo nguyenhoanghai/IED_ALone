@@ -33,8 +33,8 @@ namespace GPRO_IED_A.Data
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
     
-        public virtual SCompany SCompany { get; set; }
         public virtual ICollection<SRolePermission> SRolePermissions { get; set; }
         public virtual ICollection<SUserRole> SUserRoles { get; set; }
+        public virtual SCompany SCompany { get; set; }
     }
 }

@@ -64,7 +64,8 @@ GPRO.PhanTich = function () {
             timeprepare_Popup: 'timeprepare-Popup',
             timeprepare_Popup_Search: 'timePrepare_PopupSearch',
 
-            JtableTech_Cycle: 'Jtable-TechCycle'
+            JtableTech_Cycle: 'Jtable-TechCycle',
+            popupExportQTCN: 'popup-export-qtcn'
         },
         Data: {
             TreeExpand: [],
@@ -113,7 +114,8 @@ GPRO.PhanTich = function () {
             TechCycle_Arr: [],
             TimeProductPerCommodity: 0,
             TechProcessVersion: {},
-            useTKC:true
+            useTKC: true,
+            techExportUrl: ''
         }
     }
     this.GetGlobal = function () {
@@ -154,6 +156,7 @@ GPRO.PhanTich = function () {
         //Global.Data.PhaseManiVerDetailArray.length = 0;
 
         InitListTech_Cycle();
+        InitPopupExportQTCN();
     }
 
 
@@ -485,6 +488,12 @@ GPRO.PhanTich = function () {
         /*************************************************** PHASE ****************************************************/
         $('#' + Global.Element.CreatePhasePopup).on('shown.bs.modal', function () {
             $('div.divParent').attr('currentPoppup', Global.Element.CreatePhasePopup.toUpperCase());
+            if (Global.Data.isInsertPhase) {
+                $('#phase-code').html(((Global.Data.PhaseAutoCode == null || Global.Data.PhaseAutoCode == '' ? '' : (Global.Data.PhaseAutoCode + '-')) + (Global.Data.phaseLastIndex + 1)));
+                $('#phase-index').val((Global.Data.phaseLastIndex + 1));
+                $('[percentequipment],[percentdb],[percentnpl').val(0);
+                $('[percentmanipulation]').val($('#config').attr('maniexpenddefault'));
+            }
         });
 
         $('#hid_video').change(function () { SavePhase(); });
@@ -1187,7 +1196,7 @@ GPRO.PhanTich = function () {
                     width: "3%",
                     sorting: false,
                     display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
+                        var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
                         text.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 DeletePhase(data.record.Id);
@@ -1553,7 +1562,7 @@ GPRO.PhanTich = function () {
                     width: "3%",
                     sorting: false,
                     display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
+                        var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
                         text.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 DeleteTimePrepare(data.record.TimePrepareId);
@@ -1880,7 +1889,7 @@ GPRO.PhanTich = function () {
                                 }
                             }
                         });
-                        txt.click(function () { txt.select(); })
+                         //txt.click(function () { txt.select(); })
                         return txt;
                     }
                 },
@@ -1987,7 +1996,7 @@ GPRO.PhanTich = function () {
                                 txt.change();
                             }
                         });
-                        txt.click(function () { txt.select(); })
+                        //txt.click(function () { txt.select(); })
                         return txt;
                     }
                 },
@@ -2005,7 +2014,7 @@ GPRO.PhanTich = function () {
                                 txt.change();
                             }
                         });
-                       // txt.click(function () { txt.select(); })
+                         txt.click(function () { txt.select(); })
                         return txt;
                     }
                 },
@@ -2021,7 +2030,7 @@ GPRO.PhanTich = function () {
                             ReloadListMani_Arr();
                             UpdateIntWaste();
                         });
-                        txt.click(function () { txt.select(); })
+                        //txt.click(function () { txt.select(); })
                         return txt;
                     }
                 },
@@ -2054,7 +2063,7 @@ GPRO.PhanTich = function () {
                     width: "3%",
                     sorting: false,
                     display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
+                        var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
                         text.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 var oldIndex = data.record.OrderIndex - 1;
@@ -2558,8 +2567,10 @@ GPRO.PhanTich = function () {
                 GlobalCommon.CallbackProcess(result, function () {
                     if (result.Result != "ERROR") {
                         $('#techId').val(result.Result)
-                        if (Global.Data.AfterSave)
-                            $('[techexport]').click();
+                        if (Global.Data.AfterSave) {
+                            window.location.href = Global.Data.techExportUrl;
+                            Global.Data.AfterSave = false;
+                        }
                         else
                             GlobalCommon.ShowMessageDialog('Lưu thành công.', function () { }, "Thông báo");
                     }
@@ -2691,15 +2702,15 @@ GPRO.PhanTich = function () {
         });
 
         $('[techexport]').click(function () {
-            if (Global.Data.AfterSave) {
-                window.location.href = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 3;
-                Global.Data.AfterSave = false;
-            }
-            else {
-                Global.Data.AfterSave = true;
-                $('[techsave]').click();
-            }
-
+            //if (Global.Data.AfterSave) {
+            //    window.location.href = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 3;
+            //    Global.Data.AfterSave = false;
+            //}
+            //else {
+            //    Global.Data.AfterSave = true;
+            //    $('[techsave]').click();
+            //}
+            $('#' + Global.Element.popupExportQTCN).show();
         });
 
         $('.tech-info-box-but').click(function () {
@@ -3054,6 +3065,72 @@ GPRO.PhanTich = function () {
         if (charCode == 13) {
             LoadChooseManipulationPopup();
         }
+    }
+
+
+    function InitPopupExportQTCN() {
+        $("#" + Global.Element.popupExportQTCN).modal({
+            keyboard: false,
+            show: false
+        });
+
+        $("#" + Global.Element.popupExportQTCN + ' button[close]').click(function () {
+            $("#" + Global.Element.popupExportQTCN).modal("hide");
+        });
+
+        $('#' + Global.Element.popupExportQTCN).on('shown.bs.modal', function () {
+            //    $('#' + Global.Element.PopupChooseEquipment).css('z-index', 0);
+            $('div.divParent').attr('currentPoppup', Global.Element.popupExportQTCN.toUpperCase());
+        });
+
+        $('[texch-export1]').click(function () {
+            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 1;
+            if (Global.Data.AfterSave) {
+                window.location.href = Global.Data.techExportUrl;
+                Global.Data.AfterSave = false;
+            }
+            else {
+                Global.Data.AfterSave = true;
+
+                $('[techsave]').click();
+            }
+        });
+        $('[texch-export2]').click(function () {
+            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 2;
+            if (Global.Data.AfterSave) {
+                window.location.href = Global.Data.techExportUrl;
+                Global.Data.AfterSave = false;
+            }
+            else {
+                Global.Data.AfterSave = true;
+
+                $('[techsave]').click();
+            }
+        });
+        $('[texch-export3]').click(function () {
+            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 3;
+            if (Global.Data.AfterSave) {
+                window.location.href = Global.Data.techExportUrl;
+                Global.Data.AfterSave = false;
+            }
+            else {
+                Global.Data.AfterSave = true;
+
+                $('[techsave]').click();
+            }
+        });
+        $('[texch-export4]').click(function () {
+            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 4;
+            if (Global.Data.AfterSave) {
+                window.location.href = Global.Data.techExportUrl;
+                Global.Data.AfterSave = false;
+            }
+            else {
+                Global.Data.AfterSave = true;
+
+                $('[techsave]').click();
+            }
+        });
     }
 
 }

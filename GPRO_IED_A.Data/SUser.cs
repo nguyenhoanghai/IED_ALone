@@ -17,8 +17,10 @@ namespace GPRO_IED_A.Data
         public SUser()
         {
             this.SUserRoles = new HashSet<SUserRole>();
+            this.T_LabourDevision_Ver = new HashSet<T_LabourDevision_Ver>();
             this.T_LabourDivision = new HashSet<T_LabourDivision>();
             this.T_LabourDivision1 = new HashSet<T_LabourDivision>();
+            this.T_PhaseGroupDailyProduction = new HashSet<T_PhaseGroupDailyProduction>();
         }
     
         public int Id { get; set; }
@@ -33,8 +35,7 @@ namespace GPRO_IED_A.Data
         public string Email { get; set; }
         public string ImagePath { get; set; }
         public Nullable<System.DateTime> LockedTime { get; set; }
-        public string LastName { get; set; }
-        public string FisrtName { get; set; }
+        public string Name { get; set; }
         public string WorkshopIds { get; set; }
         public bool IsDeleted { get; set; }
         public int CreatedUser { get; set; }
@@ -46,7 +47,9 @@ namespace GPRO_IED_A.Data
     
         public virtual SCompany SCompany { get; set; }
         public virtual ICollection<SUserRole> SUserRoles { get; set; }
+        public virtual ICollection<T_LabourDevision_Ver> T_LabourDevision_Ver { get; set; }
         public virtual ICollection<T_LabourDivision> T_LabourDivision { get; set; }
         public virtual ICollection<T_LabourDivision> T_LabourDivision1 { get; set; }
+        public virtual ICollection<T_PhaseGroupDailyProduction> T_PhaseGroupDailyProduction { get; set; }
     }
 }

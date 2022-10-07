@@ -59,6 +59,8 @@
     <Compile Include="BLLCommodityAnalysis.cs" />
     <Compile Include="BLLCommo_Ana_Phase.cs" />
     <Compile Include="BLLConfig.cs" />
+    <Compile Include="BLLCompany.cs" />
+    <Compile Include="BLLLevelCompany.cs" />
     <Compile Include="BLLEmployee.cs" />
     <Compile Include="BLLEquipmentTypeAttribute.cs" />
     <Compile Include="BLLEquipmentType.cs" />
@@ -67,6 +69,9 @@
     <Compile Include="BLLEquipment.cs" />
     <Compile Include="BLLIEDConfig.cs" />
     <Compile Include="BLLLabourDivision.cs" />
+    <Compile Include="BLLPhaseGroupDailyProduction.cs" />
+    <Compile Include="BLLLinePosition.cs" />
+    <Compile Include="BLLLinePoDailyQuantities.cs" />
     <Compile Include="BLLManipulationLibrary.cs" />
     <Compile Include="BLLManipulationTypeLibrary.cs" />
     <Compile Include="BLLMenu.cs" />
@@ -96,6 +101,7 @@
     <Compile Include="Enum\eMenuCategoryType.cs" />
     <Compile Include="Enum\eObjectType.cs" />
     <Compile Include="Enum\ePermissionType.cs" />
+    <Compile Include="Enum\eCommandType.cs" />
     <Compile Include="Enum\eSendType.cs" />
     <Compile Include="Enum\eString.cs" />
     <Compile Include="Enum\eSystemName.cs" />
@@ -103,8 +109,13 @@
     <Compile Include="Enum\eVersionObjectType.cs" />
     <Compile Include="Model\ApplyPressureLibraryModel.cs" />
     <Compile Include="Model\CategoryModel.cs" />
+    <Compile Include="Model\CompanyModel.cs" />
     <Compile Include="Model\CustomerModel.cs" />
+    <Compile Include="Model\EmployeeProductionModel.cs" />
+    <Compile Include="Model\ExportPhaseGroupModel.cs" />
     <Compile Include="Model\FileUploadModel.cs" />
+    <Compile Include="Model\LevelCompanyModel.cs" />
+    <Compile Include="Model\LinePositionDailyModel.cs" />
     <Compile Include="Model\ManipulationEquipmentModel.cs" />
     <Compile Include="Model\ManipulationLibraryModel.cs" />
     <Compile Include="Model\ManipulationLibrarySmallModel.cs" />
@@ -143,11 +154,13 @@
     <Compile Include="Model\ModelSelectItem.cs" />
     <Compile Include="Model\Module.cs" />
     <Compile Include="Model\PagedListModel.cs" />
+    <Compile Include="Model\PhaseGroupDailyProductionModel.cs" />
     <Compile Include="Model\PhaseGroupModel.cs" />
     <Compile Include="Model\PhaseLibModel.cs" />
     <Compile Include="Model\ProductGroupModel.cs" />
     <Compile Include="Model\ProductModel.cs" />
     <Compile Include="Model\ResponseBase.cs" />
+    <Compile Include="Model\SampleProAna.cs" />
     <Compile Include="Model\TechProcessVerDetailGroupModel.cs" />
     <Compile Include="Model\TechProcessVerDetailModel.cs" />
     <Compile Include="Model\TechProcessVersionModel.cs" />

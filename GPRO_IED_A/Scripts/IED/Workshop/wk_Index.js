@@ -104,7 +104,7 @@ GPRO.WorkShop = function () {
                     if (result.Result == "OK") {
                         BindData(null);
                         ReloadListWorkShop();
-                        if (!Global.Data.isInsert)
+                       // if (!Global.Data.isInsert)
                             $("#" + Global.Element.PopupWorkShop + ' button[wkcancel]').click();
                         Global.Data.isInsert = true;
                     }
@@ -123,17 +123,26 @@ GPRO.WorkShop = function () {
             pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
-            selectShow: true,
+            selectShow: false,
             actions: {
                 listAction: Global.UrlAction.GetListWorkShop,
                 createAction: Global.Element.PopupWorkShop,
                 createObjDefault: InitViewModel(null),
-                searchAction: Global.Element.PopupSearch,
+                //searchAction: Global.Element.PopupSearch,
             },
             messages: {
                 addNewRecord: 'Thêm mới',
-                searchRecord: 'Tìm kiếm',
-                selectShow: 'Ẩn hiện cột'
+               // searchRecord: 'Tìm kiếm',
+               // selectShow: 'Ẩn hiện cột'
+            },
+            searchInput: {
+                id: 'wkkeyword',
+                className: 'search-input',
+                placeHolder: 'Nhập từ khóa ...',
+                keyup: function (evt) {
+                    if (evt.keyCode == 13)
+                        ReloadListWorkShop();
+                }
             },
             fields: {
                 Id: {
@@ -158,38 +167,33 @@ GPRO.WorkShop = function () {
                 },
                 edit: {
                     title: '',
-                    width: '1%',
+                    width: '5%',
                     sorting: false,
                     display: function (data) {
+                        var div = $('<div class="table-action"></div>')
                         var text = $('<i data-toggle="modal" data-target="#' + Global.Element.PopupWorkShop + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
                         text.click(function () {
                             BindData(data.record);
                             Global.Data.isInsert = false;
                         });
-                        return text;
-                    }
-                },
-                Delete: {
-                    title: 'Xóa',
-                    width: "3%",
-                    sorting: false,
-                    display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
-                        text.click(function () {
+                        div.append(text);
+
+                        var btnDelete = $('<i title="Xóa" class="fa fa-trash-o"></i>');
+                        btnDelete.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 Delete(data.record.Id);
                             }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
                         });
-                        return text;
-
+                        div.append(btnDelete)
+                        return div;
                     }
-                }
+                } 
             }
         });
     }
 
     function ReloadListWorkShop() {
-        $('#' + Global.Element.JtableWorkShop).jtable('load', { 'keyword': $('#wktxtSearch').val(), 'searchBy': $('#wksearchBy').val() });
+        $('#' + Global.Element.JtableWorkShop).jtable('load', { 'keyword': $('#wkkeyword').val()  });
     }
 
     function Delete(Id) {

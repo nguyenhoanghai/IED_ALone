@@ -16,11 +16,11 @@ namespace GPRO_IED_A.Data
     {
         public T_EquipmentType()
         {
-            this.T_Equipment = new HashSet<T_Equipment>();
             this.T_EquipmentAttribute = new HashSet<T_EquipmentAttribute>();
             this.T_EquipmentTypeAttribute = new HashSet<T_EquipmentTypeAttribute>();
             this.T_ManipulationLibrary = new HashSet<T_ManipulationLibrary>();
             this.T_ManipulationLibrary1 = new HashSet<T_ManipulationLibrary>();
+            this.T_Equipment = new HashSet<T_Equipment>();
         }
     
         public int Id { get; set; }
@@ -37,11 +37,11 @@ namespace GPRO_IED_A.Data
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
     
-        public virtual ICollection<T_Equipment> T_Equipment { get; set; }
         public virtual ICollection<T_EquipmentAttribute> T_EquipmentAttribute { get; set; }
         public virtual T_EquipType_Default T_EquipType_Default { get; set; }
         public virtual ICollection<T_EquipmentTypeAttribute> T_EquipmentTypeAttribute { get; set; }
         public virtual ICollection<T_ManipulationLibrary> T_ManipulationLibrary { get; set; }
         public virtual ICollection<T_ManipulationLibrary> T_ManipulationLibrary1 { get; set; }
+        public virtual ICollection<T_Equipment> T_Equipment { get; set; }
     }
 }

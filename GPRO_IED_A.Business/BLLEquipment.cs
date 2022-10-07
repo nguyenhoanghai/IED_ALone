@@ -50,19 +50,17 @@ namespace GPRO_IED_A.Business
                     if (string.IsNullOrEmpty(sorting))
                         sorting = "CurrentDate DESC";
 
-                    IQueryable<T_Equipment> equips = null;
+                    IQueryable<T_Equipment> equips =  db.T_Equipment.Where(c => !c.IsDeleted) ;
                     if (!string.IsNullOrEmpty(keyWord))
                     {
                         keyWord = keyWord.Trim().ToUpper();
-                        equips = db.T_Equipment.Where(x => !x.IsDeleted && (x.Name.Trim().ToUpper().Contains(keyWord) || x.Code.Trim().ToUpper().Contains(keyWord)));
-                    }
-                    else
-                        equips = db.T_Equipment.Where(c => !c.IsDeleted);
+                        equips = equips.Where(x =>  x.Name.Trim().ToUpper().Contains(keyWord)  );
+                    } 
 
                     var Equipments = equips.Select(c => new ModelEquipment()
                     {
                         Id = c.Id,
-                        Code = c.Code,
+                       // Code = c.Code,
                         Name = c.Name,
                         Expend = c.Expend,
                         EquipmentTypeId = c.EquipmentTypeId,
@@ -330,7 +328,7 @@ namespace GPRO_IED_A.Business
                             }
                             else
                             {
-                                obj.Code = model.Code;
+                               // obj.Code = model.Code;
                                 obj.Name = model.Name;
                                 obj.Expend = model.Expend;
                                 obj.EquipmentGroupId = model.EquipmentGroupId;

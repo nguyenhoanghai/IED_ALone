@@ -1,12 +1,12 @@
 ﻿.child .col-md-1,
 .child .col-md-11 {
     margin-bottom: 0 !important;
-    padding-right:0 !important
+    padding-right: 0 !important
 }
 
-.child input[type=text]{
-    width:100%;
-    text-align:center
+.child input[type=text] {
+    width: 100%;
+    text-align: center
 }
 
 .modal_full {
@@ -373,4 +373,9 @@
 
 #Create-Phase-Popup .modal-body {
     padding: 10px !important;
+}
+
+.disable-control,
+select:disabled {
+    background-color: #eee !important
 }

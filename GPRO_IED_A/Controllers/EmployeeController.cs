@@ -10,13 +10,7 @@ using System.Web.Mvc;
 namespace GPRO_IED_A.Controllers
 {
     public class EmployeeController : BaseController
-    {
-        //private readonly IBLLEmployee bllEmployee;
-
-        //public EmployeeController(IBLLEmployee _bllEmployee)
-        //{
-        //    this.bllEmployee = _bllEmployee;
-        //}
+    { 
 
         public ActionResult Index()
         {
@@ -116,5 +110,21 @@ namespace GPRO_IED_A.Controllers
             return Json(JsonDataResult);
         }
 
+        [HttpPost]
+        public JsonResult GetSelectList(int lineId)
+        {
+            try
+            {
+                JsonDataResult.Data = BLLEmployee.Instance.GetSelectItem(lineId);
+                JsonDataResult.Result = "OK";
+            }
+            catch (Exception ex)
+            {
+                //add error
+                JsonDataResult.Result = "ERROR";
+                JsonDataResult.ErrorMessages.Add(new Error() { MemberName = "Delete Area", Message = "Lỗi: " + ex.Message });
+            }
+            return Json(JsonDataResult);
+        }
     }
 }

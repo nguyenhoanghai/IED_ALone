@@ -20,8 +20,8 @@ namespace GPRO_IED_A.Data
         }
     
         public int Id { get; set; }
-        public string GroupName { get; set; }
         public string GroupCode { get; set; }
+        public string GroupName { get; set; }
         public string Icon { get; set; }
         public string Note { get; set; }
         public bool IsDeleted { get; set; }

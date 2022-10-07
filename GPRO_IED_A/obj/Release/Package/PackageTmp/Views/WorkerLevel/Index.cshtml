@@ -1,11 +1,40 @@
 ﻿
 @{
-    ViewBag.Title = "Bậc Thợ";
+    ViewBag.Title = "Bậc Thợ - cụm công đoạn";
     Layout = null;
-} 
-<script src="~/Scripts/IED/WorkerLevel/WL_Index.js"></script>
-<div id="jtableWorkersLevel" class="table-center"></div>
+}
 
+
+<div class="col-md-6" style="padding-left: 0">
+    <div class="group-box ">
+        <div class="group-box-title"> bậc thợ </div>
+        <div class="group-box-body" style=" height:300px ; overflow-y:auto">
+            <div class="select-box">
+                <div id="jtableWorkersLevel" class="table-center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-6" style="padding-right: 0">
+    <div class="group-box  ">
+        <div class="group-box-title"> thời gian chuẩn bị </div>
+        <div class="group-box-body" style="  height: 300px; overflow-y: auto">
+            <div class="select-box">
+                <div id="jtable-TimeTypePrepare" class="table-center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="group-box  ">
+    <div class="group-box-title"> cụm công đoạn </div>
+    <div class="group-box-body" style="  height: 400px; overflow-y: auto">
+        <div class="select-box">
+            <div id="Jtable-PhaseGroup" class="table-center"></div>
+        </div>
+    </div>
+</div>
+ 
 <div class="modal fade " id="popup_WorkersLevel" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modalsmall">
         <div class="modal-content">
@@ -22,7 +51,7 @@
                     </div>
                     <div class="col-md-12 form-group">
                         <label class="control-label">Hệ số <span class="required-class">*</span></label>
-                        <input class="form-control" id="wlCoefficient" data-bind="value: Coefficient" type="text" />
+                        <input class="form-control" id="wlCoefficient" data-bind="value: Coefficient" type="text" onkeypress=" return isNumberKey(event)" />
                     </div>
                     <div class="col-md-12 form-group">
                         <label class="control-label">Hình thức sử dụng</label><br />
@@ -43,34 +72,145 @@
         </div>
     </div>
 </div>
+<script src="~/Scripts/IED/WorkerLevel/WL_Index.js"></script>
 
-<div class="modal fade   " id="popup_SearchWorkersLevel" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modalsmall ">
+
+<div class="modal fade " id="popup_PhaseGroup" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  ">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" wlclose data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Tìm Kiếm</h4>
+                <button aria-hidden="true" data-dismiss="modal" pgcancel class="close" type="button">×</button>
+                <h4 class="modal-title">Thông tin cụm công đoạn</h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body form-inline">
                 <div class="container-fluid">
-                    <div class="form-group">
-                        <label class="control-label">Từ khóa</label>
-                        <input class="form-control" id="wltxtSearch" type="text" />
+                    <input id="pgid" data-bind="value: Id" type="hidden" />
+                    <div class="col-md-6 form-group">
+                        <label class="control-label">Tên cụm công đoạn<span class="required-class">*</span></label>
+                        <input class="form-control" id="pgname" data-bind="value: Name" type="text" placeholder="Nhập Tên cụm công đoạn..." />
                     </div>
-                    <div class="clearfix"></div>
+                    <div class="col-md-4 form-group hide">
+                        <label class="control-label">Mã cụm công đoạn</label><br />
+                        <input class="form-control" id="pgcode" data-bind="value: Code" type="text" placeholder="Nhập Mã cụm công đoạn..." />
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label class="control-label">Chỉ số Nhỏ nhất<span class="required-class">*</span></label>
+                        <input class="form-control" id="pgMinLevel" data-bind="value: MinLevel" type="text" style="width: 70px" onkeypress=" return isNumberKey(event)" />
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label class="control-label">Chỉ số Lớn Nhất</label><br />
+                        <input class="form-control" id="pgMaxLevel" data-bind="value: MaxLevel" type="text" style="width: 70px" onkeypress=" return isNumberKey(event)" />
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="control-label">Phân xưởng</label><br />
+                        <select id="pgworkshop" class="form-control chosen-select" multiple="multiple">
+                        </select>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="control-label">Mô Tả</label><br />
+                        <textarea id="pgdes" class="form-control" data-bind="value: Description"></textarea>
+                    </div>
+                    <div class="clearfix">  </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button wlclose aria-hidden="true" data-dismiss="modal" class="btn">
-                    <div class="button-image image-close"></div>
-                    Đóng
-                </button>
-                <button wlsearch class="btn btn-primary">
-                    <div class="button-image image-search"></div>
-                    Tìm Kiếm
-                </button>
+                <button type="button" pgcancel class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
+                <button type="button" pgsave class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
             </div>
         </div>
     </div>
 </div>
+<script src="~/Scripts/IED/PhaseGroup/PG_Index.js"></script>
+
+
+<!-- Time Type Prepare -->
+<div class="modal   fade " id="popup_TimeTypePrepare" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modalsmall">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" cancel-type class="close" type="button">×</button>
+                <h4 class="modal-title">Thông tin Loại Thời Gian</h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <input class="form-control" data-bind="value: Id" type="hidden" />
+                    <div class="form-group">
+                        <label class="control-label">Tên Loại Thời Gian<span class="required-class">*</span></label>
+                        <input class="form-control" id="name-timetype" data-bind="value: Name" type="text" placeholder="Nhập Tên Loại Thời Gian..." />
+                    </div>
+                    <div class="form-group hide">
+                        <label class="control-label">Mã Loại Thời Gian</label><br />
+                        <input class="form-control" id="timetypecode" data-bind="value: Code" type="text" placeholder="Nhập Mã Loại Thời Gian..." />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Hình thức sử dụng</label><br />
+                        <div>
+                            <input type="checkbox" id="timetypeisPublic" data-width="130" data-toggle="toggle" data-on="Khác" data-off="Nội bộ">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Mô Tả</label><br />
+                        <textarea id="timetypedes" data-bind="value: Description"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" cancel-type class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
+                <button type="button" save-type class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Time Prepare -->
+<div class="modal   fade" id="popup_TimePrepare" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modalsmall  ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" cancel-time class="close" type="button">×</button>
+                <h4 class="modal-title">Thông tin Thời Gian chuẩn bị</h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <div class="col-md-12 form-group">
+                        <input class="form-control" data-bind="value: Id" type="hidden" />
+                        <div>
+                            <label class="control-label">Tên Thời Gian <span class="required-class">*</span></label>
+                            <input class="form-control" id="name-time" data-bind="value: Name" type="text" placeholder="Nhập Tên Thời Gian..." />
+                        </div>
+                    </div>
+                    <div class="col-md-12 form-group hide">
+                        <label class="control-label">Mã Thời Gian</label><br />
+                        <input class="form-control" data-bind="value: Code" type="text" placeholder="Nhập Mã Thời Gian..." />
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <label class="control-label">Loại Thời Gian <span class="required-class">*</span></label>
+                        <div class="select-box">
+                            <select id="tptimeTypeId" class="form-control">
+                                <option value="0"> Chọn Loại Thời Gian </option>
+                            </select>
+                            <i retype class="fa fa-refresh"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <label class="control-label">Chỉ số TMU</label><br />
+                        <input class="form-control" type="text" id="tpTMU" onkeypress=" return isNumberKey(event)" />
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <label class="control-label">Mô Tả</label><br />
+                        <textarea class="form-control" data-bind="value: Description"></textarea>
+                    </div>
+                    <div class="clearfix"> </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button cancel-time aria-hidden="true" data-dismiss="modal" class="btn btn-default" <i class="fa fa-times red"></i> Đóng </button>
+                <button save-time class="btn btn-primary"> <i class="fa fa-floppy-o"></i> Lưu Lại </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/IED/TimePrepare/TP_Index.js"></script>
 

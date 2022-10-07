@@ -30,6 +30,7 @@ GPRO.LaborDivision = function () {
 
 
             Gets: '/ProAna/Gets_TKC',
+            Gets_TKC_Ver: '/ProAna/Gets_TKC_Ver',
             GetById: '/ProAna/GetTKCById',
             RefreshTKCById: '/ProAna/RefreshTKCById',
             GetTech: '/ProAna/GetTech',
@@ -146,11 +147,14 @@ GPRO.LaborDivision = function () {
 
         $('[save_tkc_po]').click(function () {
             // neu co cai cũ thi trả lai gia tri cũ truoc khi them mới
-            if (Global.Data.Position_Arr[Global.Data.Index - 1].Details.length > 0 && Global.Data.Phase_Arr.length > 1) {
-                $.each(Global.Data.Position_Arr[Global.Data.Index - 1].Details, function (i, item) {
-                    $.each(Global.Data.PhaseList, function (ii, phase) {
+            if (Global.Data.Position_Arr[Global.Data.Index - 1].Details.length > 0  ) {
+                Global.Data.Position_Arr[Global.Data.Index - 1].Details.forEach(function (item, i) {
+                    Global.Data.PhaseList.forEach(function (phase, ii) {
                         if (phase.Id == item.TechProVerDe_Id) {
-                            phase.De_Percent = item.DevisionPercent > phase.De_Percent ? item.DevisionPercent - phase.De_Percent : phase.De_Percent - item.DevisionPercent;
+                            var _per = item.DevisionPercent > phase.De_Percent ? item.DevisionPercent - phase.De_Percent : phase.De_Percent - item.DevisionPercent;
+                            phase.De_Percent = _per;
+                            console.log('per:', _per);
+                            console.log('De_Percent:', phase.De_Percent);
                             return false;
                         }
                     });
@@ -213,6 +217,7 @@ GPRO.LaborDivision = function () {
             $('#tkc_des').val(0);
             Global.Data.Position_Arr.length = 0;
             $('#line-box').empty();
+            $('#tkc_lineName').removeAttr('disabled');
 
             Global.Data.PhaseList.length = 0;
             $.each(Global.Data.BasePhases, function (i, item) {
@@ -259,6 +264,7 @@ GPRO.LaborDivision = function () {
                 $('.tech-info-box-but i').removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
             }
         });
+
         $('#tkc_lineName').change(() => {
             GetEmployeeWithSkill('tkc_Employee');
         })
@@ -281,6 +287,15 @@ GPRO.LaborDivision = function () {
             messages: {
                 selectShow: 'Ẩn hiện cột',
                 addNewRecord: 'Thêm mới',
+            },
+            datas: {
+                jtableId: Global.Element.Jtable
+            },
+            rowInserted: function (event, data) {
+                if (data.record.Id == Global.Data.ParentId) {
+                    var $a = $('#' + Global.Element.Jtable).jtable('getRowByKey', data.record.Id);
+                    $($a.children().find('.aaa')).click();
+                }
             },
             fields: {
                 Id: {
@@ -319,44 +334,105 @@ GPRO.LaborDivision = function () {
                         }
                     }
                 },
-                excel: {
+                actions: {
                     title: '',
-                    width: '1%',
+                    width: "7%",
                     sorting: false,
-                    display: function (data) {
-                        var text = $('<i   title="Xuất file Excel" class="fa fa-file-excel-o clickable blue"  ></i>');
-                        text.click(function () {
-                            window.location.href = Global.UrlAction.ExportExcel + '/' + data.record.Id;
-                        });
-                        return text;
-                    }
-                },
-                edit: {
-                    title: '',
-                    width: '1%',
-                    sorting: false,
-                    display: function (data) {
-                        var text = $('<i data-toggle="modal" data-target="#' + Global.Element.Popup + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
-                        text.click(function () {
-                            GetLaborDivisionDiagramById(data.record.Id);
-                        });
-                        return text;
-                    }
-                },
+                    columnClass: 'text-center',
+                    display: function (parent) {
+                        var div = $('<div></div>');
+                        var $img = $('<i style="margin-right:10px" class="fa fa-list-ol clickable blue aaa" title="Danh sách thiết kế chuyền "></i>');
+                        $img.click(function () {
+                            Global.Data.ParentId = parent.record.Id;
+                            $('#' + Global.Element.Jtable).jtable('openChildTable',
+                                $img.closest('tr'),
+                                {
+                                    title: `<div>Danh sách thiết kế chuyền</div>`,
+                                    paging: true,
+                                    pageSize: 20,
+                                    pageSizeChange: true,
+                                    sorting: true,
+                                    selectShow: false,
+                                    actions: {
+                                        listAction: Global.UrlAction.Gets_TKC_Ver + '?labourId=' + parent.record.Id,
+                                        //createAction: Global.Element.Popup,
+                                    },
+                                    messages: {
+                                        //addNewRecord: 'Thêm vật tư',
+                                        //selectShow: 'Ẩn hiện cột'
+                                    },
+                                    fields: {
+                                        OrderId: {
+                                            type: 'hidden',
+                                            defaultValue: parent.record.Id
+                                        },
+                                        Id: {
+                                            key: true,
+                                            create: false,
+                                            edit: false,
+                                            list: false
+                                        },
+                                        TotalPosition: {
+                                            title: 'Tổng Vị Trí',
+                                            width: '7%',
+                                            edit: false,
+                                            display: function (data) {
+                                                var txt = '<span class="red bold">' + data.record.TotalPosition + '</span> Vị Trí.';
+                                                return txt;
+                                            }
+                                        },
+                                        LastEditer: {
+                                            title: 'Người tạo',
+                                            width: '7%',
+                                            edit: false,
+                                        },
+                                        LastEditTime: {
+                                            title: 'Ngày tạo',
+                                            width: '7%',
+                                            edit: false,
+                                            display: function (data) {
+                                                if (data.record.LastEditTime != null && typeof (data.record.LastEditTime)) {
+                                                    txt = '<span class="bold red">' + ParseDateToString_cl(parseJsonDateToDate(data.record.LastEditTime)) + '</span>';
+                                                    return txt;
+                                                }
+                                            }
+                                        },
+                                        actions: {
+                                            title: '',
+                                            width: '5%',
+                                            sorting: false,
+                                            columnClass: 'text-center',
+                                            display: function (data) {
+                                                var div = $('<div></div>');
+                                                var btnEdit = $('<i data-toggle="modal" data-target="#' + Global.Element.Popup + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
+                                                btnEdit.click(function () {
+                                                    GetLaborDivisionDiagramById(data.record.Id);
+                                                });
+                                                div.append(btnEdit)
 
-                Delete: {
-                    title: '',
-                    width: "3%",
-                    sorting: false,
-                    display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
-                        text.click(function () {
+                                                var btnExcel = $('<i title="Xuất file Excel" class="fa fa-file-excel-o clickable red" style="padding-left:10px"  ></i>');
+                                                btnExcel.click(function () {
+                                                    window.location.href = Global.UrlAction.ExportExcel + '/' + data.record.Id;
+                                                });
+                                                div.append(btnExcel);
+                                                return div;
+                                            }
+                                        },
+                                    }
+                                }, function (data) { //opened handler
+                                    data.childTable.jtable('load');
+                                });
+                        });
+                        div.append($img);
+
+                        var btnDelete = $('<i title="Xóa" class="fa fa-trash red i-delete clickable"></i>');
+                        btnDelete.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
-                                Delete(data.record.Id);
+                                Delete(parent.record.Id);
                             }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
                         });
-                        return text;
-
+                        div.append(btnDelete);
+                        return div;
                     }
                 }
             }
@@ -369,7 +445,6 @@ GPRO.LaborDivision = function () {
         //      GlobalCommon.ShowMessageDialog('Quy trình công nghệ chưa được tạo. Bạn cần phải lưu quy trình công nghệ trước rồi mới có thể tạo thiết kế chuyền được !.', function () { }, "Lỗi thao tác");
 
     }
-
 
     function Delete(Id) {
         $.ajax({
@@ -392,15 +467,6 @@ GPRO.LaborDivision = function () {
             }
         });
     }
-
-
-
-
-
-
-
-
-
 
 
     function GetTech(node) {
@@ -1039,7 +1105,7 @@ GPRO.LaborDivision = function () {
                                 $.each(Global.Data.Phase_Arr, function (i, item) {
                                     if ((item.PhaseCode.trim() + ' (' + item.PhaseName + ')') == txt.val().trim()) {
                                         isExists = true;
-                                        GlobalCommon.ShowMessageDialog('Công Đoạn này đã được Phân Công. Vui lòng chọn Công Đoạn khác.', function () { }, "Thông Báo");
+                                        GlobalCommon.ShowMessageDialog(`Công Đoạn: <span class="red bold">${item.PhaseCode} (${item.PhaseName})</span> đã được Phân Công. Vui lòng chọn Công Đoạn khác.`, function () { }, "Thông Báo");
                                         txt.val(data.record.PhaseCode);
                                         return false;
                                     }
@@ -1049,7 +1115,7 @@ GPRO.LaborDivision = function () {
                                     $.each(Global.Data.PhaseList, function (i, item) {
                                         if ((item.PhaseCode.trim() + ' (' + item.PhaseName + ')') == txt.val()) {
                                             if (item.De_Percent == 100) {
-                                                GlobalCommon.ShowMessageDialog('Số Lao Động của Công Đoạn : <span class="red bold">' + item.PhaseCode + '</span> đã được Phân Công hết.Vui lòng chọn Công Đoạn khác.', function () { }, "Thông Báo");
+                                                GlobalCommon.ShowMessageDialog(`Số Lao Động của Công Đoạn : <span class="red bold">${item.PhaseCode} (${item.PhaseName})</span> đã được Phân Công hết.Vui lòng chọn Công Đoạn khác.`, function () { }, "Thông Báo");
                                                 txt.val(data.record.PhaseCode);
                                                 isOutOfRange = false;
                                             }
@@ -1199,7 +1265,7 @@ GPRO.LaborDivision = function () {
                     width: "3%",
                     sorting: false,
                     display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
+                        var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
                         text.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 $.each(Global.Data.Phase_Arr, function (i, item) {
@@ -1322,7 +1388,8 @@ GPRO.LaborDivision = function () {
     }
 
     function GetEmployeeWithSkill(controlName) {
-        if ($('#tkc_lineName').val() != null)
+        $('#' + controlName).empty();
+        if ($('#tkc_lineName').val() != null) {
             $.ajax({
                 url: '/Employee/GetEmployWithSkill',
                 type: 'post',
@@ -1341,7 +1408,7 @@ GPRO.LaborDivision = function () {
                                     Global.Data.EmployeeArr.push(item);
                                     option += '<option value="' + item.EmployeeId + '" >' + item.EmployeeName + ' (' + item.EmployeeCode + ')</option>';
                                 });
-                                $('#' + controlName).empty().append(option);
+                                $('#' + controlName).append(option);
 
                             }
                         }
@@ -1353,6 +1420,8 @@ GPRO.LaborDivision = function () {
                     });
                 }
             });
+        }
+
     }
 
     /***************************************************************************************************************** 
@@ -1397,6 +1466,7 @@ GPRO.LaborDivision = function () {
 
                     $('#tkc_id').val(result.Records.Id);
                     $('#tkc_lineName').val(result.Records.LineId);
+                    $('#tkc_lineName').prop('disabled', true);
 
                     Global.Data.TechProVerId = result.Records.TechProVer_Id;
 

@@ -7,11 +7,12 @@ namespace GPRO_IED_A.Business.Model
 {
    public class LabourDivisionModel  
     {
+        public int LabourDivisionVerId { get; set; }
         public int Id { get; set; }
         public int TechProVer_Id { get; set; }
         public int ParentId { get; set; }
         public int LineId { get; set; }
-        public int? TotalPosition { get; set; }
+        public int  TotalPosition { get; set; }
         public List<LinePositionModel> Positions { get; set; }
         public TechProcessVersionModel TechProcess { get; set; }
         public int WorkShopId { get; set; }

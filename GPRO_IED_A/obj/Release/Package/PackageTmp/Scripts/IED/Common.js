@@ -110,3 +110,42 @@ function ParseDateToString_cl(date) {
     dd += date.getMinutes() == 0 ? '00' : date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
     return dd;
 }
+
+
+readURL = (fileInput, imageTag) => {
+    if (fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#' + imageTag).attr('src', e.target.result);
+        }
+        reader.readAsDataURL(fileInput.files[0]); // convert to base64 string
+    }
+}
+
+UploadPicture = (controlId, returnId) => {
+    if (window.FormData !== undefined) {
+        var fileUpload = $('#' + controlId).get(0);
+        var files = fileUpload.files;
+        var fileData = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            fileData.append(files[i].name, files[i]);
+        }
+        $.ajax({
+            url: '/Upload/single',
+            type: "POST",
+            data: fileData,
+            contentType: false, // Not to set any content header  
+            processData: false, // Not to process data  
+            success: function (result) {
+                $('#' + returnId).attr("newUrl", result);
+                $('#' + returnId).select();
+            },
+            error: function (err) {
+                alert("Lỗi up hình : " + err.statusText);
+            }
+        });
+    }
+    else {
+        alert("FormData is not supported.");
+    }
+}

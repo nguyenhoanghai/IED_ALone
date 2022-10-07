@@ -100,7 +100,7 @@ namespace GPRO_IED_A.Business
                             obj = db.T_Line.FirstOrDefault(x => x.Id == model.Id && !x.IsDeleted);
                             if (obj != null)
                             {
-                                if (!checkPermis(obj, model.ActionUser,isOwner))
+                                if (!checkPermis(obj, model.ActionUser, isOwner))
                                 {
                                     result.IsSuccess = false;
                                     result.Errors.Add(new Error() { MemberName = "update", Message = "Bạn không phải là người tạo chuyền này nên bạn không cập nhật được thông tin cho chuyền này." });
@@ -124,7 +124,7 @@ namespace GPRO_IED_A.Business
                                 result.Errors.Add(new Error() { MemberName = "UpdateLine", Message = "Chuyền này Không tồn tại hoặc đã bị xóa. Vui lòng kiểm tra lại!" });
                             }
                         }
-                      
+
                     }
                 }
 
@@ -147,7 +147,7 @@ namespace GPRO_IED_A.Business
                     var obj = db.T_Line.Where(c => !c.IsDeleted && c.Id == id).FirstOrDefault();
                     if (obj != null)
                     {
-                        if (!checkPermis(obj, userId,isOwner))
+                        if (!checkPermis(obj, userId, isOwner))
                         {
                             responResult.IsSuccess = false;
                             responResult.Errors.Add(new Error() { MemberName = "Delete", Message = "Bạn không phải là người tạo chuyền này nên bạn không xóa được chuyền này." });
@@ -198,7 +198,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public PagedList<LineModel> Gets(string keyWord, int searchBy, int startIndexRecord, int pageSize, string sorting, int companyId, int[] relationCompanyId)
+        public PagedList<LineModel> Gets(string keyWord, int startIndexRecord, int pageSize, string sorting, int companyId, int[] relationCompanyId)
         {
             try
             {
@@ -207,23 +207,14 @@ namespace GPRO_IED_A.Business
                     if (string.IsNullOrEmpty(sorting))
                         sorting = "Id DESC";
 
-                    IQueryable<T_Line> Lines = null;
+                    IQueryable<T_Line> Lines = db.T_Line.Where(c => !c.IsDeleted && (c.T_WorkShop.CompanyId == null || c.T_WorkShop.CompanyId == companyId || relationCompanyId.Contains(c.T_WorkShop.CompanyId))); ;
                     List<LineModel> lines = null;
                     if (!string.IsNullOrEmpty(keyWord))
                     {
                         keyWord = keyWord.Trim().ToUpper();
-                        switch (searchBy)
-                        {
-                            case 1:
-                                Lines = db.T_Line.Where(c => !c.IsDeleted && (c.T_WorkShop.CompanyId == null || c.T_WorkShop.CompanyId == companyId || relationCompanyId.Contains(c.T_WorkShop.CompanyId)) && c.Name.Trim().ToUpper().Contains(keyWord));
-                                break;
-                            case 2:
-                                Lines = db.T_Line.Where(c => !c.IsDeleted && (c.T_WorkShop.CompanyId == null || c.T_WorkShop.CompanyId == companyId || relationCompanyId.Contains(c.T_WorkShop.CompanyId)) && c.Code.Trim().ToUpper().Contains(keyWord));
-                                break;
-                        }
+                        Lines = Lines.Where(c => (c.Name.Trim().ToUpper().Contains(keyWord) || c.Code.Trim().ToUpper().Contains(keyWord)));
                     }
-                    else
-                        Lines = db.T_Line.Where(c => !c.IsDeleted && (c.T_WorkShop.CompanyId == null || c.T_WorkShop.CompanyId == companyId || relationCompanyId.Contains(c.T_WorkShop.CompanyId)));
+
                     if (Lines != null && Lines.Count() > 0)
                     {
                         lines = Lines.OrderByDescending(x => x.CreatedDate).Select(c => new LineModel()

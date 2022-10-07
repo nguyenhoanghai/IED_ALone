@@ -1,0 +1,113 @@
+﻿
+@{
+    ViewBag.Title = "Cấp bậc - Công ty";
+    Layout = null;
+}
+
+<div class="col-md-4" style="padding-left:0">
+    <div class="group-box">
+        <div class="group-box-title"> Cấp bậc công ty </div>
+        <div class="group-box-body" style="max-height:450px ; overflow-y:auto">
+            <div class="select-box">
+                <div id="jtable-level-comp" class="table-center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-8" style="padding-left:0">
+    <div class="group-box">
+        <div class="group-box-title"> Công ty </div>
+        <div class="group-box-body" style="max-height:450px ; overflow-y:auto">
+            <div class="select-box">
+                <div id="jtable-company" class="table-center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="clearfix"></div>
+
+
+<div class="modal fade " id="popup-level-comp" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" level-comp-cancel class="close" type="button">×</button>
+                <h4 class="modal-title">Thông tin cấp bậc công ty</h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <input class="form-control" id="level-comp-id" type="hidden" />
+                    <div class="form-group col-md-3">
+                        <label class="control-label">STT <span class="required-class">*</span></label>
+                        <input class="form-control" id="level-comp-index" type="text" onkeypress="return isNumberKey(event);" />
+                    </div> 
+                    <div class="form-group col-md-9">
+                        <label class="control-label">Tên cấp bậc<span class="required-class">*</span></label>
+                        <input class="form-control" id="level-comp-name" type="text" placeholder="Nhập Tên mã hàng..." />
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label class="control-label">Mô tả</label>
+                        <textarea id="level-comp-des" class="form-control"></textarea>
+                    </div> 
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" level-comp-cancel class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
+                <button type="button" level-comp-save class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal   fade  " id="popup-company" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" company-cancel class="close" type="button">×</button>
+                <h4 class="modal-title">Thông tin công ty</h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid"> 
+                        <input class="form-control" id="company-id" type="hidden" />
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Cấp bậc <span class="required-class">*</span></label>
+                            <div class="select-box">
+                                <select class="form-control" id="company-level"></select>
+                                <i re-company-level class="fa fa-refresh clickable red"></i>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Tên công ty <span class="required-class">*</span></label>
+                            <input class="form-control" id="company-name" type="text" placeholder="Nhập Tên mã hàng..." />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Điện thoại </label>
+                            <input class="form-control" id="company-tele" type="tel" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Mã số thuế </label>
+                            <input class="form-control" id="company-tax" type="text" />
+                        </div>
+
+
+                        <div class="form-group col-md-12">
+                            <label class="control-label">Địa chỉ</label>
+                            <textarea id="company-add" class="form-control"></textarea>
+                        </div>
+                        
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" company-cancel class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
+                <button type="button" company-save class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/IED/level-company/level-company.js"></script>
+<script src="~/Scripts/IED/company/company.js"></script>

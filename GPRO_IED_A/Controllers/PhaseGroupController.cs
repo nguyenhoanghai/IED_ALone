@@ -17,13 +17,13 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult Gets(string keyword, int searchBy, int jtStartIndex=0, int jtPageSize=1000, string jtSorting="")
+        public JsonResult Gets(string keyword,   int jtStartIndex=0, int jtPageSize=1000, string jtSorting="")
         {
             try
             {
                 if (isAuthenticate)
                 { 
-                    var phaseGroups = BLLPhaseGroup.Instance.GetList(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting,UserContext.WorkshopIds);
+                    var phaseGroups = BLLPhaseGroup.Instance.GetList(keyword,   jtStartIndex, jtPageSize, jtSorting,UserContext.WorkshopIds);
                     JsonDataResult.Records = phaseGroups;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = phaseGroups.TotalItemCount;

@@ -17,6 +17,7 @@ namespace GPRO_IED_A.Data
         public T_PhaseGroup()
         {
             this.T_CA_Phase = new HashSet<T_CA_Phase>();
+            this.T_PhaseGroupDailyProduction = new HashSet<T_PhaseGroupDailyProduction>();
         }
     
         public int Id { get; set; }
@@ -35,5 +36,6 @@ namespace GPRO_IED_A.Data
         public Nullable<System.DateTime> UpdatedDate { get; set; }
     
         public virtual ICollection<T_CA_Phase> T_CA_Phase { get; set; }
+        public virtual ICollection<T_PhaseGroupDailyProduction> T_PhaseGroupDailyProduction { get; set; }
     }
 }

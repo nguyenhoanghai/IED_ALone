@@ -196,6 +196,8 @@
     <Compile Include="Controllers\EquipmentGroupController.cs" />
     <Compile Include="Controllers\EquipmentTypeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\CompanyController.cs" />
+    <Compile Include="Controllers\LevelCompanyController.cs" />
     <Compile Include="Controllers\LineController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\MTypeController.cs" />
@@ -208,6 +210,7 @@
     <Compile Include="Controllers\TimePrepareController.cs" />
     <Compile Include="Controllers\PhaseGroupController.cs" />
     <Compile Include="Controllers\SharedController.cs" />
+    <Compile Include="Controllers\TKCInsertController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WorkerLevelController.cs" />
@@ -1197,6 +1200,9 @@
     <None Include="Properties\PublishProfiles\ied_amw.pubxml" />
     <None Include="Properties\PublishProfiles\ied_a_new.pubxml" />
     <Content Include="ReportTemplates\QTCN_TexGiang.xlsx" />
+    <Content Include="ReportTemplates\ProductionReport_Template.xlsx" />
+    <Content Include="ReportTemplates\BangCanDoi_Template.xlsx" />
+    <Content Include="ReportTemplates\BangCanDoi_realtime_Template.xlsx" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Client\Layout\js\autocomplete\countries.js" />
     <Content Include="Scripts\Client\Layout\js\autocomplete\jquery.autocomplete.js" />
@@ -1321,6 +1327,8 @@
     <Content Include="Scripts\IED\Category\C_Index.js" />
     <Content Include="Scripts\IED\Common.js" />
     <Content Include="Scripts\IED\Common.min.js" />
+    <Content Include="Scripts\IED\company\company.js" />
+    <Content Include="Scripts\IED\level-company\level-company.js" />
     <Content Include="Scripts\IED\Customer\customer.js" />
     <Content Include="Scripts\IED\EGroup\EG_Index.js" />
     <Content Include="Scripts\IED\Employee\Employ_Index.js" />
@@ -1331,8 +1339,10 @@
     <Content Include="Scripts\IED\IED_StandCommon.js" />
     <Content Include="Scripts\IED\IED_StandCommon.min.js" />
     <Content Include="Scripts\IED\Line\Line.js" />
+    <Content Include="Scripts\IED\Master-page\head.js" />
     <Content Include="Scripts\IED\Menu\M_Index.js" />
     <Content Include="Scripts\IED\MType\MT_Index.js" />
+    <Content Include="Scripts\IED\PhanTich\phan-tich-4.js" />
     <Content Include="Scripts\IED\PhanTich\phan-tich-3.js" />
     <Content Include="Scripts\IED\PhanTich\phan-tich.js" />
     <Content Include="Scripts\IED\PhaseGroup\PG_Index.js" />
@@ -1349,6 +1359,12 @@
     <Content Include="Scripts\IED\Role\R_Create.js" />
     <Content Include="Scripts\IED\Role\R_Index.js" />
     <Content Include="Scripts\IED\TimePrepare\TP_Index.js" />
+    <Content Include="Scripts\IED\TKCInsert\employee-production-report.js" />
+    <Content Include="Scripts\IED\worker-balance\worker-balance-realtime.js" />
+    <Content Include="Scripts\IED\worker-balance\worker-balance.js" />
+    <Content Include="Scripts\IED\TKCInsert\tkc-insert-phase-group.js" />
+    <Content Include="Scripts\IED\TKCInsert\tkc-insert.css" />
+    <Content Include="Scripts\IED\TKCInsert\tkc-insert.js" />
     <Content Include="Scripts\IED\User\Info.js" />
     <Content Include="Scripts\IED\User\User.js" />
     <Content Include="Scripts\IED\User\UserInfo.js" />
@@ -1366,6 +1382,7 @@
     <Content Include="Scripts\masonry.pkgd.min.js" />
     <Content Include="Scripts\modernizr-2.5.3.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
@@ -1387,18 +1404,13 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Authenticate\Login.cshtml" />
     <Content Include="Views\Shared\HeadPartial.cshtml" />
-    <Content Include="Views\Employee\Index.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
-    <Content Include="Views\Line\Index.cshtml" />
     <Content Include="Views\WorkerLevel\Index.cshtml" />
     <Content Include="Views\WorkShop\Index.cshtml" />
-    <Content Include="Views\PhaseGroup\Index.cshtml" />
-    <Content Include="Views\TimePrepare\Index.cshtml" />
     <Content Include="Views\Equipment\Index.cshtml" />
     <Content Include="Views\EquipmentType\Index.cshtml" />
-    <Content Include="Views\EquipmentGroup\Index.cshtml" />
     <Content Include="Views\Product\Index.cshtml" />
-    <Content Include="Views\ProAna\Index.cshtml" />
+    <Content Include="Views\ProAna\_Index.cshtml" />
     <Content Include="Views\ProAna\TKC_Partial.cshtml" />
     <Content Include="Views\Shared\UnActived.cshtml" />
     <Content Include="Views\Category\Index.cshtml" />
@@ -1410,14 +1422,25 @@
     <Content Include="Views\Menu\Index.cshtml" />
     <Content Include="Views\Shared\_MaterializeLayout.cshtml" />
     <Content Include="Views\PhaseLibs\Index.cshtml" />
-    <Content Include="Views\Customer\Index.cshtml" />
-    <Content Include="Views\PhanTich\Index.cshtml" />
+    <Content Include="Views\PhanTich\_Index.cshtml" />
     <Content Include="Views\PhanTich\Index_3.cshtml" />
-    <Content Include="Views\ProductGroup\Index.cshtml" />
     <Content Include="Views\PhanTich\TKC_Partial.cshtml" />
+    <Content Include="Views\TKCInsert\Index.cshtml" />
+    <Content Include="Views\TKCInsert\InsertPhaseGroup.cshtml" />
+    <Content Include="Views\TKCInsert\ReportEmployeeProduction.cshtml" />
+    <Content Include="Views\TKCInsert\ReportWorkerBalance.cshtml" />
+    <Content Include="Views\TKCInsert\ReportWorkerBalance_Realtime.cshtml" />
+    <Content Include="Views\Shared\_EmptyLayout.cshtml" />
+    <Content Include="Views\ProAna\Index.cshtml" />
+    <Content Include="Views\LevelCompany\Index.cshtml" />
+    <Content Include="Views\PhanTich\Index.cshtml" />
+    <Content Include="Views\PhanTich\CommoAna_Partial.cshtml" />
+    <Content Include="Views\PhanTich\CreatePhase_Partial.cshtml" />
+    <Content Include="Views\PhanTich\_TKC_Partial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="SQLBackup\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

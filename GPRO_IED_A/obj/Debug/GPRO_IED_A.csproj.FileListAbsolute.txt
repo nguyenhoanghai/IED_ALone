@@ -138,9 +138,9 @@ E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\Microsoft.Owin.Security.OAuth.xml
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\Microsoft.Owin.Security.Google.xml
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\Microsoft.Owin.Security.Twitter.xml
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
-E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\obj\Debug\GPRO_IED_A.csprojAssemblyReference.cache
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\obj\Debug\GPRO_IED_A.csproj.CoreCompileInputs.cache
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\obj\Debug\GPRO_IED_A.csproj.CopyComplete
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\obj\Debug\GPRO_IED_A.dll
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\obj\Debug\GPRO_IED_A.pdb
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\GPRO_IED_A.Business.dll.config
+E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\obj\Debug\GPRO_IED_A.csproj.AssemblyReference.cache

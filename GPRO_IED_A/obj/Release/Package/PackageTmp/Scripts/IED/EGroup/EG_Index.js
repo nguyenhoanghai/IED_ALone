@@ -33,7 +33,7 @@ GPRO.EGroup = function () {
             PopupSearch: 'egpopup_Search',
 
             JtableEquipment: 'jtableEquipment',
-            PopupAddE: 'popup_E', 
+            PopupAddE: 'popup_E',
         },
         Data: {
             ModelEGroup: {},
@@ -48,8 +48,8 @@ GPRO.EGroup = function () {
 
     this.Init = function () {
         RegisterEvent();
-        InitList ();
-        ReloadList ();
+        InitList();
+        ReloadList();
         InitList_();
         InitPopup();
     }
@@ -65,13 +65,13 @@ GPRO.EGroup = function () {
         //search
         $('[egclose]').click(function () {
             $('#egkeyword').val('');
-            $('#egsearchBy').val('1'); 
+            $('#egsearchBy').val('1');
             $('div.divParent').attr('currentPoppup', '');
         });
 
         $('[egsearch]').click(function () {
             ReloadList();
-            $('[egclose]').click(); 
+            $('[egclose]').click();
         });
 
         // gom nhóm
@@ -135,24 +135,33 @@ GPRO.EGroup = function () {
         ko.applyBindings(Global.Data.ModelEGroup, document.getElementById(Global.Element.PopupEGroup));
     }
 
-    function InitList () {
+    function InitList() {
         $('#' + Global.Element.JtableEGroup).jtable({
             title: 'Danh Sách Nhóm Thiết Bị',
             paging: true,
             pageSize: 1000,
-            pageSizeChange : true,
+            pageSizeChange: true,
             sorting: true,
-            selectShow: true,
+            selectShow: false,
             actions: {
                 listAction: Global.UrlAction.GetListEGroup,
                 createAction: Global.Element.PopupEGroup,
                 createObjDefault: BindEGroupData(null),
-                searchAction: Global.Element.PopupSearch,
+                // searchAction: Global.Element.PopupSearch,
             },
             messages: {
                 addNewRecord: 'Thêm mới',
-                searchRecord: 'Tìm kiếm',
-                selectShow: 'Ẩn hiện cột'
+                //searchRecord: 'Tìm kiếm',
+                //selectShow: 'Ẩn hiện cột'
+            },
+            searchInput: {
+                id: 'equip-group-keyword',
+                className: 'search-input',
+                placeHolder: 'Nhập từ khóa ...',
+                keyup: function (evt) {
+                    if (evt.keyCode == 13)
+                        ReloadList();
+                }
             },
             fields: {
                 Id: {
@@ -168,64 +177,59 @@ GPRO.EGroup = function () {
                 GroupName: {
                     visibility: 'fixed',
                     title: "Tên Nhóm TB",
-                    width: "20%", 
+                    width: "20%",
                 },
                 Note: {
-                    title: "Mô Tả Nhóm TB",
+                    title: "Mô Tả ",
                     width: "20%",
                     sorting: false,
                 },
-                Group: {
-                    visibility: 'fixed',
-                    title: "chọn TB",
-                    width: "20%",
-                    sorting: false,
-                    display: function (data) {
-                        var text = $('<a class="clickable" data-toggle="modal" data-target="#' + Global.Element.PopupAddE + '" title="Chỉnh sửa thông tin">Chọn TB</a>');
-                        text.click(function () {
-                            ReloadList_();
-                            Global.Data.E_GroupId = data.record.Id;
-                        });
-                        return text;
-                    }
-                },
+                //Group: {
+                //    visibility: 'fixed',
+                //    title: "chọn TB",
+                //    width: "20%",
+                //    sorting: false,
+                //    display: function (data) {
+                //        var text = $('<a class="clickable" data-toggle="modal" data-target="#' + Global.Element.PopupAddE + '" title="Chỉnh sửa thông tin">Chọn TB</a>');
+                //        text.click(function () {
+                //            ReloadList_();
+                //            Global.Data.E_GroupId = data.record.Id;
+                //        });
+                //        return text;
+                //    }
+                //},
                 edit: {
                     title: '',
-                    width: '1%',
+                    width: '5%',
                     sorting: false,
                     display: function (data) {
+                        var div = $('<div class="table-action"></div>')
                         var text = $('<i data-toggle="modal" data-target="#' + Global.Element.PopupEGroup + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
                         text.click(function () {
                             BindEGroupData(data.record);
                             Global.Data.IsInsert = false;
                         });
-                        return text;
-                    }
-                },
-                Delete: {
-                    title: '',
-                    width: "3%",
-                    sorting: false,
-                    display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
-                        text.click(function () {
+                        div.append(text)
+
+                        var _text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
+                        _text.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 DeleteEGroup(data.record.Id);
                             }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
                         });
-                        return text;
-
+                        div.append(_text)
+                        return div;
                     }
-                }
+                } 
             }
         });
     }
 
-    function ReloadList () {
-        $('#' + Global.Element.JtableEGroup).jtable('load', { 'keyword': $('#egkeyword').val(), 'searchBy': $('#egsearchBy').val() });
+    function ReloadList() {
+        $('#' + Global.Element.JtableEGroup).jtable('load', { 'keyword': $('#equip-group-keyword').val() });
     }
 
-    function SaveEGroup() { 
+    function SaveEGroup() {
         $.ajax({
             url: Global.UrlAction.SaveEGroup,
             type: 'post',
@@ -236,12 +240,12 @@ GPRO.EGroup = function () {
                 $('#loading').hide();
                 GlobalCommon.CallbackProcess(result, function () {
                     if (result.Result == "OK") {
-                        ReloadList(); 
+                        ReloadList();
                         BindEGroupData(null);
-                        if (!Global.Data.IsInsert) {
+                        //if (!Global.Data.IsInsert) {
                             $("#" + Global.Element.PopupEGroup + ' button[egcancel]').click();
                             $('div.divParent').attr('currentPoppup', '');
-                        }
+                       // }
                         Global.Data.IsInsert = true;
                     }
                     else
@@ -291,8 +295,8 @@ GPRO.EGroup = function () {
             show: false
         });
         $("#" + Global.Element.PopupEGroup + ' button[egsave]').click(function () {
-             if (CheckEGroupValidate()) { 
-                    SaveEGroup(); 
+            if (CheckEGroupValidate()) {
+                SaveEGroup();
             }
         });
         $("#" + Global.Element.PopupEGroup + ' button[egcancel]').click(function () {

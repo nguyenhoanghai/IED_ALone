@@ -27,3 +27,15 @@ div.jtable-main-container > div.jtable-title div.jtable-toolbar span.jtable-tool
     font-size: 14px;
     border: 1px solid #ccc;
 }
+
+div.jtable-main-container > table.jtable > thead th { 
+    color: #fff;
+    position: sticky;
+    top: 0; 
+    z-index:1;
+    background: #00a300;
+}
+
+div.jtable-main-container table.jtable tbody tr > td .jtable-command-button{
+    z-index:0
+}

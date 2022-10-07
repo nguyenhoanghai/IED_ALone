@@ -42,8 +42,8 @@
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/Client/Layout/js/nprogress.min.js"></script>
-    <script src="~/Scripts/Client/Layout/js/custom.min.js"></script>
-
+    @*<script src="~/Scripts/Client/Layout/js/custom.min.js"></script>*@
+    <script src="~/Scripts/Client/Layout/js/custom.js"></script>
 
     <script src="~/Scripts/modernizr-2.5.3.min.js"></script>
     <script src="~/Scripts/jquery-ui-1.11.4.min.js"></script>
@@ -54,6 +54,7 @@
     <script src="~/Content/Jquery.alerts/jquery.alerts.min.js"></script>
 
 
+    <script src="~/Scripts/moment.min.js"></script>
 
     <script src="~/Content/KendoUI/kendo.all.min.js"></script>
     <script src="~/Content/KendoUI/Kendo.Cultures.vn.min.js"></script>
@@ -61,7 +62,8 @@
     @*<script src="~/Content/Jquery.alerts/common.js"></script>
         <script src="~/Content/Jquery.alerts/jquery.alerts.js">
         </script>*@
-    <script src="~/Scripts/IED/Common.min.js"></script>
+    @*<script src="~/Scripts/IED/Common.min.js"></script>*@
+    <script src="~/Scripts/IED/Common.js"></script>
     <script src="~/Scripts/IED/IED_StandCommon.js"></script>
     @*<script src="~/Scripts/IED/IED_StandCommon.min.js"></script>*@
     @*<script src="~/Scripts/IED/Home.min.js"></script>*@
@@ -74,6 +76,7 @@
                 <div class="clearfix"></div>
 
                 @RenderBody()
+                <div class="clearfix"></div>
                 <footer style="margin:auto !important">
                     <div style="text-align:center">
                         IED Stand Alone <br />Nhà Phát triển : GPRO COMPANY<br />Email : trivodai@yahoo.com - Điện Thoại : 0918 319714.
@@ -81,6 +84,7 @@
                     <div class="clearfix"></div>
                 </footer>
             </div>
+
         </div>
     </div>
     <div id="custom_notifications" class="custom-notifications dsp_none">

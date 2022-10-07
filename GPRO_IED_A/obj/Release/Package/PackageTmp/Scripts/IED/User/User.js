@@ -302,16 +302,22 @@ GPRO.User = function () {
             pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
-            selectShow: true,
+            selectShow: false,
             actions: {
                 listAction: Global.UrlAction.GetList,
-                createAction: Global.Element.popupCreateUser,
-                searchAction: Global.Element.popupSearch
+                createAction: Global.Element.popupCreateUser  
             },
             messages: {
-                addNewRecord: 'Thêm Tài Khoản',
-                searchRecord: 'Tìm kiếm',
-                selectShow: 'Ẩn hiện cột',
+                addNewRecord: 'Thêm Tài Khoản',  
+            },
+            searchInput: {
+                id: 'user-keyword',
+                className: 'search-input',
+                placeHolder: 'Nhập từ khóa ...',
+                keyup: function (evt) {
+                    if (evt.keyCode == 13)
+                        ReloadList();
+                }
             },
             fields: {
                 Id: {
@@ -454,7 +460,9 @@ GPRO.User = function () {
                     width: "3%",
                     sorting: false,
                     display: function (data) {
-                        var text = $('<button title="Xóa" class="jtable-command-button jtable-delete-command-button"><span>Xóa</span></button>');
+                        if (data.record.IsOwner)
+                            return '';
+                        var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
                         text.click(function () {
                             GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
                                 Delete(data.record.Id);
@@ -468,7 +476,7 @@ GPRO.User = function () {
     }
 
     function ReloadList() {
-        $('#' + Global.Element.JtableUser).jtable('load', { 'keyword': $('#keyword').val(), 'searchBy': $('#searchBy').val(), 'isBlock': $('#isblock').is(':checked'), 'isRequiredChangePass': $('#ischangepass').is(':checked'), 'isTimeBlock': $('#istimeblock').is(':checked'), 'isForgotPass': $('#isforgotpass').is(':checked') });
+        $('#' + Global.Element.JtableUser).jtable('load', { 'keyword': $('#user-keyword').val(), 'searchBy':0, 'isBlock': $('#isblock').is(':checked'), 'isRequiredChangePass': $('#ischangepass').is(':checked'), 'isTimeBlock': $('#istimeblock').is(':checked'), 'isForgotPass': $('#isforgotpass').is(':checked') });
         $('#' + Global.Element.popupSearch).modal('hide');
     }
 

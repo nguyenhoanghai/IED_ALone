@@ -8,11 +8,14 @@ namespace GPRO_IED_A.Business.Model
 {
     public class ExportPhaseActionsModel
     {
+        public int Id { get; set; }
         public string PhaseName { get; set; }
         public string ProductName { get; set; }
         public string CustomerName { get; set; }
         public double TimePrepare { get; set; }
         public double TotalTMU { get; set; }
+        public int EquiptId { get; set; }
+        public string EquiptName { get; set; }
         public List<Commo_Ana_Phase_ManiModel> Details { get; set; }
         public ExportPhaseActionsModel() {
             Details = new List<Commo_Ana_Phase_ManiModel>();

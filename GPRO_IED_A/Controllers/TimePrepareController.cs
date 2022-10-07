@@ -112,13 +112,13 @@ namespace GPRO_IED_A.Controllers
 
         #region Time Type Prepare
         [HttpPost]
-        public JsonResult Gets_(string keyword, int searchBy, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
+        public JsonResult Gets_(string keyword,   int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
         {
             try
             {
                 if (isAuthenticate)
                 {
-                    var timeTypes = BLLTimeTypePrepare.Instance.Gets(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting);
+                    var timeTypes = BLLTimeTypePrepare.Instance.Gets(keyword,  jtStartIndex, jtPageSize, jtSorting);
                     JsonDataResult.Records = timeTypes;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = timeTypes.TotalItemCount;

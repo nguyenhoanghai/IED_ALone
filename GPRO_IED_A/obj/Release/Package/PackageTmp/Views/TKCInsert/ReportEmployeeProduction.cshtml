@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewBag.Title = "Báo cáo năng xuất công nhân";
+    // Layout = null;
+}
+<link href="~/Scripts/IED/TKCInsert/tkc-insert.css" rel="stylesheet" />
+<link href="~/Scripts/IED/ProAna/ProAna_tkc.css" rel="stylesheet" />
+<div class="container">
+    <div class="main-box">
+        <div class="head">Báo cáo năng xuất công nhân</div>
+        <div class="filter">
+            <div class="col-md-5">
+                <div class="box-title">Bộ lọc</div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Mã hàng</label>
+                    <div class="select-box">
+                        <select id="report-product"></select>
+                        <i id="re-report-product" class="fa fa-refresh clickable red"></i>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Phân xưởng</label>
+                    <div class="select-box">
+                        <select id="report-workshop"></select>
+                        <i id="re-report-workshop" class="fa fa-refresh clickable red"></i>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Chuyền</label>
+                    <div class="select-box">
+                        <select id="report-line"></select>
+                        <i id="re-report-line" class="fa fa-refresh clickable red"></i>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Công nhân</label>
+                    <div class="select-box">
+                        <select id="report-employee"></select>
+                        <i id="re-report-employee" class="fa fa-refresh clickable red"></i>
+                    </div>
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="form-group col-md-12 text-right action-box">
+                    <button id="btn-excel" class="btn btn-primary"><i class="fa fa-file-excel-o"></i> Xuất báo cáo</button> 
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="col-md-7">
+                <div class="box-title">Thông tin năng xuất</div>
+                <div id="jtable-report-production"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/IED/TKCInsert/employee-production-report.js"></script>

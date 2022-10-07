@@ -19,9 +19,11 @@ namespace GPRO_IED_A.Business.Model
         public double ProOfGroupPerDay { get; set; }
         public double ProOfPersonPerDay { get; set; }
         public double PricePerSecond { get; set; }
+        public double PricePerMinute { get; set; }
         public double Allowance { get; set; }
         public string Note { get; set; }
         public int Quantities { get; set; }
+        public int PercentWorker { get; set; } 
         public double Price { get; set; } 
         public string ProductName { get; set; }
         public string WorkShopName { get; set; }        

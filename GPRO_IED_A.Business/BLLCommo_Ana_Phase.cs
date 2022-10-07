@@ -136,6 +136,7 @@ namespace GPRO_IED_A.Business
                             db.SaveChanges();
                             ReOrderPhase(db, phase.ParentId, phase.Index, phase.Id);
                             result.IsSuccess = true;
+                            result.Data = phase.Id;
                             #endregion
                         }
                         else
@@ -1337,7 +1338,122 @@ namespace GPRO_IED_A.Business
             return result;
         }
 
+        public ExportPhaseGroupModel Export_CommoAnaPhaseGroup(int Id)
+        {
+            ExportPhaseGroupModel exportObj = null;
+            try
+            {
+                using (db = new IEDEntities())
+                {
+                    exportObj = (from x in db.T_CommodityAnalysis
+                                 where !x.IsDeleted && x.Id == Id
+                                 select new ExportPhaseGroupModel() { Name = x.Name, Node = x.Node }).FirstOrDefault();
+                    if (exportObj == null)
+                        return exportObj;
 
-      
+                    int cAnaId = Convert.ToInt32(exportObj.Node.Split(',')[1]);
+                    var cAnaObj = db.T_CommodityAnalysis.FirstOrDefault(x => x.Id == cAnaId);
+                    if (cAnaObj != null)
+                    {
+                        var proObj = db.T_Product.FirstOrDefault(x => x.Id == cAnaObj.ObjectId);
+                        if (proObj != null)
+                        {
+                            exportObj.ProductName = proObj.Name;
+                            exportObj.CustomerName = proObj.Code;
+                        }
+                        else
+                        {
+                            exportObj.ProductName = "";
+                            exportObj.CustomerName = "";
+                        }
+                    }
+
+
+                    exportObj.Phases.AddRange((from x in db.T_CA_Phase
+                                               where !x.IsDeleted && x.ParentId == Id
+                                               orderby x.Index
+                                               select new ExportPhaseActionsModel()
+                                               {
+                                                   Id = x.Id,
+                                                   PhaseName = x.Name,
+                                                   TotalTMU = x.TotalTMU,
+                                                   TimePrepare = 0, //x.T_CA_Phase_TimePrepare.Where(c => !c.IsDeleted && !c.T_TimePrepare.IsDeleted).Sum(c => c.T_TimePrepare.TMUNumber)
+                                                   EquiptId = x.EquipmentId ?? 0,
+                                                   EquiptName = x.EquipmentId.HasValue ? x.T_Equipment.Name : ""
+                                               }).ToList());
+                    if (exportObj.Phases.Count > 0)
+                    {
+                        var _phaseIds = exportObj.Phases.Select(x => x.Id).ToList();
+                        var _actions = ((from x in db.T_CA_Phase_Mani
+                                         where !x.IsDeleted && _phaseIds.Contains(x.CA_PhaseId)
+                                         orderby x.OrderIndex
+                                         select new Commo_Ana_Phase_ManiModel()
+                                         {
+                                             Id = x.Id,
+                                             CA_PhaseId = x.CA_PhaseId,
+                                             ManipulationId = x.ManipulationId,
+                                             ManipulationName = x.ManipulationName,
+                                             ManipulationCode = x.ManipulationCode,
+                                             TMUEquipment = x.TMUEquipment,
+                                             TMUManipulation = x.TMUManipulation,
+                                             Loop = x.Loop,
+                                             TotalTMU = x.TotalTMU,
+                                             OrderIndex = x.OrderIndex,
+                                         })).ToList();
+
+                        if (_actions.Count > 0)
+                        {
+                            foreach (var item in exportObj.Phases)
+                                item.Details.AddRange(_actions.Where(x => x.CA_PhaseId == item.Id).OrderBy(x => x.OrderIndex).ToList());
+                        }
+
+                        //var timePrepares = db.T_CA_Phase_TimePrepare.Where(x => !x.IsDeleted && x.Commo_Ana_PhaseId ==  Id).Select(x => new Commo_Ana_Phase_TimePrepareModel()
+                        //{
+                        //    Id = x.Id,
+                        //    Commo_Ana_PhaseId = x.Commo_Ana_PhaseId,
+                        //    TMUNumber = x.T_TimePrepare.TMUNumber
+                        //}).ToList();
+                        //if (timePrepares.Count > 0)
+                        //{
+                        //    double tmu = 0, time = 0;
+                        //    string strTmu = bllIEDConfig.GetValueByCode(eIEDConfigName.TMU);
+                        //    if (!string.IsNullOrEmpty(strTmu))
+                        //        double.TryParse(strTmu, out tmu);
+                        //    time = timePrepares.Sum(x => x.TMUNumber);
+                        //    exportObj.TimePrepare = time > 0 ? time / tmu : 0;
+                        //}
+                        //else
+                        //exportObj.TimePrepare = 0;
+
+                        var listEquipmentId = exportObj.Phases.Where(c => c.EquiptId > 0).Select(c => c.EquiptId).Distinct().ToList();
+                        if (listEquipmentId.Count > 0)
+                        {
+                            exportObj.Equipments = new List<ModelSelectItem>();
+                            foreach (var equipmentId in listEquipmentId)
+                            {
+                                var equipments = exportObj.Phases.Where(c => c.EquiptId == equipmentId).Select(c => new ModelSelectItem()
+                                {
+                                    Value = c.EquiptId,
+                                    Name = c.EquiptName 
+                                }).ToList();
+                                if (equipments.Count > 0)
+                                {
+                                    var equipmentFirst = equipments[0];
+                                    //equipmentFirst.QuantityUse = equipments.Count;
+                                    exportObj.Equipments.Add(equipmentFirst);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return exportObj;
+        }
+
+
     }
 }

@@ -41,13 +41,13 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult Gets(string keyword, int searchBy, int jtStartIndex=0, int jtPageSize=1000, string jtSorting="")
+        public JsonResult Gets(string keyword,  int jtStartIndex=0, int jtPageSize=1000, string jtSorting="")
         {
             try
             {
                 if (isAuthenticate)
                 {
-                    var listWorkShop = BLLWorkshop.Instance.GetList(keyword, searchBy, jtStartIndex, jtPageSize, jtSorting, UserContext.CompanyId);
+                    var listWorkShop = BLLWorkshop.Instance.GetList(keyword,   jtStartIndex, jtPageSize, jtSorting, UserContext.CompanyId);
                     JsonDataResult.Records = listWorkShop;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = listWorkShop.TotalItemCount;

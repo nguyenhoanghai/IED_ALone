@@ -15,6 +15,7 @@ namespace GPRO_IED_A.Business.Model
         public int? CompanyId { get; set; }
         public int CustomerId { get; set; }
         public int? ProductGroupId { get; set; }
+        public string ProGroupName { get; set; }
         public bool IsPrivate { get; set; }
         public int ActionUser { get; set; }
         public List<ModelSelectItem> Files { get; set; }

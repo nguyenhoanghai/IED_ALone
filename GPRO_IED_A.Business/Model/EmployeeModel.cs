@@ -9,15 +9,13 @@ namespace GPRO_IED_A.Business.Model
     {
         public int Id { get; set; }
         public string Code { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string Name { get; set; } 
         public DateTime Birthday { get; set; }
         public bool Gender { get; set; }
         public int? CompanyId { get; set; }
         public string Image { get; set; }
         public string Email { get; set; }
-        public string Mobile { get; set; }
-        public string FullName { get; set; }
+        public string Mobile { get; set; } 
         public int ActionUser { get; set; }
         public int WorkshopId { get; set; }
         public string WorkshopName { get; set; }

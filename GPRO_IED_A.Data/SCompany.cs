@@ -17,10 +17,10 @@ namespace GPRO_IED_A.Data
         public SCompany()
         {
             this.SCompany1 = new HashSet<SCompany>();
-            this.SUsers = new HashSet<SUser>();
             this.SRoLes = new HashSet<SRoLe>();
             this.T_ProductGroup = new HashSet<T_ProductGroup>();
             this.SCompanyModules = new HashSet<SCompanyModule>();
+            this.SUsers = new HashSet<SUser>();
         }
     
         public int Id { get; set; }
@@ -43,9 +43,10 @@ namespace GPRO_IED_A.Data
     
         public virtual ICollection<SCompany> SCompany1 { get; set; }
         public virtual SCompany SCompany2 { get; set; }
-        public virtual ICollection<SUser> SUsers { get; set; }
+        public virtual SLevelCompany SLevelCompany { get; set; }
         public virtual ICollection<SRoLe> SRoLes { get; set; }
         public virtual ICollection<T_ProductGroup> T_ProductGroup { get; set; }
         public virtual ICollection<SCompanyModule> SCompanyModules { get; set; }
+        public virtual ICollection<SUser> SUsers { get; set; }
     }
 }

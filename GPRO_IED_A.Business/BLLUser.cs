@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Hugate.Framework;
+using System.IO;
 
 namespace GPRO_IED_A.Business
 {
@@ -75,18 +76,19 @@ namespace GPRO_IED_A.Business
                 using (var db = new IEDEntities())
                 {
                     user = db.SUsers.Where(c => c.Id == userId && !c.IsDeleted && !c.SCompany.IsDeleted).Select(c => new UserService()
-                                   {
-                                       CompanyId = c.CompanyId,
-                                       CompanyName = c.SCompany.CompanyName,
-                                       UserID = c.Id,
-                                       IsOwner = c.IsOwner,
-                                       LogoCompany = c.SCompany.Logo,
-                                       ImagePath = c.ImagePath,
-                                       Email = c.Email,
-                                       EmployeeName = c.FisrtName + " " + c.LastName,
-                                       UserName = c.UserName,
-                                       WorkshopId = c.WorkshopIds
-                                   }).FirstOrDefault();
+                    {
+                        CompanyId = c.CompanyId,
+                        CompanyName = c.SCompany.CompanyName,
+                        UserID = c.Id,
+                        IsOwner = c.IsOwner,
+                        LogoCompany = c.SCompany.Logo,
+                        ImagePath = c.ImagePath,
+                        Email = c.Email,
+                        EmployeeName = c.Name  ,
+                        UserName = c.UserName,
+                        WorkshopId = c.WorkshopIds,
+                        Name = c.Name, 
+                    }).FirstOrDefault();
                     if (user != null)
                     {
                         if (!string.IsNullOrEmpty(user.WorkshopId))
@@ -148,31 +150,31 @@ namespace GPRO_IED_A.Business
                             var permiUrls = permis.Select(x => x.Url).ToList();
                             var moduleids = user.ListModule.Select(x => x.Id);
                             var categories = db.SCategories.Where(x => !x.IsDeleted && !x.SModule.IsDeleted && moduleids.Contains(x.ModuleId) && (x.CompanyId == null || x.CompanyId == user.CompanyId)).Select(x => new MenuCategory()
-                                                            {
-                                                                Id = x.Id,
-                                                                Category = x.Name,
-                                                                Position = x.Position,
-                                                                OrderIndex = x.OrderIndex,
-                                                                Description = x.Description,
-                                                                Icon = x.Icon,
-                                                                IsViewIcon = x.IsViewIcon,
-                                                                Link = x.Link,
-                                                                ModuleId = x.ModuleId,
-                                                                ModuleName = x.SModule.SystemName,
-                                                            }).OrderBy(x => x.OrderIndex).ToList();
+                            {
+                                Id = x.Id,
+                                Category = x.Name,
+                                Position = x.Position,
+                                OrderIndex = x.OrderIndex,
+                                Description = x.Description,
+                                Icon = x.Icon,
+                                IsViewIcon = x.IsViewIcon,
+                                Link = x.Link,
+                                ModuleId = x.ModuleId,
+                                ModuleName = x.SModule.SystemName,
+                            }).OrderBy(x => x.OrderIndex).ToList();
                             if (categories.Count > 0)
                             {
                                 var menus = db.SMenus.Where(x => !x.IsDeleted && x.IsShow && moduleids.Contains(x.ModuleId) && !x.SModule.IsDeleted && ((x.CompanyId == null && permiUrls.Contains(x.Link.Trim())) || (x.CompanyId != null && x.CompanyId.Value == user.CompanyId))).Select(x => new Menu()
-                                                {
-                                                    MenuName = x.MenuName,
-                                                    Icon = x.Icon,
-                                                    OrderIndex = x.OrderIndex,
-                                                    Link = x.Link,
-                                                    IsShow = x.IsShow,
-                                                    IsViewIcon = x.IsViewIcon,
-                                                    Description = x.Description,
-                                                    CategoryId = x.MenuCategoryId
-                                                }).ToList();
+                                {
+                                    MenuName = x.MenuName,
+                                    Icon = x.Icon,
+                                    OrderIndex = x.OrderIndex,
+                                    Link = x.Link,
+                                    IsShow = x.IsShow,
+                                    IsViewIcon = x.IsViewIcon,
+                                    Description = x.Description,
+                                    CategoryId = x.MenuCategoryId
+                                }).ToList();
                                 if (menus.Count > 0)
                                 {
                                     for (int i = 0; i < categories.Count; i++)
@@ -185,7 +187,7 @@ namespace GPRO_IED_A.Business
                         }
                         user.ChildCompanyId = db.SCompanies.Where(x => !x.IsDeleted && x.ParentId != null && x.ParentId.Value == user.CompanyId).Select(x => x.Id).ToArray();
                         if (user.ChildCompanyId == null)
-                            user.ChildCompanyId = new int[] { }; 
+                            user.ChildCompanyId = new int[] { };
                     }
                 }
             }
@@ -213,8 +215,7 @@ namespace GPRO_IED_A.Business
                     Email = x.Email,
                     ImagePath = x.ImagePath,
                     LockedTime = x.LockedTime,
-                    FisrtName = x.FisrtName,
-                    LastName = x.LastName
+                    Name = x.Name, 
                 }).FirstOrDefault();
                 return user;
             }
@@ -278,8 +279,7 @@ namespace GPRO_IED_A.Business
                                 if (!string.IsNullOrEmpty(model.PassWord))
                                     obj.PassWord = obj.IsRequireChangePW ? GlobalFunction.EncryptMD5(model.PassWord) : obj.PassWord;
 
-                                obj.FisrtName = model.FisrtName;
-                                obj.LastName = model.LastName;
+                                obj.Name = model.Name; 
                                 obj.NoteForgotPassword = null;
                                 if (model.ImagePath != null && model.ImagePath != "0")
                                     obj.ImagePath = model.ImagePath.Split(',').ToList().First();
@@ -310,7 +310,7 @@ namespace GPRO_IED_A.Business
                                             //else
                                             //    model.UserRoleIds.Remove(userRoleFind);
 
-                                              query += " update SUserRole set IsDeleted=1 where Id=" + oldItem.Id;
+                                            query += " update SUserRole set IsDeleted=1 where Id=" + oldItem.Id;
                                         }
                                         if (!string.IsNullOrEmpty(query))
                                             db.Database.ExecuteSqlCommand(query);
@@ -399,11 +399,19 @@ namespace GPRO_IED_A.Business
                     SUser user = db.SUsers.FirstOrDefault(x => x.Id == accountId && !x.IsDeleted);
                     if (user != null)
                     {
-                        user.IsDeleted = true;
-                        user.DeletedUser = actionUserId;
-                        user.DeletedDate = DateTime.Now;
-                        db.SaveChanges();
-                        rs.IsSuccess = true;
+                        if (user.IsOwner)
+                        {
+                            rs.IsSuccess = false;
+                            rs.Errors.Add(new Error() { MemberName = "Delete Account", Message =  user.UserName + " là tài khoản quản trị không thể xóa .!" });
+                        }
+                        else
+                        {
+                            user.IsDeleted = true;
+                            user.DeletedUser = actionUserId;
+                            user.DeletedDate = DateTime.Now;
+                            db.SaveChanges();
+                            rs.IsSuccess = true;
+                        }
                     }
                     else
                     {
@@ -483,7 +491,7 @@ namespace GPRO_IED_A.Business
             }
             return rs;
         }
-        public ResponseBase ChangeInfo(int userId, string mail, string first, string last)
+        public ResponseBase ChangeInfo(int userId, string mail, string name,  string avatar, string serverPath)
         {
             ResponseBase rs = new ResponseBase();
             try
@@ -499,8 +507,20 @@ namespace GPRO_IED_A.Business
                     else
                     {
                         user.Email = mail;
-                        user.FisrtName = first;
-                        user.LastName = last;
+                        user.Name = name; 
+                        if (!string.IsNullOrEmpty(avatar))
+                        {
+                            if (!string.IsNullOrEmpty(user.ImagePath))
+                            {
+                                //var file = serverPath + user.ImagePath;
+                                //File.Delete(user.ImagePath);
+
+                                rs.Data = user.ImagePath;
+                            }
+
+                            user.ImagePath = avatar;
+
+                        }
                         user.UpdatedUser = userId;
                         user.UpdatedDate = DateTime.Now;
                         db.SaveChanges();
@@ -579,7 +599,7 @@ namespace GPRO_IED_A.Business
                         {
                             case 0:
                                 keyWord = keyWord.Trim().ToUpper();
-                                users = db.SUsers.Where(x => !x.IsDeleted && !x.SCompany.IsDeleted && (x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId)) && (x.FisrtName.Trim().ToUpper().Contains(keyWord) || x.LastName.Trim().ToUpper().Contains(keyWord)));
+                                users = db.SUsers.Where(x => !x.IsDeleted && !x.SCompany.IsDeleted && (x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId)) &&  x.Name.Trim().ToUpper().Contains(keyWord) );
                                 break;
                             case 1:
                                 keyWord = keyWord.Trim().ToUpper();
@@ -618,8 +638,7 @@ namespace GPRO_IED_A.Business
                             Email = x.Email,
                             ImagePath = x.ImagePath,
                             LockedTime = x.LockedTime,
-                            FisrtName = x.FisrtName,
-                            LastName = x.LastName ,
+                            Name = x.Name, 
                             WorkshopIds = x.WorkshopIds
                         }).OrderBy(sorting).ToList();
                         usersReturn = new PagedList<UserModel>(usersModel, pageNumber, pageSize);
@@ -630,7 +649,7 @@ namespace GPRO_IED_A.Business
                     if (usersReturn != null && usersReturn.Count > 0)
                     {
                         var uroles = db.SUserRoles.Where(x => !x.IsDeleted).Select(x => new UserRoleModel() { Id = x.Id, RoleId = x.RoleId, RoleName = x.SRoLe.RoleName, UserId = x.UserId }).ToList();
-                        if ( uroles != null && uroles.Count() > 0 )
+                        if (uroles != null && uroles.Count() > 0)
                         {
                             foreach (var item in usersReturn)
                             {

@@ -1,0 +1,95 @@
+﻿<!--   POPUP CREATE COMMODITY - COMMODITY INFORMATION  -->
+<div class="modal fade " id="capopup_Commodity" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modalsmall">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" cancel-commo class="close" type="button">×</button>
+                <h4 class="modal-title">Thông tin mã hàng</h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <input class="form-control" class="form-control" class="form-control" data-bind="value: Id" type="hidden" />
+                    <div class="form-group">
+                        <label class="control-label">Sản Phẩm <span class="required-class">*</span></label>
+                        <div class="select-box">
+                            <select id="caproduct"></select>
+                            <i re_caproduct class="fa fa-refresh clickable red"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Ghi chú</label>
+                        <textarea class="form-control" id="caDescription"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" cancel-commo class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
+                <button type="button" save-commo class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--   POPUP CREATE WORKSHOP  -->
+<div class="modal   fade  " id="Create-Workshop-popup" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modalsmall">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" cancel-workshop class="close" type="button">×</button>
+                <h4 class="modal-title">Thông tin Phân Xưởng</h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <div class="form-group col-md-12">
+                        <label class="control-label">Tên Phân Xưởng  <span class="required-class">*</span></label>
+                        <div class="select-box">
+                            <select id="wk-name"></select>
+                            <i re_wk-name class="fa fa-refresh clickable red"></i>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label class="control-label">Mô Tả</label><br />
+                        <textarea class="form-control" id="workshop-Description"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" cancel-workshop class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
+                <button type="button" save-workshop class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--   POPUP CREATE PHASE GROUP  -->
+<div class="modal fade " id="Create-PhaseGroup-Popup" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modalsmall">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" cancel-phasegroup class="close" type="button">×</button>
+                <h4 class="modal-title">Thông tin cụm công đoạn</h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <div class="form-group col-md-12">
+                        <label class="control-label">cụm công đoạn <span class="required-class">*</span></label>
+                        <div class="select-box">
+                            <select id="phaseGroup-name"></select>
+                            <i re_phasegroup-name class="fa fa-refresh clickable red"></i>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label class="control-label">Mã công đoạn chung</label>
+                        <input type="text" class="form-control" id="phaseGroup-Description" />
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" cancel-phasegroup class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
+                <button type="button" save-phasegroup class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
+            </div>
+        </div>
+    </div>
+</div>
+

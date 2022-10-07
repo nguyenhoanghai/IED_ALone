@@ -1,0 +1,74 @@
+﻿.main-box {
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+    .main-box .head {
+        padding: 10px;
+        font-weight: 600;
+        color: white;
+        background: blue;
+        font-size: 14px;
+    }
+
+
+    .main-box .filter {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .main-box .content {
+    }
+
+    .main-box .filter,
+    .main-box .head,
+    .main-box .content {
+        padding: 10px
+    }
+
+        .main-box .content #line-box {
+            height: auto !important;
+            overflow: unset !important
+        }
+
+.none-btp {
+    float: left;
+    width: 20px;
+    height: 20px;
+}
+
+.psanluong {
+    width: 80px;
+    text-align: center
+}
+
+.number-input {
+    border: none;
+    width: 70px !important;
+    border-bottom: 1px dotted #aaa;
+}
+
+.box-title {
+    font-weight: 600;
+    color: black;
+    padding: 3px 0;
+    border-bottom: 2px solid blue;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.po-index {
+    text-align: center;
+    font-weight: 600;
+    color: blue;
+    height: 26px;
+    line-height: 26px;
+    border: 1px solid #ccc;
+}
+
+.action-box {
+    border-top: 2px solid blue;
+    padding-top: 10px;
+    margin-top: 10px;
+}
