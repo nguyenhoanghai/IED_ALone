@@ -132,5 +132,21 @@ namespace GPRO_IED_A.Controllers
             }
             return Json(JsonDataResult);
         }
+        [HttpPost]
+        public JsonResult GetSelectListByProGroupId(int proGroupId, bool findByCustomer)
+        {
+            try
+            {
+                JsonDataResult.Result = "OK";
+                JsonDataResult.Data = BLLProduct.Instance.GetSelectItem(proGroupId, UserContext.CompanyId, UserContext.ChildCompanyId, findByCustomer);
+            }
+            catch (Exception ex)
+            {
+                //add error
+                JsonDataResult.Result = "ERROR";
+                JsonDataResult.ErrorMessages.Add(new Error() { MemberName = "Delete Area", Message = "Lỗi: " + ex.Message });
+            }
+            return Json(JsonDataResult);
+        }
     }
 }

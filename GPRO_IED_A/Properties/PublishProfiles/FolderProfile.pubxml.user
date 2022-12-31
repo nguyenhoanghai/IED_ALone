@@ -5,7 +5,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <_PublishTargetUrl>E:\Hai_GPRO\Publish\IED_A</_PublishTargetUrl>
-    <History>True|2022-08-04T09:30:03.9064655Z;True|2022-08-03T09:07:55.4447598+07:00;</History>
+    <History>True|2022-12-08T22:31:05.8351021Z;True|2022-08-04T16:30:03.9064655+07:00;True|2022-08-03T09:07:55.4447598+07:00;</History>
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/Antlr3.Runtime.dll">
@@ -24,37 +24,37 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>08/28/2015 16:26:48</publishTime>
     </File>
     <File Include="bin/GPRO.Core.dll">
-      <publishTime>09/19/2022 13:44:27</publishTime>
+      <publishTime>12/09/2022 05:31:02</publishTime>
     </File>
     <File Include="bin/GPRO.Core.pdb">
-      <publishTime>09/19/2022 13:44:27</publishTime>
+      <publishTime>12/09/2022 05:31:02</publishTime>
     </File>
     <File Include="bin/GPRO.Ultilities.dll">
       <publishTime>08/28/2015 15:56:38</publishTime>
     </File>
     <File Include="bin/GPRO_IED_A.Business.dll">
-      <publishTime>09/19/2022 13:44:28</publishTime>
+      <publishTime>12/11/2022 23:33:25</publishTime>
     </File>
     <File Include="bin/GPRO_IED_A.Business.dll.config">
       <publishTime>01/19/2022 10:11:42</publishTime>
     </File>
     <File Include="bin/GPRO_IED_A.Business.pdb">
-      <publishTime>09/19/2022 13:44:28</publishTime>
+      <publishTime>12/11/2022 23:33:25</publishTime>
     </File>
     <File Include="bin/GPRO_IED_A.Data.dll">
-      <publishTime>09/19/2022 13:44:26</publishTime>
+      <publishTime>12/11/2022 22:27:21</publishTime>
     </File>
     <File Include="bin/GPRO_IED_A.Data.dll.config">
       <publishTime>07/28/2022 11:55:29</publishTime>
     </File>
     <File Include="bin/GPRO_IED_A.Data.pdb">
-      <publishTime>09/19/2022 13:44:26</publishTime>
+      <publishTime>12/11/2022 22:27:21</publishTime>
     </File>
     <File Include="bin/GPRO_IED_A.dll">
-      <publishTime>09/19/2022 13:44:29</publishTime>
+      <publishTime>12/11/2022 23:33:26</publishTime>
     </File>
     <File Include="bin/GPRO_IED_A.pdb">
-      <publishTime>09/19/2022 13:44:29</publishTime>
+      <publishTime>12/11/2022 23:33:26</publishTime>
     </File>
     <File Include="bin/Hugate.Framework.dll">
       <publishTime>08/28/2015 15:56:34</publishTime>
@@ -150,7 +150,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>03/16/2018 21:20:31</publishTime>
     </File>
     <File Include="Content/custom.css">
-      <publishTime>09/10/2022 19:07:32</publishTime>
+      <publishTime>12/05/2022 00:37:38</publishTime>
     </File>
     <File Include="Content/custom.min.css">
       <publishTime>03/18/2018 19:25:57</publishTime>
@@ -3077,8 +3077,17 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <File Include="ReportTemplates/ProductionReport_Template.xlsx">
       <publishTime>08/03/2022 22:30:04</publishTime>
     </File>
+    <File Include="ReportTemplates/qtcn-dong-tien-template.xlsx">
+      <publishTime>12/09/2022 10:02:22</publishTime>
+    </File>
     <File Include="ReportTemplates/QTCN_TexGiang.xlsx">
       <publishTime>11/30/2020 22:10:45</publishTime>
+    </File>
+    <File Include="ReportTemplates/using_tech_detail_template.xlsx">
+      <publishTime>12/07/2022 09:57:48</publishTime>
+    </File>
+    <File Include="ReportTemplates/using_tech_template.xlsx">
+      <publishTime>12/07/2022 08:31:52</publishTime>
     </File>
     <File Include="Scripts/bootstrap.js">
       <publishTime>03/16/2018 21:20:31</publishTime>
@@ -3456,7 +3465,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/10/2022 23:06:13</publishTime>
     </File>
     <File Include="Scripts/IED/Common.js">
-      <publishTime>08/24/2022 12:57:27</publishTime>
+      <publishTime>12/07/2022 10:20:23</publishTime>
     </File>
     <File Include="Scripts/IED/Common.min.js">
       <publishTime>03/18/2018 22:45:08</publishTime>
@@ -3471,7 +3480,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/15/2022 10:52:00</publishTime>
     </File>
     <File Include="Scripts/IED/Employee/Employ_Index.js">
-      <publishTime>09/15/2022 10:50:57</publishTime>
+      <publishTime>09/23/2022 09:43:55</publishTime>
     </File>
     <File Include="Scripts/IED/Equipment/E_Index.js">
       <publishTime>09/15/2022 10:52:14</publishTime>
@@ -3486,7 +3495,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>03/18/2018 22:02:50</publishTime>
     </File>
     <File Include="Scripts/IED/IED_StandCommon.js">
-      <publishTime>09/08/2022 10:11:53</publishTime>
+      <publishTime>12/11/2022 12:01:44</publishTime>
     </File>
     <File Include="Scripts/IED/IED_StandCommon.min.js">
       <publishTime>03/19/2018 09:06:14</publishTime>
@@ -3498,7 +3507,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/15/2022 10:53:09</publishTime>
     </File>
     <File Include="Scripts/IED/Master-page/head.js">
-      <publishTime>08/24/2022 13:05:41</publishTime>
+      <publishTime>09/24/2022 00:17:51</publishTime>
     </File>
     <File Include="Scripts/IED/Menu/M_Index.js">
       <publishTime>09/10/2022 23:06:13</publishTime>
@@ -3507,13 +3516,22 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/10/2022 23:06:13</publishTime>
     </File>
     <File Include="Scripts/IED/PhanTich/phan-tich-3.js">
-      <publishTime>09/10/2022 23:06:13</publishTime>
+      <publishTime>12/10/2022 23:19:14</publishTime>
     </File>
     <File Include="Scripts/IED/PhanTich/phan-tich-4.js">
-      <publishTime>09/18/2022 14:54:10</publishTime>
+      <publishTime>12/11/2022 23:10:27</publishTime>
+    </File>
+    <File Include="Scripts/IED/PhanTich/phan-tich-goup-by-cust.js">
+      <publishTime>12/11/2022 22:33:22</publishTime>
+    </File>
+    <File Include="Scripts/IED/PhanTich/phan-tich-goup-by-product-group.js">
+      <publishTime>12/11/2022 22:32:51</publishTime>
     </File>
     <File Include="Scripts/IED/PhanTich/phan-tich.js">
       <publishTime>09/10/2022 23:06:13</publishTime>
+    </File>
+    <File Include="Scripts/IED/phase-group-ana/phase-group-ana.js">
+      <publishTime>12/11/2022 05:33:25</publishTime>
     </File>
     <File Include="Scripts/IED/PhaseGroup/PG_Index.js">
       <publishTime>09/15/2022 10:53:28</publishTime>
@@ -3528,7 +3546,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/10/2022 23:06:13</publishTime>
     </File>
     <File Include="Scripts/IED/ProAna/PA_TKC.js">
-      <publishTime>09/10/2022 23:06:13</publishTime>
+      <publishTime>12/11/2022 04:03:53</publishTime>
     </File>
     <File Include="Scripts/IED/ProAna/PA_TKC.min.js">
       <publishTime>09/10/2022 23:06:13</publishTime>
@@ -3540,7 +3558,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>03/19/2018 23:28:23</publishTime>
     </File>
     <File Include="Scripts/IED/Product/P_Index.js">
-      <publishTime>09/19/2022 00:47:32</publishTime>
+      <publishTime>09/22/2022 23:47:02</publishTime>
     </File>
     <File Include="Scripts/IED/ProductGroup/product-group.js">
       <publishTime>09/15/2022 10:54:34</publishTime>
@@ -3572,14 +3590,20 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <File Include="Scripts/IED/TKCInsert/worker-balance.js">
       <publishTime>08/04/2022 14:09:29</publishTime>
     </File>
+    <File Include="Scripts/IED/user-approver/user-approver.js">
+      <publishTime>12/05/2022 11:50:59</publishTime>
+    </File>
     <File Include="Scripts/IED/User/Info.js">
       <publishTime>03/19/2018 08:47:50</publishTime>
     </File>
     <File Include="Scripts/IED/User/User.js">
-      <publishTime>09/10/2022 23:06:13</publishTime>
+      <publishTime>09/28/2022 08:18:29</publishTime>
     </File>
     <File Include="Scripts/IED/User/UserInfo.js">
       <publishTime>03/19/2018 08:47:50</publishTime>
+    </File>
+    <File Include="Scripts/IED/using-tech/using-tech.js">
+      <publishTime>12/07/2022 10:34:05</publishTime>
     </File>
     <File Include="Scripts/IED/worker-balance/worker-balance-realtime.js">
       <publishTime>08/20/2022 15:39:19</publishTime>
@@ -3666,7 +3690,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/10/2022 22:43:58</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>08/29/2022 12:50:20</publishTime>
+      <publishTime>09/21/2022 09:36:34</publishTime>
     </File>
     <File Include="Views/LevelCompany/Index.cshtml">
       <publishTime>08/30/2022 23:44:39</publishTime>
@@ -3687,16 +3711,25 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/07/2022 16:45:38</publishTime>
     </File>
     <File Include="Views/PhanTich/CreatePhase_Partial.cshtml">
-      <publishTime>09/15/2022 11:45:18</publishTime>
+      <publishTime>12/11/2022 18:00:49</publishTime>
     </File>
     <File Include="Views/PhanTich/Index.cshtml">
-      <publishTime>09/18/2022 14:52:24</publishTime>
+      <publishTime>12/11/2022 23:08:46</publishTime>
+    </File>
+    <File Include="Views/PhanTich/IndexWithCustomer.cshtml">
+      <publishTime>12/11/2022 11:53:22</publishTime>
+    </File>
+    <File Include="Views/PhanTich/IndexWithProductGroup.cshtml">
+      <publishTime>12/11/2022 11:22:50</publishTime>
     </File>
     <File Include="Views/PhanTich/Index_3.cshtml">
-      <publishTime>09/10/2022 22:43:58</publishTime>
+      <publishTime>12/10/2022 15:16:46</publishTime>
     </File>
     <File Include="Views/PhanTich/TKC_Partial.cshtml">
       <publishTime>09/10/2022 22:43:58</publishTime>
+    </File>
+    <File Include="Views/PhanTich/_CreatePhase_Partial.cshtml">
+      <publishTime>12/11/2022 11:27:22</publishTime>
     </File>
     <File Include="Views/PhanTich/_Index.cshtml">
       <publishTime>09/10/2022 22:43:58</publishTime>
@@ -3706,6 +3739,9 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     </File>
     <File Include="Views/PhaseGroup/Index.cshtml">
       <publishTime>09/10/2022 22:43:58</publishTime>
+    </File>
+    <File Include="Views/PhaseGroupAna/Index.cshtml">
+      <publishTime>12/11/2022 04:50:20</publishTime>
     </File>
     <File Include="Views/PhaseLibs/Index.cshtml">
       <publishTime>09/10/2022 22:52:12</publishTime>
@@ -3720,7 +3756,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>09/10/2022 22:43:58</publishTime>
     </File>
     <File Include="Views/Product/Index.cshtml">
-      <publishTime>05/02/2022 20:17:31</publishTime>
+      <publishTime>12/02/2022 12:43:45</publishTime>
     </File>
     <File Include="Views/ProductGroup/Index.cshtml">
       <publishTime>08/29/2022 12:47:59</publishTime>
@@ -3735,7 +3771,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>03/16/2018 21:20:51</publishTime>
     </File>
     <File Include="Views/Shared/HeadPartial.cshtml">
-      <publishTime>08/24/2022 12:51:36</publishTime>
+      <publishTime>10/10/2022 11:55:43</publishTime>
     </File>
     <File Include="Views/Shared/Lockout.cshtml">
       <publishTime>03/16/2018 21:20:51</publishTime>
@@ -3771,22 +3807,28 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>08/20/2022 21:31:45</publishTime>
     </File>
     <File Include="Views/User/Index.cshtml">
-      <publishTime>09/10/2022 22:43:58</publishTime>
+      <publishTime>09/28/2022 08:18:51</publishTime>
+    </File>
+    <File Include="Views/UserApprove/Index.cshtml">
+      <publishTime>12/05/2022 11:31:40</publishTime>
+    </File>
+    <File Include="Views/UsingTech/Index.cshtml">
+      <publishTime>12/07/2022 10:35:11</publishTime>
     </File>
     <File Include="Views/Web.config">
       <publishTime>03/16/2018 21:20:28</publishTime>
     </File>
     <File Include="Views/WorkerLevel/Index.cshtml">
-      <publishTime>09/10/2022 23:19:52</publishTime>
+      <publishTime>09/23/2022 09:33:40</publishTime>
     </File>
     <File Include="Views/WorkShop/Index.cshtml">
-      <publishTime>09/10/2022 22:43:58</publishTime>
+      <publishTime>09/23/2022 09:40:48</publishTime>
     </File>
     <File Include="Views/_ViewStart.cshtml">
       <publishTime>03/16/2018 21:20:28</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>09/19/2022 13:44:30</publishTime>
+      <publishTime>12/11/2022 22:27:24</publishTime>
     </File>
   </ItemGroup>
 </Project>

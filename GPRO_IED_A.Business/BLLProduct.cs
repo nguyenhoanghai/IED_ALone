@@ -84,7 +84,7 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
-         
+
         public ResponseBase InsertOrUpdate(ProductModel model, bool isOwner)
         {
             try
@@ -241,6 +241,32 @@ namespace GPRO_IED_A.Business
                                     item.IsDeleted = true;
                                     item.DeletedUser = acctionUserId;
                                     item.DeletedDate = DateTime.Now;
+
+                                    string _node = "0," + item.Id + ",";
+                                    var _children = (from x in db.T_CommodityAnalysis where !x.IsDeleted && x.Node.Contains(_node) select x);
+                                    if (_children != null && _children.Count() > 0)
+                                    {
+                                        foreach (var _child in _children)
+                                        {
+                                            _child.IsDeleted = true;
+                                            _child.DeletedUser = acctionUserId;
+                                            _child.DeletedDate = item.DeletedDate;
+
+                                            if (_child.ObjectType == (int)eObjectType.isPhaseGroup)
+                                            {
+                                                var _phases = db.T_CA_Phase.Where(x => !x.IsDeleted && x.ParentId == _child.Id);
+                                                if (_phases != null && _phases.Count() > 0)
+                                                {
+                                                    foreach (var _obj in _phases)
+                                                    {
+                                                        _obj.IsDeleted = true;
+                                                        _obj.DeletedDate = item.DeletedDate;
+                                                        _obj.DeletedUser = acctionUserId;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
 
                             db.SaveChanges();
@@ -330,7 +356,43 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        // public List<T_ProductFile> InsertFiles (List<T_Product> files)
+        public List<ModelSelectItem> GetSelectItem(int _objectId, int companyId, int[] relationCompanyId, bool findByCustomer)
+        {
+            try
+            {
+                using (db = new IEDEntities())
+                {
+                    var listModelSelect = new List<ModelSelectItem>();
+                    var _objs = db.T_Product.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0)));
+                    if (findByCustomer)
+                        _objs = _objs.Where(x => x.CustomerId == _objectId);
+                    if (!findByCustomer)
+                        _objs = _objs.Where(x => x.ProductGroupId == _objectId);
+
+                    var productTypes = _objs.OrderByDescending(x => x.CreatedDate)
+                        .Select(
+                        x => new ModelSelectItem()
+                        {
+                            Value = x.Id,
+                            Name = x.Name
+                        }).ToList();
+
+                    if (productTypes != null && productTypes.Count() > 0)
+                    {
+                        listModelSelect.Add(new ModelSelectItem() { Value = 0, Name = " - -  Chọn mã hàng  - - " });
+                        listModelSelect.AddRange(productTypes);
+                    }
+                    else
+                        listModelSelect.Add(new ModelSelectItem() { Value = 0, Name = "  Không có mã hàng  " });
+                    return listModelSelect;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
     }
 }

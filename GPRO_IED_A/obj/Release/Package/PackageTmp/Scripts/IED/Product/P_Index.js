@@ -97,13 +97,13 @@ GPRO.Product = function () {
         $('[re-pro-group]').click(function () {
             GetProductGroupSelect('pro-group-customer');
         });
-
-        $('#p-file-upload').select(function () {
-            SaveProduct();
+         
+        $('.p-btn-file-upload').click(function () {
+            $('#product-file-upload').click();
         });
 
-        $('#p-btn-file-upload').click(function () {
-            $('#p-file-upload').click();
+        $('#product-file-upload').select(function () {
+            SaveProduct();
         });
     }
 
@@ -116,7 +116,7 @@ GPRO.Product = function () {
             Name: $("#pname").val(),
             Code: $("#pcustomer option:selected").text(),
             ProductGroupId: $("#pro-group-customer").val(),
-            Img: $('#p-file-upload').attr("newUrl")
+            Img: $('#product-file-upload').attr("newUrl")
         }
         $.ajax({
             url: Global.UrlAction.SaveProduct,
@@ -132,8 +132,8 @@ GPRO.Product = function () {
                         $('#pid').val(0);
                         $('#pdes').val('');
                         $('#pname').val('');
-                        $('#p-file-upload').attr("newUrl", '');
-                        $('#p-file-upload').val('');
+                        $('#product-file-upload').attr("newUrl", '');
+                        $('#product-file-upload').val('');
                        // if (!Global.Data.IsInsert) {
                             $("#" + Global.Element.PopupProduct + ' button[pcancel]').click();
                             $('div.divParent').attr('currentPoppup', '');
@@ -300,8 +300,8 @@ GPRO.Product = function () {
 
         $("#" + Global.Element.PopupProduct + ' button[psave]').click(function () {
             if (CheckValidate()) {
-                if ($('#p-file-upload').val() != '')
-                    UploadPicture("p-file-upload", 'p-file-upload');
+                if ($('#product-file-upload').val() != '')
+                    UploadPicture("product-file-upload", 'product-file-upload');
                 else
                     SaveProduct();
             }

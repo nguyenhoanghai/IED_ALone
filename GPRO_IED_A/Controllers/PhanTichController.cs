@@ -1,4 +1,5 @@
 ﻿using GPRO_IED_A.Business;
+using GPRO_IED_A.Business.Enum;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
@@ -11,6 +12,13 @@ namespace GPRO_IED_A.Controllers
         // GET: PhanTich
         public ActionResult Index()
         {
+            //REset ma hang da xoa nhung ko xoa thong tin phan xuong va cum cong doan
+            //BLLCommodityAnalysis.Instance.ResetMAHANG();
+
+            // them workshop vào phase
+            // BLLCommo_Ana_Phase.Instance.InsertWorkshop();
+
+
             var per = this.UserContext.Permissions.Where(x => x.Contains("Create-workshop")).ToArray();
             var per1 = this.UserContext.Permissions.Where(x => x.Contains("All Allow")).ToArray();
             ViewBag.hasPer = (per.Length > 0 && per1.Length == 0 ? "hide" : "");
@@ -18,6 +26,10 @@ namespace GPRO_IED_A.Controllers
             ViewBag.GetTMUType = BLLIEDConfig.Instance.GetValueByCode("GetTMUType");
             ViewBag.ListManipulationCode = BLLManipulationLibrary.Instance.GetListManipulationCode();
             ViewBag.ManipulationExpendDefault = !string.IsNullOrEmpty(BLLIEDConfig.Instance.GetValueByCode("ManipulationExpend")) ? BLLIEDConfig.Instance.GetValueByCode("ManipulationExpend") : "0";
+
+
+            ViewBag.isApprover = isPhaseApprover;
+
             return View();
         }
 
@@ -45,9 +57,10 @@ namespace GPRO_IED_A.Controllers
 
         /// <summary>
         /// mau 3
+        /// group theo chủng loại
         /// </summary>
         /// <returns></returns>
-        public ActionResult Index_3()
+        public ActionResult IndexWithProductGroup()
         {
             var per = this.UserContext.Permissions.Where(x => x.Contains("Create-workshop")).ToArray();
             var per1 = this.UserContext.Permissions.Where(x => x.Contains("All Allow")).ToArray();
@@ -59,6 +72,25 @@ namespace GPRO_IED_A.Controllers
 
             return View();
         }
+
+        /// <summary>
+        /// mau 3
+        /// group theo khách hàng
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult IndexWithCustomer()
+        {
+            var per = this.UserContext.Permissions.Where(x => x.Contains("Create-workshop")).ToArray();
+            var per1 = this.UserContext.Permissions.Where(x => x.Contains("All Allow")).ToArray();
+            ViewBag.hasPer = (per.Length > 0 && per1.Length == 0 ? "hide" : "");
+            ViewBag.TMU = BLLIEDConfig.Instance.GetValueByCode("TMU");
+            ViewBag.GetTMUType = BLLIEDConfig.Instance.GetValueByCode("GetTMUType");
+            ViewBag.ListManipulationCode = BLLManipulationLibrary.Instance.GetListManipulationCode();
+            ViewBag.ManipulationExpendDefault = !string.IsNullOrEmpty(BLLIEDConfig.Instance.GetValueByCode("ManipulationExpend")) ? BLLIEDConfig.Instance.GetValueByCode("ManipulationExpend") : "0";
+
+            return View();
+        }
+
 
         [HttpPost]
         public JsonResult GetProductByProductGroupId(int progroupId)
@@ -95,7 +127,7 @@ namespace GPRO_IED_A.Controllers
                         JsonDataResult.Data = JsonConvert.SerializeObject(rs.Records);
                         JsonDataResult.Result = "OK";
                     }
-                    else 
+                    else
                         JsonDataResult.Result = "ERROR";
                 }
             }

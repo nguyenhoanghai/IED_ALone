@@ -70,7 +70,7 @@ GPRO.PhanTich = function () {
             JtableTech_Cycle: 'Jtable-TechCycle',
 
 
-            popupExportQTCN:'popup-export-qtcn'
+            popupExportQTCN: 'popup-export-qtcn'
         },
         Data: {
             TreeExpand: [],
@@ -122,7 +122,7 @@ GPRO.PhanTich = function () {
 
             Copy_CommoAnaId: 0,
             useTKC: true,
-            techExportUrl:''
+            techExportUrl: ''
         }
     }
     this.GetGlobal = function () {
@@ -131,7 +131,7 @@ GPRO.PhanTich = function () {
 
     this.Init = function () {
         RegisterEvent();
-        ResetProAnaTreeView(false);
+        GetProGroupSelect('pt-product-type');
 
         GetPhasesForSuggest();
         GetProductSelect('caproduct');
@@ -149,13 +149,13 @@ GPRO.PhanTich = function () {
         if ($('#config').attr('gettmutype') != "")
             Global.Data.IntGetTMUType = parseInt($('#config').attr('gettmutype'));
         InitPopupChooseEquipment();
-         InitPopupExportQTCN();
+        InitPopupExportQTCN();
         InitListTimePrepare();
         InitListTimePrepare_chooise();
         InitListPhase_View();
         InitListEquipment();
         InitListMani_Arr();
-        AddEmptyObject();
+       // AddEmptyObject();
         ReloadListMani_Arr();
         UpdateIntWaste();
 
@@ -164,10 +164,8 @@ GPRO.PhanTich = function () {
         //Global.Data.PhaseManiVerDetailArray.length = 0;
 
         InitListTech_Cycle();
-       
+
     }
-
-
 
     this.reloadListProAna = function () {
         ReloadListProAna();
@@ -195,6 +193,11 @@ GPRO.PhanTich = function () {
     };
     this.ResetTime_Percent = function (index) { ResetTime_Percent(index); }
     var RegisterEvent = function () {
+        $('#pt-product-type').change(function () {
+            ResetProAnaTreeView(false);
+        })
+
+
         /*********************************************** TREEVIEW ***********************************************************/
         $('#jqxTree').on('select', function (event) {
             var args = event.args;
@@ -465,7 +468,7 @@ GPRO.PhanTich = function () {
         $('[re_wk-name]').click(function () { GetWorkshopSelect('wk-name'); });
 
         $('[save-workshop]').click(function () {
-            if (($('#wk-name option:selected').val() == '' || $('#wk-name option:selected').val() == '0')&&
+            if (($('#wk-name option:selected').val() == '' || $('#wk-name option:selected').val() == '0') &&
                 !$('.wk-select-box').hasClass('hide')) {
                 GlobalCommon.ShowMessageDialog('Bạn chưa chọn Phân xưởng.', function () { }, "Lỗi nhập liệu");
             }
@@ -481,7 +484,7 @@ GPRO.PhanTich = function () {
                     Global.Data.ModelProAna.Name = $('#wk-new-name').val();
                     Global.Data.ModelProAna.ObjectId = 0;
                 }
-                
+
                 SaveCommoAnalysis();
                 $('[cancel-workshop]').click();
             }
@@ -516,9 +519,9 @@ GPRO.PhanTich = function () {
                     //thêm mới cả 2
                     Global.Data.ModelProAna.Description = $('#phaseGroup-Description').val();
                     Global.Data.ModelProAna.Name = $('#phaseGroup-new-name').val();
-                    Global.Data.ModelProAna.ObjectId =0;
+                    Global.Data.ModelProAna.ObjectId = 0;
                 }
-             
+
                 SaveCommoAnalysis();
 
             }
@@ -556,7 +559,7 @@ GPRO.PhanTich = function () {
             ReloadListTimePrepare();
             Global.Data.PhaseManiVerDetailArray.length = 0;
             Global.Data.isInsertPhase = true;
-            AddEmptyObject();
+            //AddEmptyObject();
             ReloadListMani_Arr();
             $('div.divParent').attr('currentPoppup', Global.Element.jtablePhase.toUpperCase());
             Global.Data.Video = '';
@@ -718,6 +721,35 @@ GPRO.PhanTich = function () {
 
     }
 
+    function GetProGroupSelect(controlName) {
+        $.ajax({
+            url: '/Productgroup/GetSelectList',
+            type: 'POST',
+            data: JSON.stringify({ 'proGroupId': 0 }),
+            contentType: 'application/json charset=utf-8',
+            success: function (data) {
+                GlobalCommon.CallbackProcess(data, function () {
+                    if (data.Result == "OK") {
+                        if (data.Data.length > 0) {
+                            var str = '';
+                            if (data.Data.length > 0) {
+                                $.each(data.Data, function (index, item) {
+                                    str += ' <option value="' + item.Value + '">' + item.Name + '</option>';
+                                });
+                            }
+                            $('#' + controlName).empty().append(str).change();
+                            $('[' + controlName + ']').empty().append(str).change();
+                            $('#' + controlName).trigger('liszt:updated');
+                        }
+                    }
+                }, false, '', true, true, function () {
+                    var msg = GlobalCommon.GetErrorMessage(data);
+                    GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+                });
+            }
+        });
+    }
+
     /*********************************************** LIBRARY ***********************************************************/
     function GetPhasesForSuggest() {
         $.ajax({
@@ -860,7 +892,7 @@ GPRO.PhanTich = function () {
         $.ajax({
             url: '/productgroup/GetSelectList',
             type: 'POST',
-            data: '',
+            data: JSON.stringify({ 'proGroupId': $('#pt-product-type').val() }),
             contentType: 'application/json charset=utf-8',
             success: function (data) {
                 GlobalCommon.CallbackProcess(data, function () {
@@ -943,7 +975,7 @@ GPRO.PhanTich = function () {
 
                             if (data.Data != null && data.Data.CommoAna != null && data.Data.CommoAna.length > 0) {
                                 $.each(data.Data.CommoAna, function (i, item) {
-                                    if (Global.Data.useTKC ||item.Name != 'Thiết kế chuyền') {
+                                    if (Global.Data.useTKC || item.Name != 'Thiết kế chuyền') {
                                         var obj = {
                                             'id': item.Id,
                                             'parentid': parentId,
@@ -1013,7 +1045,7 @@ GPRO.PhanTich = function () {
 
                         if (data.Data != null && data.Data.CommoAna != null && data.Data.CommoAna.length > 0) {
                             $.each(data.Data.CommoAna, function (i, item) {
-                                if (Global.Data.useTKC ||item.Name != 'Thiết kế chuyền') {
+                                if (Global.Data.useTKC || item.Name != 'Thiết kế chuyền') {
                                     var obj = {
                                         'id': item.Id,
                                         'parentid': parentId,
@@ -1123,19 +1155,19 @@ GPRO.PhanTich = function () {
                     visibility: 'fixed',
                     title: "Tên Công Đoạn",
                     width: "25%",
-                    display: function (data) {
-                        var txt = $('<input class="form-control"  type="text" value="' + data.record.Name + '" />');
-                        txt.keypress(function (e) {
-                            var charCode = (e.which) ? e.which : event.keyCode;
-                            if (charCode == 13) {
-                                UpdatePhaseName(data.record.Id, txt.val());
-                            }
-                        });
-                        txt.focusout(function (e) {
-                            ReloadListPhase_View();
-                        });
-                        return txt;
-                    }
+                    //display: function (data) {
+                    //    var txt = $('<input class="form-control"  type="text" value="' + data.record.Name + '" />');
+                    //    txt.keypress(function (e) {
+                    //        var charCode = (e.which) ? e.which : event.keyCode;
+                    //        if (charCode == 13) {
+                    //            UpdatePhaseName(data.record.Id, txt.val());
+                    //        }
+                    //    });
+                    //    txt.focusout(function (e) {
+                    //        ReloadListPhase_View();
+                    //    });
+                    //    return txt;
+                    //}
                 },
                 WorkerLevelId: {
                     title: "Bậc thợ",
@@ -1158,18 +1190,31 @@ GPRO.PhanTich = function () {
                     width: "5%",
                     sorting: false
                 },
-                action: {
-                    title: '',
-                    width: '1%',
-                    sorting: false,
+                Status: {
+                    title: 'Trạng thái',
+                    width: '5%',
                     display: function (data) {
-                        var text = $('<i   title="Copy công đoạn" class="fa fa-files-o clickable blue"  ></i>');
-                        text.click(function () {
-                            CopyPhase(data.record.Id);
-                        });
-                        return text;
+                        let cls = 'normal-text';
+                        switch (data.record.Status) {
+                            case 'Chờ duyệt': cls = 'danger-text'; break;
+                            case 'Đã duyệt': cls = 'primary-text'; break;
+                            default: break;
+                        }
+                        return `<span class='${cls}'>${data.record.Status}</span>`;
                     }
                 },
+                //action: {
+                //    title: '',
+                //    width: '1%',
+                //    sorting: false,
+                //    display: function (data) {
+                //        var text = $('<i   title="Copy công đoạn" class="fa fa-files-o clickable blue"  ></i>');
+                //        text.click(function () {
+                //            CopyPhase(data.record.Id);
+                //        });
+                //        return text;
+                //    }
+                //},
                 Excel: {
                     title: '',
                     width: '2%',
@@ -1238,7 +1283,7 @@ GPRO.PhanTich = function () {
                                     Global.Data.PhaseManiVerDetailArray.push(obj);
                                 });
                             }
-                            AddEmptyObject();
+                            //AddEmptyObject();
                             ReloadListMani_Arr();
                             $('[percentequipment]').val(data.record.PercentWasteEquipment);
                             $('[percentmanipulation]').val(data.record.PercentWasteManipulation);
@@ -1250,7 +1295,8 @@ GPRO.PhanTich = function () {
                             var video = document.getElementsByTagName('video')[0];
                             var sources = video.getElementsByTagName('source');
                             if (data.record.Video) {
-                                $('#video-info').html(data.record.Video.split('|')[1] + '  <i onclick="removeVideo()" title="Gỡ video" class="fa fa-trash-o red clickable"></i>')
+                                //  $('#video-info').html(data.record.Video.split('|')[1] + '  <i onclick="removeVideo()" title="Gỡ video" class="fa fa-trash-o red clickable"></i>')
+                                $('#video-info').html(data.record.Video.split('|')[1])
 
                                 sources[0].src = data.record.Video.split('|')[0];
                                 sources[1].src = data.record.Video.split('|')[0];
@@ -1260,20 +1306,20 @@ GPRO.PhanTich = function () {
                         return text;
                     }
                 },
-                Delete: {
-                    title: '',
-                    width: "3%",
-                    sorting: false,
-                    display: function (data) {
-                        var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
-                        text.click(function () {
-                            GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
-                                DeletePhase(data.record.Id);
-                            }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
-                        });
-                        return text;
-                    }
-                }
+                //Delete: {
+                //    title: '',
+                //    width: "3%",
+                //    sorting: false,
+                //    display: function (data) {
+                //        var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
+                //        text.click(function () {
+                //            GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
+                //                DeletePhase(data.record.Id);
+                //            }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
+                //        });
+                //        return text;
+                //    }
+                //}
             },
         });
     }
@@ -1364,7 +1410,7 @@ GPRO.PhanTich = function () {
                         $('#phaseID').val('0');
                         $('#islibs').prop('checked', false);
                         Global.Data.PhaseManiVerDetailArray.length = 0;
-                        AddEmptyObject();
+                        //AddEmptyObject();
                         ReloadListMani_Arr();
                         $('#phase-code').html(((Global.Data.PhaseAutoCode == null || Global.Data.PhaseAutoCode == '' ? '' : (Global.Data.PhaseAutoCode + '-')) + (Global.Data.phaseLastIndex + 1)));
                         UpdateIntWaste();
@@ -1511,7 +1557,7 @@ GPRO.PhanTich = function () {
                                 Global.Data.PhaseManiVerDetailArray.push(obj);
                             });
                         }
-                        AddEmptyObject();
+                        //AddEmptyObject();
                         ReloadListMani_Arr();
                         $('[percentequipment]').val(data.Records.PercentWasteEquipment);
                         $('[percentmanipulation]').val(data.Records.PercentWasteManipulation);
@@ -1921,8 +1967,8 @@ GPRO.PhanTich = function () {
         });
 
         $('#equipmentName').click(function () {
-            ReloadListEquipment(); $('#' + Global.Element.CreatePhasePopup).hide();
-            $('div.divParent').attr('currentPoppup', Global.Element.PopupChooseEquipment.toUpperCase());
+           // ReloadListEquipment(); $('#' + Global.Element.CreatePhasePopup).hide();
+            //$('div.divParent').attr('currentPoppup', Global.Element.PopupChooseEquipment.toUpperCase());
         });
 
         $('[chooseequipment_popupclose]').click(function () {
@@ -1938,13 +1984,13 @@ GPRO.PhanTich = function () {
             title: 'Danh Sách Thao Tác',
             pageSize: 100,
             pageSizeChange: true,
-            selectShow: true,
+            selectShow: false,
             sorting: false,
             actions: {
                 listAction: Global.Data.PhaseManiVerDetailArray,
             },
             messages: {
-                selectShow: 'Ẩn hiện cột'
+                // selectShow: 'Ẩn hiện cột'
             },
             fields: {
                 Id: {
@@ -1956,196 +2002,199 @@ GPRO.PhanTich = function () {
                 OrderIndex: {
                     title: "STT",
                     width: "5%",
-                    display: function (data) {
-                        var txt = $('<input class="form-control center" stt type="text" value =\'' + data.record.OrderIndex + '\' />');
-                        txt.change(function () {
-                            if (data.record.OrderIndex == Global.Data.PhaseManiVerDetailArray.length) {
-                                GlobalCommon.ShowMessageDialog('Đây là Thao Tác rỗng không thể thay đỗi Chèn vào vị trí khác được.',
-                                    function () { }, "Thao Tác Rỗng");
-                                txt.val(data.record.OrderIndex);
-                            }
-                            else {
-                                var Newindex = parseInt(txt.val());
-                                var OldIndex = data.record.OrderIndex;
-                                if (Newindex <= 0 || Newindex >= Global.Data.PhaseManiVerDetailArray.length) {
-                                    GlobalCommon.ShowMessageDialog('Số Thứ Tự Thao Tác phải lớn hơn 0 và nhỏ hơn ' + Global.Data.PhaseManiVerDetailArray.length + '.',
-                                        function () { }, "Số Thứ Tự Thao Tác không hợp lệ");
-                                    txt.val(data.record.OrderIndex);
-                                }
-                                else {
-                                    var objTemp = Global.Data.PhaseManiVerDetailArray[OldIndex - 1];
-                                    objTemp.OrderIndex = Newindex;
-                                    Global.Data.PhaseManiVerDetailArray.splice(OldIndex - 1, 1);
-                                    Global.Data.PhaseManiVerDetailArray.splice(Newindex - 1, 0, objTemp);
-                                    if (Newindex < OldIndex) {
-                                        for (var i = Newindex; i < Global.Data.PhaseManiVerDetailArray.length; i++) {
-                                            Global.Data.PhaseManiVerDetailArray[i].OrderIndex = i + 1;
-                                        }
-                                    }
-                                    else {
-                                        for (var i = 0; i < Global.Data.PhaseManiVerDetailArray.length; i++) {
-                                            if (i + 1 != Newindex)
-                                                Global.Data.PhaseManiVerDetailArray[i].OrderIndex = i + 1;
-                                        }
-                                    }
-
-                                    //sorting array
-                                    Global.Data.PhaseManiVerDetailArray.sort(function (a, b) {
-                                        var nameA = a.OrderIndex, nameB = b.OrderIndex;
-                                        if (nameA < nameB)
-                                            return -1;
-                                        if (nameA > nameB)
-                                            return 1;
-                                        return 0;
-                                    });
-                                    ReloadListMani_Arr();
-                                }
-                            }
-                        });
-                        //txt.click(function () { txt.select(); })
-                        return txt;
-                    }
+                    /*  display: function (data) {
+                          var txt = $('<input class="form-control center" stt type="text" value =\'' + data.record.OrderIndex + '\' />');
+                          txt.change(function () {
+                              if (data.record.OrderIndex == Global.Data.PhaseManiVerDetailArray.length) {
+                                  GlobalCommon.ShowMessageDialog('Đây là Thao Tác rỗng không thể thay đỗi Chèn vào vị trí khác được.',
+                                      function () { }, "Thao Tác Rỗng");
+                                  txt.val(data.record.OrderIndex);
+                              }
+                              else {
+                                  var Newindex = parseInt(txt.val());
+                                  var OldIndex = data.record.OrderIndex;
+                                  if (Newindex <= 0 || Newindex >= Global.Data.PhaseManiVerDetailArray.length) {
+                                      GlobalCommon.ShowMessageDialog('Số Thứ Tự Thao Tác phải lớn hơn 0 và nhỏ hơn ' + Global.Data.PhaseManiVerDetailArray.length + '.',
+                                          function () { }, "Số Thứ Tự Thao Tác không hợp lệ");
+                                      txt.val(data.record.OrderIndex);
+                                  }
+                                  else {
+                                      var objTemp = Global.Data.PhaseManiVerDetailArray[OldIndex - 1];
+                                      objTemp.OrderIndex = Newindex;
+                                      Global.Data.PhaseManiVerDetailArray.splice(OldIndex - 1, 1);
+                                      Global.Data.PhaseManiVerDetailArray.splice(Newindex - 1, 0, objTemp);
+                                      if (Newindex < OldIndex) {
+                                          for (var i = Newindex; i < Global.Data.PhaseManiVerDetailArray.length; i++) {
+                                              Global.Data.PhaseManiVerDetailArray[i].OrderIndex = i + 1;
+                                          }
+                                      }
+                                      else {
+                                          for (var i = 0; i < Global.Data.PhaseManiVerDetailArray.length; i++) {
+                                              if (i + 1 != Newindex)
+                                                  Global.Data.PhaseManiVerDetailArray[i].OrderIndex = i + 1;
+                                          }
+                                      }
+  
+                                      //sorting array
+                                      Global.Data.PhaseManiVerDetailArray.sort(function (a, b) {
+                                          var nameA = a.OrderIndex, nameB = b.OrderIndex;
+                                          if (nameA < nameB)
+                                              return -1;
+                                          if (nameA > nameB)
+                                              return 1;
+                                          return 0;
+                                      });
+                                      ReloadListMani_Arr();
+                                  }
+                              }
+                          });
+                          //txt.click(function () { txt.select(); })
+                          return txt;
+                      }*/
                 },
                 ManipulationCode: {
                     title: "Mã",
                     width: "15%",
-                    display: function (data) {
-                        var txt = $('<input class="form-control" code_' + data.record.OrderIndex + ' list="manipulations" type="text" value="' + data.record.ManipulationCode + '" />');
-                        txt.change(function () {
-                            var code = txt.val().trim().toUpperCase();
-                            if (Global.Data.ManipulationList.length > 0 && code != '') {
-                                code = code.toUpperCase();
-                                var IsNormalCode = true;
-                                var flag = false;
-                                if (code.length >= 4) {
-                                    if (code.substring(0, 1) == "C" || code.substring(0, 2) == "SE") {
-                                        LoadChooseManipulationPopup(code, function (dataReturn) {
-                                            flag = false;
-                                            if (typeof (dataReturn) != 'undefined' && dataReturn != null) {
-                                                Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].ManipulationName = dataReturn.Name;
-                                                Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].ManipulationCode = dataReturn.Code;
-                                                Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TMUEquipment = dataReturn.StandardTMU;
-                                                Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TMUManipulation = 0;
-                                                Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TotalTMU = Math.round((Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].Loop * dataReturn.StandardTMU) * 1000) / 1000;
-                                                if (Global.Data.PhaseManiVerDetailArray.length == data.record.OrderIndex) {
-                                                    AddEmptyObject();
-                                                    $('[code_' + Global.Data.PhaseManiVerDetailArray.length + ']').focus();
-                                                    $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').height());
-                                                }
-                                                else
-                                                    $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').scrollTop());
-                                                ReloadListMani_Arr();
-                                                UpdateIntWaste();
-                                                $('[code_' + Global.Data.PhaseManiVerDetailArray.length + ']').focus();
-                                                $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').height());
-                                            }
-                                        });
-                                        IsNormalCode = false;
-                                    }
-                                    else if (code.substring(0, 3) == "SPT") {
-                                        if (isNaN(code.substring(3, code.length))) //ko phai số
-                                            GlobalCommon.ShowMessageDialog('Đuôi sau SPT phải là số. Vui lòng nhập lại.', function () { }, "Thông báo");
-                                        else {
-                                            var _tmu = parseInt(code.substring(3, code.length));
-                                            Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].ManipulationName = "";
-                                            Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].ManipulationCode = code;
-                                            Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TMUEquipment = _tmu;
-                                            Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TMUManipulation = 0;
-                                            Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TotalTMU = Math.round((Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].Loop * _tmu) * 1000) / 1000;
-                                            if (Global.Data.PhaseManiVerDetailArray.length == data.record.OrderIndex) {
-                                                AddEmptyObject();
-                                                $('[code_' + Global.Data.PhaseManiVerDetailArray.length + ']').focus();
-                                                $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').height());
-                                            }
-                                            else
-                                                $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').scrollTop());
-                                            ReloadListMani_Arr();
-                                            UpdateIntWaste();
-                                            $('[code_' + Global.Data.PhaseManiVerDetailArray.length + ']').focus();
-                                            $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').height());
-                                        }
-                                        IsNormalCode = false;
-                                    }
-                                }
-                                if (IsNormalCode) {
-                                    $.each(Global.Data.ManipulationList, function (i, item) {
-                                        if (item.Code.trim() == code || (item.Name != '' && item.Name.trim().toUpperCase() == code)) {
-                                            $.each(Global.Data.PhaseManiVerDetailArray, function (ii, mani) {
-                                                if (mani.OrderIndex == data.record.OrderIndex) {
-                                                    mani.ManipulationId = item.Id;
-                                                    mani.ManipulationCode = item.Code;
-                                                    mani.ManipulationName = item.Name;
-                                                    mani.TMUManipulation = item.isUseMachine ? 0 : item.StandardTMU;
-                                                    mani.TMUEquipment = item.isUseMachine ? item.StandardTMU : 0;
-                                                    mani.TotalTMU = Math.round((mani.Loop * item.StandardTMU) * 1000) / 1000;
-                                                    flag = true;
-                                                    return false;
-                                                }
-                                            });
-                                            return false;
-                                        }
-                                    });
-                                    if (!flag) {
-                                        GlobalCommon.ShowMessageDialog('Không tìm thấy thông tin của Thao Tác này trong Thư Viện.\nVui lòng kiểm tra lại Thư Viện thao Tác.', function () { }, "Không Tìm Thấy Thao Tác");
-                                    }
-                                }
-                                if (flag) {
-                                    if (Global.Data.PhaseManiVerDetailArray.length == data.record.OrderIndex)
-                                        AddEmptyObject();
-                                    ReloadListMani_Arr();
-                                    UpdateIntWaste();
-                                    if (Global.Data.PhaseManiVerDetailArray.length - 1 == data.record.OrderIndex) {
-                                        $('[code_' + Global.Data.PhaseManiVerDetailArray.length + ']').focus();
-                                        $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').height());
-                                    }
-                                    else
-                                        $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').scrollTop());
-                                }
-                            }
-                        });
-                        txt.keypress(function (e) {
-                            var charCode = (e.which) ? e.which : event.keyCode;
-                            if (charCode == 13) {
-                                txt.change();
-                            }
-                        });
-                        //txt.click(function () { txt.select(); })
-                        return txt;
-                    }
+                    /*   display: function (data) {
+                           var txt = $('<input class="form-control" code_' + data.record.OrderIndex + ' list="manipulations" type="text" value="' + data.record.ManipulationCode + '" />');
+                           txt.change(function () {
+                               var code = txt.val().trim().toUpperCase();
+                               if (Global.Data.ManipulationList.length > 0 && code != '') {
+                                   code = code.toUpperCase();
+                                   var IsNormalCode = true;
+                                   var flag = false;
+                                   if (code.length >= 4) {
+                                       if (code.substring(0, 1) == "C" || code.substring(0, 2) == "SE") {
+                                           LoadChooseManipulationPopup(code, function (dataReturn) {
+                                               flag = false;
+                                               if (typeof (dataReturn) != 'undefined' && dataReturn != null) {
+                                                   Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].ManipulationName = dataReturn.Name;
+                                                   Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].ManipulationCode = dataReturn.Code;
+                                                   Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TMUEquipment = dataReturn.StandardTMU;
+                                                   Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TMUManipulation = 0;
+                                                   Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TotalTMU = Math.round((Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].Loop * dataReturn.StandardTMU) * 1000) / 1000;
+                                                   if (Global.Data.PhaseManiVerDetailArray.length == data.record.OrderIndex) {
+                                                       AddEmptyObject();
+                                                       $('[code_' + Global.Data.PhaseManiVerDetailArray.length + ']').focus();
+                                                       $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').height());
+                                                   }
+                                                   else
+                                                       $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').scrollTop());
+                                                   ReloadListMani_Arr();
+                                                   UpdateIntWaste();
+                                                   $('[code_' + Global.Data.PhaseManiVerDetailArray.length + ']').focus();
+                                                   $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').height());
+                                               }
+                                           });
+                                           IsNormalCode = false;
+                                       }
+                                       else if (code.substring(0, 3) == "SPT") {
+                                           if (isNaN(code.substring(3, code.length))) //ko phai số
+                                               GlobalCommon.ShowMessageDialog('Đuôi sau SPT phải là số. Vui lòng nhập lại.', function () { }, "Thông báo");
+                                           else {
+                                               var _tmu = parseInt(code.substring(3, code.length));
+                                               Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].ManipulationName = "";
+                                               Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].ManipulationCode = code;
+                                               Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TMUEquipment = _tmu;
+                                               Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TMUManipulation = 0;
+                                               Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TotalTMU = Math.round((Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].Loop * _tmu) * 1000) / 1000;
+                                               if (Global.Data.PhaseManiVerDetailArray.length == data.record.OrderIndex) {
+                                                   AddEmptyObject();
+                                                   $('[code_' + Global.Data.PhaseManiVerDetailArray.length + ']').focus();
+                                                   $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').height());
+                                               }
+                                               else
+                                                   $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').scrollTop());
+                                               ReloadListMani_Arr();
+                                               UpdateIntWaste();
+                                               $('[code_' + Global.Data.PhaseManiVerDetailArray.length + ']').focus();
+                                               $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').height());
+                                           }
+                                           IsNormalCode = false;
+                                       }
+                                   }
+                                   if (IsNormalCode) {
+                                       $.each(Global.Data.ManipulationList, function (i, item) {
+                                           if (item.Code.trim() == code || (item.Name != '' && item.Name.trim().toUpperCase() == code)) {
+                                               $.each(Global.Data.PhaseManiVerDetailArray, function (ii, mani) {
+                                                   if (mani.OrderIndex == data.record.OrderIndex) {
+                                                       mani.ManipulationId = item.Id;
+                                                       mani.ManipulationCode = item.Code;
+                                                       mani.ManipulationName = item.Name;
+                                                       mani.TMUManipulation = item.isUseMachine ? 0 : item.StandardTMU;
+                                                       mani.TMUEquipment = item.isUseMachine ? item.StandardTMU : 0;
+                                                       mani.TotalTMU = Math.round((mani.Loop * item.StandardTMU) * 1000) / 1000;
+                                                       flag = true;
+                                                       return false;
+                                                   }
+                                               });
+                                               return false;
+                                           }
+                                       });
+                                       if (!flag) {
+                                           GlobalCommon.ShowMessageDialog('Không tìm thấy thông tin của Thao Tác này trong Thư Viện.\nVui lòng kiểm tra lại Thư Viện thao Tác.', function () { }, "Không Tìm Thấy Thao Tác");
+                                       }
+                                   }
+                                   if (flag) {
+                                       if (Global.Data.PhaseManiVerDetailArray.length == data.record.OrderIndex)
+                                           AddEmptyObject();
+                                       ReloadListMani_Arr();
+                                       UpdateIntWaste();
+                                       if (Global.Data.PhaseManiVerDetailArray.length - 1 == data.record.OrderIndex) {
+                                           $('[code_' + Global.Data.PhaseManiVerDetailArray.length + ']').focus();
+                                           $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').height());
+                                       }
+                                       else
+                                           $('#Create-ManipulationVersion-Popup .modal-body').scrollTop($('#Create-ManipulationVersion-Popup .modal-body').scrollTop());
+                                   }
+                               }
+                           });
+                           txt.keypress(function (e) {
+                               var charCode = (e.which) ? e.which : event.keyCode;
+                               if (charCode == 13) {
+                                   txt.change();
+                               }
+                           });
+                           //txt.click(function () { txt.select(); })
+                           return txt;
+                       }
+                       */
                 },
                 Description: {
                     title: "Mô Tả",
                     width: "35%",
                     display: function (data) {
-                        var txt = $('<input class="form-control" des type="text" value="' + data.record.ManipulationName + '" />');
-                        txt.change(function () {
-                            Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].ManipulationName = txt.val();
-                        });
-                        txt.keypress(function (e) {
-                            var charCode = (e.which) ? e.which : event.keyCode;
-                            if (charCode == 13) {
-                                txt.change();
-                            }
-                        });
-                         txt.click(function () { txt.select(); })
-                        return txt;
+                        /*      var txt = $('<input class="form-control" des type="text" value="' + data.record.ManipulationName + '" />');
+                         txt.change(function () {
+                             Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].ManipulationName = txt.val();
+                         });
+                         txt.keypress(function (e) {
+                             var charCode = (e.which) ? e.which : event.keyCode;
+                             if (charCode == 13) {
+                                 txt.change();
+                             }
+                         });
+                          txt.click(function () { txt.select(); })
+                         return txt; */
+                        return data.record.ManipulationName;
                     }
+
                 },
                 Loop: {
                     title: "Tần Suất",
                     width: "5%",
-                    display: function (data) {
-                        var txt = $('<input class="form-control center" loop type="text" value="' + data.record.Loop + '"  onkeypress="return isNumberKey(event)"/>');
-                        txt.change(function () {
-                            var loop = parseFloat(txt.val());
-                            Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].Loop = txt.val();
-                            Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TotalTMU = Math.round((Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TMUEquipment * loop + Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TMUManipulation * loop) * 1000) / 1000;
-                            ReloadListMani_Arr();
-                            UpdateIntWaste();
-                        });
-                        //txt.click(function () { txt.select(); })
-                        return txt;
-                    }
+                    /*  display: function (data) {
+                          var txt = $('<input class="form-control center" loop type="text" value="' + data.record.Loop + '"  onkeypress="return isNumberKey(event)"/>');
+                          txt.change(function () {
+                              var loop = parseFloat(txt.val());
+                              Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].Loop = txt.val();
+                              Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TotalTMU = Math.round((Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TMUEquipment * loop + Global.Data.PhaseManiVerDetailArray[data.record.OrderIndex - 1].TMUManipulation * loop) * 1000) / 1000;
+                              ReloadListMani_Arr();
+                              UpdateIntWaste();
+                          });
+                          //txt.click(function () { txt.select(); })
+                          return txt;
+                      }*/
                 },
                 TMUEquipment: {
                     title: "TMU Thiết Bị (chuẩn)",
@@ -2171,26 +2220,27 @@ GPRO.PhanTich = function () {
                         return txt;
                     }
                 },
-                Delete: {
-                    title: '',
-                    width: "3%",
-                    sorting: false,
-                    display: function (data) {
-                        var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
-                        text.click(function () {
-                            GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
-                                var oldIndex = data.record.OrderIndex - 1;
-                                Global.Data.PhaseManiVerDetailArray.splice(oldIndex, 1);
-                                for (var i = oldIndex; i < Global.Data.PhaseManiVerDetailArray.length; i++) {
-                                    Global.Data.PhaseManiVerDetailArray[i].OrderIndex = i + 1;
-                                }
-                                ReloadListMani_Arr();
-                                UpdateIntWaste();
-                            }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
-                        });
-                        return text;
-                    }
-                }
+                /*   Delete: {
+                       title: '',
+                       width: "3%",
+                       sorting: false,
+                       display: function (data) {
+                           var text = $('<i title="Xóa" class="fa fa-trash-o"></i>');
+                           text.click(function () {
+                               GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
+                                   var oldIndex = data.record.OrderIndex - 1;
+                                   Global.Data.PhaseManiVerDetailArray.splice(oldIndex, 1);
+                                   for (var i = oldIndex; i < Global.Data.PhaseManiVerDetailArray.length; i++) {
+                                       Global.Data.PhaseManiVerDetailArray[i].OrderIndex = i + 1;
+                                   }
+                                   ReloadListMani_Arr();
+                                   UpdateIntWaste();
+                               }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
+                           });
+                           return text;
+                       }
+                   }
+                   */
             }
         });
     }
@@ -2319,7 +2369,7 @@ GPRO.PhanTich = function () {
                 $.each(data.Records, function (i, item) {
                     Global.Data.PhaseManiVerDetailArray.push(item);
                 });
-                AddEmptyObject();
+               // AddEmptyObject();
                 //split_Arr();
                 ReloadListMani_Arr();
                 UpdateIntWaste();
@@ -2459,12 +2509,12 @@ GPRO.PhanTich = function () {
     function InitListTech_Cycle() {
         $('#' + Global.Element.JtableTech_Cycle).jtable({
             title: 'Danh sách Công Đoạn',
-            selectShow: true,
+            selectShow: false,
             actions: {
                 listAction: Global.UrlAction.GetTechCycleOfCommodity,
             },
             messages: {
-                selectShow: 'Ẩn hiện cột'
+                //selectShow: 'Ẩn hiện cột'
             },
             fields: {
                 Id: {
@@ -2492,7 +2542,10 @@ GPRO.PhanTich = function () {
                 },
                 EquipmentId: {
                     title: "Thiết Bị",
-                    width: "5%"
+                    width: "5%",
+                    display: function (data) {
+                        return data.record.EquipmentName;
+                    }
                 },
                 TotalTMU: {
                     title: "TGian Chuẩn(s)",
@@ -2528,10 +2581,10 @@ GPRO.PhanTich = function () {
                     title: "Ghi chú",
                     width: "20%",
                     sorting: false,
-                    display: function (data) {
-                        txt = '<input type="text" value="' + data.record.Description + '" des />';
-                        return txt;
-                    }
+                    //display: function (data) {
+                    //    txt = '<input type="text" value="' + data.record.Description + '" des />';
+                    //    return txt;
+                    //}
                 }
             }
         });
@@ -2541,7 +2594,7 @@ GPRO.PhanTich = function () {
         $.ajax({
             url: Global.UrlAction.GetTech,
             type: 'post',
-            data: JSON.stringify({ 'parentId': parentID, 'node': node }),
+            data: JSON.stringify({ 'parentId': parentID, 'node': node, 'isGetNull': false }),
             contentType: 'application/json',
             beforeSend: function () { $('#loading').show(); },
             success: function (result) {
@@ -2550,9 +2603,10 @@ GPRO.PhanTich = function () {
                     if (result.Result == "OK") {
                         Global.Data.TechCycle_Arr.length = 0;
                         if (result.Data.Id == 0) {
+                           
                             $('#techId').val(0);
                             $('#total-worker').val(0);
-                            var str = '';
+                            /* var str = '';
                             if (result.Data.details.length > 0) {
                                 var total_time_Product = 0;
                                 $.each(result.Data.details, function (index, item) {
@@ -2563,7 +2617,7 @@ GPRO.PhanTich = function () {
                                     str += '<td >' + item.PhaseCode + '</td>';
                                     str += '<td class="red">' + item.PhaseName + '</td>';
                                     str += '<td class="blue">' + item.EquipmentCode + '</td>';
-                                    str += '<td>' + Math.round((item.StandardTMU) * 1000) / 1000 + '</td>';
+                                    str += '<td>' + Math.round((item.StandardTMU) * 1000) / 1000 + '</td>'; 
                                     str += '<td><input class="form-control" percent type="text" id="percent' + ii + '" value="100" onchange ="ResetTime_Percent(\'' + ii + '\')" /></td>';
                                     str += '<td>' + Math.round(((item.StandardTMU)) * 1000) / 1000 + '</td>';
                                     str += '<td>0</td>';
@@ -2590,16 +2644,21 @@ GPRO.PhanTich = function () {
                                 //tong gio sx 1 san pham
                                 $('#time-product').html(Math.round((total_time_Product) * 1000) / 1000);
                                 Global.Data.TimeProductPerCommodity = Math.round((total_time_Product) * 1000) / 1000;
-                                ResetWorkingBox(0); 
+                                ResetWorkingBox(0);
 
                                 $('#qtcn_createUser').html(result.Data.CreateBy);
-                                $('#qtcn_createDate').html( result.Data.CreateAt );
+                                $('#qtcn_createDate').html(result.Data.CreateAt);
                             }
                             else
                                 GlobalCommon.ShowMessageDialog("Mã hàng này chưa có công đoạn nào được phân tích. Vui lòng kiểm tra lại.", function () { }, 'Thông báo');
                             if (Global.Data.warningChuaCoQTCN)
                                 GlobalCommon.ShowMessageDialog('Quy trình công nghệ chưa được tạo. Bạn cần phải lưu quy trình công nghệ trước rồi mới có thể tạo thiết kế chuyền được !.', function () { }, "Lỗi thao tác");
+                            */
 
+                            $('#' + Global.Element.JtableTech_Cycle).find('tbody').empty().append('<tr><td colspan="9">Không có dữ liệu.</td></tr>'); 
+                            GlobalCommon.ShowMessageDialog('Mã hàng chưa có quy trình công nghệ!.', function () { }, "Lỗi thao tác");
+                            ResetWorkingBox(0);
+                           
                         }
                         else {
                             $('#techId').val(result.Data.Id);
@@ -2699,7 +2758,7 @@ GPRO.PhanTich = function () {
                         if (Global.Data.AfterSave) {
                             window.location.href = Global.Data.techExportUrl;
                             Global.Data.AfterSave = false;
-                        } 
+                        }
                         else
                             GlobalCommon.ShowMessageDialog('Lưu thành công.', function () { }, "Thông báo");
                     }
@@ -2926,7 +2985,7 @@ GPRO.PhanTich = function () {
                         $('#' + Global.Element.CreateWorkShopPopup).modal('hide');
                         $('#' + Global.Element.CreatePhaseVersionPopup).modal('hide');
                         $('#' + Global.Element.CreatePhaseGroupPopup).modal('hide');
-                        $('#phaseGroup-name,#phaseGroup-new-name,#phaseGroup-Description,#caDescription,#wk-new-name').val(''); 
+                        $('#phaseGroup-name,#phaseGroup-new-name,#phaseGroup-Description,#caDescription,#wk-new-name').val('');
 
                         $('.phaseGroup-name-select').removeClass('hide');
                         $('.phaseGroup-name-input').addClass('hide');
@@ -3253,57 +3312,61 @@ GPRO.PhanTich = function () {
         });
 
         $('#' + Global.Element.popupExportQTCN).on('shown.bs.modal', function () {
-        //    $('#' + Global.Element.PopupChooseEquipment).css('z-index', 0);
+            //    $('#' + Global.Element.PopupChooseEquipment).css('z-index', 0);
             $('div.divParent').attr('currentPoppup', Global.Element.popupExportQTCN.toUpperCase());
         });
 
         $('[texch-export1]').click(function () {
-            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 1;
-            if (Global.Data.AfterSave) {
-                window.location.href = Global.Data.techExportUrl;
-                Global.Data.AfterSave = false;
-            }
-            else {
-                Global.Data.AfterSave = true;
-               
-                $('[techsave]').click(); 
-            }
+            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 1 +"&isGetNull=false";
+            window.location.href = Global.Data.techExportUrl;
+            //if (Global.Data.AfterSave) {
+            //    window.location.href = Global.Data.techExportUrl;
+            //    Global.Data.AfterSave = false;
+            //}
+            //else {
+            //    Global.Data.AfterSave = true;
+
+            //    $('[techsave]').click();
+            //}
         });
         $('[texch-export2]').click(function () {
-            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 2;
-            if (Global.Data.AfterSave) {
-                window.location.href = Global.Data.techExportUrl;
-                Global.Data.AfterSave = false;
-            }
-            else {
-                Global.Data.AfterSave = true;
-             
-                $('[techsave]').click();
-            }
+            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 2 + "&isGetNull=false";
+            window.location.href = Global.Data.techExportUrl;
+            //if (Global.Data.AfterSave) {
+            //    window.location.href = Global.Data.techExportUrl;
+            //    Global.Data.AfterSave = false;
+            //}
+            //else {
+            //    Global.Data.AfterSave = true;
+
+            //    $('[techsave]').click();
+            //}
         });
         $('[texch-export3]').click(function () {
-            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 3;
-            if (Global.Data.AfterSave) {
-                window.location.href = Global.Data.techExportUrl;
-                Global.Data.AfterSave = false;
-            }
-            else {
-                Global.Data.AfterSave = true;
-         
-                $('[techsave]').click();
-            }
+            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 3 + "&isGetNull=false";
+            window.location.href = Global.Data.techExportUrl;
+            //if (Global.Data.AfterSave) {
+            //    window.location.href = Global.Data.techExportUrl;
+            //    Global.Data.AfterSave = false;
+            //}
+            //else {
+            //    Global.Data.AfterSave = true;
+
+            //    $('[techsave]').click();
+            //}
         });
         $('[texch-export4]').click(function () {
-            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 4;
-            if (Global.Data.AfterSave) {
-                window.location.href = Global.Data.techExportUrl;
-                Global.Data.AfterSave = false;
-            }
-            else {
-                Global.Data.AfterSave = true;
-               
-                $('[techsave]').click();
-            }
+            Global.Data.techExportUrl = Global.UrlAction.ExportToExcel + "?parentId=" + Global.Data.ParentID + "&fileType=" + 4 + "&isGetNull=false";
+            window.location.href = Global.Data.techExportUrl;
+            //if (Global.Data.AfterSave) {
+            //    window.location.href = Global.Data.techExportUrl;
+            //    Global.Data.AfterSave = false;
+            //}
+            //else {
+            //    Global.Data.AfterSave = true;
+
+            //    $('[techsave]').click();
+            //}
         });
     }
 

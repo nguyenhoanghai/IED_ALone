@@ -49,6 +49,12 @@ namespace GPRO.Core.Interface
 			get;
 			set;
 		}
+		bool IsPhaseApprover
+		{
+			get;
+			set;
+		}
+		 
 		int UserID
 		{
 			get;

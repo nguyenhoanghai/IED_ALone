@@ -17,6 +17,7 @@ namespace GPRO_IED_A.Data
         public T_TimePrepare()
         {
             this.T_CA_Phase_TimePrepare = new HashSet<T_CA_Phase_TimePrepare>();
+            this.T_PhaseGroup_Phase = new HashSet<T_PhaseGroup_Phase>();
         }
     
         public int Id { get; set; }
@@ -35,5 +36,6 @@ namespace GPRO_IED_A.Data
     
         public virtual ICollection<T_CA_Phase_TimePrepare> T_CA_Phase_TimePrepare { get; set; }
         public virtual T_TimeTypePrepare T_TimeTypePrepare { get; set; }
+        public virtual ICollection<T_PhaseGroup_Phase> T_PhaseGroup_Phase { get; set; }
     }
 }

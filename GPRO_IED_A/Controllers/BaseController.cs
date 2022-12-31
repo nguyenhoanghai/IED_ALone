@@ -11,6 +11,7 @@ namespace GPRO_IED_A.Controllers
         public string defaultPage = string.Empty;
         public bool isAuthenticate = false;
         public bool isOwner = false;
+        public bool isPhaseApprover = false;
         public BaseController()
         {
         }
@@ -28,8 +29,9 @@ namespace GPRO_IED_A.Controllers
                 CheckLogin(requestContext, App_Global.AppGlobal.ProductCode);
                 isAuthenticate = Authentication.isAuthenticate;
                 isOwner = Authentication.IsOwner;
+                isPhaseApprover = Authentication.IsPhaseApprover;
             }
-            catch   { }
+            catch { }
         }
     }
 }

@@ -33,6 +33,7 @@ namespace GPRO.Core.Security
             }
         }
         public static bool IsOwner { get { return (Authentication.User != null ? Authentication.User.IsOwner : false); } }
+        public static bool IsPhaseApprover { get { return (Authentication.User != null ? Authentication.User.IsPhaseApprover : false); } }
 
         private static IUserService _user = null;
         public static IUserService User

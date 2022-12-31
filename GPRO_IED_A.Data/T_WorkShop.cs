@@ -18,6 +18,8 @@ namespace GPRO_IED_A.Data
         {
             this.T_Line = new HashSet<T_Line>();
             this.HR_Employee = new HashSet<HR_Employee>();
+            this.T_CA_Phase = new HashSet<T_CA_Phase>();
+            this.T_UsingTechLog = new HashSet<T_UsingTechLog>();
         }
     
         public int Id { get; set; }
@@ -35,5 +37,7 @@ namespace GPRO_IED_A.Data
     
         public virtual ICollection<T_Line> T_Line { get; set; }
         public virtual ICollection<HR_Employee> HR_Employee { get; set; }
+        public virtual ICollection<T_CA_Phase> T_CA_Phase { get; set; }
+        public virtual ICollection<T_UsingTechLog> T_UsingTechLog { get; set; }
     }
 }

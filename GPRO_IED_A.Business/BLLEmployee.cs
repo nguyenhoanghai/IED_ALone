@@ -188,7 +188,7 @@ namespace GPRO_IED_A.Business
                             Birthday = x.Birthday,
                             Id = x.Id,
                             Code = x.Code,
-                            Email = x.Email, 
+                            Email = x.Email,
                             Mobile = x.Mobile,
                             Name = x.Name,
                             WorkshopId = x.WorkshopId ?? 0,
@@ -239,7 +239,7 @@ namespace GPRO_IED_A.Business
                 {
                     EmployeeId = x.Id,
                     EmployeeCode = x.Code,
-                    EmployeeName =  x.Name  , 
+                    EmployeeName = x.Name,
                 }).ToList();
             };
         }
@@ -251,18 +251,20 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     var objs = new List<ModelSelectItem>();
-                    var _objs = db.HR_Employee.Where(x => !x.IsDeleted && x.LineId == lineId).Select(
+                    var _objs = db.HR_Employee.Where(x => !x.IsDeleted);
+                    if (lineId != 0)
+                        _objs = _objs.Where(x => x.LineId == lineId);
+                    if (_objs != null && _objs.Count() > 0)
+                    {
+                        objs.Add(new ModelSelectItem() { Value = 0, Name = " - -  Chọn nhân viên  - - " });
+                        objs.AddRange(_objs
+                            .Select(
                         x => new ModelSelectItem()
                         {
                             Value = x.Id,
                             Code = x.Code,
-                            Name =  x.Name  
-                        }).ToList();
-
-                    if (_objs != null && _objs.Count() > 0)
-                    {
-                        objs.Add(new ModelSelectItem() { Value = 0, Name = " - -  Chọn nhân viên  - - " });
-                        objs.AddRange(_objs);
+                            Name = x.Name
+                        }).ToList());
                     }
                     else
                         objs.Add(new ModelSelectItem() { Value = 0, Name = "  Không có nhân viên  " });
@@ -274,6 +276,7 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
+
 
     }
 }

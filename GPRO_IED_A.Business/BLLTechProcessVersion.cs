@@ -36,12 +36,12 @@ namespace GPRO_IED_A.Business
             return obj.CreatedUser == actionUser;
         }
 
-        public ExportTechProcessModel GetInfoForExport(int parentId)
+        public ExportTechProcessModel GetInfoForExport(int parentId, bool isGetNull)
         {
             ExportTechProcessModel model = null;
             try
             {
-                var techProcessInfo = Get(parentId, "");
+                var techProcessInfo = Get(parentId, "", isGetNull);
                 if (techProcessInfo != null)
                 {
                     using (db = new IEDEntities())
@@ -250,13 +250,13 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public TechProcessVersionModel Get(int parentId, string node)
+        public TechProcessVersionModel Get(int parentId, string node, bool isGetNull)
         {
             try
             {
                 using (var _db = new IEDEntities())
                 {
-                    TechProcessVersionModel techVersion = null;                     
+                    TechProcessVersionModel techVersion = null;
 
                     techVersion = _db.T_TechProcessVersion.Where(x => !x.IsDeleted && x.ParentId == parentId).Select(x => new TechProcessVersionModel()
                     {
@@ -287,7 +287,7 @@ namespace GPRO_IED_A.Business
                         #region 
                         var details = (from x in _db.T_TechProcessVersionDetail
                                        where
-                                       !x.T_CA_Phase.IsDeleted && 
+                                       !x.T_CA_Phase.IsDeleted &&
                                        !x.T_CA_Phase.T_PhaseGroup.IsDeleted &&
                                        x.TechProcessVersionId == techVersion.Id
                                        select
@@ -303,10 +303,10 @@ namespace GPRO_IED_A.Business
                                            StandardTMU = Math.Round(x.T_CA_Phase.TotalTMU, 3),
                                            Percent = x.Percent,
                                            EquipmentId = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.EquipmentId ?? 0 : 0,
-                                         //  EquipmentCode = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.T_Equipment.Code : "",
+                                           //  EquipmentCode = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.T_Equipment.Code : "",
                                            EquipmentName = x.T_CA_Phase.EquipmentId != null ? x.T_CA_Phase.T_Equipment.Name : "",
                                            EquipmentGroupCode = x.T_CA_Phase.EquipmentId.HasValue ? x.T_CA_Phase.T_Equipment.T_EquipmentGroup.GroupCode : "",
-                                           TimeByPercent = Math.Round(((x.T_CA_Phase.TotalTMU *100)/ x.Percent) , 3),
+                                           TimeByPercent = (x.Percent > 0 ? Math.Round(((x.T_CA_Phase.TotalTMU * 100) / x.Percent), 3) : 0),
                                            Worker = x.Worker,
                                            De_Percent = 0,
                                            Description = x.Description == null ? "" : x.Description,
@@ -314,9 +314,9 @@ namespace GPRO_IED_A.Business
                                            WorkerLevelId = x.T_CA_Phase.WorkerLevelId,
                                            WorkerLevelName = x.T_CA_Phase.SWorkerLevel.Name,
                                            Index = x.T_CA_Phase.Index,
-                                           Node = x.T_CA_Phase.Node ,
+                                           Node = x.T_CA_Phase.Node,
                                            ParentId = x.T_CA_Phase.ParentId
-                                       }).OrderBy(x=> x.ParentId).ThenBy(x => x.Index).ToList();
+                                       }).OrderBy(x => x.ParentId).ThenBy(x => x.Index).ToList();
 
                         details = details.GroupBy(x => x.CA_PhaseId).Select(x => x.First()).ToList();
                         techVersion.details = details;
@@ -366,54 +366,56 @@ namespace GPRO_IED_A.Business
                         }
 
                         if (!string.IsNullOrEmpty(node))
-                            techVersion.details.AddRange(_db.T_CA_Phase.Where(x => !x.IsDeleted && x.Node.Contains(node) && !phaseIds.Contains(x.Id)).Select(x => new TechProcessVerDetailModel()
-                            {
-                                Id = 0,
-                                TechProcessVersionId = 0,
-                                PhaseGroupId = x.T_PhaseGroup.Id,
-                                CA_PhaseId = x.Id,
-                                PhaseCode = x.Code,
-                                Index = x.Index,
-                                PhaseName = x.Name,
-                                StandardTMU = Math.Round(x.TotalTMU, 3),
-                                EquipmentId = x.EquipmentId != null ? x.EquipmentId ?? 0 : 0,
-                              //  EquipmentCode = x.EquipmentId != null ? x.T_Equipment.Code : "",
-                                EquipmentName = x.EquipmentId != null ? x.T_Equipment.Name : "",
-                                EquipmentGroupCode = x.EquipmentId.HasValue ? x.T_Equipment.T_EquipmentGroup.GroupCode : "",
-                                Description = x.Description == null ? "" : x.Description,
-                                Coefficient = x.SWorkerLevel.Coefficient,
-                                WorkerLevelName = x.SWorkerLevel.Name
-                            }).OrderBy(x => x.Index).ThenBy(x => x.PhaseCode).ToList());
+                            techVersion.details.AddRange(_db.T_CA_Phase.Where(x => !x.IsDeleted && x.Node.Contains(node) && !phaseIds.Contains(x.Id) && x.IsApprove)
+                                .Select(x => new TechProcessVerDetailModel()
+                                {
+                                    Id = 0,
+                                    TechProcessVersionId = 0,
+                                    PhaseGroupId = x.T_PhaseGroup.Id,
+                                    CA_PhaseId = x.Id,
+                                    PhaseCode = x.Code,
+                                    Index = x.Index,
+                                    PhaseName = x.Name,
+                                    StandardTMU = Math.Round(x.TotalTMU, 3),
+                                    EquipmentId = x.EquipmentId != null ? x.EquipmentId ?? 0 : 0,
+                                    //  EquipmentCode = x.EquipmentId != null ? x.T_Equipment.Code : "",
+                                    EquipmentName = x.EquipmentId != null ? x.T_Equipment.Name : "",
+                                    EquipmentGroupCode = x.EquipmentId.HasValue ? x.T_Equipment.T_EquipmentGroup.GroupCode : "",
+                                    Description = x.Description == null ? "" : x.Description,
+                                    Coefficient = x.SWorkerLevel.Coefficient,
+                                    WorkerLevelName = x.SWorkerLevel.Name
+                                }).OrderBy(x => x.Index).ThenBy(x => x.PhaseCode).ToList());
                         #endregion
                     }
                     else
                     {
                         techVersion = new TechProcessVersionModel();
-                        techVersion.details.AddRange(
-                            _db.T_CA_Phase
-                            .Where(x => !x.IsDeleted && x.Node.Contains(node))
-                            .Select(x => new TechProcessVerDetailModel()
-                            {
-                                Id = 0,
-                                TechProcessVersionId = 0,
-                                PhaseGroupId = x.T_PhaseGroup.Id,
-                                CA_PhaseId = x.Id,
-                                PhaseCode = x.Code,
-                                Index = x.Index,
-                                PhaseName = x.Name,
-                                StandardTMU = Math.Round(x.TotalTMU, 3),
-                                EquipmentId = x.EquipmentId != null ? x.EquipmentId ?? 0 : 0,
-                               // EquipmentCode = x.EquipmentId != null ? x.T_Equipment.Code : "",
-                                EquipmentName = x.EquipmentId != null ? x.T_Equipment.Name : "",
-                                EquipmentGroupCode = x.EquipmentId.HasValue ? x.T_Equipment.T_EquipmentGroup.GroupCode : "",
-                                Description = x.Description == null ? "" : x.Description,
-                                Node = x.Node,
-                                Coefficient = x.SWorkerLevel.Coefficient,
-                                WorkerLevelName = x.SWorkerLevel.Name
-                            })
-                            .OrderBy(x => x.Index)
-                        .ThenBy(x => x.PhaseCode)
-                        .ToList());
+                        if (isGetNull)
+                            techVersion.details.AddRange(
+                                   _db.T_CA_Phase
+                                   .Where(x => !x.IsDeleted && x.Node.Contains(node) && x.IsApprove)
+                                   .Select(x => new TechProcessVerDetailModel()
+                                   {
+                                       Id = 0,
+                                       TechProcessVersionId = 0,
+                                       PhaseGroupId = x.T_PhaseGroup.Id,
+                                       CA_PhaseId = x.Id,
+                                       PhaseCode = x.Code,
+                                       Index = x.Index,
+                                       PhaseName = x.Name,
+                                       StandardTMU = Math.Round(x.TotalTMU, 3),
+                                       EquipmentId = x.EquipmentId != null ? x.EquipmentId ?? 0 : 0,
+                                       // EquipmentCode = x.EquipmentId != null ? x.T_Equipment.Code : "",
+                                       EquipmentName = x.EquipmentId != null ? x.T_Equipment.Name : "",
+                                       EquipmentGroupCode = x.EquipmentId.HasValue ? x.T_Equipment.T_EquipmentGroup.GroupCode : "",
+                                       Description = x.Description == null ? "" : x.Description,
+                                       Node = x.Node,
+                                       Coefficient = x.SWorkerLevel.Coefficient,
+                                       WorkerLevelName = x.SWorkerLevel.Name
+                                   })
+                                   .OrderBy(x => x.Index)
+                               .ThenBy(x => x.PhaseCode)
+                               .ToList());
                     }
 
                     if (techVersion.details.Count > 0)
@@ -423,12 +425,20 @@ namespace GPRO_IED_A.Business
                         if (parentObj != null)
                         {
                             var user = _db.SUsers.FirstOrDefault(x => x.Id == parentObj.CreatedUser);
-                            techVersion.CreateBy = user.Name  ;
+                            techVersion.CreateBy = user.Name;
                             techVersion.CreateAt = parentObj.CreatedDate.ToString("dd/MM/yyyy");
 
-                            techVersion.productImgs.AddRange(_db.T_ProductFile
+                            techVersion
+                                .productImgs
+                                .AddRange(_db.T_ProductFile
                                 .Where(x => !x.IsDeleted && x.ProductId == parentObj.ObjectId)
-                                .Select(x => new ModelSelectItem() { Value = x.Id, Name = x.FileName, Code = x.Path, Data = x.ProductId })
+                                .Select(x => new ModelSelectItem()
+                                {
+                                    Value = x.Id,
+                                    Name = x.FileName,
+                                    Code = x.Path,
+                                    Data = x.ProductId
+                                })
                             .ToList());
                         }
                     }
@@ -441,5 +451,5 @@ namespace GPRO_IED_A.Business
             }
         }
          
-    }
+    } 
 }

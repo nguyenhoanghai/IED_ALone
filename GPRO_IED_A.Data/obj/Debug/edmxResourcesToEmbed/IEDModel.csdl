@@ -14,7 +14,6 @@
     <EntitySet Name="SUserRoles" EntityType="IEDModel.SUserRole" />
     <EntitySet Name="SWorkerLevels" EntityType="IEDModel.SWorkerLevel" />
     <EntitySet Name="T_ApplyPressureLibrary" EntityType="IEDModel.T_ApplyPressureLibrary" />
-    <EntitySet Name="T_CA_Phase" EntityType="IEDModel.T_CA_Phase" />
     <EntitySet Name="T_CA_Phase_Mani" EntityType="IEDModel.T_CA_Phase_Mani" />
     <EntitySet Name="T_CA_Phase_TimePrepare" EntityType="IEDModel.T_CA_Phase_TimePrepare" />
     <EntitySet Name="T_CommodityAnalysis" EntityType="IEDModel.T_CommodityAnalysis" />
@@ -83,33 +82,9 @@
       <End Role="SRoLe" EntitySet="SRoLes" />
       <End Role="SUserRole" EntitySet="SUserRoles" />
     </AssociationSet>
-    <AssociationSet Name="FK_T_CA_Phase_SWorkerLevel" Association="IEDModel.FK_T_CA_Phase_SWorkerLevel">
-      <End Role="SWorkerLevel" EntitySet="SWorkerLevels" />
-      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
-    </AssociationSet>
     <AssociationSet Name="FK_T_ManipulationLibrary_T_ApplyPressureLibrary" Association="IEDModel.FK_T_ManipulationLibrary_T_ApplyPressureLibrary">
       <End Role="T_ApplyPressureLibrary" EntitySet="T_ApplyPressureLibrary" />
       <End Role="T_ManipulationLibrary" EntitySet="T_ManipulationLibrary" />
-    </AssociationSet>
-    <AssociationSet Name="FK_T_CA_Phase_ManiVer_De_T_CA_Phase" Association="IEDModel.FK_T_CA_Phase_ManiVer_De_T_CA_Phase">
-      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
-      <End Role="T_CA_Phase_Mani" EntitySet="T_CA_Phase_Mani" />
-    </AssociationSet>
-    <AssociationSet Name="FK_T_CA_Phase_T_CommodityAnalysis" Association="IEDModel.FK_T_CA_Phase_T_CommodityAnalysis">
-      <End Role="T_CommodityAnalysis" EntitySet="T_CommodityAnalysis" />
-      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
-    </AssociationSet>
-    <AssociationSet Name="FK_T_CA_Phase_T_PhaseGroup" Association="IEDModel.FK_T_CA_Phase_T_PhaseGroup">
-      <End Role="T_PhaseGroup" EntitySet="T_PhaseGroup" />
-      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
-    </AssociationSet>
-    <AssociationSet Name="FK_T_CA_Phase_TimePrepare_T_CA_Phase" Association="IEDModel.FK_T_CA_Phase_TimePrepare_T_CA_Phase">
-      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
-      <End Role="T_CA_Phase_TimePrepare" EntitySet="T_CA_Phase_TimePrepare" />
-    </AssociationSet>
-    <AssociationSet Name="FK_T_TechProcessVersionDetail_T_CA_Phase" Association="IEDModel.FK_T_TechProcessVersionDetail_T_CA_Phase">
-      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
-      <End Role="T_TechProcessVersionDetail" EntitySet="T_TechProcessVersionDetail" />
     </AssociationSet>
     <AssociationSet Name="FK_T_CA_Phase_ManiVer_De_T_ManipulationLibrary" Association="IEDModel.FK_T_CA_Phase_ManiVer_De_T_ManipulationLibrary">
       <End Role="T_ManipulationLibrary" EntitySet="T_ManipulationLibrary" />
@@ -217,15 +192,6 @@
       <End Role="T_Line" EntitySet="T_Line" />
       <End Role="T_LabourDivision" EntitySet="T_LabourDivision" />
     </AssociationSet>
-    <EntitySet Name="T_LabourDevision_Ver" EntityType="IEDModel.T_LabourDevision_Ver" />
-    <AssociationSet Name="FK_T_LabourDevision_Ver_T_LabourDivision" Association="IEDModel.FK_T_LabourDevision_Ver_T_LabourDivision">
-      <End Role="T_LabourDivision" EntitySet="T_LabourDivision" />
-      <End Role="T_LabourDevision_Ver" EntitySet="T_LabourDevision_Ver" />
-    </AssociationSet>
-    <AssociationSet Name="FK_T_LinePosition_T_LabourDivision" Association="IEDModel.FK_T_LinePosition_T_LabourDivision">
-      <End Role="T_LabourDevision_Ver" EntitySet="T_LabourDevision_Ver" />
-      <End Role="T_LinePosition" EntitySet="T_LinePosition" />
-    </AssociationSet>
     <EntitySet Name="T_PhaseGroupDailyProduction" EntityType="IEDModel.T_PhaseGroupDailyProduction" />
     <AssociationSet Name="FK_T_PhaseGroupDailyProduction_T_CommodityAnalysis" Association="IEDModel.FK_T_PhaseGroupDailyProduction_T_CommodityAnalysis">
       <End Role="T_CommodityAnalysis" EntitySet="T_CommodityAnalysis" />
@@ -235,28 +201,7 @@
       <End Role="T_PhaseGroup" EntitySet="T_PhaseGroup" />
       <End Role="T_PhaseGroupDailyProduction" EntitySet="T_PhaseGroupDailyProduction" />
     </AssociationSet>
-    <EntitySet Name="T_LinePoDailyQuantities" EntityType="IEDModel.T_LinePoDailyQuantities" />
-    <AssociationSet Name="FK_T_LinePoDailyQuantities_T_CA_Phase" Association="IEDModel.FK_T_LinePoDailyQuantities_T_CA_Phase">
-      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
-      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
-    </AssociationSet>
-    <AssociationSet Name="FK_T_LinePoDailyQuantities_T_LabourDevision_Ver" Association="IEDModel.FK_T_LinePoDailyQuantities_T_LabourDevision_Ver">
-      <End Role="T_LabourDevision_Ver" EntitySet="T_LabourDevision_Ver" />
-      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
-    </AssociationSet>
-    <AssociationSet Name="FK_T_LinePoDailyQuantities_T_LabourDivision" Association="IEDModel.FK_T_LinePoDailyQuantities_T_LabourDivision">
-      <End Role="T_LabourDivision" EntitySet="T_LabourDivision" />
-      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
-    </AssociationSet>
-    <AssociationSet Name="FK_T_LinePoDailyQuantities_T_LinePositionDetail" Association="IEDModel.FK_T_LinePoDailyQuantities_T_LinePositionDetail">
-      <End Role="T_LinePositionDetail" EntitySet="T_LinePositionDetail" />
-      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
-    </AssociationSet>
     <EntitySet Name="T_Equipment" EntityType="IEDModel.T_Equipment" />
-    <AssociationSet Name="FK_T_CA_Phase_T_Equipment" Association="IEDModel.FK_T_CA_Phase_T_Equipment">
-      <End Role="T_Equipment" EntitySet="T_Equipment" />
-      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
-    </AssociationSet>
     <AssociationSet Name="FK_T_Equipment_T_EquipmentType" Association="IEDModel.FK_T_Equipment_T_EquipmentType">
       <End Role="T_EquipmentType" EntitySet="T_EquipmentType" />
       <End Role="T_Equipment" EntitySet="T_Equipment" />
@@ -295,6 +240,63 @@
       <End Role="SCompany" EntitySet="SCompanies" />
       <End Role="SCompanyModule" EntitySet="SCompanyModules" />
     </AssociationSet>
+    <EntitySet Name="HR_Employee" EntityType="IEDModel.HR_Employee" />
+    <AssociationSet Name="FK_HR_Employee_T_Line" Association="IEDModel.FK_HR_Employee_T_Line">
+      <End Role="T_Line" EntitySet="T_Line" />
+      <End Role="HR_Employee" EntitySet="HR_Employee" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HR_Employee_T_WorkShop" Association="IEDModel.FK_HR_Employee_T_WorkShop">
+      <End Role="T_WorkShop" EntitySet="T_WorkShop" />
+      <End Role="HR_Employee" EntitySet="HR_Employee" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_LinePosition_HR_Employee" Association="IEDModel.FK_T_LinePosition_HR_Employee">
+      <End Role="HR_Employee" EntitySet="HR_Employee" />
+      <End Role="T_LinePosition" EntitySet="T_LinePosition" />
+    </AssociationSet>
+    <EntitySet Name="T_PhaseGroup_Phase_Mani" EntityType="IEDModel.T_PhaseGroup_Phase_Mani" />
+    <AssociationSet Name="FK_T_PhaseGroup_Phase_Mani_T_ManipulationLibrary" Association="IEDModel.FK_T_PhaseGroup_Phase_Mani_T_ManipulationLibrary">
+      <End Role="T_ManipulationLibrary" EntitySet="T_ManipulationLibrary" />
+      <End Role="T_PhaseGroup_Phase_Mani" EntitySet="T_PhaseGroup_Phase_Mani" />
+    </AssociationSet>
+    <EntitySet Name="T_UsingTech_Detail" EntityType="IEDModel.T_UsingTech_Detail" />
+    <EntitySet Name="SApprovers" EntityType="IEDModel.SApprover" />
+    <EntitySet Name="T_CA_Phase" EntityType="IEDModel.T_CA_Phase" />
+    <AssociationSet Name="FK_T_CA_Phase_SWorkerLevel" Association="IEDModel.FK_T_CA_Phase_SWorkerLevel">
+      <End Role="SWorkerLevel" EntitySet="SWorkerLevels" />
+      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_CA_Phase_ManiVer_De_T_CA_Phase" Association="IEDModel.FK_T_CA_Phase_ManiVer_De_T_CA_Phase">
+      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
+      <End Role="T_CA_Phase_Mani" EntitySet="T_CA_Phase_Mani" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_CA_Phase_T_CA_Phase" Association="IEDModel.FK_T_CA_Phase_T_CA_Phase">
+      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
+      <End Role="T_CA_Phase1" EntitySet="T_CA_Phase" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_CA_Phase_T_CommodityAnalysis" Association="IEDModel.FK_T_CA_Phase_T_CommodityAnalysis">
+      <End Role="T_CommodityAnalysis" EntitySet="T_CommodityAnalysis" />
+      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_CA_Phase_T_Equipment" Association="IEDModel.FK_T_CA_Phase_T_Equipment">
+      <End Role="T_Equipment" EntitySet="T_Equipment" />
+      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_CA_Phase_T_PhaseGroup" Association="IEDModel.FK_T_CA_Phase_T_PhaseGroup">
+      <End Role="T_PhaseGroup" EntitySet="T_PhaseGroup" />
+      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_CA_Phase_T_WorkShop" Association="IEDModel.FK_T_CA_Phase_T_WorkShop">
+      <End Role="T_WorkShop" EntitySet="T_WorkShop" />
+      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_CA_Phase_TimePrepare_T_CA_Phase" Association="IEDModel.FK_T_CA_Phase_TimePrepare_T_CA_Phase">
+      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
+      <End Role="T_CA_Phase_TimePrepare" EntitySet="T_CA_Phase_TimePrepare" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_TechProcessVersionDetail_T_CA_Phase" Association="IEDModel.FK_T_TechProcessVersionDetail_T_CA_Phase">
+      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
+      <End Role="T_TechProcessVersionDetail" EntitySet="T_TechProcessVersionDetail" />
+    </AssociationSet>
     <EntitySet Name="T_TechProcessVersion" EntityType="IEDModel.T_TechProcessVersion" />
     <AssociationSet Name="FK_T_LabourDivision_T_TechProcessVersion" Association="IEDModel.FK_T_LabourDivision_T_TechProcessVersion">
       <End Role="T_TechProcessVersion" EntitySet="T_TechProcessVersion" />
@@ -308,19 +310,23 @@
       <End Role="T_TechProcessVersion" EntitySet="T_TechProcessVersion" />
       <End Role="T_TechProcessVersionDetail" EntitySet="T_TechProcessVersionDetail" />
     </AssociationSet>
-    <EntitySet Name="HR_Employee" EntityType="IEDModel.HR_Employee" />
-    <EntitySet Name="SUsers" EntityType="IEDModel.SUser" />
-    <AssociationSet Name="FK_HR_Employee_T_Line" Association="IEDModel.FK_HR_Employee_T_Line">
-      <End Role="T_Line" EntitySet="T_Line" />
-      <End Role="HR_Employee" EntitySet="HR_Employee" />
+    <EntitySet Name="T_LabourDevision_Ver" EntityType="IEDModel.T_LabourDevision_Ver" />
+    <AssociationSet Name="FK_T_LabourDevision_Ver_T_LabourDivision" Association="IEDModel.FK_T_LabourDevision_Ver_T_LabourDivision">
+      <End Role="T_LabourDivision" EntitySet="T_LabourDivision" />
+      <End Role="T_LabourDevision_Ver" EntitySet="T_LabourDevision_Ver" />
     </AssociationSet>
-    <AssociationSet Name="FK_HR_Employee_T_WorkShop" Association="IEDModel.FK_HR_Employee_T_WorkShop">
-      <End Role="T_WorkShop" EntitySet="T_WorkShop" />
-      <End Role="HR_Employee" EntitySet="HR_Employee" />
-    </AssociationSet>
-    <AssociationSet Name="FK_T_LinePosition_HR_Employee" Association="IEDModel.FK_T_LinePosition_HR_Employee">
-      <End Role="HR_Employee" EntitySet="HR_Employee" />
+    <AssociationSet Name="FK_T_LinePosition_T_LabourDivision" Association="IEDModel.FK_T_LinePosition_T_LabourDivision">
+      <End Role="T_LabourDevision_Ver" EntitySet="T_LabourDevision_Ver" />
       <End Role="T_LinePosition" EntitySet="T_LinePosition" />
+    </AssociationSet>
+    <EntitySet Name="SUsers" EntityType="IEDModel.SUser" />
+    <AssociationSet Name="FK_SUser_HR_Employee" Association="IEDModel.FK_SUser_HR_Employee">
+      <End Role="HR_Employee" EntitySet="HR_Employee" />
+      <End Role="SUser" EntitySet="SUsers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SApprover_SUser" Association="IEDModel.FK_SApprover_SUser">
+      <End Role="SUser" EntitySet="SUsers" />
+      <End Role="SApprover" EntitySet="SApprovers" />
     </AssociationSet>
     <AssociationSet Name="FK__SUser__CompanyId__3A81B327" Association="IEDModel.FK__SUser__CompanyId__3A81B327">
       <End Role="SCompany" EntitySet="SCompanies" />
@@ -329,6 +335,10 @@
     <AssociationSet Name="FK_SUserRole_SUser" Association="IEDModel.FK_SUserRole_SUser">
       <End Role="SUser" EntitySet="SUsers" />
       <End Role="SUserRole" EntitySet="SUserRoles" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_CA_Phase_SUser" Association="IEDModel.FK_T_CA_Phase_SUser">
+      <End Role="SUser" EntitySet="SUsers" />
+      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
     </AssociationSet>
     <AssociationSet Name="FK_T_LabourDevision_Ver_SUser" Association="IEDModel.FK_T_LabourDevision_Ver_SUser">
       <End Role="SUser" EntitySet="SUsers" />
@@ -345,6 +355,93 @@
     <AssociationSet Name="FK_T_PhaseGroupDailyProduction_SUser" Association="IEDModel.FK_T_PhaseGroupDailyProduction_SUser">
       <End Role="SUser" EntitySet="SUsers" />
       <End Role="T_PhaseGroupDailyProduction" EntitySet="T_PhaseGroupDailyProduction" />
+    </AssociationSet>
+    <EntitySet Name="T_LinePoDailyQuantities" EntityType="IEDModel.T_LinePoDailyQuantities" />
+    <AssociationSet Name="FK_T_LinePoDailyQuantities_HR_Employee" Association="IEDModel.FK_T_LinePoDailyQuantities_HR_Employee">
+      <End Role="HR_Employee" EntitySet="HR_Employee" />
+      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_LinePoDailyQuantities_SUser" Association="IEDModel.FK_T_LinePoDailyQuantities_SUser">
+      <End Role="SUser" EntitySet="SUsers" />
+      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_LinePoDailyQuantities_T_CA_Phase" Association="IEDModel.FK_T_LinePoDailyQuantities_T_CA_Phase">
+      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
+      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_LinePoDailyQuantities_T_LabourDevision_Ver" Association="IEDModel.FK_T_LinePoDailyQuantities_T_LabourDevision_Ver">
+      <End Role="T_LabourDevision_Ver" EntitySet="T_LabourDevision_Ver" />
+      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_LinePoDailyQuantities_T_LabourDivision" Association="IEDModel.FK_T_LinePoDailyQuantities_T_LabourDivision">
+      <End Role="T_LabourDivision" EntitySet="T_LabourDivision" />
+      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_LinePoDailyQuantities_T_LinePositionDetail" Association="IEDModel.FK_T_LinePoDailyQuantities_T_LinePositionDetail">
+      <End Role="T_LinePositionDetail" EntitySet="T_LinePositionDetail" />
+      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
+    </AssociationSet>
+    <EntitySet Name="T_PhaseGroup_Phase" EntityType="IEDModel.T_PhaseGroup_Phase" />
+    <AssociationSet Name="FK_T_PhaseGroup_Phase_SUser" Association="IEDModel.FK_T_PhaseGroup_Phase_SUser">
+      <End Role="SUser" EntitySet="SUsers" />
+      <End Role="T_PhaseGroup_Phase" EntitySet="T_PhaseGroup_Phase" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_PhaseGroup_Phase_SWorkerLevel" Association="IEDModel.FK_T_PhaseGroup_Phase_SWorkerLevel">
+      <End Role="SWorkerLevel" EntitySet="SWorkerLevels" />
+      <End Role="T_PhaseGroup_Phase" EntitySet="T_PhaseGroup_Phase" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_PhaseGroup_Phase_T_ApplyPressureLibrary" Association="IEDModel.FK_T_PhaseGroup_Phase_T_ApplyPressureLibrary">
+      <End Role="T_ApplyPressureLibrary" EntitySet="T_ApplyPressureLibrary" />
+      <End Role="T_PhaseGroup_Phase" EntitySet="T_PhaseGroup_Phase" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_PhaseGroup_Phase_T_Equipment" Association="IEDModel.FK_T_PhaseGroup_Phase_T_Equipment">
+      <End Role="T_Equipment" EntitySet="T_Equipment" />
+      <End Role="T_PhaseGroup_Phase" EntitySet="T_PhaseGroup_Phase" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_PhaseGroup_Phase_T_PhaseGroup" Association="IEDModel.FK_T_PhaseGroup_Phase_T_PhaseGroup">
+      <End Role="T_PhaseGroup" EntitySet="T_PhaseGroup" />
+      <End Role="T_PhaseGroup_Phase" EntitySet="T_PhaseGroup_Phase" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_PhaseGroup_Phase_Mani_T_PhaseGroup_Phase" Association="IEDModel.FK_T_PhaseGroup_Phase_Mani_T_PhaseGroup_Phase">
+      <End Role="T_PhaseGroup_Phase" EntitySet="T_PhaseGroup_Phase" />
+      <End Role="T_PhaseGroup_Phase_Mani" EntitySet="T_PhaseGroup_Phase_Mani" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_PhaseGroup_Phase_T_TimePrepare" Association="IEDModel.FK_T_PhaseGroup_Phase_T_TimePrepare">
+      <End Role="T_TimePrepare" EntitySet="T_TimePrepare" />
+      <End Role="T_PhaseGroup_Phase" EntitySet="T_PhaseGroup_Phase" />
+    </AssociationSet>
+    <EntitySet Name="T_UsingTechLog" EntityType="IEDModel.T_UsingTechLog" />
+    <AssociationSet Name="FK_T_DownloadLog_SUser" Association="IEDModel.FK_T_DownloadLog_SUser">
+      <End Role="SUser" EntitySet="SUsers" />
+      <End Role="T_UsingTechLog" EntitySet="T_UsingTechLog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_DownloadLog_T_CA_Phase" Association="IEDModel.FK_T_DownloadLog_T_CA_Phase">
+      <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
+      <End Role="T_UsingTechLog" EntitySet="T_UsingTechLog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_DownloadLog_T_LabourDevision_Ver" Association="IEDModel.FK_T_DownloadLog_T_LabourDevision_Ver">
+      <End Role="T_LabourDevision_Ver" EntitySet="T_LabourDevision_Ver" />
+      <End Role="T_UsingTechLog" EntitySet="T_UsingTechLog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_DownloadLog_T_PhaseGroup" Association="IEDModel.FK_T_DownloadLog_T_PhaseGroup">
+      <End Role="T_PhaseGroup" EntitySet="T_PhaseGroup" />
+      <End Role="T_UsingTechLog" EntitySet="T_UsingTechLog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_DownloadLog_T_Product" Association="IEDModel.FK_T_DownloadLog_T_Product">
+      <End Role="T_Product" EntitySet="T_Product" />
+      <End Role="T_UsingTechLog" EntitySet="T_UsingTechLog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_DownloadLog_T_TechProcessVersion" Association="IEDModel.FK_T_DownloadLog_T_TechProcessVersion">
+      <End Role="T_TechProcessVersion" EntitySet="T_TechProcessVersion" />
+      <End Role="T_UsingTechLog" EntitySet="T_UsingTechLog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_UsingTech_Detail_T_UsingTechLog" Association="IEDModel.FK_T_UsingTech_Detail_T_UsingTechLog">
+      <End Role="T_UsingTechLog" EntitySet="T_UsingTechLog" />
+      <End Role="T_UsingTech_Detail" EntitySet="T_UsingTech_Detail" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_UsingTechLog_T_WorkShop" Association="IEDModel.FK_T_UsingTechLog_T_WorkShop">
+      <End Role="T_WorkShop" EntitySet="T_WorkShop" />
+      <End Role="T_UsingTechLog" EntitySet="T_UsingTechLog" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="SCategory">
@@ -592,6 +689,7 @@
     <Property Name="DeletedUser" Type="Int32" />
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
     <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_CA_Phase_SWorkerLevel" FromRole="SWorkerLevel" ToRole="T_CA_Phase" />
+    <NavigationProperty Name="T_PhaseGroup_Phase" Relationship="IEDModel.FK_T_PhaseGroup_Phase_SWorkerLevel" FromRole="SWorkerLevel" ToRole="T_PhaseGroup_Phase" />
   </EntityType>
   <EntityType Name="T_ApplyPressureLibrary">
     <Key>
@@ -609,44 +707,7 @@
     <Property Name="DeletedUser" Type="Int32" />
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
     <NavigationProperty Name="T_ManipulationLibrary" Relationship="IEDModel.FK_T_ManipulationLibrary_T_ApplyPressureLibrary" FromRole="T_ApplyPressureLibrary" ToRole="T_ManipulationLibrary" />
-  </EntityType>
-  <EntityType Name="T_CA_Phase">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Index" Type="Int32" Nullable="false" />
-    <Property Name="Name" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
-    <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="EquipmentId" Type="Int32" />
-    <Property Name="WorkerLevelId" Type="Int32" Nullable="false" />
-    <Property Name="PhaseGroupId" Type="Int32" Nullable="false" />
-    <Property Name="ParentId" Type="Int32" Nullable="false" />
-    <Property Name="TotalTMU" Type="Double" Nullable="false" />
-    <Property Name="ApplyPressuresId" Type="Int32" />
-    <Property Name="PercentWasteEquipment" Type="Double" Nullable="false" />
-    <Property Name="PercentWasteManipulation" Type="Double" Nullable="false" />
-    <Property Name="PercentWasteSpecial" Type="Double" Nullable="false" />
-    <Property Name="PercentWasteMaterial" Type="Double" Nullable="false" />
-    <Property Name="Node" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
-    <Property Name="Video" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-    <Property Name="CreatedUser" Type="Int32" Nullable="false" />
-    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="UpdatedUser" Type="Int32" />
-    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-    <Property Name="DeletedUser" Type="Int32" />
-    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
-    <Property Name="IsLibrary" Type="Boolean" Nullable="false" />
-    <NavigationProperty Name="SWorkerLevel" Relationship="IEDModel.FK_T_CA_Phase_SWorkerLevel" FromRole="T_CA_Phase" ToRole="SWorkerLevel" />
-    <NavigationProperty Name="T_CA_Phase_Mani" Relationship="IEDModel.FK_T_CA_Phase_ManiVer_De_T_CA_Phase" FromRole="T_CA_Phase" ToRole="T_CA_Phase_Mani" />
-    <NavigationProperty Name="T_CommodityAnalysis" Relationship="IEDModel.FK_T_CA_Phase_T_CommodityAnalysis" FromRole="T_CA_Phase" ToRole="T_CommodityAnalysis" />
-    <NavigationProperty Name="T_PhaseGroup" Relationship="IEDModel.FK_T_CA_Phase_T_PhaseGroup" FromRole="T_CA_Phase" ToRole="T_PhaseGroup" />
-    <NavigationProperty Name="T_CA_Phase_TimePrepare" Relationship="IEDModel.FK_T_CA_Phase_TimePrepare_T_CA_Phase" FromRole="T_CA_Phase" ToRole="T_CA_Phase_TimePrepare" />
-    <NavigationProperty Name="T_TechProcessVersionDetail" Relationship="IEDModel.FK_T_TechProcessVersionDetail_T_CA_Phase" FromRole="T_CA_Phase" ToRole="T_TechProcessVersionDetail" />
-    <NavigationProperty Name="T_LinePoDailyQuantities" Relationship="IEDModel.FK_T_LinePoDailyQuantities_T_CA_Phase" FromRole="T_CA_Phase" ToRole="T_LinePoDailyQuantities" />
-    <NavigationProperty Name="T_Equipment" Relationship="IEDModel.FK_T_CA_Phase_T_Equipment" FromRole="T_CA_Phase" ToRole="T_Equipment" />
+    <NavigationProperty Name="T_PhaseGroup_Phase" Relationship="IEDModel.FK_T_PhaseGroup_Phase_T_ApplyPressureLibrary" FromRole="T_ApplyPressureLibrary" ToRole="T_PhaseGroup_Phase" />
   </EntityType>
   <EntityType Name="T_CA_Phase_Mani">
     <Key>
@@ -669,8 +730,8 @@
     <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
     <Property Name="DeletedUser" Type="Int32" />
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_CA_Phase_ManiVer_De_T_CA_Phase" FromRole="T_CA_Phase_Mani" ToRole="T_CA_Phase" />
     <NavigationProperty Name="T_ManipulationLibrary" Relationship="IEDModel.FK_T_CA_Phase_ManiVer_De_T_ManipulationLibrary" FromRole="T_CA_Phase_Mani" ToRole="T_ManipulationLibrary" />
+    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_CA_Phase_ManiVer_De_T_CA_Phase" FromRole="T_CA_Phase_Mani" ToRole="T_CA_Phase" />
   </EntityType>
   <EntityType Name="T_CA_Phase_TimePrepare">
     <Key>
@@ -686,8 +747,8 @@
     <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
     <Property Name="DeletedUser" Type="Int32" />
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_CA_Phase_TimePrepare_T_CA_Phase" FromRole="T_CA_Phase_TimePrepare" ToRole="T_CA_Phase" />
     <NavigationProperty Name="T_TimePrepare" Relationship="IEDModel.FK_T_CA_Phase_TimePrepare_T_TimePrepare" FromRole="T_CA_Phase_TimePrepare" ToRole="T_TimePrepare" />
+    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_CA_Phase_TimePrepare_T_CA_Phase" FromRole="T_CA_Phase_TimePrepare" ToRole="T_CA_Phase" />
   </EntityType>
   <EntityType Name="T_CommodityAnalysis">
     <Key>
@@ -708,9 +769,9 @@
     <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
     <Property Name="DeletedUser" Type="Int32" />
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_CA_Phase_T_CommodityAnalysis" FromRole="T_CommodityAnalysis" ToRole="T_CA_Phase" />
     <NavigationProperty Name="T_LabourDivision" Relationship="IEDModel.FK_T_LabourDivision_T_CommoAna" FromRole="T_CommodityAnalysis" ToRole="T_LabourDivision" />
     <NavigationProperty Name="T_PhaseGroupDailyProduction" Relationship="IEDModel.FK_T_PhaseGroupDailyProduction_T_CommodityAnalysis" FromRole="T_CommodityAnalysis" ToRole="T_PhaseGroupDailyProduction" />
+    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_CA_Phase_T_CommodityAnalysis" FromRole="T_CommodityAnalysis" ToRole="T_CA_Phase" />
   </EntityType>
   <EntityType Name="T_CompanySkill">
     <Key>
@@ -1048,6 +1109,7 @@
     <NavigationProperty Name="T_ManipulationTypeLibrary1" Relationship="IEDModel.FK_T_ManipulationLibrary_T_ManipulationTypeLibrary1" FromRole="T_ManipulationLibrary" ToRole="T_ManipulationTypeLibrary" />
     <NavigationProperty Name="T_NatureCutsLibrary" Relationship="IEDModel.FK_T_ManipulationLibrary_T_NatureCutsLibrary" FromRole="T_ManipulationLibrary" ToRole="T_NatureCutsLibrary" />
     <NavigationProperty Name="T_StopPrecisionLibrary" Relationship="IEDModel.FK_T_ManipulationLibrary_T_StopPrecisionLibrary" FromRole="T_ManipulationLibrary" ToRole="T_StopPrecisionLibrary" />
+    <NavigationProperty Name="T_PhaseGroup_Phase_Mani" Relationship="IEDModel.FK_T_PhaseGroup_Phase_Mani_T_ManipulationLibrary" FromRole="T_ManipulationLibrary" ToRole="T_PhaseGroup_Phase_Mani" />
   </EntityType>
   <EntityType Name="T_ManipulationTypeLibrary">
     <Key>
@@ -1106,8 +1168,10 @@
     <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
     <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_CA_Phase_T_PhaseGroup" FromRole="T_PhaseGroup" ToRole="T_CA_Phase" />
     <NavigationProperty Name="T_PhaseGroupDailyProduction" Relationship="IEDModel.FK_T_PhaseGroupDailyProduction_T_PhaseGroup" FromRole="T_PhaseGroup" ToRole="T_PhaseGroupDailyProduction" />
+    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_CA_Phase_T_PhaseGroup" FromRole="T_PhaseGroup" ToRole="T_CA_Phase" />
+    <NavigationProperty Name="T_PhaseGroup_Phase" Relationship="IEDModel.FK_T_PhaseGroup_Phase_T_PhaseGroup" FromRole="T_PhaseGroup" ToRole="T_PhaseGroup_Phase" />
+    <NavigationProperty Name="T_UsingTechLog" Relationship="IEDModel.FK_T_DownloadLog_T_PhaseGroup" FromRole="T_PhaseGroup" ToRole="T_UsingTechLog" />
   </EntityType>
   <EntityType Name="T_ProductGroup">
     <Key>
@@ -1166,8 +1230,8 @@
     <Property Name="CreatedDate" Type="DateTime" Precision="3" />
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
     <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_TechProcessVersionDetail_T_CA_Phase" FromRole="T_TechProcessVersionDetail" ToRole="T_CA_Phase" />
     <NavigationProperty Name="T_LinePositionDetail" Relationship="IEDModel.FK_T_LinePositionDetail_T_TechProcessVersionDetail" FromRole="T_TechProcessVersionDetail" ToRole="T_LinePositionDetail" />
+    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_TechProcessVersionDetail_T_CA_Phase" FromRole="T_TechProcessVersionDetail" ToRole="T_CA_Phase" />
     <NavigationProperty Name="T_TechProcessVersion" Relationship="IEDModel.FK_T_TechProcessVersionDetail_T_TechProcessVersion" FromRole="T_TechProcessVersionDetail" ToRole="T_TechProcessVersion" />
   </EntityType>
   <EntityType Name="T_TimePrepare">
@@ -1189,6 +1253,7 @@
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
     <NavigationProperty Name="T_CA_Phase_TimePrepare" Relationship="IEDModel.FK_T_CA_Phase_TimePrepare_T_TimePrepare" FromRole="T_TimePrepare" ToRole="T_CA_Phase_TimePrepare" />
     <NavigationProperty Name="T_TimeTypePrepare" Relationship="IEDModel.FK_T_TimePrepare_T_TimeTypePrepare" FromRole="T_TimePrepare" ToRole="T_TimeTypePrepare" />
+    <NavigationProperty Name="T_PhaseGroup_Phase" Relationship="IEDModel.FK_T_PhaseGroup_Phase_T_TimePrepare" FromRole="T_TimePrepare" ToRole="T_PhaseGroup_Phase" />
   </EntityType>
   <EntityType Name="T_TimeTypePrepare">
     <Key>
@@ -1328,18 +1393,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_T_CA_Phase_SWorkerLevel">
-    <End Type="IEDModel.SWorkerLevel" Role="SWorkerLevel" Multiplicity="1" />
-    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="SWorkerLevel">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_CA_Phase">
-        <PropertyRef Name="WorkerLevelId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_T_ManipulationLibrary_T_ApplyPressureLibrary">
     <End Type="IEDModel.T_ApplyPressureLibrary" Role="T_ApplyPressureLibrary" Multiplicity="0..1" />
     <End Type="IEDModel.T_ManipulationLibrary" Role="T_ManipulationLibrary" Multiplicity="*" />
@@ -1349,66 +1402,6 @@
       </Principal>
       <Dependent Role="T_ManipulationLibrary">
         <PropertyRef Name="ApplyPressureId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_CA_Phase_ManiVer_De_T_CA_Phase">
-    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="1" />
-    <End Type="IEDModel.T_CA_Phase_Mani" Role="T_CA_Phase_Mani" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_CA_Phase">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_CA_Phase_Mani">
-        <PropertyRef Name="CA_PhaseId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_CA_Phase_T_CommodityAnalysis">
-    <End Type="IEDModel.T_CommodityAnalysis" Role="T_CommodityAnalysis" Multiplicity="1" />
-    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_CommodityAnalysis">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_CA_Phase">
-        <PropertyRef Name="ParentId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_CA_Phase_T_PhaseGroup">
-    <End Type="IEDModel.T_PhaseGroup" Role="T_PhaseGroup" Multiplicity="1" />
-    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_PhaseGroup">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_CA_Phase">
-        <PropertyRef Name="PhaseGroupId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_CA_Phase_TimePrepare_T_CA_Phase">
-    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="1" />
-    <End Type="IEDModel.T_CA_Phase_TimePrepare" Role="T_CA_Phase_TimePrepare" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_CA_Phase">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_CA_Phase_TimePrepare">
-        <PropertyRef Name="Commo_Ana_PhaseId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_TechProcessVersionDetail_T_CA_Phase">
-    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="1" />
-    <End Type="IEDModel.T_TechProcessVersionDetail" Role="T_TechProcessVersionDetail" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_CA_Phase">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_TechProcessVersionDetail">
-        <PropertyRef Name="CA_PhaseId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1667,6 +1660,8 @@
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
     <NavigationProperty Name="T_Line" Relationship="IEDModel.FK_T_Line_T_WorkShop" FromRole="T_WorkShop" ToRole="T_Line" />
     <NavigationProperty Name="HR_Employee" Relationship="IEDModel.FK_HR_Employee_T_WorkShop" FromRole="T_WorkShop" ToRole="HR_Employee" />
+    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_CA_Phase_T_WorkShop" FromRole="T_WorkShop" ToRole="T_CA_Phase" />
+    <NavigationProperty Name="T_UsingTechLog" Relationship="IEDModel.FK_T_UsingTechLog_T_WorkShop" FromRole="T_WorkShop" ToRole="T_UsingTechLog" />
   </EntityType>
   <Association Name="FK_T_Line_T_WorkShop">
     <End Type="IEDModel.T_WorkShop" Role="T_WorkShop" Multiplicity="1" />
@@ -1703,6 +1698,7 @@
     <NavigationProperty Name="T_ProductGroup" Relationship="IEDModel.FK_T_Product_T_ProductGroup" FromRole="T_Product" ToRole="T_ProductGroup" />
     <NavigationProperty Name="T_ProductFile" Relationship="IEDModel.FK_T_ProductFile_T_Product" FromRole="T_Product" ToRole="T_ProductFile" />
     <NavigationProperty Name="T_TechProcessVersion" Relationship="IEDModel.FK_T_TechProcessVersion_T_Product" FromRole="T_Product" ToRole="T_TechProcessVersion" />
+    <NavigationProperty Name="T_UsingTechLog" Relationship="IEDModel.FK_T_DownloadLog_T_Product" FromRole="T_Product" ToRole="T_UsingTechLog" />
   </EntityType>
   <Association Name="FK_T_Product_T_Customer">
     <End Type="IEDModel.T_Customer" Role="T_Customer" Multiplicity="1" />
@@ -1776,8 +1772,8 @@
     <Property Name="DeletedUser" Type="Int32" />
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
     <NavigationProperty Name="T_LinePositionDetail" Relationship="IEDModel.FK_T_LinePositionDetail_T_LinePosition" FromRole="T_LinePosition" ToRole="T_LinePositionDetail" />
-    <NavigationProperty Name="T_LabourDevision_Ver" Relationship="IEDModel.FK_T_LinePosition_T_LabourDivision" FromRole="T_LinePosition" ToRole="T_LabourDevision_Ver" />
     <NavigationProperty Name="HR_Employee" Relationship="IEDModel.FK_T_LinePosition_HR_Employee" FromRole="T_LinePosition" ToRole="HR_Employee" />
+    <NavigationProperty Name="T_LabourDevision_Ver" Relationship="IEDModel.FK_T_LinePosition_T_LabourDivision" FromRole="T_LinePosition" ToRole="T_LabourDevision_Ver" />
   </EntityType>
   <Association Name="FK_T_LinePositionDetail_T_LinePosition">
     <End Type="IEDModel.T_LinePosition" Role="T_LinePosition" Multiplicity="1" />
@@ -1809,11 +1805,11 @@
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
     <NavigationProperty Name="T_CommodityAnalysis" Relationship="IEDModel.FK_T_LabourDivision_T_CommoAna" FromRole="T_LabourDivision" ToRole="T_CommodityAnalysis" />
     <NavigationProperty Name="T_Line" Relationship="IEDModel.FK_T_LabourDivision_T_Line" FromRole="T_LabourDivision" ToRole="T_Line" />
-    <NavigationProperty Name="T_LabourDevision_Ver" Relationship="IEDModel.FK_T_LabourDevision_Ver_T_LabourDivision" FromRole="T_LabourDivision" ToRole="T_LabourDevision_Ver" />
-    <NavigationProperty Name="T_LinePoDailyQuantities" Relationship="IEDModel.FK_T_LinePoDailyQuantities_T_LabourDivision" FromRole="T_LabourDivision" ToRole="T_LinePoDailyQuantities" />
     <NavigationProperty Name="T_TechProcessVersion" Relationship="IEDModel.FK_T_LabourDivision_T_TechProcessVersion" FromRole="T_LabourDivision" ToRole="T_TechProcessVersion" />
+    <NavigationProperty Name="T_LabourDevision_Ver" Relationship="IEDModel.FK_T_LabourDevision_Ver_T_LabourDivision" FromRole="T_LabourDivision" ToRole="T_LabourDevision_Ver" />
     <NavigationProperty Name="SUser" Relationship="IEDModel.FK_T_LabourDivision_SUser" FromRole="T_LabourDivision" ToRole="SUser" />
     <NavigationProperty Name="SUser1" Relationship="IEDModel.FK_T_LabourDivision_SUser1" FromRole="T_LabourDivision" ToRole="SUser" />
+    <NavigationProperty Name="T_LinePoDailyQuantities" Relationship="IEDModel.FK_T_LinePoDailyQuantities_T_LabourDivision" FromRole="T_LabourDivision" ToRole="T_LinePoDailyQuantities" />
   </EntityType>
   <Association Name="FK_T_LabourDivision_T_CommoAna">
     <End Type="IEDModel.T_CommodityAnalysis" Role="T_CommodityAnalysis" Multiplicity="1" />
@@ -1836,47 +1832,6 @@
       </Principal>
       <Dependent Role="T_LabourDivision">
         <PropertyRef Name="LineId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <EntityType Name="T_LabourDevision_Ver">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="LabourDivisionId" Type="Int32" Nullable="false" />
-    <Property Name="TotalPosition" Type="Int32" Nullable="false" />
-    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-    <Property Name="CreatedUser" Type="Int32" Nullable="false" />
-    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="DeletedUser" Type="Int32" />
-    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="T_LabourDivision" Relationship="IEDModel.FK_T_LabourDevision_Ver_T_LabourDivision" FromRole="T_LabourDevision_Ver" ToRole="T_LabourDivision" />
-    <NavigationProperty Name="T_LinePosition" Relationship="IEDModel.FK_T_LinePosition_T_LabourDivision" FromRole="T_LabourDevision_Ver" ToRole="T_LinePosition" />
-    <NavigationProperty Name="T_LinePoDailyQuantities" Relationship="IEDModel.FK_T_LinePoDailyQuantities_T_LabourDevision_Ver" FromRole="T_LabourDevision_Ver" ToRole="T_LinePoDailyQuantities" />
-    <NavigationProperty Name="SUser" Relationship="IEDModel.FK_T_LabourDevision_Ver_SUser" FromRole="T_LabourDevision_Ver" ToRole="SUser" />
-  </EntityType>
-  <Association Name="FK_T_LabourDevision_Ver_T_LabourDivision">
-    <End Type="IEDModel.T_LabourDivision" Role="T_LabourDivision" Multiplicity="1" />
-    <End Type="IEDModel.T_LabourDevision_Ver" Role="T_LabourDevision_Ver" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_LabourDivision">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_LabourDevision_Ver">
-        <PropertyRef Name="LabourDivisionId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_LinePosition_T_LabourDivision">
-    <End Type="IEDModel.T_LabourDevision_Ver" Role="T_LabourDevision_Ver" Multiplicity="1" />
-    <End Type="IEDModel.T_LinePosition" Role="T_LinePosition" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_LabourDevision_Ver">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_LinePosition">
-        <PropertyRef Name="LabourDivisionVerId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1921,74 +1876,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <EntityType Name="T_LinePoDailyQuantities">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Date" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="LabourDevisionId" Type="Int32" Nullable="false" />
-    <Property Name="LabourDevision_VerId" Type="Int32" Nullable="false" />
-    <Property Name="LinePo_DetailId" Type="Int32" Nullable="false" />
-    <Property Name="ComandType" Type="Int32" Nullable="false" />
-    <Property Name="Quantities" Type="Int32" Nullable="false" />
-    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-    <Property Name="CreatedUser" Type="Int32" Nullable="false" />
-    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="PhaseId" Type="Int32" Nullable="false" />
-    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_LinePoDailyQuantities_T_CA_Phase" FromRole="T_LinePoDailyQuantities" ToRole="T_CA_Phase" />
-    <NavigationProperty Name="T_LabourDevision_Ver" Relationship="IEDModel.FK_T_LinePoDailyQuantities_T_LabourDevision_Ver" FromRole="T_LinePoDailyQuantities" ToRole="T_LabourDevision_Ver" />
-    <NavigationProperty Name="T_LabourDivision" Relationship="IEDModel.FK_T_LinePoDailyQuantities_T_LabourDivision" FromRole="T_LinePoDailyQuantities" ToRole="T_LabourDivision" />
-    <NavigationProperty Name="T_LinePositionDetail" Relationship="IEDModel.FK_T_LinePoDailyQuantities_T_LinePositionDetail" FromRole="T_LinePoDailyQuantities" ToRole="T_LinePositionDetail" />
-  </EntityType>
-  <Association Name="FK_T_LinePoDailyQuantities_T_CA_Phase">
-    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="1" />
-    <End Type="IEDModel.T_LinePoDailyQuantities" Role="T_LinePoDailyQuantities" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_CA_Phase">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_LinePoDailyQuantities">
-        <PropertyRef Name="PhaseId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_LinePoDailyQuantities_T_LabourDevision_Ver">
-    <End Type="IEDModel.T_LabourDevision_Ver" Role="T_LabourDevision_Ver" Multiplicity="1" />
-    <End Type="IEDModel.T_LinePoDailyQuantities" Role="T_LinePoDailyQuantities" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_LabourDevision_Ver">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_LinePoDailyQuantities">
-        <PropertyRef Name="LabourDevision_VerId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_LinePoDailyQuantities_T_LabourDivision">
-    <End Type="IEDModel.T_LabourDivision" Role="T_LabourDivision" Multiplicity="1" />
-    <End Type="IEDModel.T_LinePoDailyQuantities" Role="T_LinePoDailyQuantities" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_LabourDivision">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_LinePoDailyQuantities">
-        <PropertyRef Name="LabourDevisionId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_LinePoDailyQuantities_T_LinePositionDetail">
-    <End Type="IEDModel.T_LinePositionDetail" Role="T_LinePositionDetail" Multiplicity="1" />
-    <End Type="IEDModel.T_LinePoDailyQuantities" Role="T_LinePoDailyQuantities" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_LinePositionDetail">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_LinePoDailyQuantities">
-        <PropertyRef Name="LinePo_DetailId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <EntityType Name="T_Equipment">
     <Key>
       <PropertyRef Name="Id" />
@@ -2008,24 +1895,13 @@
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
     <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
     <Property Name="ObjectType" Type="Int32" />
-    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_CA_Phase_T_Equipment" FromRole="T_Equipment" ToRole="T_CA_Phase" />
     <NavigationProperty Name="T_EquipmentType" Relationship="IEDModel.FK_T_Equipment_T_EquipmentType" FromRole="T_Equipment" ToRole="T_EquipmentType" />
     <NavigationProperty Name="T_EquipmentAttribute" Relationship="IEDModel.FK_T_EquipmentAttribute_T_Equipment" FromRole="T_Equipment" ToRole="T_EquipmentAttribute" />
     <NavigationProperty Name="T_ManipulationEquipment" Relationship="IEDModel.FK_T_ManipulationEquipment_T_Equipment" FromRole="T_Equipment" ToRole="T_ManipulationEquipment" />
     <NavigationProperty Name="T_EquipmentGroup" Relationship="IEDModel.FK_T_Equipment_T_EquipmentGroup" FromRole="T_Equipment" ToRole="T_EquipmentGroup" />
+    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_CA_Phase_T_Equipment" FromRole="T_Equipment" ToRole="T_CA_Phase" />
+    <NavigationProperty Name="T_PhaseGroup_Phase" Relationship="IEDModel.FK_T_PhaseGroup_Phase_T_Equipment" FromRole="T_Equipment" ToRole="T_PhaseGroup_Phase" />
   </EntityType>
-  <Association Name="FK_T_CA_Phase_T_Equipment">
-    <End Type="IEDModel.T_Equipment" Role="T_Equipment" Multiplicity="0..1" />
-    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_Equipment">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_CA_Phase">
-        <PropertyRef Name="EquipmentId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_T_Equipment_T_EquipmentType">
     <End Type="IEDModel.T_EquipmentType" Role="T_EquipmentType" Multiplicity="1" />
     <End Type="IEDModel.T_Equipment" Role="T_Equipment" Multiplicity="*" />
@@ -2181,73 +2057,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <EntityType Name="T_TechProcessVersion">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="ProductId" Type="Int32" Nullable="false" />
-    <Property Name="ParentId" Type="Int32" Nullable="false" />
-    <Property Name="TimeCompletePerCommo" Type="Double" Nullable="false" />
-    <Property Name="NumberOfWorkers" Type="Int32" Nullable="false" />
-    <Property Name="WorkingTimePerDay" Type="Double" Nullable="false" />
-    <Property Name="PacedProduction" Type="Double" Nullable="false" />
-    <Property Name="ProOfGroupPerHour" Type="Double" Nullable="false" />
-    <Property Name="ProOfGroupPerDay" Type="Double" Nullable="false" />
-    <Property Name="ProOfPersonPerDay" Type="Double" Nullable="false" />
-    <Property Name="PricePerMinute" Type="Double" Nullable="false" />
-    <Property Name="PricePerSecond" Type="Double" Nullable="false" />
-    <Property Name="Allowance" Type="Double" Nullable="false" />
-    <Property Name="PercentWorker" Type="Int32" Nullable="false" />
-    <Property Name="Percent" Type="Int32" Nullable="false" />
-    <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-    <Property Name="CreatedUser" Type="Int32" Nullable="false" />
-    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="UpdatedUser" Type="Int32" />
-    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-    <Property Name="DeletedUser" Type="Int32" />
-    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="T_LabourDivision" Relationship="IEDModel.FK_T_LabourDivision_T_TechProcessVersion" FromRole="T_TechProcessVersion" ToRole="T_LabourDivision" />
-    <NavigationProperty Name="T_Product" Relationship="IEDModel.FK_T_TechProcessVersion_T_Product" FromRole="T_TechProcessVersion" ToRole="T_Product" />
-    <NavigationProperty Name="T_TechProcessVersionDetail" Relationship="IEDModel.FK_T_TechProcessVersionDetail_T_TechProcessVersion" FromRole="T_TechProcessVersion" ToRole="T_TechProcessVersionDetail" />
-  </EntityType>
-  <Association Name="FK_T_LabourDivision_T_TechProcessVersion">
-    <End Type="IEDModel.T_TechProcessVersion" Role="T_TechProcessVersion" Multiplicity="1" />
-    <End Type="IEDModel.T_LabourDivision" Role="T_LabourDivision" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_TechProcessVersion">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_LabourDivision">
-        <PropertyRef Name="TechProVer_Id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_TechProcessVersion_T_Product">
-    <End Type="IEDModel.T_Product" Role="T_Product" Multiplicity="1" />
-    <End Type="IEDModel.T_TechProcessVersion" Role="T_TechProcessVersion" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_Product">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_TechProcessVersion">
-        <PropertyRef Name="ProductId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_T_TechProcessVersionDetail_T_TechProcessVersion">
-    <End Type="IEDModel.T_TechProcessVersion" Role="T_TechProcessVersion" Multiplicity="1" />
-    <End Type="IEDModel.T_TechProcessVersionDetail" Role="T_TechProcessVersionDetail" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="T_TechProcessVersion">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="T_TechProcessVersionDetail">
-        <PropertyRef Name="TechProcessVersionId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <EntityType Name="HR_Employee">
     <Key>
       <PropertyRef Name="Id" />
@@ -2273,38 +2082,8 @@
     <NavigationProperty Name="T_Line" Relationship="IEDModel.FK_HR_Employee_T_Line" FromRole="HR_Employee" ToRole="T_Line" />
     <NavigationProperty Name="T_WorkShop" Relationship="IEDModel.FK_HR_Employee_T_WorkShop" FromRole="HR_Employee" ToRole="T_WorkShop" />
     <NavigationProperty Name="T_LinePosition" Relationship="IEDModel.FK_T_LinePosition_HR_Employee" FromRole="HR_Employee" ToRole="T_LinePosition" />
-  </EntityType>
-  <EntityType Name="SUser">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="CompanyId" Type="Int32" Nullable="false" />
-    <Property Name="IsOwner" Type="Boolean" Nullable="false" />
-    <Property Name="UserName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="PassWord" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
-    <Property Name="IsLock" Type="Boolean" Nullable="false" />
-    <Property Name="IsRequireChangePW" Type="Boolean" Nullable="false" />
-    <Property Name="IsForgotPassword" Type="Boolean" Nullable="false" />
-    <Property Name="NoteForgotPassword" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-    <Property Name="Email" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-    <Property Name="ImagePath" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="LockedTime" Type="DateTime" Precision="3" />
-    <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="WorkshopIds" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
-    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-    <Property Name="CreatedUser" Type="Int32" Nullable="false" />
-    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="UpdatedUser" Type="Int32" />
-    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-    <Property Name="DeletedUser" Type="Int32" />
-    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="SCompany" Relationship="IEDModel.FK__SUser__CompanyId__3A81B327" FromRole="SUser" ToRole="SCompany" />
-    <NavigationProperty Name="SUserRoles" Relationship="IEDModel.FK_SUserRole_SUser" FromRole="SUser" ToRole="SUserRole" />
-    <NavigationProperty Name="T_LabourDevision_Ver" Relationship="IEDModel.FK_T_LabourDevision_Ver_SUser" FromRole="SUser" ToRole="T_LabourDevision_Ver" />
-    <NavigationProperty Name="T_LabourDivision" Relationship="IEDModel.FK_T_LabourDivision_SUser" FromRole="SUser" ToRole="T_LabourDivision" />
-    <NavigationProperty Name="T_LabourDivision1" Relationship="IEDModel.FK_T_LabourDivision_SUser1" FromRole="SUser" ToRole="T_LabourDivision" />
-    <NavigationProperty Name="T_PhaseGroupDailyProduction" Relationship="IEDModel.FK_T_PhaseGroupDailyProduction_SUser" FromRole="SUser" ToRole="T_PhaseGroupDailyProduction" />
+    <NavigationProperty Name="SUsers" Relationship="IEDModel.FK_SUser_HR_Employee" FromRole="HR_Employee" ToRole="SUser" />
+    <NavigationProperty Name="T_LinePoDailyQuantities" Relationship="IEDModel.FK_T_LinePoDailyQuantities_HR_Employee" FromRole="HR_Employee" ToRole="T_LinePoDailyQuantities" />
   </EntityType>
   <Association Name="FK_HR_Employee_T_Line">
     <End Type="IEDModel.T_Line" Role="T_Line" Multiplicity="0..1" />
@@ -2342,6 +2121,390 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <EntityType Name="T_PhaseGroup_Phase_Mani">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PhaseGroup_PhaseId" Type="Int32" Nullable="false" />
+    <Property Name="OrderIndex" Type="Int32" Nullable="false" />
+    <Property Name="ManipulationId" Type="Int32" />
+    <Property Name="ManipulationCode" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
+    <Property Name="ManipulationName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="TMUEquipment" Type="Double" />
+    <Property Name="TMUManipulation" Type="Double" />
+    <Property Name="Loop" Type="Double" Nullable="false" />
+    <Property Name="TotalTMU" Type="Double" Nullable="false" />
+    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedUser" Type="Int32" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="UpdatedUser" Type="Int32" />
+    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+    <Property Name="DeletedUser" Type="Int32" />
+    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="T_ManipulationLibrary" Relationship="IEDModel.FK_T_PhaseGroup_Phase_Mani_T_ManipulationLibrary" FromRole="T_PhaseGroup_Phase_Mani" ToRole="T_ManipulationLibrary" />
+    <NavigationProperty Name="T_PhaseGroup_Phase" Relationship="IEDModel.FK_T_PhaseGroup_Phase_Mani_T_PhaseGroup_Phase" FromRole="T_PhaseGroup_Phase_Mani" ToRole="T_PhaseGroup_Phase" />
+  </EntityType>
+  <Association Name="FK_T_PhaseGroup_Phase_Mani_T_ManipulationLibrary">
+    <End Type="IEDModel.T_ManipulationLibrary" Role="T_ManipulationLibrary" Multiplicity="0..1" />
+    <End Type="IEDModel.T_PhaseGroup_Phase_Mani" Role="T_PhaseGroup_Phase_Mani" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_ManipulationLibrary">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_PhaseGroup_Phase_Mani">
+        <PropertyRef Name="ManipulationId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="T_UsingTech_Detail">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UsingTechLogId" Type="Int32" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="T_UsingTechLog" Relationship="IEDModel.FK_T_UsingTech_Detail_T_UsingTechLog" FromRole="T_UsingTech_Detail" ToRole="T_UsingTechLog" />
+  </EntityType>
+  <EntityType Name="SApprover">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="ApproveRoles" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="SUser" Relationship="IEDModel.FK_SApprover_SUser" FromRole="SApprover" ToRole="SUser" />
+  </EntityType>
+  <EntityType Name="T_CA_Phase">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Index" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EquipmentId" Type="Int32" />
+    <Property Name="WorkerLevelId" Type="Int32" Nullable="false" />
+    <Property Name="PhaseGroupId" Type="Int32" Nullable="false" />
+    <Property Name="ParentId" Type="Int32" Nullable="false" />
+    <Property Name="TotalTMU" Type="Double" Nullable="false" />
+    <Property Name="ApplyPressuresId" Type="Int32" />
+    <Property Name="PercentWasteEquipment" Type="Double" Nullable="false" />
+    <Property Name="PercentWasteManipulation" Type="Double" Nullable="false" />
+    <Property Name="PercentWasteSpecial" Type="Double" Nullable="false" />
+    <Property Name="PercentWasteMaterial" Type="Double" Nullable="false" />
+    <Property Name="Node" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="Video" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedUser" Type="Int32" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="UpdatedUser" Type="Int32" />
+    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+    <Property Name="DeletedUser" Type="Int32" />
+    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+    <Property Name="IsLibrary" Type="Boolean" Nullable="false" />
+    <Property Name="Status" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="IsApprove" Type="Boolean" Nullable="false" />
+    <Property Name="Approver" Type="Int32" />
+    <Property Name="ApprovedDate" Type="DateTime" Precision="3" />
+    <Property Name="WorkShopId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="SWorkerLevel" Relationship="IEDModel.FK_T_CA_Phase_SWorkerLevel" FromRole="T_CA_Phase" ToRole="SWorkerLevel" />
+    <NavigationProperty Name="T_CA_Phase_Mani" Relationship="IEDModel.FK_T_CA_Phase_ManiVer_De_T_CA_Phase" FromRole="T_CA_Phase" ToRole="T_CA_Phase_Mani" />
+    <NavigationProperty Name="T_CA_Phase1" Relationship="IEDModel.FK_T_CA_Phase_T_CA_Phase" FromRole="T_CA_Phase" ToRole="T_CA_Phase1" />
+    <NavigationProperty Name="T_CA_Phase2" Relationship="IEDModel.FK_T_CA_Phase_T_CA_Phase" FromRole="T_CA_Phase1" ToRole="T_CA_Phase" />
+    <NavigationProperty Name="T_CommodityAnalysis" Relationship="IEDModel.FK_T_CA_Phase_T_CommodityAnalysis" FromRole="T_CA_Phase" ToRole="T_CommodityAnalysis" />
+    <NavigationProperty Name="T_Equipment" Relationship="IEDModel.FK_T_CA_Phase_T_Equipment" FromRole="T_CA_Phase" ToRole="T_Equipment" />
+    <NavigationProperty Name="T_PhaseGroup" Relationship="IEDModel.FK_T_CA_Phase_T_PhaseGroup" FromRole="T_CA_Phase" ToRole="T_PhaseGroup" />
+    <NavigationProperty Name="T_WorkShop" Relationship="IEDModel.FK_T_CA_Phase_T_WorkShop" FromRole="T_CA_Phase" ToRole="T_WorkShop" />
+    <NavigationProperty Name="T_CA_Phase_TimePrepare" Relationship="IEDModel.FK_T_CA_Phase_TimePrepare_T_CA_Phase" FromRole="T_CA_Phase" ToRole="T_CA_Phase_TimePrepare" />
+    <NavigationProperty Name="T_TechProcessVersionDetail" Relationship="IEDModel.FK_T_TechProcessVersionDetail_T_CA_Phase" FromRole="T_CA_Phase" ToRole="T_TechProcessVersionDetail" />
+    <NavigationProperty Name="SUser" Relationship="IEDModel.FK_T_CA_Phase_SUser" FromRole="T_CA_Phase" ToRole="SUser" />
+    <NavigationProperty Name="T_LinePoDailyQuantities" Relationship="IEDModel.FK_T_LinePoDailyQuantities_T_CA_Phase" FromRole="T_CA_Phase" ToRole="T_LinePoDailyQuantities" />
+    <NavigationProperty Name="T_UsingTechLog" Relationship="IEDModel.FK_T_DownloadLog_T_CA_Phase" FromRole="T_CA_Phase" ToRole="T_UsingTechLog" />
+  </EntityType>
+  <Association Name="FK_T_CA_Phase_SWorkerLevel">
+    <End Type="IEDModel.SWorkerLevel" Role="SWorkerLevel" Multiplicity="1" />
+    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SWorkerLevel">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_CA_Phase">
+        <PropertyRef Name="WorkerLevelId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_CA_Phase_ManiVer_De_T_CA_Phase">
+    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="1" />
+    <End Type="IEDModel.T_CA_Phase_Mani" Role="T_CA_Phase_Mani" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_CA_Phase">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_CA_Phase_Mani">
+        <PropertyRef Name="CA_PhaseId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_CA_Phase_T_CA_Phase">
+    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="1" />
+    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase1" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="T_CA_Phase">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_CA_Phase1">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_CA_Phase_T_CommodityAnalysis">
+    <End Type="IEDModel.T_CommodityAnalysis" Role="T_CommodityAnalysis" Multiplicity="1" />
+    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_CommodityAnalysis">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_CA_Phase">
+        <PropertyRef Name="ParentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_CA_Phase_T_Equipment">
+    <End Type="IEDModel.T_Equipment" Role="T_Equipment" Multiplicity="0..1" />
+    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_Equipment">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_CA_Phase">
+        <PropertyRef Name="EquipmentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_CA_Phase_T_PhaseGroup">
+    <End Type="IEDModel.T_PhaseGroup" Role="T_PhaseGroup" Multiplicity="1" />
+    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_PhaseGroup">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_CA_Phase">
+        <PropertyRef Name="PhaseGroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_CA_Phase_T_WorkShop">
+    <End Type="IEDModel.T_WorkShop" Role="T_WorkShop" Multiplicity="1" />
+    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_WorkShop">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_CA_Phase">
+        <PropertyRef Name="WorkShopId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_CA_Phase_TimePrepare_T_CA_Phase">
+    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="1" />
+    <End Type="IEDModel.T_CA_Phase_TimePrepare" Role="T_CA_Phase_TimePrepare" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_CA_Phase">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_CA_Phase_TimePrepare">
+        <PropertyRef Name="Commo_Ana_PhaseId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_TechProcessVersionDetail_T_CA_Phase">
+    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="1" />
+    <End Type="IEDModel.T_TechProcessVersionDetail" Role="T_TechProcessVersionDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_CA_Phase">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_TechProcessVersionDetail">
+        <PropertyRef Name="CA_PhaseId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="T_TechProcessVersion">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="ParentId" Type="Int32" Nullable="false" />
+    <Property Name="TimeCompletePerCommo" Type="Double" Nullable="false" />
+    <Property Name="NumberOfWorkers" Type="Int32" Nullable="false" />
+    <Property Name="WorkingTimePerDay" Type="Double" Nullable="false" />
+    <Property Name="PacedProduction" Type="Double" Nullable="false" />
+    <Property Name="ProOfGroupPerHour" Type="Double" Nullable="false" />
+    <Property Name="ProOfGroupPerDay" Type="Double" Nullable="false" />
+    <Property Name="ProOfPersonPerDay" Type="Double" Nullable="false" />
+    <Property Name="PricePerMinute" Type="Double" Nullable="false" />
+    <Property Name="PricePerSecond" Type="Double" Nullable="false" />
+    <Property Name="Allowance" Type="Double" Nullable="false" />
+    <Property Name="PercentWorker" Type="Int32" Nullable="false" />
+    <Property Name="Percent" Type="Int32" Nullable="false" />
+    <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedUser" Type="Int32" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="UpdatedUser" Type="Int32" />
+    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+    <Property Name="DeletedUser" Type="Int32" />
+    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="T_LabourDivision" Relationship="IEDModel.FK_T_LabourDivision_T_TechProcessVersion" FromRole="T_TechProcessVersion" ToRole="T_LabourDivision" />
+    <NavigationProperty Name="T_Product" Relationship="IEDModel.FK_T_TechProcessVersion_T_Product" FromRole="T_TechProcessVersion" ToRole="T_Product" />
+    <NavigationProperty Name="T_TechProcessVersionDetail" Relationship="IEDModel.FK_T_TechProcessVersionDetail_T_TechProcessVersion" FromRole="T_TechProcessVersion" ToRole="T_TechProcessVersionDetail" />
+    <NavigationProperty Name="T_UsingTechLog" Relationship="IEDModel.FK_T_DownloadLog_T_TechProcessVersion" FromRole="T_TechProcessVersion" ToRole="T_UsingTechLog" />
+  </EntityType>
+  <Association Name="FK_T_LabourDivision_T_TechProcessVersion">
+    <End Type="IEDModel.T_TechProcessVersion" Role="T_TechProcessVersion" Multiplicity="1" />
+    <End Type="IEDModel.T_LabourDivision" Role="T_LabourDivision" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_TechProcessVersion">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LabourDivision">
+        <PropertyRef Name="TechProVer_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_TechProcessVersion_T_Product">
+    <End Type="IEDModel.T_Product" Role="T_Product" Multiplicity="1" />
+    <End Type="IEDModel.T_TechProcessVersion" Role="T_TechProcessVersion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_Product">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_TechProcessVersion">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_TechProcessVersionDetail_T_TechProcessVersion">
+    <End Type="IEDModel.T_TechProcessVersion" Role="T_TechProcessVersion" Multiplicity="1" />
+    <End Type="IEDModel.T_TechProcessVersionDetail" Role="T_TechProcessVersionDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_TechProcessVersion">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_TechProcessVersionDetail">
+        <PropertyRef Name="TechProcessVersionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="T_LabourDevision_Ver">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="LabourDivisionId" Type="Int32" Nullable="false" />
+    <Property Name="TotalPosition" Type="Int32" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedUser" Type="Int32" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="DeletedUser" Type="Int32" />
+    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="T_LabourDivision" Relationship="IEDModel.FK_T_LabourDevision_Ver_T_LabourDivision" FromRole="T_LabourDevision_Ver" ToRole="T_LabourDivision" />
+    <NavigationProperty Name="T_LinePosition" Relationship="IEDModel.FK_T_LinePosition_T_LabourDivision" FromRole="T_LabourDevision_Ver" ToRole="T_LinePosition" />
+    <NavigationProperty Name="SUser" Relationship="IEDModel.FK_T_LabourDevision_Ver_SUser" FromRole="T_LabourDevision_Ver" ToRole="SUser" />
+    <NavigationProperty Name="T_LinePoDailyQuantities" Relationship="IEDModel.FK_T_LinePoDailyQuantities_T_LabourDevision_Ver" FromRole="T_LabourDevision_Ver" ToRole="T_LinePoDailyQuantities" />
+    <NavigationProperty Name="T_UsingTechLog" Relationship="IEDModel.FK_T_DownloadLog_T_LabourDevision_Ver" FromRole="T_LabourDevision_Ver" ToRole="T_UsingTechLog" />
+  </EntityType>
+  <Association Name="FK_T_LabourDevision_Ver_T_LabourDivision">
+    <End Type="IEDModel.T_LabourDivision" Role="T_LabourDivision" Multiplicity="1" />
+    <End Type="IEDModel.T_LabourDevision_Ver" Role="T_LabourDevision_Ver" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_LabourDivision">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LabourDevision_Ver">
+        <PropertyRef Name="LabourDivisionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_LinePosition_T_LabourDivision">
+    <End Type="IEDModel.T_LabourDevision_Ver" Role="T_LabourDevision_Ver" Multiplicity="1" />
+    <End Type="IEDModel.T_LinePosition" Role="T_LinePosition" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_LabourDevision_Ver">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LinePosition">
+        <PropertyRef Name="LabourDivisionVerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="SUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CompanyId" Type="Int32" Nullable="false" />
+    <Property Name="IsOwner" Type="Boolean" Nullable="false" />
+    <Property Name="UserName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="PassWord" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="IsLock" Type="Boolean" Nullable="false" />
+    <Property Name="IsRequireChangePW" Type="Boolean" Nullable="false" />
+    <Property Name="IsForgotPassword" Type="Boolean" Nullable="false" />
+    <Property Name="NoteForgotPassword" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="ImagePath" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="LockedTime" Type="DateTime" Precision="3" />
+    <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="WorkshopIds" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedUser" Type="Int32" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="UpdatedUser" Type="Int32" />
+    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+    <Property Name="DeletedUser" Type="Int32" />
+    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+    <Property Name="EmployeeId" Type="Int32" />
+    <NavigationProperty Name="HR_Employee" Relationship="IEDModel.FK_SUser_HR_Employee" FromRole="SUser" ToRole="HR_Employee" />
+    <NavigationProperty Name="SApprovers" Relationship="IEDModel.FK_SApprover_SUser" FromRole="SUser" ToRole="SApprover" />
+    <NavigationProperty Name="SCompany" Relationship="IEDModel.FK__SUser__CompanyId__3A81B327" FromRole="SUser" ToRole="SCompany" />
+    <NavigationProperty Name="SUserRoles" Relationship="IEDModel.FK_SUserRole_SUser" FromRole="SUser" ToRole="SUserRole" />
+    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_CA_Phase_SUser" FromRole="SUser" ToRole="T_CA_Phase" />
+    <NavigationProperty Name="T_LabourDevision_Ver" Relationship="IEDModel.FK_T_LabourDevision_Ver_SUser" FromRole="SUser" ToRole="T_LabourDevision_Ver" />
+    <NavigationProperty Name="T_LabourDivision" Relationship="IEDModel.FK_T_LabourDivision_SUser" FromRole="SUser" ToRole="T_LabourDivision" />
+    <NavigationProperty Name="T_LabourDivision1" Relationship="IEDModel.FK_T_LabourDivision_SUser1" FromRole="SUser" ToRole="T_LabourDivision" />
+    <NavigationProperty Name="T_PhaseGroupDailyProduction" Relationship="IEDModel.FK_T_PhaseGroupDailyProduction_SUser" FromRole="SUser" ToRole="T_PhaseGroupDailyProduction" />
+    <NavigationProperty Name="T_LinePoDailyQuantities" Relationship="IEDModel.FK_T_LinePoDailyQuantities_SUser" FromRole="SUser" ToRole="T_LinePoDailyQuantities" />
+    <NavigationProperty Name="T_PhaseGroup_Phase" Relationship="IEDModel.FK_T_PhaseGroup_Phase_SUser" FromRole="SUser" ToRole="T_PhaseGroup_Phase" />
+    <NavigationProperty Name="T_UsingTechLog" Relationship="IEDModel.FK_T_DownloadLog_SUser" FromRole="SUser" ToRole="T_UsingTechLog" />
+  </EntityType>
+  <Association Name="FK_SUser_HR_Employee">
+    <End Type="IEDModel.HR_Employee" Role="HR_Employee" Multiplicity="0..1" />
+    <End Type="IEDModel.SUser" Role="SUser" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HR_Employee">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SUser">
+        <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SApprover_SUser">
+    <End Type="IEDModel.SUser" Role="SUser" Multiplicity="1" />
+    <End Type="IEDModel.SApprover" Role="SApprover" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SApprover">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK__SUser__CompanyId__3A81B327">
     <End Type="IEDModel.SCompany" Role="SCompany" Multiplicity="1" />
     <End Type="IEDModel.SUser" Role="SUser" Multiplicity="*" />
@@ -2363,6 +2526,18 @@
       </Principal>
       <Dependent Role="SUserRole">
         <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_CA_Phase_SUser">
+    <End Type="IEDModel.SUser" Role="SUser" Multiplicity="0..1" />
+    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_CA_Phase">
+        <PropertyRef Name="Approver" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -2411,6 +2586,347 @@
       </Principal>
       <Dependent Role="T_PhaseGroupDailyProduction">
         <PropertyRef Name="CreatedUser" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="T_LinePoDailyQuantities">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Date" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="LabourDevisionId" Type="Int32" Nullable="false" />
+    <Property Name="LabourDevision_VerId" Type="Int32" Nullable="false" />
+    <Property Name="LinePo_DetailId" Type="Int32" Nullable="false" />
+    <Property Name="ComandType" Type="Int32" Nullable="false" />
+    <Property Name="Quantities" Type="Int32" Nullable="false" />
+    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedUser" Type="Int32" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="PhaseId" Type="Int32" Nullable="false" />
+    <Property Name="EmployeeId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="HR_Employee" Relationship="IEDModel.FK_T_LinePoDailyQuantities_HR_Employee" FromRole="T_LinePoDailyQuantities" ToRole="HR_Employee" />
+    <NavigationProperty Name="SUser" Relationship="IEDModel.FK_T_LinePoDailyQuantities_SUser" FromRole="T_LinePoDailyQuantities" ToRole="SUser" />
+    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_LinePoDailyQuantities_T_CA_Phase" FromRole="T_LinePoDailyQuantities" ToRole="T_CA_Phase" />
+    <NavigationProperty Name="T_LabourDevision_Ver" Relationship="IEDModel.FK_T_LinePoDailyQuantities_T_LabourDevision_Ver" FromRole="T_LinePoDailyQuantities" ToRole="T_LabourDevision_Ver" />
+    <NavigationProperty Name="T_LabourDivision" Relationship="IEDModel.FK_T_LinePoDailyQuantities_T_LabourDivision" FromRole="T_LinePoDailyQuantities" ToRole="T_LabourDivision" />
+    <NavigationProperty Name="T_LinePositionDetail" Relationship="IEDModel.FK_T_LinePoDailyQuantities_T_LinePositionDetail" FromRole="T_LinePoDailyQuantities" ToRole="T_LinePositionDetail" />
+  </EntityType>
+  <Association Name="FK_T_LinePoDailyQuantities_HR_Employee">
+    <End Type="IEDModel.HR_Employee" Role="HR_Employee" Multiplicity="1" />
+    <End Type="IEDModel.T_LinePoDailyQuantities" Role="T_LinePoDailyQuantities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HR_Employee">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LinePoDailyQuantities">
+        <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_LinePoDailyQuantities_SUser">
+    <End Type="IEDModel.SUser" Role="SUser" Multiplicity="1" />
+    <End Type="IEDModel.T_LinePoDailyQuantities" Role="T_LinePoDailyQuantities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LinePoDailyQuantities">
+        <PropertyRef Name="CreatedUser" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_LinePoDailyQuantities_T_CA_Phase">
+    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="1" />
+    <End Type="IEDModel.T_LinePoDailyQuantities" Role="T_LinePoDailyQuantities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_CA_Phase">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LinePoDailyQuantities">
+        <PropertyRef Name="PhaseId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_LinePoDailyQuantities_T_LabourDevision_Ver">
+    <End Type="IEDModel.T_LabourDevision_Ver" Role="T_LabourDevision_Ver" Multiplicity="1" />
+    <End Type="IEDModel.T_LinePoDailyQuantities" Role="T_LinePoDailyQuantities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_LabourDevision_Ver">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LinePoDailyQuantities">
+        <PropertyRef Name="LabourDevision_VerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_LinePoDailyQuantities_T_LabourDivision">
+    <End Type="IEDModel.T_LabourDivision" Role="T_LabourDivision" Multiplicity="1" />
+    <End Type="IEDModel.T_LinePoDailyQuantities" Role="T_LinePoDailyQuantities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_LabourDivision">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LinePoDailyQuantities">
+        <PropertyRef Name="LabourDevisionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_LinePoDailyQuantities_T_LinePositionDetail">
+    <End Type="IEDModel.T_LinePositionDetail" Role="T_LinePositionDetail" Multiplicity="1" />
+    <End Type="IEDModel.T_LinePoDailyQuantities" Role="T_LinePoDailyQuantities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_LinePositionDetail">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LinePoDailyQuantities">
+        <PropertyRef Name="LinePo_DetailId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="T_PhaseGroup_Phase">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Index" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EquipmentId" Type="Int32" />
+    <Property Name="WorkerLevelId" Type="Int32" Nullable="false" />
+    <Property Name="PhaseGroupId" Type="Int32" Nullable="false" />
+    <Property Name="TimePrepareId" Type="Int32" Nullable="false" />
+    <Property Name="TotalTMU" Type="Double" Nullable="false" />
+    <Property Name="ApplyPressuresId" Type="Int32" />
+    <Property Name="PercentWasteEquipment" Type="Double" Nullable="false" />
+    <Property Name="PercentWasteManipulation" Type="Double" Nullable="false" />
+    <Property Name="PercentWasteSpecial" Type="Double" Nullable="false" />
+    <Property Name="PercentWasteMaterial" Type="Double" Nullable="false" />
+    <Property Name="Node" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="Video" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedUser" Type="Int32" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="UpdatedUser" Type="Int32" />
+    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+    <Property Name="DeletedUser" Type="Int32" />
+    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+    <Property Name="IsLibrary" Type="Boolean" Nullable="false" />
+    <Property Name="Status" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="IsApprove" Type="Boolean" Nullable="false" />
+    <Property Name="Approver" Type="Int32" />
+    <Property Name="ApprovedDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="SUser" Relationship="IEDModel.FK_T_PhaseGroup_Phase_SUser" FromRole="T_PhaseGroup_Phase" ToRole="SUser" />
+    <NavigationProperty Name="SWorkerLevel" Relationship="IEDModel.FK_T_PhaseGroup_Phase_SWorkerLevel" FromRole="T_PhaseGroup_Phase" ToRole="SWorkerLevel" />
+    <NavigationProperty Name="T_ApplyPressureLibrary" Relationship="IEDModel.FK_T_PhaseGroup_Phase_T_ApplyPressureLibrary" FromRole="T_PhaseGroup_Phase" ToRole="T_ApplyPressureLibrary" />
+    <NavigationProperty Name="T_Equipment" Relationship="IEDModel.FK_T_PhaseGroup_Phase_T_Equipment" FromRole="T_PhaseGroup_Phase" ToRole="T_Equipment" />
+    <NavigationProperty Name="T_PhaseGroup" Relationship="IEDModel.FK_T_PhaseGroup_Phase_T_PhaseGroup" FromRole="T_PhaseGroup_Phase" ToRole="T_PhaseGroup" />
+    <NavigationProperty Name="T_PhaseGroup_Phase_Mani" Relationship="IEDModel.FK_T_PhaseGroup_Phase_Mani_T_PhaseGroup_Phase" FromRole="T_PhaseGroup_Phase" ToRole="T_PhaseGroup_Phase_Mani" />
+    <NavigationProperty Name="T_TimePrepare" Relationship="IEDModel.FK_T_PhaseGroup_Phase_T_TimePrepare" FromRole="T_PhaseGroup_Phase" ToRole="T_TimePrepare" />
+  </EntityType>
+  <Association Name="FK_T_PhaseGroup_Phase_SUser">
+    <End Type="IEDModel.SUser" Role="SUser" Multiplicity="0..1" />
+    <End Type="IEDModel.T_PhaseGroup_Phase" Role="T_PhaseGroup_Phase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_PhaseGroup_Phase">
+        <PropertyRef Name="Approver" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_PhaseGroup_Phase_SWorkerLevel">
+    <End Type="IEDModel.SWorkerLevel" Role="SWorkerLevel" Multiplicity="1" />
+    <End Type="IEDModel.T_PhaseGroup_Phase" Role="T_PhaseGroup_Phase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SWorkerLevel">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_PhaseGroup_Phase">
+        <PropertyRef Name="WorkerLevelId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_PhaseGroup_Phase_T_ApplyPressureLibrary">
+    <End Type="IEDModel.T_ApplyPressureLibrary" Role="T_ApplyPressureLibrary" Multiplicity="0..1" />
+    <End Type="IEDModel.T_PhaseGroup_Phase" Role="T_PhaseGroup_Phase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_ApplyPressureLibrary">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_PhaseGroup_Phase">
+        <PropertyRef Name="ApplyPressuresId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_PhaseGroup_Phase_T_Equipment">
+    <End Type="IEDModel.T_Equipment" Role="T_Equipment" Multiplicity="0..1" />
+    <End Type="IEDModel.T_PhaseGroup_Phase" Role="T_PhaseGroup_Phase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_Equipment">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_PhaseGroup_Phase">
+        <PropertyRef Name="EquipmentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_PhaseGroup_Phase_T_PhaseGroup">
+    <End Type="IEDModel.T_PhaseGroup" Role="T_PhaseGroup" Multiplicity="1" />
+    <End Type="IEDModel.T_PhaseGroup_Phase" Role="T_PhaseGroup_Phase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_PhaseGroup">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_PhaseGroup_Phase">
+        <PropertyRef Name="PhaseGroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_PhaseGroup_Phase_Mani_T_PhaseGroup_Phase">
+    <End Type="IEDModel.T_PhaseGroup_Phase" Role="T_PhaseGroup_Phase" Multiplicity="1" />
+    <End Type="IEDModel.T_PhaseGroup_Phase_Mani" Role="T_PhaseGroup_Phase_Mani" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_PhaseGroup_Phase">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_PhaseGroup_Phase_Mani">
+        <PropertyRef Name="PhaseGroup_PhaseId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_PhaseGroup_Phase_T_TimePrepare">
+    <End Type="IEDModel.T_TimePrepare" Role="T_TimePrepare" Multiplicity="1" />
+    <End Type="IEDModel.T_PhaseGroup_Phase" Role="T_PhaseGroup_Phase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_TimePrepare">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_PhaseGroup_Phase">
+        <PropertyRef Name="TimePrepareId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="T_UsingTechLog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="WorkShopId" Type="Int32" Nullable="false" />
+    <Property Name="ProductId" Type="Int32" />
+    <Property Name="PhaseId" Type="Int32" />
+    <Property Name="PhaseGroupId" Type="Int32" />
+    <Property Name="TKCId" Type="Int32" />
+    <Property Name="QTCNId" Type="Int32" />
+    <Property Name="Type" Type="Int32" Nullable="false" />
+    <Property Name="Note" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="IsView" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="SUser" Relationship="IEDModel.FK_T_DownloadLog_SUser" FromRole="T_UsingTechLog" ToRole="SUser" />
+    <NavigationProperty Name="T_CA_Phase" Relationship="IEDModel.FK_T_DownloadLog_T_CA_Phase" FromRole="T_UsingTechLog" ToRole="T_CA_Phase" />
+    <NavigationProperty Name="T_LabourDevision_Ver" Relationship="IEDModel.FK_T_DownloadLog_T_LabourDevision_Ver" FromRole="T_UsingTechLog" ToRole="T_LabourDevision_Ver" />
+    <NavigationProperty Name="T_PhaseGroup" Relationship="IEDModel.FK_T_DownloadLog_T_PhaseGroup" FromRole="T_UsingTechLog" ToRole="T_PhaseGroup" />
+    <NavigationProperty Name="T_Product" Relationship="IEDModel.FK_T_DownloadLog_T_Product" FromRole="T_UsingTechLog" ToRole="T_Product" />
+    <NavigationProperty Name="T_TechProcessVersion" Relationship="IEDModel.FK_T_DownloadLog_T_TechProcessVersion" FromRole="T_UsingTechLog" ToRole="T_TechProcessVersion" />
+    <NavigationProperty Name="T_UsingTech_Detail" Relationship="IEDModel.FK_T_UsingTech_Detail_T_UsingTechLog" FromRole="T_UsingTechLog" ToRole="T_UsingTech_Detail" />
+    <NavigationProperty Name="T_WorkShop" Relationship="IEDModel.FK_T_UsingTechLog_T_WorkShop" FromRole="T_UsingTechLog" ToRole="T_WorkShop" />
+  </EntityType>
+  <Association Name="FK_T_DownloadLog_SUser">
+    <End Type="IEDModel.SUser" Role="SUser" Multiplicity="1" />
+    <End Type="IEDModel.T_UsingTechLog" Role="T_UsingTechLog" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_UsingTechLog">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_DownloadLog_T_CA_Phase">
+    <End Type="IEDModel.T_CA_Phase" Role="T_CA_Phase" Multiplicity="0..1" />
+    <End Type="IEDModel.T_UsingTechLog" Role="T_UsingTechLog" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_CA_Phase">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_UsingTechLog">
+        <PropertyRef Name="PhaseId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_DownloadLog_T_LabourDevision_Ver">
+    <End Type="IEDModel.T_LabourDevision_Ver" Role="T_LabourDevision_Ver" Multiplicity="0..1" />
+    <End Type="IEDModel.T_UsingTechLog" Role="T_UsingTechLog" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_LabourDevision_Ver">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_UsingTechLog">
+        <PropertyRef Name="TKCId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_DownloadLog_T_PhaseGroup">
+    <End Type="IEDModel.T_PhaseGroup" Role="T_PhaseGroup" Multiplicity="0..1" />
+    <End Type="IEDModel.T_UsingTechLog" Role="T_UsingTechLog" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_PhaseGroup">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_UsingTechLog">
+        <PropertyRef Name="PhaseGroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_DownloadLog_T_Product">
+    <End Type="IEDModel.T_Product" Role="T_Product" Multiplicity="0..1" />
+    <End Type="IEDModel.T_UsingTechLog" Role="T_UsingTechLog" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_Product">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_UsingTechLog">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_DownloadLog_T_TechProcessVersion">
+    <End Type="IEDModel.T_TechProcessVersion" Role="T_TechProcessVersion" Multiplicity="0..1" />
+    <End Type="IEDModel.T_UsingTechLog" Role="T_UsingTechLog" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_TechProcessVersion">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_UsingTechLog">
+        <PropertyRef Name="QTCNId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_UsingTech_Detail_T_UsingTechLog">
+    <End Type="IEDModel.T_UsingTechLog" Role="T_UsingTechLog" Multiplicity="1" />
+    <End Type="IEDModel.T_UsingTech_Detail" Role="T_UsingTech_Detail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_UsingTechLog">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_UsingTech_Detail">
+        <PropertyRef Name="UsingTechLogId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_UsingTechLog_T_WorkShop">
+    <End Type="IEDModel.T_WorkShop" Role="T_WorkShop" Multiplicity="1" />
+    <End Type="IEDModel.T_UsingTechLog" Role="T_UsingTechLog" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_WorkShop">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_UsingTechLog">
+        <PropertyRef Name="WorkShopId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

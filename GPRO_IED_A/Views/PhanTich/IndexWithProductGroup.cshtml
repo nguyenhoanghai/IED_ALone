@@ -1,0 +1,535 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+     Layout = null;
+}
+<link href="~/Scripts/IED/ProAna/ProAna_tkc.css" rel="stylesheet" />
+<style>
+    #selecting {
+        padding: 10px 5px 0 5px;
+        color: red
+    }
+
+    .tree-ul {
+        padding: 10px 0;
+        margin: 10px 0 0 0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background: white
+    }
+
+        .tree-ul li {
+            padding: 5px 10px !important;
+            list-style: none;
+            margin: 0;
+            color: red;
+        }
+
+        .tree-ul > li > ul {
+            padding: 0 5px;
+            margin: 0;
+        }
+
+            .tree-ul > li > ul > li {
+                padding: 5px 10px !important;
+                margin: 0;
+                color: blue !important;
+            }
+
+                .tree-ul > li > ul > li > ul {
+                    margin: 0;
+                    padding: 0 5px;
+                }
+
+                    .tree-ul > li > ul > li > ul > li {
+                        padding: 5px 10px !important;
+                        margin: 0;
+                        color: fuchsia !important;
+                        cursor: pointer
+                    }
+
+                        .tree-ul > li > ul > li > ul > li > ul {
+                            margin: 0;
+                            padding: 0 5px;
+                        }
+
+                            .tree-ul > li > ul > li > ul > li > ul > li {
+                                padding: 5px 10px !important;
+                                margin: 0;
+                                color: black !important;
+                                cursor: pointer
+                            }
+
+                                .tree-ul > li > ul > li > ul > li > ul > li:hover {
+                                    padding-left: 15px !important;
+                                    font-weight: 600;
+                                    color: red !important
+                                }
+
+    .current-tree li i {
+        padding: 0 2px
+    }
+
+    .current-tree li div {
+        display: inline-flex;
+        align-items: center;
+        width: 100%;
+    }
+
+        .current-tree li div div {
+            width: calc(100% - 20px);
+        }
+
+    .current-tree .fa-plus-circle {
+        cursor: pointer
+    }
+
+    .div-action-box {
+        text-align: right;
+        width: 200px
+    }
+
+        .div-action-box button {
+            font-size: 10px;
+            margin: 0 0 5px 0;
+            padding: 4px 6px;
+        }
+
+            .div-action-box button i {
+                font-size: 18px;
+                margin-top: 2px;
+            }
+
+
+    #tree-sample {
+        height: 100%;
+        overflow-y: auto
+    }
+
+    .filter-box {
+        display: flex;
+        align-items: center
+    }
+
+        .filter-box input {
+            width: calc(100% - 25px)
+        }
+
+            .filter-box input#pt-product {
+                width: calc(100% - 50px) !important
+            }
+
+        .filter-box i {
+            cursor: pointer;
+            padding-left: 5px;
+        }
+
+            .filter-box i.fa-refresh {
+                font-size: 20px;
+                color: red
+            }
+
+            .filter-box i.fa.fa-plus-circle {
+                font-size: 24px;
+                color: blue;
+            }
+ 
+    .div-lv0,
+    .div-lv1,
+    .div-lv2,
+    .div-lv3,
+    .div-lv4 {
+        border-bottom: 1px dashed olive
+    }
+
+    .div-lv0 {
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+        background: white;
+        margin: 10px 0;
+        height: calc(100% - 65px);
+        overflow-y: auto
+    }
+
+        .div-lv0 .fa {
+            padding-left: 0px
+        }
+
+        .div-lv0 .fa-shirtsinbulk,
+        .div-lv0 .fa-industry,
+        .div-lv0 .fa-diamond,
+        .div-lv0 .fa-object-group,
+        .div-lv0 .fa-area-chart,
+        .div-lv0 .fa-caret-right {
+            padding-right: 5px;
+            font-size: 13px
+        }
+
+        .div-lv0 .fa-plus-circle,
+        .div-lv0 .fa-paste {
+            cursor: pointer;
+            padding: 0 !important;
+            color: blue !important
+        }
+
+        .div-lv0 .fa-paste {
+            padding-right: 3px !important
+        }
+
+        .div-lv0 .fa-trash-o {
+            cursor: pointer;
+            color: red;
+            padding: 0 !important
+        }
+
+    .div-lv1 {
+        display: flex;
+        align-items: center;
+        padding: 5px 0;
+        color: red;
+        text-transform: uppercase
+    }
+
+        .div-lv1 div,
+        .div-lv2 div,
+        .div-lv3 div {
+            width: calc(100% - 20px);
+            cursor: pointer
+        }
+
+    .div-lv2 {
+        display: flex;
+        align-items: center;
+        padding: 5px 0;
+        margin-left: 10px;
+        color: blue
+    }
+
+    .div-lv3 {
+        display: flex;
+        align-items: center;
+        padding: 5px 0;
+        margin-left: 20px;
+        color: fuchsia !important;
+        cursor: pointer
+    }
+
+    .div-lv4 {
+        padding: 5px 0;
+        margin-left: 30px;
+        color: black;
+        cursor: pointer
+    } 
+    #left-component {
+        width: 20em;
+    }
+
+    #vertical-divider {
+        left: 20em;
+        width: 5px;
+    }
+
+    #right-component {
+        left: 20em;
+        margin-left: 5px;
+    }
+
+    #Create-Phase-Popup .nav-tabs > li > a {
+        margin-top: 5px !important
+    }
+
+    .tech-info-box-main {
+        width: 700px !important
+    }
+
+        .tech-info-box-main .box-left {
+            padding-right: 0;
+            border-right: 2px solid #ccc;
+        }
+
+        .tech-info-box-main .img-box {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-left: 5px
+        }
+
+            .tech-info-box-main .img-box .img-item {
+                margin-bottom: 5px
+            }
+
+            .pding-right{ padding : 0 ; padding-right:5px !important}
+</style>
+<input id="config" type="hidden" gettmutype="@ViewBag.GetTMUType" tmu="@ViewBag.TMU" maniexpenddefault="@ViewBag.ManipulationExpendDefault" />
+<div>
+    <div style="display:flex; margin-bottom:5px; line-height:34px; ">
+        <label style="margin-right:10px">Chủng loại hàng: </label> <select id="select-product-type" class="form-control" style="max-width:300px"></select><i  re-select-product-group  class="fa fa-refresh red" style="line-height:34px; margin-left:5px" title="Làm mới"></i>
+    </div> 
+    <div class="col-md-3" style="padding-left:0; width:300px !important">
+        <div class="group-box" style="height:500px">
+            <div class="group-box-title">Thông tin mã hàng </div>
+            <div class="group-box-body" style="height:100%">
+                <div class="filter-box"> 
+                    <select id="select-product" class="form-control" style="max-width:300px"></select>
+                    <i  re-select-product  class="fa fa-refresh red" title="Làm mới"> </i> 
+                </div>
+
+                <div id="tree-pt" class="div-lv0">
+                    Không có dữ liệu....
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9" style="padding-left:0 ; width: calc(100% - 300px)">
+        <div class="group-box" style="height:500px">
+            <div class="group-box-title" style="display:inline-flex; width:100%; align-items:center ">
+                <div style="width: calc(100% - 200px);" id="title-popup">thông tin phân tích</div>
+
+                <div class="div-action-box">
+                    <div id="qtcn-action">
+                        <button title="Xuất tệp excel QTCN" techexport class="btn btn-default" hidden="hidden" data-toggle="modal" data-target="#popup-export-qtcn">
+                            <i class="fa fa-file-excel-o red"></i>
+                        </button>
+                        @*<button techsave class="btn btn-default" title="Lưu quy trình công nghệ">   <i class="fa fa-floppy-o blue"></i> </button>
+        <button techrefresh class="btn btn-default" title="Làm mới danh sách công đoạn">   <i class="fa fa-refresh red"></i> </button>*@
+                    </div>
+
+                    <div id="phase-group-action">
+                        <button id="phase-group-export" title="Xuất tệp excel" class="btn btn-default"> <i class="fa fa-file-excel-o red"></i> </button>
+                       @* <button id="phase-group-copy" title="sao chép cụm công đoạn" class="btn btn-default">   <i class="fa fa-copy blue"></i>  </button>*@
+                    </div>
+                    <div id="current-phase-group-action">
+                        <button id="pt-phase-group-export" class="btn btn-default" title="Xuất tệp excel">   <i class="fa fa-file-excel-o red"></i>  </button>
+                       
+                        @*<button id="pt-phase-group-info" class="btn btn-default" title="Xem thông tin cụm công đoạn"> <i class="fa fa-edit blue"></i>  </button>
+                        <button id="pt-phase-group-delete" class="btn btn-default" title="Xóa cụm công đoạn">   <i class="fa fa-trash-o red"></i>  </button>*@
+                   
+                    </div>
+                </div>
+
+            </div>
+            <div class="group-box-body" style="height:440px !important; overflow-y:auto; padding-top:0 !important; height:100%">
+                <div id="jtable-phase-sample" class="table-center"></div>
+                <div id="jtable-phase" class="table-center"></div>
+
+
+                <div id="techprocess">
+                    <div class="contain-main">
+                        <div style="padding:  5px 10px; ">
+                            <div class="container-fluid">
+                                <div class="tech-info-box">
+                                    <div class="tech-info-box-main">
+                                        <div class="col-md-6 form-group box-left pding-right">
+                                            <input type="hidden" id="techId" value="0" />
+                                            <div>Người tạo: <label class="control-label" id="qtcn_createUser"> </label></div>
+                                            <div>Ngày tạo: <label class="control-label" id="qtcn_createDate"> </label></div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">Thời Gian / 1SP</label>
+                                                <div id="time-product" class="form-control red">  0 (s)</div>
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="col1 col0">Công nhân</label>
+                                                <input class="form-control" id="total-worker" value="30" type="text" onkeypress=" return isNumberKey(event)" />
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">Thời Gian / Ngày</label>
+                                                <input class="form-control" id="work-time" value="9" type="text" onkeypress=" return isNumberKey(event)" />
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">Nhịp sản xuất</label>
+                                                <div id="paced_production" class="form-control red"> 0 </div>
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">NS tổ / 1 giờ</label>
+                                                <div class="form-control red" id="productivity"> 0 </div>
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">NS tổ / Ngày  </label>
+                                                <div class="form-control red" id="pro_group_day">0</div>
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">NS người / Ngày</label>
+                                                <div class="form-control red" id="pro_person_day">0</div>
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">Phụ cấp (%)</label>
+                                                <input class="form-control" id="allowance" value="1" type="text" onkeypress=" return isNumberKey(event)" />
+                                            </div>
+
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">Đơn giá (giây / phút) </label>
+                                                <div style="display:flex; align-items:center">
+                                                    <input class="form-control center" style="width:50%; margin-right:10px " id="pricePerSecond" value="1" type="text" onkeypress=" return isNumberKey(event)" />
+                                                    <i class="fa fa-minus red"></i>
+                                                    <input class="form-control center" style="width:50%; margin-left:10px " id="pricePerMinute" value="1" type="text" onkeypress=" return isNumberKey(event)" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">Thành tiền (s)</label>
+                                                <div class="form-control" id="total-price"></div>
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">% quy trình</label>
+                                                <input class="form-control" id="percent" value="100" type="text" onkeypress=" return isNumberKey(event)" />
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">Thành tiền theo % (s)</label>
+                                                <div class="form-control" id="total-price-percent"></div>
+                                            </div>
+                                            <div class="clearfix">   </div>
+                                            <div class="col-md-12 form-group  pding-right">
+                                                <label>Ghi Chú</label>
+                                                <textarea class="form-control" id="des"></textarea>
+                                            </div>
+                                            <div class="clearfix">   </div>
+                                        </div>
+                                        <div class="col-md-6 form-group img-box">
+                                            <div class="img-item">
+                                                <img src="http://112.197.117.97:86//UploadFile/Files/2022/1/20/ff3c6e93-651e-48bc-8038-91a673b17fe6_5e2d2497fe6f34316d7e.jpg" class="img-avatar" id="img-avatar">
+                                            </div>
+                                            <div class="img-item">
+                                                <img src="http://112.197.117.97:86//UploadFile/Files/2022/1/20/a2113538-36e7-4725-a4b3-c45db2df30e9_6dcbf2b82b40e11eb851.jpg" class="img-avatar" id="img-avatar">
+                                            </div>
+                                            <div class="img-item">
+                                                <img src="http://112.197.117.97:86//UploadFile/Files/2022/1/20/a5e5157c-92ba-4b4a-a446-c9f93b5b46a4_18b369a655e598bbc1f4.jpg" class="img-avatar" id="img-avatar">
+                                            </div>
+                                            <div class="img-item">
+                                                <img src="http://112.197.117.97:86//UploadFile/Files/2022/1/20/c1e61c29-cb90-4be4-9378-b1173081fd88_80750fd03293ffcda682.jpg" class="img-avatar" id="img-avatar">
+                                            </div>
+                                            <div class="img-item">
+                                                <img src="http://112.197.117.97:86//UploadFile/Files/2022/1/20/2d4e55fd-2a9f-47c7-ad3b-519803f089b2_863543729a8a50d4099b.jpg" class="img-avatar" id="img-avatar">
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                    <div class="tech-info-box-but"> <i class="fa fa-angle-double-right " title="Thông tin quy trình công nghệ"></i></div>
+                                </div>
+
+                                <div style=" ">
+                                    <div id="jtable-qtcn-sample" class="table-center"></div>
+                                </div>
+                                <div class="clearfix">   </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="jtable-tkc-sample" class="Jtable-css  table-center " parentid="0" node="0" wkid="0" wkname="" pid="0"></div>
+                <div id="jtable-tkc" class="Jtable-css  table-center " parentid="0" node="0" wkid="0" wkname="" pid="0"></div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<datalist id="datalist-product"></datalist>
+
+<div class="modal   fade  " id="popup-export-qtcn" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">Chọn mẫu quy trình công nghệ</h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <button aria-hidden="true" texch-export1 class="btn btn-primary">
+                        <i class="fa fa-file-excel-o"></i>
+                        Mẫu 1
+                    </button>
+                    <button aria-hidden="true" texch-export2 class="btn btn-primary">
+                        <i class="fa fa-file-excel-o"></i>
+                        Mẫu 2
+                    </button>
+                    <button aria-hidden="true" texch-export3 class="btn btn-primary">
+                        <i class="fa fa-file-excel-o"></i>
+                        Mẫu 3
+                    </button>
+                    <button aria-hidden="true" texch-export4 class="btn btn-primary">
+                        <i class="fa fa-file-excel-o"></i>
+                        Mẫu làm lương
+                    </button>
+                    <button aria-hidden="true" texch-export5 class="btn btn-primary">
+                        <i class="fa fa-file-excel-o"></i>
+                        Mẫu 5
+                    </button>
+                    <button aria-hidden="true" texch-export6 class="btn btn-primary">
+                        <i class="fa fa-file-excel-o"></i>
+                        Mẫu 6
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button aria-hidden="true" data-dismiss="modal" class="btn btn-default">
+                    <i class="fa fa-times red"></i>
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@Html.Partial("CommoAna_Partial")
+@Html.Partial("_CreatePhase_Partial")
+@Html.Partial("_TKC_Partial")
+ 
+<script src="~/Scripts/IED/PhanTich/phan-tich-goup-by-product-group.js"></script>
+<script>
+    var obj = new GPRO.PhantichByProGroup();
+    obj.Init();
+    obj.GetGlobal().Data.Approver = ('@ViewBag.isApprover' == 'True' ? true : false)
+
+    function SetNode_ParentIdSample(_node, _parentId, _groupName) {
+        obj.SetNode_ParentIdSample(_node, _parentId, _groupName);
+    }
+
+    function ReloadQTCN_Sample(_node, _parentId) {
+        obj.ReloadQTCN_Sample(_node, _parentId);
+    }
+
+    function ReloadTKC_Sample(_node, _parentId) {
+        obj.ReloadTKC_Sample(_node, _parentId);
+    }
+
+    function refresh_Tree() { $("#jqxTree").jqxTree('refresh'); }
+
+    function ResetTime_Percent(index) { obj.ResetTime_Percent(index); }
+
+    function Change() {
+        obj.TitleChange();
+    }
+
+    function removeVideo() { obj.removeVideo(); }
+
+    function BindData(_id, _oType, _wkId) { obj.bindData(_id, _oType, _wkId); }
+
+    function AddNew(_node, _parentId, _oType) { obj.addNew(_node, _parentId, _oType) }
+
+    function Delete(_id, _oType) { obj.delete(_id, _oType) };
+
+    function PastePhaseGroup(_id) { obj.pastePhaseGroup(_id); }
+
+    function ChooseEmployee(id) {
+        obj.ChooseEmployee(id);
+    }
+
+    function insert_Exit(id) {
+        obj.insert_Exit(id);
+    }
+
+    function insert_BTP(id) {
+        obj.insert_BTP(id);
+    }
+
+    function delete_Po(id) {
+        obj.delete_Po(id);
+    }
+
+    function ChangeIndex(index) {
+        obj.ChangeIndex(index);
+    }
+
+</script>

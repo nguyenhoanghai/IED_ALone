@@ -20,7 +20,7 @@ GPRO.namespace('WorkerBalance');
 GPRO.WorkerBalance = function () {
     var Global = {
         UrlAction: {
-            GetById: '/TKCInsert/GetLastLabourDevisionVer',
+            GetById: '/TKCInsert/GetLabourDevisionVer',
             Excel: '/TKCInsert/ExportReportWorkerBalance',
             Get: '/TKCInsert/GetReportWorkerBalance',
         },
@@ -41,7 +41,7 @@ GPRO.WorkerBalance = function () {
         //ReloadList(); 
         //InitPopup();  
         ResetInfo();
-        GetProAnaSelect('worker-balance-product', 1, 0);
+        GetTKCOfLineSelect('worker-balance-line');
         $('#today-date').html(moment().format('D/M/YYYY'));
         $('#btn-insert').hide();
     }
@@ -49,31 +49,14 @@ GPRO.WorkerBalance = function () {
 
     var RegisterEvent = function () {
 
-        $('#re-worker-balance-product').click(() => {
-            GetProAnaSelect('worker-balance-product', 1, 0);
-        })
-
-        $('#worker-balance-product').change(() => {
-            GetProAnaSelect('worker-balance-workshop', 2, $('#worker-balance-product').val());
-            ResetInfo();
-        })
-
-        $('#re-worker-balance-workshop').click(() => {
-            GetProAnaSelect('worker-balance-workshop', 2, $('#worker-balance-product').val());
-        });
-
-        $('#worker-balance-workshop').change(() => {
-            $('#re-worker-balance-line').click();
-        })
-
         $('#re-worker-balance-line').click(() => {
-            if ($('#worker-balance-workshop').val() != undefined)
-                GetTKCLineSelect('worker-balance-line', $('#worker-balance-workshop').val());
+            ResetInfo();
+            GetTKCOfLineSelect('worker-balance-line');
         })
 
         $('#worker-balance-line').change(() => {
             if ($('#worker-balance-line').val() != undefined) {
-                GetLaborDivisionDiagramById($('#worker-balance-line').val());
+                GetLaborDivisionDiagramById();
                 //  GetLinePosition($('#worker-balance-line').val());
             }
         });
@@ -92,11 +75,11 @@ GPRO.WorkerBalance = function () {
 
     }
 
-    function GetLaborDivisionDiagramById(id) {
+    function GetLaborDivisionDiagramById() {
         $.ajax({
             url: Global.UrlAction.Get,
             type: 'post',
-            data: JSON.stringify({ 'labourId': id }),
+            data: JSON.stringify({ 'labourVerId': $('#worker-balance-line').val() }),
             contentType: 'application/json',
             beforeSend: function () { $('#loading').show(); },
             success: function (result) {
@@ -130,8 +113,13 @@ GPRO.WorkerBalance = function () {
                                 for (var ii = 0; ii < phases.length; ii++) {
                                     var _tmu = Math.round(phases[ii].TotalTMU);
                                     var _total_15HP = Math.round(_tmu + (_tmu > 0 ? (_tmu * 15) / 100 : 0));
-                                    var _dmHour =(_total_15HP > 0 ? (3600 / _total_15HP) : 0);
+                                    var _dmHour = (_total_15HP > 0 ? (3600 / _total_15HP) : 0);
                                     var _theopc = Math.round(_dmHour > 0 ? (_dmHour * phases[ii].DevisionPercent) / 100 : 0);
+
+                                    var _timeNeed = (_dmHour > 0 ? (_dmHour * (_total_15HP / 3600)) : 0);
+
+
+
                                     if (ii > 0)
                                         tr = $('<tr></tr>');
                                     tr.append(`<td class='text-center' >${phases[ii].PhaseCode}</td>`);
@@ -139,8 +127,8 @@ GPRO.WorkerBalance = function () {
                                     tr.append(`<td class='text-center' >${_tmu.toFixed(0)}</td >`);
                                     tr.append(`<td class='text-center' >${_total_15HP.toFixed(0)}</td >`);
                                     tr.append(`<td class='text-center' >${_theopc.toFixed(0)}</td >`);
-                                    tr.append(`<td class='text-center' >${0}</td>`);
-                                    tr.append(`<td class='text-center' >${0}</td>`);
+                                    tr.append(`<td class='text-center' >${_timeNeed.toFixed(2)}</td>`);
+                                    tr.append(`<td class='text-center' >${_timeNeed > 1 ? 0 : (1 - _timeNeed).toFixed(2)}</td>`);
 
                                     _table.append(tr);
                                 }

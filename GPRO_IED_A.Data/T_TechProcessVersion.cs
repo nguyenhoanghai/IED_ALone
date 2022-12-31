@@ -18,6 +18,7 @@ namespace GPRO_IED_A.Data
         {
             this.T_LabourDivision = new HashSet<T_LabourDivision>();
             this.T_TechProcessVersionDetail = new HashSet<T_TechProcessVersionDetail>();
+            this.T_UsingTechLog = new HashSet<T_UsingTechLog>();
         }
     
         public int Id { get; set; }
@@ -47,5 +48,6 @@ namespace GPRO_IED_A.Data
         public virtual ICollection<T_LabourDivision> T_LabourDivision { get; set; }
         public virtual T_Product T_Product { get; set; }
         public virtual ICollection<T_TechProcessVersionDetail> T_TechProcessVersionDetail { get; set; }
+        public virtual ICollection<T_UsingTechLog> T_UsingTechLog { get; set; }
     }
 }

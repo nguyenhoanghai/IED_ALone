@@ -14,6 +14,7 @@ namespace GPRO_IED_A.Business.Enum
         isPhaseGroup = 6,
         isPhase = 7,
         isLabourDivision = 8,
+        isQTCN = 9,
 
         getYear = 11,
         getCustomer = 12,

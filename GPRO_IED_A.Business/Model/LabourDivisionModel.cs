@@ -23,6 +23,7 @@ namespace GPRO_IED_A.Business.Model
         public string LastEditer { get; set; }
         public DateTime LastEditTime { get; set; }
         public int ActionUser { get; set; }
+        public bool IsActive { get; set; }
         public LabourDivisionModel()
         {
             Positions = new List<LinePositionModel>(); 

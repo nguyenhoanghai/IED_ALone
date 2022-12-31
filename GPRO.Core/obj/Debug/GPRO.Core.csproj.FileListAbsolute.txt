@@ -27,3 +27,17 @@ E:\Hai_GPRO\Git IED_Alone\GPRO.Core\obj\Debug\GPRO.Core.csproj.CopyComplete
 E:\Hai_GPRO\Git IED_Alone\GPRO.Core\obj\Debug\GPRO.Core.dll
 E:\Hai_GPRO\Git IED_Alone\GPRO.Core\obj\Debug\GPRO.Core.pdb
 E:\Hai_GPRO\Git IED_Alone\GPRO.Core\obj\Debug\GPRO.Core.csproj.AssemblyReference.cache
+E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\System.Web.Razor.dll
+E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\System.Web.WebPages.Razor.dll
+E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\System.Web.WebPages.dll
+E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\Microsoft.Web.Infrastructure.dll
+E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\Newtonsoft.Json.dll
+E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\System.Web.WebPages.Deployment.dll
+E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\System.Web.Mvc.xml
+E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\System.Net.Http.xml
+E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\System.Net.Http.Formatting.xml
+E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\System.Web.Razor.xml
+E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\System.Web.WebPages.Razor.xml
+E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\System.Web.WebPages.xml
+E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\Microsoft.Web.Infrastructure.xml
+E:\Hai_GPRO\Git IED_Alone\GPRO.Core\bin\Debug\System.Web.WebPages.Deployment.xml

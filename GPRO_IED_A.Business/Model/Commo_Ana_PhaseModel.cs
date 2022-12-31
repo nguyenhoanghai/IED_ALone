@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace GPRO_IED_A.Business.Model
 {
-    public class Commo_Ana_PhaseModel  
+    public class Commo_Ana_PhaseModel
     {
         public int Id { get; set; }
         public int Index { get; set; }
@@ -25,7 +25,7 @@ namespace GPRO_IED_A.Business.Model
         public string Node { get; set; }
         public string Video { get; set; }
         public bool IsTimePrepareChange { get; set; }
-        public bool IsAccessoryChange { get; set; } 
+        public bool IsAccessoryChange { get; set; }
         public List<Commo_Ana_Phase_TimePrepareModel> timePrepares { get; set; }
         public double ManiVerTMU { get; set; }
         public double TimePrepareTMU { get; set; }
@@ -36,6 +36,16 @@ namespace GPRO_IED_A.Business.Model
         public int EquipTypeDefaultId { get; set; }
         public int ActionUser { get; set; }
         public bool IsLibrary { get; set; }
+        public string Status { get; set; }
+        public bool IsApprove { get; set; }
+        public int? Approver { get; set; }
+        public string ApproverName { get; set; }
+        public DateTime? ApproveDate { get; set; }
+
+        public string ProductName { get; set; }
+        public int WorkshopId { get; set; }
+        public string WorkshopName { get; set; }
+        public string PhaseGroupName { get; set; }
 
         public List<Commo_Ana_Phase_ManiModel> actions { get; set; }
         public Commo_Ana_PhaseModel()

@@ -199,6 +199,10 @@ GPRO.LaborDivision = function () {
                 GlobalCommon.ShowMessageDialog("Vui lòng nhập số lượng vị trí phân công.", function () { }, "Lỗi Nhập liệu");
                 return false;
             }
+            else if ($('#tkc_lineName').val()=='0' || parseInt($('#tkc_lineName').val()) == 0) {
+                GlobalCommon.ShowMessageDialog("Vui lòng chọn chuyền.", function () { }, "Lỗi Nhập liệu");
+                return false;
+            }
             var obj = {
                 Id: ($('#tkc_id').val() == '' ? 0 : $('#tkc_id').val()),
                 ParentId: $('#jtable_tkc').attr('pId'),
@@ -279,13 +283,13 @@ GPRO.LaborDivision = function () {
             pageSize: 1000,
             pageSizeChange: true,
             sorting: true,
-            selectShow: true,
+            selectShow: false,
             actions: {
                 listAction: Global.UrlAction.Gets,
                 createAction: Global.Element.Popup,
             },
             messages: {
-                selectShow: 'Ẩn hiện cột',
+                //selectShow: 'Ẩn hiện cột',
                 addNewRecord: 'Thêm mới',
             },
             datas: {

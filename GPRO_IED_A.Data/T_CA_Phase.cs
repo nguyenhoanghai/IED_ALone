@@ -20,6 +20,7 @@ namespace GPRO_IED_A.Data
             this.T_CA_Phase_TimePrepare = new HashSet<T_CA_Phase_TimePrepare>();
             this.T_TechProcessVersionDetail = new HashSet<T_TechProcessVersionDetail>();
             this.T_LinePoDailyQuantities = new HashSet<T_LinePoDailyQuantities>();
+            this.T_UsingTechLog = new HashSet<T_UsingTechLog>();
         }
     
         public int Id { get; set; }
@@ -47,14 +48,24 @@ namespace GPRO_IED_A.Data
         public Nullable<int> DeletedUser { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
         public bool IsLibrary { get; set; }
+        public string Status { get; set; }
+        public bool IsApprove { get; set; }
+        public Nullable<int> Approver { get; set; }
+        public Nullable<System.DateTime> ApprovedDate { get; set; }
+        public int WorkShopId { get; set; }
     
         public virtual SWorkerLevel SWorkerLevel { get; set; }
         public virtual ICollection<T_CA_Phase_Mani> T_CA_Phase_Mani { get; set; }
+        public virtual T_CA_Phase T_CA_Phase1 { get; set; }
+        public virtual T_CA_Phase T_CA_Phase2 { get; set; }
         public virtual T_CommodityAnalysis T_CommodityAnalysis { get; set; }
+        public virtual T_Equipment T_Equipment { get; set; }
         public virtual T_PhaseGroup T_PhaseGroup { get; set; }
+        public virtual T_WorkShop T_WorkShop { get; set; }
         public virtual ICollection<T_CA_Phase_TimePrepare> T_CA_Phase_TimePrepare { get; set; }
         public virtual ICollection<T_TechProcessVersionDetail> T_TechProcessVersionDetail { get; set; }
+        public virtual SUser SUser { get; set; }
         public virtual ICollection<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
-        public virtual T_Equipment T_Equipment { get; set; }
+        public virtual ICollection<T_UsingTechLog> T_UsingTechLog { get; set; }
     }
 }

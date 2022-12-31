@@ -17,6 +17,8 @@ namespace GPRO_IED_A.Data
         public HR_Employee()
         {
             this.T_LinePosition = new HashSet<T_LinePosition>();
+            this.SUsers = new HashSet<SUser>();
+            this.T_LinePoDailyQuantities = new HashSet<T_LinePoDailyQuantities>();
         }
     
         public int Id { get; set; }
@@ -41,5 +43,7 @@ namespace GPRO_IED_A.Data
         public virtual T_Line T_Line { get; set; }
         public virtual T_WorkShop T_WorkShop { get; set; }
         public virtual ICollection<T_LinePosition> T_LinePosition { get; set; }
+        public virtual ICollection<SUser> SUsers { get; set; }
+        public virtual ICollection<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
     }
 }

@@ -231,5 +231,38 @@ namespace GPRO_IED_A.Business
             }
         }
 
+
+        public List<ModelSelectItem> GetSelectItem(int productGroupId)
+        {
+            try
+            {
+                using (db = new IEDEntities())
+                {
+                    var listModelSelect = new List<ModelSelectItem>();
+                    var productTypes = db.T_ProductGroup.Where(x => !x.IsDeleted && x.Id == productGroupId)
+                        .OrderByDescending(x => x.CreatedDate)
+                        .Select(
+                        x => new ModelSelectItem()
+                        {
+                            Value = x.Id,
+                            Name = x.Name
+                        }).ToList();
+
+                    //if (productTypes != null && productTypes.Count() > 0)
+                    //{
+                    //    listModelSelect.Add(new ModelSelectItem() { Value = 0, Name = " - -  Chọn nhóm mã hàng  - - " });
+                    listModelSelect.AddRange(productTypes);
+                    //}
+                    //else
+                    //    listModelSelect.Add(new ModelSelectItem() { Value = 0, Name = "  Không có nhóm mã hàng  " });
+                    return listModelSelect;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 }

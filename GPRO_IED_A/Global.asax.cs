@@ -80,6 +80,7 @@ namespace GPRO_IED_A
                 this.Features = userService.Features;
                 this.ImagePath = userService.ImagePath;
                 this.IsOwner = userService.IsOwner;
+                this.IsPhaseApprover = userService.IsPhaseApprover;
                 this.LogoCompany = userService.LogoCompany;
                 this.Permissions = userService.Permissions;
                 this.UserID = userService.UserID;

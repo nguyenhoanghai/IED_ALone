@@ -34,6 +34,7 @@ GPRO.PhanTich = function () {
             GetListPhase: '/ProAna/GetPhases',
             GetPhaseById: '/ProAna/GetPhaseById',
             TinhLaiCode: '/ProAna/TinhLaiCode',
+            Approve: '/PhaseApprove/Approve',
 
             GetListEquipment: '/Equipment/Gets',
             GetManipulationEquipmentInfoByCode: '/MType/GetManipulationEquipmentInfoByCode',
@@ -505,6 +506,10 @@ GPRO.PhanTich = function () {
                 else
                     SavePhase();
             }
+        });
+
+        $('[not-approve-phase]').click(function () {
+            Approve();
         });
 
         $('[cancel-create-phase]').click(function () {
@@ -1444,6 +1449,7 @@ GPRO.PhanTich = function () {
             }
         });
     }
+
     function UploadVideo() {
         if (window.FormData !== undefined) {
             var fileUpload = $('#video').get(0);
@@ -1473,6 +1479,7 @@ GPRO.PhanTich = function () {
         else
             alert("FormData is not supported.");
     }
+
     removeVideo = () => {
         $.ajax({
             url: Global.UrlAction.RemovePhaseVideo,
@@ -1501,6 +1508,32 @@ GPRO.PhanTich = function () {
             }
         });
     }
+
+    function Approve( ) {
+        $.ajax({
+            url: Global.UrlAction.Approve,
+            type: 'POST',
+            data: JSON.stringify({ 'Id': $('#phaseID').val(), 'isApprove': false, 'phaseLib': false }),
+            contentType: 'application/json charset=utf-8',
+            beforeSend: function () { $('#loading').show(); },
+            success: function (data) {
+                $('#loading').hide();
+                GlobalCommon.CallbackProcess(data, function () {
+                    if (data.Result == "OK") {
+                        GetLastPhaseIndex();
+                            ReloadListPhase_View(); 
+                        $('[cancel-create-phase]').click();
+                    }
+                    else
+                        GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
+                }, false, Global.Element.PopupCommodityAnalysis, true, true, function () {
+                    var msg = GlobalCommon.GetErrorMessage(data);
+                    GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+                });
+            }
+        });
+    }
+
     /*********************************************** END PHASE ***********************************************************/
 
     /*********************************************** TIME PREPARE ***********************************************************/

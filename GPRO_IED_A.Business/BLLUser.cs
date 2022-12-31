@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Hugate.Framework;
 using System.IO;
+using GPRO_IED_A.Business.Enum;
 
 namespace GPRO_IED_A.Business
 {
@@ -84,10 +85,12 @@ namespace GPRO_IED_A.Business
                         LogoCompany = c.SCompany.Logo,
                         ImagePath = c.ImagePath,
                         Email = c.Email,
-                        EmployeeName = c.Name  ,
+                        EmployeeName = c.Name,
                         UserName = c.UserName,
                         WorkshopId = c.WorkshopIds,
-                        Name = c.Name, 
+                        Name = c.Name,
+                        LineId = (c.EmployeeId.HasValue ? c.HR_Employee.LineId ?? 0 : 0),
+                        EmployeeId = c.EmployeeId ?? 0
                     }).FirstOrDefault();
                     if (user != null)
                     {
@@ -188,6 +191,15 @@ namespace GPRO_IED_A.Business
                         user.ChildCompanyId = db.SCompanies.Where(x => !x.IsDeleted && x.ParentId != null && x.ParentId.Value == user.CompanyId).Select(x => x.Id).ToArray();
                         if (user.ChildCompanyId == null)
                             user.ChildCompanyId = new int[] { };
+
+                        bool isApprover = false;
+                        var userApprove = BLLApprover.Instance.Get(userId);
+                        if (userApprove != null)
+                        {
+                            if (userApprove.Name.Contains(eApproveRole.Phase))
+                                isApprover = true;
+                        }
+                        user.IsPhaseApprover = isApprover;
                     }
                 }
             }
@@ -215,7 +227,9 @@ namespace GPRO_IED_A.Business
                     Email = x.Email,
                     ImagePath = x.ImagePath,
                     LockedTime = x.LockedTime,
-                    Name = x.Name, 
+                    Name = x.Name,
+                    EmployeeId = x.EmployeeId ?? 0,
+                    EmployeeName = (x.EmployeeId.HasValue ? x.HR_Employee.Name : "")
                 }).FirstOrDefault();
                 return user;
             }
@@ -235,102 +249,96 @@ namespace GPRO_IED_A.Business
                     {
                         result.IsSuccess = false;
                         result.Errors.Add(new Error() { Message = "Tên đăng nhập đã tồn tại. Vui lòng chọn lại tên khác!", MemberName = "Thêm Mới" });
+                        return result;
+                    }
+                    if ( model.EmployeeId.HasValue && CheckEmployee(model, db))
+                    {
+                        result.IsSuccess = false;
+                        result.Errors.Add(new Error() { Message = "Nhân viên này đã được gán cho 1 tài khoản khác. Vui lòng chọn lại nhân viên khác!", MemberName = "Thêm Mới" });
+                        return result;
+                    }
+
+                    if (model.Id == 0)
+                    {
+                        #region add user
+                        obj = new SUser();
+                        Parse.CopyObject(model, ref obj);
+                        if (!string.IsNullOrEmpty(model.ImagePath))
+                            obj.ImagePath = model.ImagePath != "0" ? model.ImagePath.Split(',').ToList().First() : null;
+                        obj.IsLock = false;
+                        obj.IsRequireChangePW = true;
+                        obj.NoteForgotPassword = null;
+                        obj.PassWord = GlobalFunction.EncryptMD5(model.PassWord);
+                        obj.CreatedUser = model.ActionUser;
+                        obj.CreatedDate = DateTime.Now;
+                        obj.CompanyId = model.CompanyId;
+                        obj.SUserRoles = new Collection<SUserRole>();
+                        obj.WorkshopIds = model.WorkshopIds;
+
+                        if (model.NoteForgotPassword != null)
+                        {
+                            foreach (var item in model.NoteForgotPassword.Split(',').ToList())
+                            {
+                                userRoleObj = new SUserRole();
+                                userRoleObj.RoleId = int.Parse(item);
+                                userRoleObj.CreatedDate = obj.CreatedDate;
+                                userRoleObj.CreatedUser = obj.CreatedUser;
+                                userRoleObj.SUser = obj;
+                                obj.SUserRoles.Add(userRoleObj);
+                            }
+                        }
+                        db.SUsers.Add(obj);
+                        #endregion
                     }
                     else
                     {
-                        if (model.Id == 0)
+                        obj = db.SUsers.FirstOrDefault(x => !x.IsDeleted && x.Id == model.Id);
+                        if (obj != null)
                         {
-                            #region add user
-                            obj = new SUser();
-                            Parse.CopyObject(model, ref obj);
-                            if (!string.IsNullOrEmpty(model.ImagePath))
-                                obj.ImagePath = model.ImagePath != "0" ? model.ImagePath.Split(',').ToList().First() : null;
-                            obj.IsLock = false;
-                            obj.IsRequireChangePW = true;
-                            obj.NoteForgotPassword = null;
-                            obj.PassWord = GlobalFunction.EncryptMD5(model.PassWord);
-                            obj.CreatedUser = model.ActionUser;
-                            obj.CreatedDate = DateTime.Now;
-                            obj.CompanyId = model.CompanyId;
-                            obj.SUserRoles = new Collection<SUserRole>();
-                            obj.WorkshopIds = model.WorkshopIds;
+                            #region update user detail
+                            if (!string.IsNullOrEmpty(model.PassWord))
+                                obj.PassWord = obj.IsRequireChangePW ? GlobalFunction.EncryptMD5(model.PassWord) : obj.PassWord;
 
+                            obj.Name = model.Name;
+                            obj.NoteForgotPassword = null;
+                            if (model.ImagePath != null && model.ImagePath != "0")
+                                obj.ImagePath = model.ImagePath.Split(',').ToList().First();
+                            obj.Email = model.Email;
+                            obj.UpdatedUser = model.ActionUser;
+                            obj.WorkshopIds = model.WorkshopIds;
+                            obj.EmployeeId = model.EmployeeId;
+                            obj.UpdatedDate = DateTime.Now;
+                            #endregion
+
+                            var oldRoles = db.SUserRoles.Where(x => !x.IsDeleted && x.UserId == model.Id);
+                            SUserRole userRole;
                             if (model.NoteForgotPassword != null)
                             {
-                                foreach (var item in model.NoteForgotPassword.Split(',').ToList())
+                                model.UserRoleIds = model.NoteForgotPassword.Split(',').Select(x => Convert.ToInt32(x)).ToList();
+                                #region sử lý nếu list user role new != null
+                                if (oldRoles != null && oldRoles.Count() > 0)
                                 {
-                                    userRoleObj = new SUserRole();
-                                    userRoleObj.RoleId = int.Parse(item);
-                                    userRoleObj.CreatedDate = obj.CreatedDate;
-                                    userRoleObj.CreatedUser = obj.CreatedUser;
-                                    userRoleObj.SUser = obj;
-                                    obj.SUserRoles.Add(userRoleObj);
-                                }
-                            }
-                            db.SUsers.Add(obj);
-                            #endregion
-                        }
-                        else
-                        {
-                            obj = db.SUsers.FirstOrDefault(x => !x.IsDeleted && x.Id == model.Id);
-                            if (obj != null)
-                            {
-                                #region update user detail
-                                if (!string.IsNullOrEmpty(model.PassWord))
-                                    obj.PassWord = obj.IsRequireChangePW ? GlobalFunction.EncryptMD5(model.PassWord) : obj.PassWord;
-
-                                obj.Name = model.Name; 
-                                obj.NoteForgotPassword = null;
-                                if (model.ImagePath != null && model.ImagePath != "0")
-                                    obj.ImagePath = model.ImagePath.Split(',').ToList().First();
-                                obj.Email = model.Email;
-                                obj.UpdatedUser = model.ActionUser;
-                                obj.WorkshopIds = model.WorkshopIds;
-                                obj.UpdatedDate = DateTime.Now;
-                                #endregion
-
-                                var oldRoles = db.SUserRoles.Where(x => !x.IsDeleted && x.UserId == model.Id);
-                                SUserRole userRole;
-                                if (model.NoteForgotPassword != null)
-                                {
-                                    model.UserRoleIds = model.NoteForgotPassword.Split(',').Select(x => Convert.ToInt32(x)).ToList();
-                                    #region sử lý nếu list user role new != null
-                                    if (oldRoles != null && oldRoles.Count() > 0)
+                                    string query = "";
+                                    foreach (var oldItem in oldRoles)
                                     {
-                                        string query = "";
-                                        foreach (var oldItem in oldRoles)
-                                        {
-                                            //var userRoleFind = model.UserRoleIds.Find(x => x == oldItem.Id);
-                                            //if (userRoleFind == 0)
-                                            //{
-                                            //    oldItem.IsDeleted = true;
-                                            //    oldItem.DeletedUser = obj.UpdatedUser;
-                                            //    oldItem.DeletedDate = obj.UpdatedDate;
-                                            //}
-                                            //else
-                                            //    model.UserRoleIds.Remove(userRoleFind);
+                                        //var userRoleFind = model.UserRoleIds.Find(x => x == oldItem.Id);
+                                        //if (userRoleFind == 0)
+                                        //{
+                                        //    oldItem.IsDeleted = true;
+                                        //    oldItem.DeletedUser = obj.UpdatedUser;
+                                        //    oldItem.DeletedDate = obj.UpdatedDate;
+                                        //}
+                                        //else
+                                        //    model.UserRoleIds.Remove(userRoleFind);
 
-                                            query += " update SUserRole set IsDeleted=1 where Id=" + oldItem.Id;
-                                        }
-                                        if (!string.IsNullOrEmpty(query))
-                                            db.Database.ExecuteSqlCommand(query);
-
-                                        if (model.UserRoleIds != null && model.UserRoleIds.Count > 0)
-                                        {
-                                            foreach (var item in model.UserRoleIds)
-                                            {
-                                                userRoleObj = new SUserRole();
-                                                userRoleObj.RoleId = item;
-                                                userRoleObj.CreatedDate = DateTime.Now;
-                                                userRoleObj.CreatedUser = model.ActionUser;
-                                                userRoleObj.UserId = model.Id;
-                                                obj.SUserRoles.Add(userRoleObj);
-                                            }
-                                        }
+                                        query += " update SUserRole set IsDeleted=1 where Id=" + oldItem.Id;
                                     }
-                                    else
+                                    if (!string.IsNullOrEmpty(query))
+                                        db.Database.ExecuteSqlCommand(query);
+
+                                    if (model.UserRoleIds != null && model.UserRoleIds.Count > 0)
                                     {
-                                        foreach (var item in model.NoteForgotPassword.Split(',').Select(x => Convert.ToInt32(x)).ToList())
+                                        foreach (var item in model.UserRoleIds)
                                         {
                                             userRoleObj = new SUserRole();
                                             userRoleObj.RoleId = item;
@@ -340,30 +348,42 @@ namespace GPRO_IED_A.Business
                                             obj.SUserRoles.Add(userRoleObj);
                                         }
                                     }
-
-                                    #endregion
                                 }
                                 else
                                 {
-                                    #region sử lý nếu list user role new is null
-                                    foreach (var oldItem in oldRoles)
+                                    foreach (var item in model.NoteForgotPassword.Split(',').Select(x => Convert.ToInt32(x)).ToList())
                                     {
-                                        oldItem.IsDeleted = true;
-                                        oldItem.DeletedUser = obj.UpdatedUser;
-                                        oldItem.DeletedDate = obj.UpdatedDate;
+                                        userRoleObj = new SUserRole();
+                                        userRoleObj.RoleId = item;
+                                        userRoleObj.CreatedDate = DateTime.Now;
+                                        userRoleObj.CreatedUser = model.ActionUser;
+                                        userRoleObj.UserId = model.Id;
+                                        obj.SUserRoles.Add(userRoleObj);
                                     }
-                                    #endregion
                                 }
+
+                                #endregion
                             }
                             else
                             {
-                                result.IsSuccess = false;
-                                result.Errors.Add(new Error() { MemberName = "Update Account", Message = "Tài Khoản đang thao tác không tồn tại. Vui lòng kiểm tra lại!" });
+                                #region sử lý nếu list user role new is null
+                                foreach (var oldItem in oldRoles)
+                                {
+                                    oldItem.IsDeleted = true;
+                                    oldItem.DeletedUser = obj.UpdatedUser;
+                                    oldItem.DeletedDate = obj.UpdatedDate;
+                                }
+                                #endregion
                             }
                         }
-                        db.SaveChanges();
-                        result.IsSuccess = true;
+                        else
+                        {
+                            result.IsSuccess = false;
+                            result.Errors.Add(new Error() { MemberName = "Update Account", Message = "Tài Khoản đang thao tác không tồn tại. Vui lòng kiểm tra lại!" });
+                        }
                     }
+                    db.SaveChanges();
+                    result.IsSuccess = true;
                 }
 
             }
@@ -388,6 +408,23 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
+
+        private bool CheckEmployee(UserModel model, IEDEntities db)
+        {
+            try
+            {
+                var user = db.SUsers.FirstOrDefault(x => !x.IsDeleted && x.Id != model.Id && x.EmployeeId == model.EmployeeId);
+                if (user != null)
+                    return true;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
         public ResponseBase Delete(int accountId, int actionUserId)
         {
             ResponseBase rs = null;
@@ -402,7 +439,7 @@ namespace GPRO_IED_A.Business
                         if (user.IsOwner)
                         {
                             rs.IsSuccess = false;
-                            rs.Errors.Add(new Error() { MemberName = "Delete Account", Message =  user.UserName + " là tài khoản quản trị không thể xóa .!" });
+                            rs.Errors.Add(new Error() { MemberName = "Delete Account", Message = user.UserName + " là tài khoản quản trị không thể xóa .!" });
                         }
                         else
                         {
@@ -491,7 +528,7 @@ namespace GPRO_IED_A.Business
             }
             return rs;
         }
-        public ResponseBase ChangeInfo(int userId, string mail, string name,  string avatar, string serverPath)
+        public ResponseBase ChangeInfo(int userId, string mail, string name, string avatar, string serverPath)
         {
             ResponseBase rs = new ResponseBase();
             try
@@ -507,7 +544,7 @@ namespace GPRO_IED_A.Business
                     else
                     {
                         user.Email = mail;
-                        user.Name = name; 
+                        user.Name = name;
                         if (!string.IsNullOrEmpty(avatar))
                         {
                             if (!string.IsNullOrEmpty(user.ImagePath))
@@ -599,7 +636,7 @@ namespace GPRO_IED_A.Business
                         {
                             case 0:
                                 keyWord = keyWord.Trim().ToUpper();
-                                users = db.SUsers.Where(x => !x.IsDeleted && !x.SCompany.IsDeleted && (x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId)) &&  x.Name.Trim().ToUpper().Contains(keyWord) );
+                                users = db.SUsers.Where(x => !x.IsDeleted && !x.SCompany.IsDeleted && (x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId)) && x.Name.Trim().ToUpper().Contains(keyWord));
                                 break;
                             case 1:
                                 keyWord = keyWord.Trim().ToUpper();
@@ -638,8 +675,10 @@ namespace GPRO_IED_A.Business
                             Email = x.Email,
                             ImagePath = x.ImagePath,
                             LockedTime = x.LockedTime,
-                            Name = x.Name, 
-                            WorkshopIds = x.WorkshopIds
+                            Name = x.Name,
+                            WorkshopIds = x.WorkshopIds,
+                            EmployeeId = x.EmployeeId ?? 0,
+                            EmployeeName = (x.EmployeeId.HasValue ? x.HR_Employee.Name : "")
                         }).OrderBy(sorting).ToList();
                         usersReturn = new PagedList<UserModel>(usersModel, pageNumber, pageSize);
                     }
@@ -696,6 +735,19 @@ namespace GPRO_IED_A.Business
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        public List<ModelSelectItem> GetSelectItems()
+        {
+            using (var db = new IEDEntities())
+            {
+                return db.SUsers.Where(x => !x.IsDeleted).Select(x => new ModelSelectItem()
+                {
+                    Value = x.Id,
+                    Name = x.Name,
+                    Code = x.UserName
+                }).ToList();
             }
         }
     }

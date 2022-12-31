@@ -79,7 +79,7 @@ function ParseDateToStringWithoutTime(date) {
     dd += '/' + date.getFullYear() + ' ';
     return dd;
 }
-
+ 
 
 function UpSingle(formId,returnId) { 
         var form = $('#'+formId)[0];

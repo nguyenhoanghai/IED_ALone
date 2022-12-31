@@ -202,23 +202,30 @@
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\MTypeController.cs" />
     <Compile Include="Controllers\PhanTichController.cs" />
+    <Compile Include="Controllers\PhaseApproveController.cs" />
+    <Compile Include="Controllers\PhaseGroupAnaController.cs" />
     <Compile Include="Controllers\PhaseLibsController.cs" />
     <Compile Include="Controllers\ProAnaController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\ProductGroupController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
+    <Compile Include="Controllers\ServiceAPIController.cs" />
     <Compile Include="Controllers\TimePrepareController.cs" />
     <Compile Include="Controllers\PhaseGroupController.cs" />
     <Compile Include="Controllers\SharedController.cs" />
     <Compile Include="Controllers\TKCInsertController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
+    <Compile Include="Controllers\UserApproveController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\UsingTechController.cs" />
     <Compile Include="Controllers\WorkerLevelController.cs" />
     <Compile Include="Controllers\WorkshopController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\CommonFunction.cs" />
+    <Compile Include="Models\APIResultModel.cs" />
+    <Compile Include="Models\UserInfoModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1203,6 +1210,10 @@
     <Content Include="ReportTemplates\ProductionReport_Template.xlsx" />
     <Content Include="ReportTemplates\BangCanDoi_Template.xlsx" />
     <Content Include="ReportTemplates\BangCanDoi_realtime_Template.xlsx" />
+    <Content Include="ReportTemplates\using_tech_template.xlsx" />
+    <Content Include="ReportTemplates\using_tech_detail_template.xlsx" />
+    <Content Include="ReportTemplates\qtcn-dong-tien-template.xlsx" />
+    <Content Include="ReportTemplates\ProductionReport_detail_Template.xlsx" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Client\Layout\js\autocomplete\countries.js" />
     <Content Include="Scripts\Client\Layout\js\autocomplete\jquery.autocomplete.js" />
@@ -1328,6 +1339,11 @@
     <Content Include="Scripts\IED\Common.js" />
     <Content Include="Scripts\IED\Common.min.js" />
     <Content Include="Scripts\IED\company\company.js" />
+    <Content Include="Scripts\IED\PhanTich\phan-tich-goup-by-cust.js" />
+    <Content Include="Scripts\IED\PhanTich\phan-tich-goup-by-product-group.js" />
+    <Content Include="Scripts\IED\phase-approve\phase-approve.js" />
+    <Content Include="Scripts\IED\TKCInsert\employee-production-in-day.js" />
+    <Content Include="Scripts\IED\user-approver\user-approver.js" />
     <Content Include="Scripts\IED\level-company\level-company.js" />
     <Content Include="Scripts\IED\Customer\customer.js" />
     <Content Include="Scripts\IED\EGroup\EG_Index.js" />
@@ -1345,6 +1361,7 @@
     <Content Include="Scripts\IED\PhanTich\phan-tich-4.js" />
     <Content Include="Scripts\IED\PhanTich\phan-tich-3.js" />
     <Content Include="Scripts\IED\PhanTich\phan-tich.js" />
+    <Content Include="Scripts\IED\phase-group-ana\phase-group-ana.js" />
     <Content Include="Scripts\IED\PhaseGroup\PG_Index.js" />
     <Content Include="Scripts\IED\PhaseLibs\phase-libs.js" />
     <Content Include="Scripts\IED\ProAna\PA_Index.js" />
@@ -1360,6 +1377,7 @@
     <Content Include="Scripts\IED\Role\R_Index.js" />
     <Content Include="Scripts\IED\TimePrepare\TP_Index.js" />
     <Content Include="Scripts\IED\TKCInsert\employee-production-report.js" />
+    <Content Include="Scripts\IED\using-tech\using-tech.js" />
     <Content Include="Scripts\IED\worker-balance\worker-balance-realtime.js" />
     <Content Include="Scripts\IED\worker-balance\worker-balance.js" />
     <Content Include="Scripts\IED\TKCInsert\tkc-insert-phase-group.js" />
@@ -1437,6 +1455,14 @@
     <Content Include="Views\PhanTich\CommoAna_Partial.cshtml" />
     <Content Include="Views\PhanTich\CreatePhase_Partial.cshtml" />
     <Content Include="Views\PhanTich\_TKC_Partial.cshtml" />
+    <Content Include="Views\PhaseGroupAna\Index.cshtml" />
+    <Content Include="Views\UserApprove\Index.cshtml" />
+    <Content Include="Views\UsingTech\Index.cshtml" />
+    <Content Include="Views\PhanTich\IndexWithProductGroup.cshtml" />
+    <Content Include="Views\PhanTich\_CreatePhase_Partial.cshtml" />
+    <Content Include="Views\PhanTich\IndexWithCustomer.cshtml" />
+    <Content Include="Views\TKCInsert\ReportEmployeeProductionDetail.cshtml" />
+    <Content Include="Views\PhaseApprove\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

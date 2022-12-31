@@ -1,5 +1,6 @@
 ﻿using GPRO.Core.Mvc;
 using GPRO_IED_A.Business;
+using GPRO_IED_A.Business.Enum;
 using GPRO_IED_A.Business.Model;
 using GPRO_IED_A.Data;
 using Newtonsoft.Json;
@@ -23,7 +24,8 @@ namespace GPRO_IED_A.Controllers
         // GET: ProAna
         #region Commo Ana
         public ActionResult Index()
-        {
+        {       
+
             var per = this.UserContext.Permissions.Where(x => x.Contains("Create-workshop")).ToArray();
             var per1 = this.UserContext.Permissions.Where(x => x.Contains("All Allow")).ToArray();
             ViewBag.hasPer = (per.Length > 0 && per1.Length == 0 ? "hide" : "");
@@ -277,7 +279,7 @@ namespace GPRO_IED_A.Controllers
                 if (isAuthenticate)
                 {
                     phase.ActionUser = UserContext.UserID;
-                    responseResult = BLLCommo_Ana_Phase.Instance.InsertOrUpdate(phase, timePrepares, isOwner);
+                    responseResult = BLLCommo_Ana_Phase.Instance.InsertOrUpdate(phase, timePrepares, (isOwner || isPhaseApprover ? true : false));
                     if (!responseResult.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
@@ -306,7 +308,7 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    responseResult = BLLCommo_Ana_Phase.Instance.UpdateName(phaseId, newName, isOwner, UserContext.UserID);
+                    responseResult = BLLCommo_Ana_Phase.Instance.UpdateName(phaseId, newName, (isOwner || isPhaseApprover ? true : false), UserContext.UserID);
                     if (!responseResult.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
@@ -330,10 +332,38 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    var phases = BLLCommo_Ana_Phase.Instance.GetListByNode(node + ",", jtStartIndex, jtPageSize, jtSorting);
+                    var phases = BLLCommo_Ana_Phase.Instance.GetListByNode(UserContext.UserID, isPhaseApprover, node + ",", jtStartIndex, jtPageSize, jtSorting);
                     JsonDataResult.Records = phases;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = phases.TotalItemCount;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JsonDataResult);
+        }
+                
+        [HttpPost]
+        public JsonResult ImportFromLibrary(int Id, List<int> phaseIds)
+        {
+            ResponseBase result;
+            try
+            {
+                if (isAuthenticate)
+                {
+                    result = BLLCommo_Ana_Phase.Instance.ImportFromLibrary(Id, phaseIds, UserContext.UserID);
+                    if (!result.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                    else
+                    {
+                        JsonDataResult.Result = "OK";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
                 }
             }
             catch (Exception ex)
@@ -352,6 +382,33 @@ namespace GPRO_IED_A.Controllers
                 if (isAuthenticate)
                 {
                     result = BLLCommo_Ana_Phase.Instance.Delete(Id, UserContext.UserID, isOwner);
+                    if (!result.IsSuccess)
+                    {
+                        JsonDataResult.Result = "ERROR";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                    else
+                    {
+                        JsonDataResult.Result = "OK";
+                        JsonDataResult.ErrorMessages.AddRange(result.Errors);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(JsonDataResult);
+        }
+
+        public JsonResult MoveToLibrary(int phaseId, int phasegroupId)
+        {
+            ResponseBase result;
+            try
+            {
+                if (isAuthenticate)
+                {
+                    result = BLLCommo_Ana_Phase.Instance.MoveToLibrary(phaseId, phasegroupId, UserContext.UserID);
                     if (!result.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";
@@ -503,7 +560,6 @@ namespace GPRO_IED_A.Controllers
             return Json(JsonDataResult);
         }
 
-
         [HttpPost]
         public async Task<JsonResult> UploadVideo()
         {
@@ -551,6 +607,7 @@ namespace GPRO_IED_A.Controllers
             return Json(JsonDataResult);
         }
 
+
         #endregion
 
         #region Commo Ana Phase Mani Version
@@ -560,10 +617,34 @@ namespace GPRO_IED_A.Controllers
             try
             {
                 JsonDataResult.Result = "OK";
-                JsonDataResult.Records = BLLCommo_Ana_Phase.Instance.GetAllPhasesForSuggest();
+                if (ConfigurationManager.AppSettings["PhaseSusguestForm"] != null &&
+                    ConfigurationManager.AppSettings["PhaseSusguestForm"] == "Library")
+                    JsonDataResult.Records = BLLPhaseGroup_Phase.Instance.GetAllPhasesForSuggest();
+                else
+                    JsonDataResult.Records = BLLCommo_Ana_Phase.Instance.GetAllPhasesForSuggest();
             }
             catch (Exception ex)
             { }
+            return Json(JsonDataResult);
+        }
+
+        [HttpPost]
+        public JsonResult GetPhaseSusgestById(int phaseId)
+        {
+            try
+            {
+                var phase = BLLCommo_Ana_Phase.Instance.GetPhase(phaseId);
+                if (ConfigurationManager.AppSettings["PhaseSusguestForm"] != null &&
+                     ConfigurationManager.AppSettings["PhaseSusguestForm"] == "Library")
+                    JsonDataResult.Records = BLLPhaseGroup_Phase.Instance.GetPhase(phaseId);
+                else
+                    JsonDataResult.Records = BLLCommo_Ana_Phase.Instance.GetPhase(phaseId);
+                JsonDataResult.Result = "OK";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             return Json(JsonDataResult);
         }
 
@@ -738,6 +819,17 @@ namespace GPRO_IED_A.Controllers
                     Response.ContentType = "application/excel";
                     Response.Flush();
                     Response.End();
+
+                    BLLUsingTechLog.Instance.Insert(new T_UsingTechLog()
+                    {
+                        CreatedDate = dateNow,
+                        UserId = UserContext.UserID,
+                        PhaseId = Id,
+                        WorkShopId = result.WorkshopId,
+                        Type = (int)eObjectType.isPhase,
+                        Note = "Mã hàng: " + result.ProductName + " - Công đoạn: " + result.PhaseName
+                    });
+
                 }
                 catch (Exception ex)
                 {
@@ -1009,6 +1101,15 @@ namespace GPRO_IED_A.Controllers
                     Response.ContentType = "application/excel";
                     Response.Flush();
                     Response.End();
+
+                    //BLLUsingTechLog.Instance.Insert(new T_UsingTechLog()
+                    //{
+                    //    CreatedDate = dateNow,
+                    //    UserId = UserContext.UserID,
+                    //    PhaseGroupId = result.ObjectId,
+                    //    Type = (int)eObjectType.isPhaseGroup,
+                    //    Note = "Mã hàng: " + result.ProductName + " - Cụm công đoạn: " + result.Name
+                    //});
                 }
                 catch (Exception ex)
                 {
@@ -1018,7 +1119,28 @@ namespace GPRO_IED_A.Controllers
         }
 
 
-
+        public JsonResult InsertViewLog(int phaseId, int wsId , string note)
+        {
+            try
+            {
+                JsonDataResult.Data = BLLUsingTechLog.Instance.Insert(new T_UsingTechLog()
+                {
+                    CreatedDate = DateTime.Now,
+                    UserId = UserContext.UserID,
+                    PhaseId = phaseId,
+                    WorkShopId = wsId,
+                    Type = (int)eObjectType.isPhase,
+                    IsView = true,
+                    Note = note //"Mã hàng: " + result.ProductName + " - Công đoạn: " + result.PhaseName
+                }); ;
+                JsonDataResult.Result = "OK";
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+            return Json(JsonDataResult); 
+        }
         #endregion
 
         #region Techprocess
@@ -1076,14 +1198,13 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetTech(int parentId, string node)
+        public JsonResult GetTech(int parentId, string node, bool isGetNull)
         {
             try
             {
                 if (isAuthenticate)
                 {
-                    var details = BLLTechProcessVersion.Instance.Get(parentId, node);
-                    JsonDataResult.Data = details;
+                    JsonDataResult.Data = BLLTechProcessVersion.Instance.Get(parentId, node, isGetNull);
                     JsonDataResult.Result = "OK";
                 }
             }
@@ -1095,14 +1216,15 @@ namespace GPRO_IED_A.Controllers
         }
 
         #region Excel
-        public void ExportToExcel(int parentId, int fileType)
+        public void ExportToExcel(int parentId, int fileType, bool isGetNull)
         {
             switch (fileType)
             {
-                case 1: ExportToExcel_1(parentId); break;
-                case 2: ExportToExcel_2(parentId); break;
-                case 3: ExportToExcel_3(parentId); break;
-                case 4: ExportToExcel_4(parentId); break;
+                case 1: ExportToExcel_1(parentId, isGetNull); break;
+                case 2: ExportToExcel_2(parentId, isGetNull); break;
+                case 3: ExportToExcel_3(parentId, isGetNull); break;
+                case 4: ExportToExcel_4(parentId, isGetNull); break;
+                case 6: ExportToExcel_qtcn_dongtien(parentId, isGetNull); break;
             }
         }
 
@@ -1110,11 +1232,11 @@ namespace GPRO_IED_A.Controllers
         ///  Quy Trình Công Nghệ mẫu 1 thông tin phía trên
         /// </summary>
         /// <param name="techProcessVersionId"></param>
-        public void ExportToExcel_1(int parentId)
+        public void ExportToExcel_1(int parentId, bool isGetNull)
         {
             if (isAuthenticate)
             {
-                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId);
+                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull);
                 var excelPackage = new ExcelPackage();
                 excelPackage.Workbook.Properties.Author = "IED";
                 excelPackage.Workbook.Properties.Title = "Quy trình công nghệ";
@@ -1594,6 +1716,15 @@ namespace GPRO_IED_A.Controllers
                 Response.ContentEncoding = System.Text.Encoding.UTF8;
                 Response.Flush();
                 Response.End();
+
+                //BLLUsingTechLog.Instance.Insert(new T_UsingTechLog()
+                //{
+                //    CreatedDate = dateNow,
+                //    UserId = UserContext.UserID,
+                //    QTCNId = techProcessInfo.Id,
+                //    Type = (int)eObjectType.isQTCN,
+                //    Note = "Mã hàng: " + techProcessInfo.ProductName + " - Quy trình công nghệ mẫu 1 "
+                //});
             }
         }
 
@@ -1605,15 +1736,23 @@ namespace GPRO_IED_A.Controllers
             }
         }
 
+        private static void AlignCenter(ExcelWorksheet sheet, int rowIndex, int from, int to)
+        {
+            for (int i = from; i <= to; i++)
+            {
+                sheet.Cells[rowIndex, i].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            }
+        }
+
         /// <summary>
         /// Quy Trình Công Nghệ mẫu 2 thông tin phía dưới
         /// </summary>
         /// <param name="techProcessVersionId"></param>
-        public void ExportToExcel_2(int parentId)
+        public void ExportToExcel_2(int parentId, bool isGetNull)
         {
             if (isAuthenticate)
             {
-                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId);
+                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull);
                 var excelPackage = new ExcelPackage();
                 excelPackage.Workbook.Properties.Author = "IED";
                 excelPackage.Workbook.Properties.Title = "Quy trình công nghệ";
@@ -2038,6 +2177,15 @@ namespace GPRO_IED_A.Controllers
                 Response.ContentType = "application/excel";
                 Response.Flush();
                 Response.End();
+
+                //BLLUsingTechLog.Instance.Insert(new T_UsingTechLog()
+                //{
+                //    CreatedDate = dateNow,
+                //    UserId = UserContext.UserID,
+                //    QTCNId = techProcessInfo.Id,
+                //    Type = (int)eObjectType.isQTCN,
+                //    Note = "Mã hàng: " + techProcessInfo.ProductName + " - Quy trình công nghệ mẫu 2 "
+                //});
             }
         }
 
@@ -2045,11 +2193,11 @@ namespace GPRO_IED_A.Controllers
         /// mẫu may tex-giang
         /// </summary>
         /// <param name="parentId"></param>
-        public void ExportToExcel_3(int parentId)
+        public void ExportToExcel_3(int parentId, bool isGetNull)
         {
             if (isAuthenticate)
             {
-                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId);
+                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull);
 
                 var _file = new FileInfo(Server.MapPath(@"~\ReportTemplates\QTCN_TexGiang.xlsx"));
                 int rowIndex = 8;
@@ -2238,6 +2386,15 @@ namespace GPRO_IED_A.Controllers
                     Response.ContentEncoding = System.Text.Encoding.UTF8;
                     Response.Flush();
                     Response.End();
+
+                    //BLLUsingTechLog.Instance.Insert(new T_UsingTechLog()
+                    //{
+                    //    CreatedDate = dateNow,
+                    //    UserId = UserContext.UserID,
+                    //    QTCNId = techProcessInfo.Id,
+                    //    Type = (int)eObjectType.isQTCN,
+                    //    Note = "Mã hàng: " + techProcessInfo.ProductName + " - Quy trình công nghệ mẫu 3"
+                    //});
                 }
 
             }
@@ -2248,11 +2405,11 @@ namespace GPRO_IED_A.Controllers
         /// Quy Trình Công Nghệ mẫu 5 MDG
         /// </summary>
         /// <param name="techProcessVersionId"></param>
-        public void ExportToExcel_5(int parentId)
+        public void ExportToExcel_5(int parentId, bool isGetNull)
         {
             if (isAuthenticate)
             {
-                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId);
+                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull);
                 var excelPackage = new ExcelPackage();
                 excelPackage.Workbook.Properties.Author = "IED";
                 excelPackage.Workbook.Properties.Title = "Quy trình công nghệ";
@@ -2306,7 +2463,7 @@ namespace GPRO_IED_A.Controllers
                     techProcessInfo.CompanyName = UserContext.CompanyName;
                     int stt = 1,
                         stt_group = 1;
-                    
+
                     rowIndex++;
                     foreach (var group in techProcessInfo.ListTechProcessGroup)
                     {
@@ -2324,7 +2481,7 @@ namespace GPRO_IED_A.Controllers
                         sheet.Cells[rowIndex, 8].Formula = "SUM(H" + (rowIndex + 1) + ":H" + (rowIndex + group.ListTechProcessVerDetail.Count) + ")";// Math.Round(group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent), 2);
                         sheet.Cells[rowIndex, 9].Formula = "SUM(I" + (rowIndex + 1) + ":I" + (rowIndex + group.ListTechProcessVerDetail.Count) + ")";//Math.Round(group.ListTechProcessVerDetail.Sum(x => x.Worker), 2);
                         sheet.Cells[rowIndex, 10].Formula = "SUM(J" + (rowIndex + 1) + ":J" + (rowIndex + group.ListTechProcessVerDetail.Count) + ")";//Math.Round(group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent) * techProcessInfo.PricePerSecond, 2);
-                         
+
                         sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
                         sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
                         sheet.Cells[rowIndex, 2, rowIndex, 10].Style.Font.Color.SetColor(Color.White);
@@ -2422,7 +2579,7 @@ namespace GPRO_IED_A.Controllers
                 double tgCT_minute = techProcessInfo.TimeCompletePerCommo / 60;
 
                 sheetCN.Cells[6, 2].Value = "Thời gian chế tạo (s)";
-                sheetCN.Cells[6, 3].Formula = "PT!H"+timePerProduct_RowIndex;// techProcessInfo.TimeCompletePerCommo;
+                sheetCN.Cells[6, 3].Formula = "PT!H" + timePerProduct_RowIndex;// techProcessInfo.TimeCompletePerCommo;
                 sheetCN.Cells[6, 4].Value = "Thời gian chế tạo (phút)";
                 sheetCN.Cells[6, 5].Formula = "C6/60";// Math.Round(tgCT_minute, 2);
 
@@ -2434,7 +2591,7 @@ namespace GPRO_IED_A.Controllers
                 sheetCN.Cells[8, 2].Value = "Nhịp";
                 sheetCN.Cells[8, 3].Formula = "C6/C7";// techProcessInfo.PacedProduction;
                 sheetCN.Cells[8, 4].Value = "Tổng giá";
-                sheetCN.Cells[8, 5].Formula = "=E7*C6";
+                sheetCN.Cells[8, 5].Formula = "=E6*E7";
 
                 sheetCN.Cells[9, 2].Value = "NS tổ/h";
                 sheetCN.Cells[9, 3].Formula = "3600/C8";// Math.Ceiling(techProcessInfo.ProOfGroupPerHour);
@@ -2535,6 +2692,303 @@ namespace GPRO_IED_A.Controllers
                 Response.ContentType = "application/excel";
                 Response.Flush();
                 Response.End();
+
+                //BLLUsingTechLog.Instance.Insert(new T_UsingTechLog()
+                //{
+                //    CreatedDate = dateNow,
+                //    UserId = UserContext.UserID,
+                //    QTCNId = techProcessInfo.Id,
+                //    Type = (int)eObjectType.isQTCN,
+                //    Note = "Mã hàng: " + techProcessInfo.ProductName + " - Quy trình công nghệ mẫu 5 "
+                //});
+            }
+        }
+
+
+        public void ExportToExcel_qtcn_dongtien(int parentId, bool isGetNull)
+        {
+            if (isAuthenticate)
+            {
+                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull);
+                var _file = new FileInfo(Server.MapPath(@"~\ReportTemplates\qtcn-dong-tien-template.xlsx"));
+
+                using (var excelPackage = new ExcelPackage(_file))
+                {
+                    var workbook = excelPackage.Workbook;
+                    var sheet = workbook.Worksheets.First();
+
+                    sheet.Cells[3, 4].Value = techProcessInfo.ProductName;
+                    sheet.Cells[4, 4].Value = DateTime.Now.ToString("MM/yyyy");
+                    sheet.Cells[4, 9].Value = techProcessInfo.PricePerSecond;
+
+                    int rowIndex = 6, row = 0, dem = 1, tongRow = 0;
+                    double tongTG = 0, TongLĐ = 0;
+
+
+                    #region Thong tin QTCN
+                    if (techProcessInfo != null && techProcessInfo.ListTechProcessGroup != null && techProcessInfo.ListTechProcessGroup.Count > 0)
+                    {
+                        row = rowIndex;
+
+                        techProcessInfo.CompanyName = UserContext.CompanyName;
+                        int stt = 1;
+                        int stt_group = 1;
+                        tongRow = rowIndex;
+                        for (int i = 0; i < techProcessInfo.ListTechProcessGroup.Count; i++)
+                        {
+                            tongRow++;
+                            tongRow += techProcessInfo.ListTechProcessGroup[i].ListTechProcessVerDetail.Count;
+                        }
+
+
+                        foreach (var group in techProcessInfo.ListTechProcessGroup)
+                        {
+                            sheet.Cells[rowIndex, 1].Value = stt_group;
+                            sheet.Cells[rowIndex, 2].Value = group.PhaseGroupName.ToUpper();
+                            //sheet.Cells[rowIndex, 6].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.StandardTMU), 2);
+                            //sheet.Cells[rowIndex, 8].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.TimeByPercent), 2);
+                            //sheet.Cells[rowIndex, 9].Value = Math.Round(group.ListTechProcessVerDetail.Sum(x => x.Worker), 2);
+                            sheet.Cells[rowIndex, 1, rowIndex, 9].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            sheet.Cells[rowIndex, 1, rowIndex, 9].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+                            sheet.Cells[rowIndex, 1, rowIndex, 9].Style.Font.Color.SetColor(Color.White);
+                            sheet.Cells[rowIndex, 1, rowIndex, 9].Style.Font.Bold = true;
+
+                            AddCellBorder(sheet, rowIndex, 1, 9);
+                            rowIndex++;
+                            if (group.ListTechProcessVerDetail != null && group.ListTechProcessVerDetail.Count > 0)
+                            {
+                                foreach (var detail in group.ListTechProcessVerDetail)
+                                {
+                                    sheet.Cells[rowIndex, 1].Value = stt;
+                                    sheet.Cells[rowIndex, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    sheet.Cells[rowIndex, 2].Value = detail.PhaseName;
+                                    sheet.Cells[rowIndex, 3].Value = detail.EquipmentName;
+                                    try
+                                    {
+                                        sheet.Cells[rowIndex, 4].Value = Convert.ToInt32(detail.WorkerLevelName);
+                                    }
+                                    catch (Exception)
+                                    {
+                                    }
+
+                                    sheet.Cells[rowIndex, 5].Value = detail.StandardTMU;
+
+                                    sheet.Cells[rowIndex, 6].Formula = "+E" + rowIndex + "/($E$" + tongRow + "/" + techProcessInfo.NumberOfWorkers + ")";
+
+                                    // sheet.Cells[rowIndex, 7].Value = detail.Coefficient  ;
+                                    sheet.Cells[rowIndex, 7].Formula = "IF(D" + rowIndex + "=2,0.9,IF(D" + rowIndex + "=3,1,IF(D" + rowIndex + "=4,1.1,0)))";
+
+
+                                    //sheet.Cells[rowIndex, 8].Value = Math.Round(detail.Worker, 2);
+                                    sheet.Cells[rowIndex, 8].Formula = "+E" + rowIndex + "*G" + rowIndex;
+
+                                    sheet.Cells[rowIndex, 9].Formula = "+H" + rowIndex + "*$I$4";
+                                    AddCellBorder(sheet, rowIndex, 1, 9);
+                                    AlignCenter(sheet, rowIndex, 3, 9);
+                                    stt++;
+                                    rowIndex++;
+                                }
+                            }
+                            stt_group++;
+                        }
+                    }
+
+                    sheet.Cells[rowIndex, 2].Value = "TỔNG";
+                    sheet.Cells[rowIndex, 2].Style.Font.Color.SetColor(Color.Red);
+                    sheet.Cells[rowIndex, 5].Formula = "SUM(E7:E" + (rowIndex - 1) + ")";
+                    sheet.Cells[rowIndex, 6].Formula = "SUM(F7:F" + (rowIndex - 1) + ")";
+                    sheet.Cells[rowIndex, 8].Formula = "SUM(H7:H" + (rowIndex - 1) + ")";
+                    sheet.Cells[rowIndex, 9].Formula = "SUM(I7:I" + (rowIndex - 1) + ")";
+                    sheet.Cells[rowIndex, 5, rowIndex, 9].Style.Font.Color.SetColor(Color.Blue);
+                    //sheet.Cells[rowIndex, 1, rowIndex, 9].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    //sheet.Cells[rowIndex, 1, rowIndex, 9].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(65, 149, 221));
+                    //sheet.Cells[rowIndex, 1, rowIndex, 9].Style.Font.Color.SetColor(Color.White);
+                    sheet.Cells[rowIndex, 1, rowIndex, 9].Style.Font.Bold = true;
+
+                    AddCellBorder(sheet, rowIndex, 1, 9);
+                    AlignCenter(sheet, rowIndex, 1, 9);
+
+                    // int tongRow = rowIndex;
+                    rowIndex += 2;
+
+                    sheet.Cells[7, 3, rowIndex, 3].Style.WrapText = true;
+                    sheet.Cells[row, 2, rowIndex - 2, 9].Style.Border.BorderAround(ExcelBorderStyle.Medium);
+
+                    sheet.Cells[rowIndex, 8].Formula = "+H" + tongRow + "/60";
+                    sheet.Cells[rowIndex, 9].Value = "phút";
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 2].Value = "Năng suất thiết kế:";
+                    sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    sheet.Cells[rowIndex, 3].Formula = "+C" + (rowIndex + 1) + "*F" + tongRow + "/H" + tongRow;
+                    sheet.Cells[rowIndex, 4].Value = "SP/NGÀY";
+                    sheet.Cells[rowIndex, 2, rowIndex, 3].Style.Font.Bold = true;
+                    sheet.Cells[rowIndex, 2, rowIndex, 3].Style.Font.Size = 14;
+                    sheet.Cells[rowIndex, 4].Style.Font.Color.SetColor(Color.Blue);
+
+                    sheet.Cells[rowIndex, 6].Value = "SÓ LƯỢNG";
+                    sheet.Cells[rowIndex, 7].Value = "HIỆU SUẤT";
+                    sheet.Cells[rowIndex, 8].Value = "NĂNG SUẤT";
+                    sheet.Cells[rowIndex, 9].Value = "NGÀY LÀM VIỆC";
+                    sheet.Cells[rowIndex, 4, rowIndex, 9].Style.Font.Size = 11;
+                    AddCellBorder(sheet, rowIndex, 6, 9);
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 2].Value = "Tổng thời gian làm việc:";
+                    sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    sheet.Cells[rowIndex, 3].Value = techProcessInfo.WorkingTimePerDay * 3600;
+                    sheet.Cells[rowIndex, 4].Value = "Giây";
+                    sheet.Cells[rowIndex, 2, rowIndex, 3].Style.Font.Bold = true;
+                    sheet.Cells[rowIndex, 2, rowIndex, 3].Style.Font.Size = 14;
+                    sheet.Cells[rowIndex, 4].Style.Font.Color.SetColor(Color.Blue);
+
+                    sheet.Cells[rowIndex, 6].Value = "500";
+                    sheet.Cells[rowIndex, 7].Value = "35%";
+                    sheet.Cells[rowIndex, 8].Formula = "+$C$" + (rowIndex - 1) + "*G" + (rowIndex);
+                    sheet.Cells[rowIndex, 9].Formula = "+F" + rowIndex + "/H" + rowIndex;
+                    sheet.Cells[rowIndex, 4, rowIndex, 9].Style.Font.Size = 11;
+                    AddCellBorder(sheet, rowIndex, 6, 9);
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 2].Value = "Nhịp độ sản xuất:";
+                    sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    sheet.Cells[rowIndex, 3].Formula = "+C" + (rowIndex - 1) + "/C" + (rowIndex - 2);
+                    sheet.Cells[rowIndex, 4].Value = "Giây";
+                    sheet.Cells[rowIndex, 2, rowIndex, 3].Style.Font.Bold = true;
+                    sheet.Cells[rowIndex, 2, rowIndex, 3].Style.Font.Size = 14;
+                    sheet.Cells[rowIndex, 4].Style.Font.Color.SetColor(Color.Blue);
+                    sheet.Cells[rowIndex, 4].Style.Font.Size = 11;
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 2].Value = "Năng suất bình quân đầu người:";
+                    sheet.Cells[rowIndex, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    sheet.Cells[rowIndex, 3].Formula = "+$C$" + (rowIndex - 3) + "/$F$" + tongRow;
+                    sheet.Cells[rowIndex, 4].Value = "SP/NGƯỜI";
+                    sheet.Cells[rowIndex, 4].Style.Font.Color.SetColor(Color.Blue);
+                    sheet.Cells[rowIndex, 4].Style.Font.Size = 11;
+                    sheet.Cells[rowIndex, 2, rowIndex, 3].Style.Font.Bold = true;
+                    sheet.Cells[rowIndex, 2, rowIndex, 3].Style.Font.Size = 14;
+
+                    rowIndex += 2;
+
+                    sheet.Cells[rowIndex, 1].Value = "* LƯU Ý :  - THỜI GIAN TRONG QUY TRÌNH TRÊN CHỈ Ở MỨC ĐỘ TƯƠNG ĐỐI. - THỜI GIAN MỘT SỐ CÔNG ĐOẠN CÓ THỂ KHÔNG PHÙ HỢP VỚI THỰC TẾ SẢN XUẤT TẠI TỪNG ĐƠN VỊ.NHÂN VIÊN QTCN XÍ NGHIỆP VUI LÒNG CẬP NHẬT THỜI GIAN Ở CỘT(F5) CHO PHÙ HỢP VỚI THỰC TẾ.";
+                    sheet.Cells[rowIndex, 1, rowIndex + 3, 9].Merge = true;
+                    sheet.Cells[rowIndex, 1, rowIndex + 3, 9].Style.Font.Bold = true;
+                    sheet.Cells[rowIndex, 1, rowIndex + 3, 9].Style.Font.Size = 14;
+                    sheet.Cells[rowIndex, 1, rowIndex + 3, 9].Style.WrapText = true;
+                    sheet.Cells[rowIndex, 1, rowIndex + 3, 9].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+                    sheet.Cells[rowIndex, 1, rowIndex + 3, 9].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    AddCellBorder(sheet, rowIndex, 1, 9);
+
+                    rowIndex += 5;
+
+                    sheet.Cells[rowIndex, 2, rowIndex, 6].Merge = true;
+                    sheet.Cells[rowIndex, 2, rowIndex, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    sheet.Cells[rowIndex, 2, rowIndex, 6].Value = "BẢNG CẬP NHẬT LỊCH SỬ MÃ HÀNG";
+
+                    rowIndex++;
+                    sheet.Cells[rowIndex, 2].Value = "LỊCH SỬ MÃ HÀNG (Ngày/tháng/năm)";
+                    sheet.Cells[rowIndex, 3].Value = "ĐƠN VỊ";
+                    sheet.Cells[rowIndex, 4].Value = "TỔ";
+                    sheet.Cells[rowIndex, 5].Value = "NĂNG SUẤT";
+                    sheet.Cells[rowIndex, 6].Value = "BÌNH QUÂN NS/LĐ";
+                    AddCellBorder(sheet, rowIndex, 2, 6);
+                    AlignCenter(sheet, rowIndex, 2, 6);
+
+                    rowIndex++;
+                    AddCellBorder(sheet, rowIndex, 2, 6);
+                    AlignCenter(sheet, rowIndex, 2, 6);
+
+                    rowIndex++;
+                    #endregion
+
+                    #region Thông Tin Thiết Bi
+                    row = rowIndex;
+                    rowIndex = 21;
+                    if (techProcessInfo.equipments != null && techProcessInfo.equipments.Count > 0)
+                    {
+                        for (int i = 0; i < techProcessInfo.equipments.Count; i++)
+                        {
+                            var equipment = techProcessInfo.equipments[i];
+                            double tong = 0;
+                            foreach (var item in techProcessInfo.ListTechProcessGroup)
+                            {
+                                tong += item.ListTechProcessVerDetail.Where(x => x.EquipmentId == equipment.Id).Select(x => x.Worker).Sum();
+                            }
+                            sheet.Cells[rowIndex, 11].Value = equipment.Name;
+                            sheet.Cells[rowIndex, 12].Value = tong;
+                            sheet.Cells[rowIndex, 13].Formula = "IF(AND(L" + rowIndex + ">=1,L" + rowIndex + "<=5),1,IF(AND(L" + rowIndex + ">5,L" + rowIndex + "<=10),2,IF(L" + rowIndex + ">10,3,0)))";
+
+
+                            AddCellBorder(sheet, rowIndex, 11, 13);
+                            AlignCenter(sheet, rowIndex, 11, 13);
+                            rowIndex++;
+                        }
+                        sheet.Cells[rowIndex, 11].Value = "Tổng";
+                        sheet.Cells[rowIndex, 12].Formula = "SUM(L20:L" + (rowIndex - 1) + ")";
+                        sheet.Cells[rowIndex, 13].Formula = "SUM(M20:M" + (rowIndex - 1) + ")";
+                        sheet.Cells[rowIndex, 11, rowIndex, 13].Style.Font.Color.SetColor(Color.Blue);
+                        AddCellBorder(sheet, rowIndex, 11, 13);
+                        AlignCenter(sheet, rowIndex, 11, 13);
+                    }
+                    rowIndex += 2;
+                    #endregion
+
+                    sheet.Cells[rowIndex, 12].Value = "Bậc ";
+                    sheet.Cells[rowIndex, 13].Value = "Hệ số";
+                    AddCellBorder(sheet, rowIndex, 12, 13);
+                    AlignCenter(sheet, rowIndex, 12, 13);
+                    rowIndex++;
+
+                    var bactho = BLLWorkerLevel.Instance.Gets(UserContext.CompanyId, UserContext.ChildCompanyId);
+                    if (bactho.Count > 0)
+                    {
+                        for (int i = 0; i < bactho.Count; i++)
+                        {
+                            if (bactho[i].Value > 0)
+                            {
+                                sheet.Cells[rowIndex, 12].Value = bactho[i].Name;
+                                sheet.Cells[rowIndex, 13].Value = bactho[i].Double;
+                                AddCellBorder(sheet, rowIndex, 12, 13);
+                                AlignCenter(sheet, rowIndex, 12, 13);
+                                rowIndex++;
+                            }
+                        }
+                    }
+
+
+                    if (techProcessInfo.productImgs.Count > 0)
+                    {
+                        int top = 10,
+                            left = 1030,
+                            iWidth = 320,
+                            iHeight = 320;
+                        for (int i = 0; i < techProcessInfo.productImgs.Count; i++)
+                        {
+                            Image img = Image.FromFile(Server.MapPath("~" + techProcessInfo.productImgs[i].Code));
+                            // Image img = Image.FromFile(Server.MapPath("http://112.197.117.97:86/" + techProcessInfo.productImgs[0].Code));
+                            ExcelPicture excelPicture = sheet.Drawings.AddPicture(techProcessInfo.productImgs[i].Name, img);
+                            excelPicture.SetPosition(top, left);
+                            excelPicture.SetSize(iWidth, iHeight);
+
+                            top += 330;
+                        }
+                    }
+
+                    rowIndex += 2;
+
+                    sheet.Cells.AutoFitColumns(5);
+                    sheet.Column(3).Width = 50;
+                    sheet.Column(14).Style.WrapText = true;
+                    Response.ClearContent();
+                    Response.BinaryWrite(excelPackage.GetAsByteArray());
+                    DateTime dateNow = DateTime.Now;
+                    string fileName = "QTC_" + techProcessInfo.ProductName + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+                    Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
+                    Response.ContentType = "application/excel";
+                    Response.Flush();
+                    Response.End();
+                }
             }
         }
 
@@ -2639,7 +3093,6 @@ namespace GPRO_IED_A.Controllers
             return Json(JsonDataResult);
         }
 
-
         public JsonResult GetTKCById(int labourId)
         {
             try
@@ -2668,6 +3121,30 @@ namespace GPRO_IED_A.Controllers
             }
             return Json(JsonDataResult);
         }
+
+        [HttpPost]
+        public JsonResult Active(int labourVerId)
+        {
+            ResponseBase rs = null;
+            try
+            {
+                rs = BLLLabourDivision.Instance.Active(labourVerId);
+                if (!rs.IsSuccess)
+                {
+                    JsonDataResult.Result = "ERROR";
+                    JsonDataResult.ErrorMessages.AddRange(rs.Errors);
+                }
+                else
+                    JsonDataResult.Result = "OK";
+
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+            return Json(JsonDataResult);
+        }
+
 
         #region Excel
         public void ExportDiagramToExcel(int Id)
@@ -2823,8 +3300,6 @@ namespace GPRO_IED_A.Controllers
                     sheet.Cells[7, 15, r - 1, 17].Style.Fill.BackgroundColor.SetColor(Color.FromArgb(255, 242, 204));
                 }
                 #endregion
-
-
 
                 #region detail
                 int startRow = r > 14 ? r++ : 14;
@@ -3061,7 +3536,6 @@ namespace GPRO_IED_A.Controllers
 
                 #endregion
 
-
                 sheet.Cells.AutoFitColumns(5, 40);
                 sheet.Column(15).Width = 40;
                 sheet.Column(3).Width = 40;
@@ -3082,6 +3556,15 @@ namespace GPRO_IED_A.Controllers
                 Response.ContentType = "application/excel";
                 Response.Flush();
                 Response.End();
+
+                BLLUsingTechLog.Instance.Insert(new T_UsingTechLog()
+                {
+                    CreatedDate = dateNow,
+                    UserId = UserContext.UserID,
+                    QTCNId = Id,
+                    Type = (int)eObjectType.isLabourDivision,
+                    Note = "Mã hàng: " + tech.ProductName + " - Thiết kế chuyền: " + (linePos[0] != null ? linePos[0].LineName : " ")
+                });
             }
 
         }
@@ -3094,9 +3577,9 @@ namespace GPRO_IED_A.Controllers
         /// Quy Trình Công Nghệ Làm Lương
         /// </summary>
         /// <param name="techProcessVersionId"></param>
-        public void ExportToExcel_4(int parentId)
+        public void ExportToExcel_4(int parentId, bool isGetNull)
         {
-            var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId);
+            var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull);
 
             var excelPackage = new ExcelPackage();
             excelPackage.Workbook.Properties.Author = "IED";
@@ -3389,6 +3872,15 @@ namespace GPRO_IED_A.Controllers
             Response.ContentType = "application/excel";
             Response.Flush();
             Response.End();
+
+            BLLUsingTechLog.Instance.Insert(new T_UsingTechLog()
+            {
+                CreatedDate = dateNow,
+                UserId = UserContext.UserID,
+                QTCNId = techProcessInfo.Id,
+                Type = (int)eObjectType.isQTCN,
+                Note = "Mã hàng: " + techProcessInfo.ProductName + " - Quy trình công nghệ mẫu làm lương "
+            });
         }
 
         #endregion

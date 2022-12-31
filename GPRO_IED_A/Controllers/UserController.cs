@@ -78,6 +78,10 @@ namespace GPRO_IED_A.Controllers
                 {
                     model.CompanyId = UserContext.CompanyId;
                     model.ActionUser = UserContext.UserID;
+                    if (model.EmployeeId == 0)
+                    {
+                        model.EmployeeId = null;
+                    }
                     responseResult = BLLUser.Instance.InsertOrUpdate(model);
                     if (!responseResult.IsSuccess)
                     {
@@ -230,6 +234,22 @@ namespace GPRO_IED_A.Controllers
             {
                 JsonDataResult.Result = "ERROR";
                 JsonDataResult.ErrorMessages.Add(new Error() { MemberName = "Lỗi Dữ Liệu", Message = "Lỗi: " + ex.Message });
+            }
+            return Json(JsonDataResult);
+        }
+
+        [HttpPost]
+        public JsonResult GetSelectList( )
+        {
+            try
+            {
+                JsonDataResult.Result = "OK";
+                JsonDataResult.Data = BLLUser.Instance.GetSelectItems( );
+            }
+            catch (Exception ex)
+            {
+                JsonDataResult.Result = "ERROR";
+                JsonDataResult.ErrorMessages.Add(new Error() { MemberName = "Get List ObjectType", Message = "Lỗi: " + ex.Message });
             }
             return Json(JsonDataResult);
         }

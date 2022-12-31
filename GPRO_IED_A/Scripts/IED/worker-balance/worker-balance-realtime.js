@@ -22,7 +22,7 @@ GPRO.WorkerBalanceRealtime = function () {
         UrlAction: {
             GetById: '/TKCInsert/GetLastLabourDevisionVer',
             Excel: '/TKCInsert/ExportReportWorkerBalance_Realtime',
-            Get: '/TKCInsert/GetReportWorkerBalance',
+            Get: '/TKCInsert/GetReportWorkerBalance_Realtime',
         },
         Element: {
 
@@ -41,46 +41,29 @@ GPRO.WorkerBalanceRealtime = function () {
         //ReloadList(); 
         //InitPopup();  
         ResetInfo();
-        GetProAnaSelect('worker-balance-product', 1, 0);
+        $('#re-worker-balance-line').click();
         $('#today-date').html(moment().format('D/M/YYYY'));
         $('#btn-insert').hide();
     }
 
 
     var RegisterEvent = function () {
+         
 
-        $('#re-worker-balance-product').click(() => {
-            GetProAnaSelect('worker-balance-product', 1, 0);
-        })
-
-        $('#worker-balance-product').change(() => {
-            GetProAnaSelect('worker-balance-workshop', 2, $('#worker-balance-product').val());
-            ResetInfo();
-        })
-
-        $('#re-worker-balance-workshop').click(() => {
-            GetProAnaSelect('worker-balance-workshop', 2, $('#worker-balance-product').val());
-        });
-
-        $('#worker-balance-workshop').change(() => {
-            $('#re-worker-balance-line').click();
-        })
-
-        $('#re-worker-balance-line').click(() => {
-            if ($('#worker-balance-workshop').val() != undefined)
-                GetTKCLineSelect('worker-balance-line', $('#worker-balance-workshop').val());
+        $('#re-worker-balance-line').click(() => { 
+                ResetInfo();
+                GetTKCOfLineSelect('worker-balance-line' ); 
         })
 
         $('#worker-balance-line').change(() => {
             if ($('#worker-balance-line').val() != undefined) {
-                GetLaborDivisionDiagramById($('#worker-balance-line').val());
-                //  GetLinePosition($('#worker-balance-line').val());
+                GetLaborDivisionDiagramById(); 
             }
         });
 
 
         $('#btn-worker-balance-excel').click(function () {
-            var url = Global.UrlAction.Excel + `?labourId=${$('#worker-balance-line').val()}&product=${$('#worker-balance-product option:selected').text()}`;
+            var url = Global.UrlAction.Excel + `?labourVerId=${$('#worker-balance-line').val()}&date=${$('#today-date').html()}`;
             console.log(url)
             window.location.href = url;
         })
@@ -96,7 +79,7 @@ GPRO.WorkerBalanceRealtime = function () {
         $.ajax({
             url: Global.UrlAction.Get,
             type: 'post',
-            data: JSON.stringify({ 'labourId': id }),
+            data: JSON.stringify({ 'labourVerId': $('#worker-balance-line').val(), 'date': $('#today-date').html() }),
             contentType: 'application/json',
             beforeSend: function () { $('#loading').show(); },
             success: function (result) {
@@ -121,24 +104,19 @@ GPRO.WorkerBalanceRealtime = function () {
                     if (result.Records.Positions != null && result.Records.Positions.length > 0) {
                         var positions = result.Records.Positions;
                         for (var i = 0; i < positions.length; i++) {
-                            var phases = positions[i].Details;
+                            var phases = positions[i].Phases;
                             var tr = $('<tr></tr>');
                             tr.append(`<td class='text-center' rowspan='${phases && phases.length > 0 ? phases.length : 1} '>${positions[i].OrderIndex}</td>`);
                             tr.append(`<td class='text-center' rowspan='${phases && phases.length > 0 ? phases.length : 1} '>${(positions[i].EmployeeId ? positions[i].EmployeeName : '-')}</td>`);
                             if (phases && phases.length > 0) {
 
-                                for (var ii = 0; ii < phases.length; ii++) {
-                                    var _tmu = Math.round(phases[ii].TotalTMU);
-                                    var _total_15HP = Math.round(_tmu + (_tmu > 0 ? (_tmu * 15) / 100 : 0));
-                                    var _dmHour =(_total_15HP > 0 ? (3600 / _total_15HP) : 0);
-                                    var _theopc = Math.round(_dmHour > 0 ? (_dmHour * phases[ii].DevisionPercent) / 100 : 0);
+                                for (var ii = 0; ii < phases.length; ii++) { 
                                     if (ii > 0)
                                         tr = $('<tr></tr>');
                                     tr.append(`<td class='text-center'>${phases[ii].PhaseCode}</td>`);
                                     tr.append(`<td>${phases[ii].PhaseName}</td>`); 
-                                    tr.append(`<td class='text-center'>${_theopc.toFixed(0)}</td >`);
-                                    tr.append(`<td class='text-center'>${0}</td>`);
-
+                                    tr.append(`<td class='text-center'>${phases[ii].DM}</td >`);
+                                    tr.append(`<td class='text-center'>${phases[ii].ProductInDay}</td>`);
                                     _table.append(tr);
                                 }
                             }

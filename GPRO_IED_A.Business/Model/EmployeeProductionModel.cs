@@ -18,10 +18,27 @@ namespace GPRO_IED_A.Business.Model
 
     public class EmployeePhaseProduction {
         public int Id { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string Date { get; set; }
         public string Name { get; set; }
+        public string EmployeeName { get; set; }
         public int Total { get; set; }
         public double Price { get; set; }
         public double Coefficient { get; set; }
+
+    }
+
+    public class EmployeePhaseProductionInDay
+    {
+        public List<EmployeePhaseProduction> Details { get; set; } 
+        public string ProName { get; set; }
+        public string WorkshopName { get; set; }
+        public string LineName { get; set; } 
+
+        public EmployeePhaseProductionInDay()
+        {
+            Details = new List<EmployeePhaseProduction>();
+        }
 
     }
 }

@@ -324,5 +324,51 @@ namespace GPRO_IED_A.Business
             }
         }
 
+        public List<ModelSelectItem> Gets(int[] workshopIds, string groupName)
+        {
+            using (db = new IEDEntities())
+            {
+                List<ModelSelectItem> objs = new List<ModelSelectItem>();
+                objs.Add(new ModelSelectItem() { Value = 0, Name = " - Chọn Cụm Công Đoạn - " });
+                try
+                { 
+                    var _phaseGroups = db.T_PhaseGroup.Where(x => !x.IsDeleted);
+                    if (!string.IsNullOrEmpty(groupName))
+                        _phaseGroups = _phaseGroups.Where(x => (x.Code.Contains(groupName) || x.Name.Contains(groupName)));
+
+                       var pgs = _phaseGroups.Where(x => (x.Code.Contains(groupName) || x.Name.Contains(groupName)))
+                        .Select(x => new ModelSelectItem() { Value = x.Id, Name = x.Name, Code = x.WorkshopIds }).ToList();
+
+                    foreach (var item in pgs)
+                    {
+                        if (string.IsNullOrEmpty(item.Code))
+                            objs.Add(item);
+                        else
+                        {
+                            if (workshopIds.Length > 0)
+                            {
+                                for (int i = 0; i < workshopIds.Length; i++)
+                                {
+                                    if (item.Code.Contains((workshopIds[i] + ",")) ||
+                                        item.Code.Contains(("," + workshopIds[i])) ||
+                                        (item.Code.IndexOf(',') < 0 && item.Code.Contains(workshopIds[i].ToString())))
+                                    {
+                                        objs.Add(item);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                return objs;
+            }
+        }
+
+
     }
 }

@@ -1,0 +1,112 @@
+﻿@using GPRO_IED_A.Business.Model;
+@{
+    ViewBag.Title = "Báo cáo tương tác";
+    //  Layout = null;
+
+    UsingTechReportModel report = Model as UsingTechReportModel;
+}
+<style>
+    .table-bordered th,
+    .table-bordered td { 
+        text-align: center;
+        vertical-align: middle !important
+    }
+
+    .table-bordered th {
+        background: blue;
+        color: white;
+        font-weight: 600; 
+    }
+</style>
+<div class="col-md-6">
+    <div class="group-box">
+        <div class="group-box-title" style="display:flex; padding-bottom:5px">
+            <div style="width:100%; line-height:34px">BÁO  CÁO  TƯƠNG TÁC -  PHẦN MỀM  QUẢN LÝ - QT/ CÔNG ĐOẠN  CHUẨN TỪ  DATA</div>
+            <button title="Xuất tệp báo cáo" using-tech-export class="btn btn-default" hidden="hidden">
+                <i class="fa fa-file-excel-o red"></i>
+            </button>
+        </div>
+
+        <div class="group-box-body using-tech-box" style="height:500px; overflow:auto">
+            <table class="table table-bordered table-center">
+                <thead>
+                    <tr>
+                        <th>ĐƠN VỊ </th>
+                        <th>TỔNG SL  MÃ HÀNG  </th>
+                        <th>TỔNG SL  MÃ HÀNG  LẬP LẠI </th>
+                        <th>% </th>
+                        <th>TỔNG SL CÔNG ĐOẠN  ĐƯỢC PHÂN TÍCH </th>
+                        <th>TỔNG  CĐ ĐƯỢC TƯƠNG TÁC </th>
+                        <th>% </th>
+                        <th> TỔNG  SỐ LƯỢNG  CĐ  MỚI / THÁNG  </th>
+                        <th>% </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (report != null)
+                        {
+                            <tr>
+                                <td>Tổng</td>
+                                <td>@report.TotalProduct</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>@report.TotalPhase</td>
+                                <td>@report.TotalTechPhase</td>
+                                <td>0</td>
+                                <td>@report.TotalNewPhase</td>
+                                <td>0</td>
+                            </tr>
+
+
+                            foreach (var item in report.Details)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+                                    <td>@item.TotalProduct</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>@item.TotalPhase</td>
+                                    <td>@item.TotalTechPhase</td>
+                                    <td>0</td>
+                                    <td>@item.TotalNewPhase</td>
+                                    <td>0</td>
+                                </tr>
+                            }
+                        }
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<div class="col-md-6">
+    <div class="group-box">
+        <div class="group-box-title" style="display:flex; padding-bottom:5px">
+            <div style="width:100%; line-height:34px">BÁO CÁO TƯƠNG TÁC CHI TIẾT</div>
+            <select id="filter-user" class="form-control"></select>
+            <button title="Xuất tệp báo cáo" using-tech-export-detail class="btn btn-default" hidden="hidden">
+                <i class="fa fa-file-excel-o red"></i>
+            </button>
+        </div>
+
+        <div class="group-box-body using-tech-box" style="height:500px; overflow:auto">
+            <table class="table table-bordered table-center" id="tb-tech-detail">
+                <thead>
+                    <tr>
+                        <th>NHÂN VIÊN</th>
+                        <th>CÔNG ĐOẠN</th>
+                        <th>NGÀY TƯƠNG TÁC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Scripts/IED/using-tech/using-tech.js"></script>

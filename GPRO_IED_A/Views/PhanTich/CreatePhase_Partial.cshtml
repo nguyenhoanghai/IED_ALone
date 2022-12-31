@@ -16,10 +16,10 @@
 
         .phase-box-title .action-div {
             display: flex;
-            width:170px;
-            justify-content:right
+            width: 170px;
+            justify-content: right
         }
-         
+
     .choose-input {
         cursor: pointer;
         background: whitesmoke;
@@ -43,14 +43,24 @@
                 <div class="container-fluid">
                     <input type="hidden" id="phaseID" lastindex="0" />
                     <div class="phase-box-title">
-                        <div class="title-div">Công đoạn: <label id="lbTenCongDoan"></label></div>
+                        <div class="title-div">
+                            <div>Công đoạn: <label id="lbTenCongDoan"></label></div>
+                            <div>Trạng thái: <span id="phase-status" class="normal-text">Soạn thảo</span></div>
+                        </div>
                         <div class="action-div">
+                            @*<button type="button" approve-phase class="btn btn-danger"><i class="fa fa-floppy-o"></i> Duyệt </button>*@
+                            @{ if ((bool)ViewBag.isApprover)
+                                {
+                                    <button type="button" not-approve-phase class="btn btn-warning"><i class="fa fa-floppy-o"></i> Hoàn tác</button>
+                                }
+                            }
+                            <button type="button" submit-phase class="btn btn-danger"><i class="fa fa-floppy-o"></i> Lưu & gửi duyệt </button>
                             <button type="button" save-phase class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
                             <button type="button" cancel-create-phase class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
-                            
+
                         </div>
                     </div>
-                    <div style=" height:600px ; overflow-y:auto"> 
+                    <div style=" height:600px ; overflow-y:auto">
                         <div class="group-box">
                             <div class="group-box-title"> Tìm Công Đoạn mẫu </div>
                             <div class="group-box-body">
@@ -143,8 +153,8 @@
                                 <textarea class="form-control" id="phase-Des" style="display:none"></textarea>
 
                                 @*<div class="col-md-8" style="padding:0">
-                    <div id="jtable-timeprepare-arr"></div>
-                </div>*@
+                                        <div id="jtable-timeprepare-arr"></div>
+                                    </div>*@
 
                                 <div class="clearfix"></div>
                             </div>
@@ -234,14 +244,14 @@
                                 <div class="clearfix"></div>
                             </div>
                         </div>
-                    </div>  
+                    </div>
                 </div>
             </div>
             @*<div class="modal-footer">
-                <button type="button" save-phase class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>  
-                <button type="button" cancel-create-phase class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
+                    <button type="button" save-phase class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
+                    <button type="button" cancel-create-phase class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
 
-            </div>*@
+                </div>*@
         </div>
     </div>
 </div>
@@ -286,6 +296,60 @@
                 <button chooseequipment_popupclose aria-hidden="true" data-dismiss="modal" class="btn btn-default">
                     <i class="fa fa-times red"></i>
                     Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--   POPUP ĐƯA VÀO THƯ Viện mẫu  -->
+<div class="modal   fade  " id="popup-library" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modalsmall">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" close-phase-library class="close" type="button">×</button>
+                <h4 class="modal-title">Chọn vào thư viện</h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <div class=" form-group ">
+                        <label class="control-label">Cụm công đoạn <span class="required-class">*</span></label>
+                        <input type="hidden" id="phase-group-library-id" value="0" />
+                        <div class="select-box">
+                            <select id="phase-group-library"></select>
+                            <i re-phase-group-library class="fa fa-refresh clickable red"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" save-phase-library class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
+                <button close-phase-library aria-hidden="true" data-dismiss="modal" class="btn btn-default">
+                    <i class="fa fa-times red"></i>
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--   POPUP chon cong doan  -->
+<div class="modal   fade " id="popup-phase-lib" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" close-phase-lib class="close" type="button">×</button>
+                <h4 class="modal-title">Chọn công đoạn từ thư viện</h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <div id="jtable-phase-lib"></div>
+                </div>
+            </div>
+            <div class="modal-footer  ">
+                <button id="choose-phase-lib" class="btn btn-primary">
+                    <div class="button-image image-search"></div>
+                    Lưu lại
                 </button>
             </div>
         </div>

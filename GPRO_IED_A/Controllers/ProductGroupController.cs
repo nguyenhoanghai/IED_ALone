@@ -10,7 +10,7 @@ using System.Web.Mvc;
 namespace GPRO_IED_A.Controllers
 {
     public class ProductGroupController : BaseController
-    { 
+    {
         public ActionResult Index()
         {
             return View();
@@ -92,12 +92,16 @@ namespace GPRO_IED_A.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetSelectList()
+        public JsonResult GetSelectList(int proGroupId)
         {
             try
             {
                 JsonDataResult.Result = "OK";
-                JsonDataResult.Data = BLLProductGroup.Instance.GetSelectItem(UserContext.CompanyId, UserContext.ChildCompanyId);
+                if (proGroupId == 0)
+                    JsonDataResult.Data = BLLProductGroup.Instance.GetSelectItem(UserContext.CompanyId, UserContext.ChildCompanyId);
+
+                if (proGroupId != 0)
+                    JsonDataResult.Data = BLLProductGroup.Instance.GetSelectItem(proGroupId);
             }
             catch (Exception ex)
             {

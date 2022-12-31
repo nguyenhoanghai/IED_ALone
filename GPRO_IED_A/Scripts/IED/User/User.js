@@ -50,6 +50,7 @@ GPRO.User = function () {
         InitList();
         ReloadList();
         InitPopup();
+        $('[re-user-employ]').click();
     }
 
     this.BindindUsercontextId = function (userContextId) {
@@ -91,6 +92,10 @@ GPRO.User = function () {
         $('#' + Global.Element.popupSearch).on('shown.bs.modal', function () {
             $('div.divParent').attr('currentPoppup', Global.Element.popupSearch.toUpperCase());
         });
+
+        $('[re-user-employ]').click(() => {
+            GetEmployeeSelect("user-employ-select", 0);
+        })
     }
 
     function UnLockTime(Id) {
@@ -201,7 +206,6 @@ GPRO.User = function () {
         return true;
     }
 
-
     function ResetSearchPopupData() {
         $('#keyword').val('');
         $('#searchBy').val(0);
@@ -270,6 +274,7 @@ GPRO.User = function () {
             IsLock: false,
             UserRoles: null,
             UserCategoryId: $('#UserCategory').val(),
+            EmployeeId: $('#user-employ-select').val(),
             ChangePic: Global.Data.ChangePic,
             WorkshopIds: $('#workshops').data("kendoMultiSelect").value().toString()
         }
@@ -396,10 +401,13 @@ GPRO.User = function () {
                 },
                 Email: {
                     title: "Email",
-                    width: "20%",
+                    width: "10%",
                 },
-
-              
+                EmployeeName: {
+                    title: "Nhân viên",
+                    width: "10%",
+                    sorting: false
+                }, 
                 IsRequireChangePW: {
                     visibility: 'hidden',
                     title: 'YC đổi MK',

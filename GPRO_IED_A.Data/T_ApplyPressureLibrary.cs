@@ -17,6 +17,7 @@ namespace GPRO_IED_A.Data
         public T_ApplyPressureLibrary()
         {
             this.T_ManipulationLibrary = new HashSet<T_ManipulationLibrary>();
+            this.T_PhaseGroup_Phase = new HashSet<T_PhaseGroup_Phase>();
         }
     
         public int Id { get; set; }
@@ -32,5 +33,6 @@ namespace GPRO_IED_A.Data
         public Nullable<System.DateTime> DeletedDate { get; set; }
     
         public virtual ICollection<T_ManipulationLibrary> T_ManipulationLibrary { get; set; }
+        public virtual ICollection<T_PhaseGroup_Phase> T_PhaseGroup_Phase { get; set; }
     }
 }

@@ -17,6 +17,7 @@ namespace GPRO_IED_A.Data
         public SWorkerLevel()
         {
             this.T_CA_Phase = new HashSet<T_CA_Phase>();
+            this.T_PhaseGroup_Phase = new HashSet<T_PhaseGroup_Phase>();
         }
     
         public int Id { get; set; }
@@ -33,5 +34,6 @@ namespace GPRO_IED_A.Data
         public Nullable<System.DateTime> DeletedDate { get; set; }
     
         public virtual ICollection<T_CA_Phase> T_CA_Phase { get; set; }
+        public virtual ICollection<T_PhaseGroup_Phase> T_PhaseGroup_Phase { get; set; }
     }
 }

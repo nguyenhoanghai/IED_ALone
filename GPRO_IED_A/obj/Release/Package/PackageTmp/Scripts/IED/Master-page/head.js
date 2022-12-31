@@ -71,16 +71,14 @@ GPRO.Head = function () {
         $.ajax({
             url: Global.UrlAction.ChangeInfo,
             type: 'post',
-            data: JSON.stringify({ 'firstName': $('#ui-first-name').val(), 'lastName': $('#ui-last-name').val(), 'email': $('#ui-email').val(), 'avatar': $('#p-file-upload').attr('newurl') }),
+            data: JSON.stringify({ 'name': $('#ui-name').val(), 'email': $('#ui-email').val(), 'avatar': $('#p-file-upload').attr('newurl') }),
             contentType: 'application/json',
             beforeSend: function () { $('#loading').show(); },
             success: function (result) {
                 $('#loading').hide();
                 GlobalCommon.CallbackProcess(result, function () {
-                    if (result.Result == "OK") {
-
-                        window.location.reload();
-                             
+                    if (result.Result == "OK") { 
+                        window.location.reload();                             
                     }
                 }, false, Global.Element.PopupLine, true, true, function () {
                     var msg = GlobalCommon.GetErrorMessage(result);
@@ -97,16 +95,11 @@ GPRO.Head = function () {
         });
 
         $("#" + Global.Element.PopupUserInfo + ' button[ui-save]').click(function () {
-            var _firstName = $('#ui-first-name').val();
-            var _lastName = $('#ui-last-name').val();
+            var _firstName = $('#ui-name').val(); 
             if (_firstName == undefined || _firstName == '') {
-                GlobalCommon.ShowMessageDialog("Vui lòng nhập họ.", function () { $('#ui-first-name').focus(); }, "Lỗi Nhập liệu");
+                GlobalCommon.ShowMessageDialog("Vui lòng nhập họ tên.", function () { $('#ui-first-name').focus(); }, "Lỗi Nhập liệu");
                 return false;
-            }
-            else if (_lastName == undefined || _lastName == '') {
-                GlobalCommon.ShowMessageDialog("Vui lòng nhập tên.", function () { $('#ui-last-name').focus(); }, "Lỗi Nhập liệu");
-                return false;
-            }  
+            } 
             else
                 if ($('#p-file-upload').val() != '')
                     UploadPicture("p-file-upload", 'p-file-upload');
@@ -120,28 +113,7 @@ GPRO.Head = function () {
             $('div.divParent').attr('currentPoppup', '');
         });
     }
-
-    function CheckValidate() {
-        if ($('#lineName').val().trim() == "") {
-            GlobalCommon.ShowMessageDialog("Vui lòng nhập Tên.", function () { }, "Lỗi Nhập liệu");
-            $('#lineName').focus();
-            return false;
-        }
-        else if ($('#lineCountOfLabours').val().trim() == "") {
-            GlobalCommon.ShowMessageDialog("Vui lòng Nhập số Lao Động Định Biên.", function () { }, "Lỗi Nhập liệu");
-            return false;
-        }
-        else if (parseInt($('#lineCountOfLabours').val()) <= 0) {
-            GlobalCommon.ShowMessageDialog("Vui lòng Nhập số Lao Động Định Biên lớn hơn 0.", function () { }, "Lỗi Nhập liệu");
-            return false;
-        }
-        else if ($('#line_workshop').val() == "0") {
-            GlobalCommon.ShowMessageDialog("Vui lòng Chọn Phân Xưởng.", function () { }, "Lỗi Nhập liệu");
-            return false;
-        }
-        return true;
-    }
-
+      
     function InitPopupChangePass() {
         $("#" + Global.Element.PopupChangePass).modal({
             keyboard: false,

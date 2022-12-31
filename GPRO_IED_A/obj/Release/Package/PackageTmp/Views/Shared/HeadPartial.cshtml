@@ -119,21 +119,16 @@
                         </div>
                         <div class="col-md-7"  >
                             <div class="form-group col-md-12">
-                                <label class="control-label ">Họ <span class="required-class">*</span></label>
-                                <input class="form-control" id="ui-first-name" type="text" value="@userInfo.FirstName"/>
-                            </div>
-                            <div class="form-group col-md-12">
-                                <label class="control-label">Tên <span class="required-class">*</span></label> 
-                                <input class="form-control" id="ui-last-name" type="text" value="@userInfo.LastName"/>
-                            </div>
+                                <label class="control-label ">Họ tên <span class="required-class">*</span></label>
+                                <input class="form-control" id="ui-name" type="text" value="@userInfo.Name"/>
+                            </div> 
                             <div class="form-group col-md-12">
                                 <label class="control-label">Email</label><br />
                                 <input class="form-control" id="ui-email" type="text" value="@userInfo.Email"/>
                             </div> 
                         </div>
                         <div class="clearfix"></div>
-                    </div>
-                     
+                    </div>                     
                 </div>
             </div>
              <div class="modal-footer">
@@ -168,7 +163,7 @@
                         </div>
                     </div>
                     <div class="form-group col-md-12">
-                        <label class="control-label">Nhập lại mật khẩu mới <span class="required-class">*</span></label>
+                        <label class="control-label">Xác nhận mật khẩu mới <span class="required-class">*</span></label>
                         <div class="password-box form-control">
                             <input class=" " id="user-cf-old-pass" type="password" required /> <i class="fa fa-eye" onmousedown="showPassword('user-cf-old-pass')" onmouseup="hidePassword('user-cf-old-pass')"></i>
                         </div>

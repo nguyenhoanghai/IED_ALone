@@ -95,8 +95,24 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-
                 JsonDataResult.Data = BLLPhaseGroup.Instance.Gets(UserContext.WorkshopIds);
+                JsonDataResult.Result = "OK";
+            }
+            catch (Exception ex)
+            {
+                //add error
+                JsonDataResult.Result = "ERROR";
+                JsonDataResult.ErrorMessages.Add(new Error() { MemberName = "Delete Area", Message = "Lỗi: " + ex.Message });
+            }
+            return Json(JsonDataResult);
+        }
+
+        public JsonResult GetSelectByKey(string keyword)
+        {
+            try
+            {
+
+                JsonDataResult.Data = BLLPhaseGroup.Instance.Gets(UserContext.WorkshopIds, keyword);
                 JsonDataResult.Result = "OK";
             }
             catch (Exception ex)

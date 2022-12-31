@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewBag.Title = "Tài khoản duyệt";
+    // Layout = null;
+}
+
+<div id="jtable-user-approve" class="table-center"></div>
+
+<div class="modal fade  " id="popup-user-approve" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modalsmall">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" user-approve-cancel class="close" type="button">×</button>
+                <h4 class="modal-title">Thông tin </h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <div class="form-group">
+                        <input class="form-control" id="user-approve-id" type="hidden" />
+                        <label class="control-label">Tài khoản <span class="required-class">*</span></label>
+                        <div class="select-box">
+                            <select id="user-approve-userid"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Quyền duyệt</label><br />
+                        <div>
+                            <div style="display:flex"> <input type="checkbox" style="margin:0; margin-right:10px"  id="duyet-cd" /> Công đoạn.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" user-approve-cancel class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
+                <button type="button" user-approve-save class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/IED/user-approver/user-approver.js"></script>

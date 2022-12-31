@@ -35,10 +35,10 @@ namespace GPRO_IED_A.Data
     
         public virtual T_CommodityAnalysis T_CommodityAnalysis { get; set; }
         public virtual T_Line T_Line { get; set; }
-        public virtual ICollection<T_LabourDevision_Ver> T_LabourDevision_Ver { get; set; }
-        public virtual ICollection<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
         public virtual T_TechProcessVersion T_TechProcessVersion { get; set; }
+        public virtual ICollection<T_LabourDevision_Ver> T_LabourDevision_Ver { get; set; }
         public virtual SUser SUser { get; set; }
         public virtual SUser SUser1 { get; set; }
+        public virtual ICollection<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
     }
 }

@@ -6571,3 +6571,20 @@ ul.notifications {
 .k-multiselect-wrap{
     height: 33px !important
 }
+
+.modal_full {
+    width: 100%;
+    min-width: 1200px;
+}
+
+    .modal_full .modal-content {
+        height: 100%;
+    }
+
+    .normal-text,
+    .primary-text,
+    .danger-text{ font-weight:bold}
+
+    .normal-text { color:black}
+    .primary-text { color:green}
+    .danger-text { color:red}

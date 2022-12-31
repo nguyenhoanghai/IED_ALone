@@ -107,24 +107,55 @@ function GetProductSelect(controlName) {
         }
     });
 }
-function GetProductGroupSelect(controlName) {
+
+function GetProductSelectByProGroup(proGroupId, controlName, _findByCustomer) {
     $.ajax({
-        url: '/Productgroup/GetSelectList',
+        url: '/Product/GetSelectListByProGroupId',
         type: 'POST',
-        data: '',
+        data: JSON.stringify({ 'proGroupId': proGroupId, 'findByCustomer': _findByCustomer }),
         contentType: 'application/json charset=utf-8',
         success: function (data) {
             GlobalCommon.CallbackProcess(data, function () {
                 if (data.Result == "OK") {
                     if (data.Data.length > 0) {
-                        var str = ' <option value="0">-- chủng loại --</option>';
+                        var str = '';
                         if (data.Data.length > 0) {
                             $.each(data.Data, function (index, item) {
                                 str += ' <option value="' + item.Value + '">' + item.Name + '</option>';
                             });
                         }
-                        $('#' + controlName).empty().append(str);
-                        $('[' + controlName + ']').empty().append(str);
+                        $('#' + controlName).empty().append(str).change();
+                        $('[' + controlName + ']').empty().append(str).change();
+                        $('#' + controlName).trigger('liszt:updated');
+                    }
+                }
+            }, false, '', true, true, function () {
+                var msg = GlobalCommon.GetErrorMessage(data);
+                GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+            });
+        }
+    });
+}
+
+
+function GetProductGroupSelect(controlName) {
+    $.ajax({
+        url: '/Productgroup/GetSelectList',
+        type: 'POST',
+        data: JSON.stringify({'proGroupId':0}),
+        contentType: 'application/json charset=utf-8',
+        success: function (data) {
+            GlobalCommon.CallbackProcess(data, function () {
+                if (data.Result == "OK") {
+                    if (data.Data.length > 0) {
+                        var str = '<option value="0">-- chủng loại --</option>';
+                        if (data.Data.length > 0) {
+                            $.each(data.Data, function (index, item) {
+                                str += ' <option value="' + item.Value + '">' + item.Name + '</option>';
+                            });
+                        }
+                        $('#' + controlName).empty().append(str).change();
+                        $('[' + controlName + ']').empty().append(str).change();
                         $('#' + controlName).trigger('liszt:updated');
                     }
                 }
@@ -154,6 +185,35 @@ function GetCustomerSelect(controlName) {
                         }
                         $('#' + controlName).empty().append(str);
                         $('[' + controlName + ']').empty().append(str);
+                        $('#' + controlName).trigger('liszt:updated');
+                    }
+                }
+            }, false, '', true, true, function () {
+                var msg = GlobalCommon.GetErrorMessage(data);
+                GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+            });
+        }
+    });
+}
+
+function GetUserSelect(controlName) {
+    $.ajax({
+        url: '/user/GetSelectList',
+        type: 'POST',
+        data: '',
+        contentType: 'application/json charset=utf-8',
+        success: function (data) {
+            GlobalCommon.CallbackProcess(data, function () {
+                if (data.Result == "OK") {
+                    if (data.Data.length > 0) {
+                        var str = '';
+                        if (data.Data.length > 0) {
+                            $.each(data.Data, function (index, item) {
+                                str += ` <option value="${item.Value}">${item.Code} (${item.Name}) </option>`;
+                            });
+                        }
+                        $('#' + controlName).empty().append(str).change();
+                        $('[' + controlName + ']').empty().append(str).change();
                         $('#' + controlName).trigger('liszt:updated');
                     }
                 }
@@ -443,6 +503,35 @@ function GetTKCLineSelect(controlName, parentId) {
                         }
                         $('#' + controlName + ',[' + controlName + ']').empty().append(str).change();
                         $('#' + controlName).trigger('liszt:updated'); 
+                    }
+                }
+            }, false, '', true, true, function () {
+                var msg = GlobalCommon.GetErrorMessage(data);
+                GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+            });
+        }
+    });
+}
+
+
+function GetTKCOfLineSelect(controlName) {
+    $.ajax({
+        url: '/TKCInsert/GetTKCs',
+        type: 'POST',
+        data: JSON.stringify({ 'lineId': 0 }),
+        contentType: 'application/json charset=utf-8',
+        success: function (data) {
+            GlobalCommon.CallbackProcess(data, function () {
+                if (data.Result == "OK") {
+                    if (data.Data.length > 0) {
+                        var str = '';
+                        if (data.Data.length > 0) {
+                            $.each(data.Data, function (index, item) {
+                                str += ` <option lineId ="${item.Data}"  value="${item.Value}">${item.Name}</option>`;
+                            });
+                        }
+                        $('#' + controlName + ',[' + controlName + ']').empty().append(str).change();
+                        $('#' + controlName).trigger('liszt:updated');
                     }
                 }
             }, false, '', true, true, function () {

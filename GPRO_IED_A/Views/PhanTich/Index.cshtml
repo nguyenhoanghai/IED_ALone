@@ -1,7 +1,7 @@
 ﻿
 @{
-    ViewBag.Title = "Indexx";
-    //Layout = null;
+    ViewBag.Title = "Index";
+    // Layout = null;
 }
 <link href="~/Scripts/IED/ProAna/ProAna_tkc.css" rel="stylesheet" />
 <style>
@@ -133,6 +133,138 @@
                 font-size: 24px;
                 color: blue;
             }
+
+    .div-lv0,
+    .div-lv1,
+    .div-lv2,
+    .div-lv3,
+    .div-lv4 {
+        border-bottom: 1px dashed olive
+    }
+
+    .div-lv0 {
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+        background: white;
+        margin: 10px 0;
+        height: calc(100% - 65px);
+        overflow-y: auto
+    }
+
+        .div-lv0 .fa {
+            padding-left: 0px
+        }
+
+        .div-lv0 .fa-shirtsinbulk,
+        .div-lv0 .fa-industry,
+        .div-lv0 .fa-diamond,
+        .div-lv0 .fa-object-group,
+        .div-lv0 .fa-area-chart,
+        .div-lv0 .fa-caret-right {
+            padding-right: 5px;
+            font-size: 13px
+        }
+
+        .div-lv0 .fa-plus-circle,
+        .div-lv0 .fa-paste {
+            cursor: pointer;
+            padding: 0 !important;
+            color: blue !important
+        }
+
+        .div-lv0 .fa-paste {
+            padding-right: 3px !important
+        }
+
+        .div-lv0 .fa-trash-o {
+            cursor: pointer;
+            color: red;
+            padding: 0 !important
+        }
+
+    .div-lv1 {
+        display: flex;
+        align-items: center;
+        padding: 5px 0;
+        color: red;
+        text-transform: uppercase
+    }
+
+        .div-lv1 div,
+        .div-lv2 div,
+        .div-lv3 div,
+        .div-lv4 div {
+            width: calc(100% - 20px);
+            cursor: pointer
+        }
+
+    .div-lv2 {
+        display: flex;
+        align-items: center;
+        padding: 5px 0;
+        margin-left: 10px;
+        color: blue
+    }
+
+    .div-lv3 {
+        display: flex;
+        align-items: center;
+        padding: 5px 0;
+        margin-left: 20px;
+        color: fuchsia !important;
+        cursor: pointer
+    }
+
+    .div-lv4 {
+        display: flex;
+        padding: 5px 0;
+        margin-left: 30px;
+        color: black;
+        cursor: pointer
+    }
+
+    #left-component {
+        width: 20em;
+    }
+
+    #vertical-divider {
+        left: 20em;
+        width: 5px;
+    }
+
+    #right-component {
+        left: 20em;
+        margin-left: 5px;
+    }
+
+    #Create-Phase-Popup .nav-tabs > li > a {
+        margin-top: 5px !important
+    }
+
+    .tech-info-box-main {
+        width: 700px !important
+    }
+
+        .tech-info-box-main .box-left {
+            padding-right: 0;
+            border-right: 2px solid #ccc;
+        }
+
+        .tech-info-box-main .img-box {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-left: 5px
+        }
+
+            .tech-info-box-main .img-box .img-item {
+                margin-bottom: 5px
+            }
+
+    .pding-right {
+        padding: 0;
+        padding-right: 5px !important
+    }
 </style>
 <input id="config" type="hidden" gettmutype="@ViewBag.GetTMUType" tmu="@ViewBag.TMU" maniexpenddefault="@ViewBag.ManipulationExpendDefault" />
 <div>
@@ -159,117 +291,9 @@
                     <i id="enable-pt-product" class="fa fa-refresh red"> </i>
                     <i id="add-new-product" class="fa fa-plus-circle blue"> </i>
                 </div>
-                <style>
-                    .div-lv0,
-                    .div-lv1,
-                    .div-lv2,
-                    .div-lv3,
-                    .div-lv4 {
-                        border-bottom: 1px dashed olive
-                    }
 
-                    .div-lv0 {
-                        border: 1px solid #ccc;
-                        padding: 10px;
-                        border-radius: 5px;
-                        background: white;
-                        margin: 10px 0;
-                        height: calc(100% - 65px);
-                        overflow-y: auto
-                    }
-
-                        .div-lv0 .fa {
-                            padding-left: 0px
-                        }
-
-                        .div-lv0 .fa-shirtsinbulk,
-                        .div-lv0 .fa-industry,
-                        .div-lv0 .fa-diamond,
-                        .div-lv0 .fa-object-group,
-                        .div-lv0 .fa-area-chart,
-                        .div-lv0 .fa-caret-right {
-                            padding-right: 5px;
-                            font-size: 13px
-                        }
-
-                        .div-lv0 .fa-plus-circle,
-                        .div-lv0 .fa-paste {
-                            cursor: pointer;
-                            padding: 0 !important;
-                            color: blue !important
-                        }
-
-                        .div-lv0 .fa-paste {
-                            padding-right: 3px !important
-                        }
-
-                        .div-lv0 .fa-trash-o {
-                            cursor: pointer;
-                            color: red;
-                            padding: 0 !important
-                        }
-
-                    .div-lv1 {
-                        display: flex;
-                        align-items: center;
-                        padding: 5px 0;
-                        color: red;
-                        text-transform: uppercase
-                    }
-
-                        .div-lv1 div,
-                        .div-lv2 div,
-                        .div-lv3 div {
-                            width: calc(100% - 20px);
-                            cursor: pointer
-                        }
-
-                    .div-lv2 {
-                        display: flex;
-                        align-items: center;
-                        padding: 5px 0;
-                        margin-left: 10px;
-                        color: blue
-                    }
-
-                    .div-lv3 {
-                        display: flex;
-                        align-items: center;
-                        padding: 5px 0;
-                        margin-left: 20px;
-                        color: fuchsia !important;
-                        cursor: pointer
-                    }
-
-                    .div-lv4 {
-                        padding: 5px 0;
-                        margin-left: 30px;
-                        color: black;
-                        cursor: pointer
-                    }
-                </style>
                 <div id="tree-pt" class="div-lv0">
                     Không có dữ liệu....
-                    @*<div class="div-lv1">
-                            <div><i class="fa fa-shirtsinbulk"></i> ma hang</div>
-                            <i class="fa fa-plus-circle" title="Thêm phân xưởng"></i>
-                        </div>
-                        <div class="div-lv2">
-                            <i class="fa fa-industry"></i> phan xuong 1
-                        </div>
-                        <div class="div-lv3"><i class="fa fa-diamond"></i>quy trinh cong nghệ</div>
-                        <div class="div-lv3"><i class="fa fa-area-chart"></i>Thiết kế chuyền</div>
-                        <div class="div-lv3">
-                            <div>
-                                <i class="fa fa-object-group"></i>Cum cong đoan
-                            </div>
-                            <i class="fa fa-plus-circle" title="Thêm cụm công đoạn"></i>
-                        </div>
-                        <div class="div-lv4"><i class="fa fa-diamond"></i>cụm 1</div>
-                        <div class="div-lv4"><i class="fa fa-diamond"></i>cụm 2</div>
-                        <div class="div-lv4"><i class="fa fa-diamond"></i>cụm 3</div>
-                        <div class="div-lv4"><i class="fa fa-diamond"></i>cụm 4</div>
-                        <div class="div-lv4"><i class="fa fa-diamond"></i>cụm 5</div>*@
                 </div>
             </div>
         </div>
@@ -285,6 +309,7 @@
                             <i class="fa fa-file-excel-o red"></i>
                         </button>
                         <button techsave class="btn btn-default" title="Lưu quy trình công nghệ">   <i class="fa fa-floppy-o blue"></i> </button>
+                        <button techrefresh class="btn btn-default" title="Làm mới danh sách công đoạn">   <i class="fa fa-refresh red"></i> </button>
                     </div>
 
                     <div id="phase-group-action">
@@ -310,67 +335,90 @@
                             <div class="container-fluid">
                                 <div class="tech-info-box">
                                     <div class="tech-info-box-main">
-                                        <input type="hidden" id="techId" value="0" />
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">Thời Gian / 1 Sản Phẩm</label>
-                                            <div id="time-product" class="form-control red">  0 (s)</div>
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <label class="col1 col0">Công nhân</label>
-                                            <input class="form-control" id="total-worker" value="30" type="text" onkeypress=" return isNumberKey(event)" />
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">Thời Gian / Ngày</label>
-                                            <input class="form-control" id="work-time" value="9" type="text" onkeypress=" return isNumberKey(event)" />
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">Nhịp độ sản xuất</label>
-                                            <div id="paced_production" class="form-control red"> 0 </div>
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">Năng suất tổ / 1 giờ</label>
-                                            <div class="form-control red" id="productivity"> 0 </div>
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">Năng suất tổ / Ngày  </label>
-                                            <div class="form-control red" id="pro_group_day">0</div>
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">Năng suất người / Ngày</label>
-                                            <div class="form-control red" id="pro_person_day">0</div>
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">Phụ cấp (%)</label>
-                                            <input class="form-control" id="allowance" value="1" type="text" onkeypress=" return isNumberKey(event)" />
-                                        </div> 
+                                        <div class="col-md-6 form-group box-left pding-right">
+                                            <input type="hidden" id="techId" value="0" />
+                                            <div>Người tạo: <label class="control-label" id="qtcn_createUser"> </label></div>
+                                            <div>Ngày tạo: <label class="control-label" id="qtcn_createDate"> </label></div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">Thời Gian / 1SP</label>
+                                                <div id="time-product" class="form-control red">  0 (s)</div>
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="col1 col0">Công nhân</label>
+                                                <input class="form-control" id="total-worker" value="30" type="text" onkeypress=" return isNumberKey(event)" />
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">Thời Gian / Ngày</label>
+                                                <input class="form-control" id="work-time" value="9" type="text" onkeypress=" return isNumberKey(event)" />
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">Nhịp sản xuất</label>
+                                                <div id="paced_production" class="form-control red"> 0 </div>
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">NS tổ / 1 giờ</label>
+                                                <div class="form-control red" id="productivity"> 0 </div>
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">NS tổ / Ngày  </label>
+                                                <div class="form-control red" id="pro_group_day">0</div>
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">NS người / Ngày</label>
+                                                <div class="form-control red" id="pro_person_day">0</div>
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">Phụ cấp (%)</label>
+                                                <input class="form-control" id="allowance" value="1" type="text" onkeypress=" return isNumberKey(event)" />
+                                            </div>
 
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">Đơn giá (giây / phút) </label>
-                                            <div style="display:flex; align-items:center">
-                                                <input class="form-control center" style="width:50%; margin-right:10px "  id="pricePerSecond" value="1" type="text" onkeypress=" return isNumberKey(event)" /> 
-                                                <i class="fa fa-minus red"></i>
-                                                <input class="form-control center" style="width:50%; margin-left:10px " id="pricePerMinute" value="1" type="text" onkeypress=" return isNumberKey(event)" /> 
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">Đơn giá (giây / phút) </label>
+                                                <div style="display:flex; align-items:center">
+                                                    <input class="form-control center" style="width:50%; margin-right:10px " id="pricePerSecond" value="1" type="text" onkeypress=" return isNumberKey(event)" />
+                                                    <i class="fa fa-minus red"></i>
+                                                    <input class="form-control center" style="width:50%; margin-left:10px " id="pricePerMinute" value="1" type="text" onkeypress=" return isNumberKey(event)" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">Thành tiền (s)</label>
+                                                <div class="form-control" id="total-price"></div>
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">% quy trình</label>
+                                                <input class="form-control" id="percent" value="100" type="text" onkeypress=" return isNumberKey(event)" />
+                                            </div>
+                                            <div class="col-md-6 form-group pding-right">
+                                                <label class="control-label">Thành tiền theo % (s)</label>
+                                                <div class="form-control" id="total-price-percent"></div>
+                                            </div>
+                                            <div class="clearfix">   </div>
+                                            <div class="col-md-12 form-group  pding-right">
+                                                <label>Ghi Chú</label>
+                                                <textarea class="form-control" id="des"></textarea>
+                                            </div>
+                                            <div class="clearfix">   </div>
+                                        </div>
+                                        <div class="col-md-6 form-group img-box">
+                                            <div class="img-item">
+                                                <img src="http://112.197.117.97:86//UploadFile/Files/2022/1/20/ff3c6e93-651e-48bc-8038-91a673b17fe6_5e2d2497fe6f34316d7e.jpg" class="img-avatar" id="img-avatar">
+                                            </div>
+                                            <div class="img-item">
+                                                <img src="http://112.197.117.97:86//UploadFile/Files/2022/1/20/a2113538-36e7-4725-a4b3-c45db2df30e9_6dcbf2b82b40e11eb851.jpg" class="img-avatar" id="img-avatar">
+                                            </div>
+                                            <div class="img-item">
+                                                <img src="http://112.197.117.97:86//UploadFile/Files/2022/1/20/a5e5157c-92ba-4b4a-a446-c9f93b5b46a4_18b369a655e598bbc1f4.jpg" class="img-avatar" id="img-avatar">
+                                            </div>
+                                            <div class="img-item">
+                                                <img src="http://112.197.117.97:86//UploadFile/Files/2022/1/20/c1e61c29-cb90-4be4-9378-b1173081fd88_80750fd03293ffcda682.jpg" class="img-avatar" id="img-avatar">
+                                            </div>
+                                            <div class="img-item">
+                                                <img src="http://112.197.117.97:86//UploadFile/Files/2022/1/20/2d4e55fd-2a9f-47c7-ad3b-519803f089b2_863543729a8a50d4099b.jpg" class="img-avatar" id="img-avatar">
                                             </div>
                                         </div>
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">Thành tiền (s)</label>
-                                            <div class="form-control" id="total-price"></div>
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">% quy trình</label>
-                                            <input class="form-control" id="percent" value="100" type="text" onkeypress=" return isNumberKey(event)" />
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <label class="control-label">Thành tiền theo % (s)</label>
-                                            <div class="form-control" id="total-price-percent"></div>
-                                        </div>
-                                        <div class="clearfix">   </div>
-                                        <div class="col-md-12 form-group">
-                                            <label>Ghi Chú</label>
-                                            <textarea class="form-control" id="des"></textarea>
-                                        </div>
-                                        <div class="clearfix">   </div>
+                                        <div class="clearfix"></div>
                                     </div>
+
                                     <div class="tech-info-box-but"> <i class="fa fa-angle-double-right " title="Thông tin quy trình công nghệ"></i></div>
                                 </div>
 
@@ -421,6 +469,10 @@
                         <i class="fa fa-file-excel-o"></i>
                         Mẫu 5
                     </button>
+                    <button aria-hidden="true" texch-export6 class="btn btn-primary">
+                        <i class="fa fa-file-excel-o"></i>
+                        Mẫu 6
+                    </button>
                 </div>
             </div>
             <div class="modal-footer">
@@ -445,6 +497,7 @@
 <script>
     var obj = new GPRO.Phantich4();
     obj.Init();
+    obj.GetGlobal().Data.Approver = ('@ViewBag.isApprover' == 'True' ? true : false)
 
     function SetNode_ParentIdSample(_node, _parentId, _groupName) {
         obj.SetNode_ParentIdSample(_node, _parentId, _groupName);
@@ -475,6 +528,8 @@
     function Delete(_id, _oType) { obj.delete(_id, _oType) };
 
     function PastePhaseGroup(_id) { obj.pastePhaseGroup(_id); }
+
+    function SetPhaseGroup(id, phasegroupId) { obj.SetPhaseGroup(id, phasegroupId); }
 
     function ChooseEmployee(id) {
         obj.ChooseEmployee(id);

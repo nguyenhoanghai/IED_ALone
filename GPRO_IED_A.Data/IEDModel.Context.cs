@@ -38,7 +38,6 @@ namespace GPRO_IED_A.Data
         public DbSet<SUserRole> SUserRoles { get; set; }
         public DbSet<SWorkerLevel> SWorkerLevels { get; set; }
         public DbSet<T_ApplyPressureLibrary> T_ApplyPressureLibrary { get; set; }
-        public DbSet<T_CA_Phase> T_CA_Phase { get; set; }
         public DbSet<T_CA_Phase_Mani> T_CA_Phase_Mani { get; set; }
         public DbSet<T_CA_Phase_TimePrepare> T_CA_Phase_TimePrepare { get; set; }
         public DbSet<T_CommodityAnalysis> T_CommodityAnalysis { get; set; }
@@ -73,14 +72,20 @@ namespace GPRO_IED_A.Data
         public DbSet<T_ProductFile> T_ProductFile { get; set; }
         public DbSet<T_LinePosition> T_LinePosition { get; set; }
         public DbSet<T_LabourDivision> T_LabourDivision { get; set; }
-        public DbSet<T_LabourDevision_Ver> T_LabourDevision_Ver { get; set; }
         public DbSet<T_PhaseGroupDailyProduction> T_PhaseGroupDailyProduction { get; set; }
-        public DbSet<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
         public DbSet<T_Equipment> T_Equipment { get; set; }
         public DbSet<T_EquipmentGroup> T_EquipmentGroup { get; set; }
         public DbSet<SCompany> SCompanies { get; set; }
-        public DbSet<T_TechProcessVersion> T_TechProcessVersion { get; set; }
         public DbSet<HR_Employee> HR_Employee { get; set; }
+        public DbSet<T_PhaseGroup_Phase_Mani> T_PhaseGroup_Phase_Mani { get; set; }
+        public DbSet<T_UsingTech_Detail> T_UsingTech_Detail { get; set; }
+        public DbSet<SApprover> SApprovers { get; set; }
+        public DbSet<T_CA_Phase> T_CA_Phase { get; set; }
+        public DbSet<T_TechProcessVersion> T_TechProcessVersion { get; set; }
+        public DbSet<T_LabourDevision_Ver> T_LabourDevision_Ver { get; set; }
         public DbSet<SUser> SUsers { get; set; }
+        public DbSet<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
+        public DbSet<T_PhaseGroup_Phase> T_PhaseGroup_Phase { get; set; }
+        public DbSet<T_UsingTechLog> T_UsingTechLog { get; set; }
     }
 }

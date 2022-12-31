@@ -56,7 +56,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="APILinePositionModel.cs" />
     <Compile Include="BLLCommodityAnalysis.cs" />
+    <Compile Include="BLLApprover.cs" />
+    <Compile Include="BLLPhaseGroup_Phase.cs" />
     <Compile Include="BLLCommo_Ana_Phase.cs" />
     <Compile Include="BLLConfig.cs" />
     <Compile Include="BLLCompany.cs" />
@@ -87,10 +90,12 @@
     <Compile Include="BLLTimeTypePrepare.cs" />
     <Compile Include="BLLPhaseGroup.cs" />
     <Compile Include="BLLWorkerLevel.cs" />
+    <Compile Include="BLLUsingTechLog.cs" />
     <Compile Include="BLLWorkshop.cs" />
     <Compile Include="BLLLine.cs" />
     <Compile Include="BLLUser.cs" />
     <Compile Include="BLLUserRole.cs" />
+    <Compile Include="Enum\eApproveRole.cs" />
     <Compile Include="Enum\eCheckPermissionType.cs" />
     <Compile Include="Enum\eEquipmentObjectType.cs" />
     <Compile Include="Enum\eEquipType_Default.cs" />
@@ -103,12 +108,19 @@
     <Compile Include="Enum\ePermissionType.cs" />
     <Compile Include="Enum\eCommandType.cs" />
     <Compile Include="Enum\eSendType.cs" />
+    <Compile Include="Enum\eStatus.cs" />
     <Compile Include="Enum\eString.cs" />
     <Compile Include="Enum\eSystemName.cs" />
     <Compile Include="Enum\eTableName.cs" />
     <Compile Include="Enum\eVersionObjectType.cs" />
     <Compile Include="Model\ApplyPressureLibraryModel.cs" />
+    <Compile Include="Model\ApproverModel.cs" />
     <Compile Include="Model\CategoryModel.cs" />
+    <Compile Include="Model\ReportEmployeeProduction.cs" />
+    <Compile Include="Model\ReportProductionBalance.cs" />
+    <Compile Include="Model\UsingTechLogModel.cs" />
+    <Compile Include="Model\PhaseGroup_Phase_ManiModel.cs" />
+    <Compile Include="Model\PhaseGroup_PhaseModel.cs" />
     <Compile Include="Model\CompanyModel.cs" />
     <Compile Include="Model\CustomerModel.cs" />
     <Compile Include="Model\EmployeeProductionModel.cs" />
@@ -169,6 +181,7 @@
     <Compile Include="Model\UserInfo.cs" />
     <Compile Include="Model\UserModel.cs" />
     <Compile Include="Model\UserRoleModel.cs" />
+    <Compile Include="Model\UsingTechReportModel.cs" />
     <Compile Include="Model\WorkerLevelModel.cs" />
     <Compile Include="Model\WorkShopModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

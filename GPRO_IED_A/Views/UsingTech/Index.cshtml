@@ -1,0 +1,132 @@
+﻿@using GPRO_IED_A.Business.Model;
+@{
+    ViewBag.Title = "Báo cáo tương tác";
+    //  Layout = null;
+
+    UsingTechReportModel report = Model as UsingTechReportModel;
+}
+<style>
+    .table-bordered th,
+    .table-bordered td {
+        text-align: center;
+        vertical-align: middle !important
+    }
+
+    .table-bordered th {
+        background: blue;
+        color: white;
+        font-weight: 600;
+    }
+
+    .nav-tabs li.active{
+        border:1px solid blue;
+        border-bottom:none
+    }
+
+    .nav-tabs li.active a {
+        font-weight:bold;
+        color:brown !important
+    }
+</style>
+<div class="group-box-title" style="margin-bottom:10px">BÁO CÁO TƯƠNG TÁC</div>
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a style="margin-top:0 !important" href="#report-all-box" aria-controls="report-all-box" role="tab" data-toggle="tab">PHẦN MỀM QUẢN LÝ - QT/ CÔNG ĐOẠN CHUẨN TỪ DATA</a></li>
+    <li role="presentation"><a style="margin-top:0 !important" href="#report-detail-box" aria-controls="report-detail-box" role="tab" data-toggle="tab">TƯƠNG TÁC CHI TIẾT</a></li>
+</ul>
+<div class="tab-content" style="max-height:420px;overflow-y:scroll;margin-bottom:10px;border-radius:0">
+    <div role="tabpanel" class="tab-pane active" id="report-all-box">
+        <div class="group-box">
+            <div class="group-box-title" style="display:flex; padding-bottom:5px">
+                <div style="width:100%; line-height:34px">BÁO  CÁO  TƯƠNG TÁC -  PHẦN MỀM  QUẢN LÝ - QT/ CÔNG ĐOẠN  CHUẨN TỪ  DATA</div>
+                <button title="Xuất tệp báo cáo" using-tech-export class="btn btn-default" hidden="hidden" style="  margin-right:5px">
+                    <i class="fa fa-file-excel-o red"></i>
+                </button>
+                <button title="Làm mới báo cáo" using-tech-refresh class="btn btn-default" hidden="hidden">
+                    <i class="fa fa-refresh red"></i>
+                </button> 
+            </div>
+
+            <div class="group-box-body using-tech-box"  >
+                <span class="required-class">* Chú ý: Những công đoạn được thống kê trên báo cáo là công đoạn đã được duyệt.</span>
+                <table class="table table-bordered table-center" id="tb-using-tech">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">ĐƠN VỊ </th>
+                            <th rowspan="2">TỔNG SL MÃ HÀNG</th>
+                            <th rowspan="2">TỔNG SL MÃ HÀNG LẬP LẠI</th>
+                            <th rowspan="2">% </th>
+                            <th rowspan="2">TỔNG SL CÔNG ĐOẠN ĐƯỢC PHÂN TÍCH</th>
+                            <th colspan="2">TỔNG CĐ ĐƯỢC TƯƠNG TÁC </th>
+                            <th rowspan="2">% </th>
+                            <th rowspan="2"> TỔNG SL CĐ DUYỆT MỚI / THÁNG  </th>
+                            <th rowspan="2">% </th>
+                        </tr>
+                        <tr>
+                            <th>LƯỢT XEM</th>
+                            <th>LƯỢT TẢI</th>
+                        </tr>
+                    </thead>
+                    <tbody> 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div role="tabpanel" class="tab-pane " id="report-detail-box">
+        <div class="group-box">
+            <div class="group-box-title" style="display:flex; padding-bottom:5px">
+                <div style="width:100%; line-height:34px">BÁO CÁO TƯƠNG TÁC CHI TIẾT</div>
+                
+                <button title="Xuất tệp báo cáo" using-tech-export-detail class="btn btn-default" hidden="hidden" style=" margin-right:5px">
+                    <i class="fa fa-file-excel-o red"></i>
+                </button>
+                <button title="Làm mới báo cáo" using-tech-refresh-detail class="btn btn-default" hidden="hidden">
+                    <i class="fa fa-refresh red"></i>
+                </button>
+            </div>
+
+            <div class="group-box-body using-tech-box"  >
+                <div class="col-md-12">
+                    <div class="col-md-2 form-group">
+                        <label class="control-label">Loại tương tác</label>
+                        <select id="filter-view" class="form-control"  >
+                            <option value="1">Lượt xem</option>
+                            <option value="0">Lượt tải</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label class="control-label">Đơn vị</label>
+                        <select id="filter-workshop" class="form-control"></select>
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label class="control-label">Tài khoản</label>
+                        <select id="filter-user" class="form-control"  ></select>
+                    </div>                    
+                    <div class="col-md-2 form-group">
+                        <label class="control-label">Từ ngày <span class="required-class">*</span></label></br>
+                        <input class="form-control date-control" id="report-from" type="text" />
+                    </div>
+                    <div class="col-md-2 form-group">
+                        <label class="control-label">đến ngày <span class="required-class">*</span></label></br>
+                        <input class="form-control date-control" id="report-to" type="text" />
+                    </div>
+                </div>
+                <table class="table table-bordered table-center" id="tb-tech-detail">
+                    <thead>
+                        <tr>
+                            <th>ĐƠN VỊ</th>
+                            <th>NHÂN VIÊN</th>
+                            <th>CÔNG ĐOẠN</th>
+                            <th>NGÀY TƯƠNG TÁC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<script src="~/Scripts/IED/using-tech/using-tech.js"></script>

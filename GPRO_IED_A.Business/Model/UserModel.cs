@@ -32,5 +32,8 @@ namespace GPRO_IED_A.Business.Model
         public string WorkshopIds { get; set; }
         public string WorkshopNames { get; set; }
         public List<int> intWorkshopIds { get; set; }
+
+        public int? EmployeeId { get; set; }
+        public string EmployeeName { get; set; }
     }
 }

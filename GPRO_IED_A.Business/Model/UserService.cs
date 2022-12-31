@@ -17,6 +17,7 @@ namespace GPRO_IED_A.Business.Model
         public int[] Features { get; set; }
         public string ImagePath { get; set; }
         public bool IsOwner { get; set; }
+        public bool IsPhaseApprover { get; set; }
         public string LogoCompany { get; set; }
         public string[] Permissions { get; set; }
         public int UserID { get; set; }
@@ -26,6 +27,8 @@ namespace GPRO_IED_A.Business.Model
         public string UserName { get; set; }
         public List<Module> ListModule { get; set; }
         public List<MenuCategory> ListMenu { get; set; }
+        public int LineId { get; set; }
+        public int EmployeeId { get; set; }
         public UserService()
         {
             ListModule = new List<Module>();

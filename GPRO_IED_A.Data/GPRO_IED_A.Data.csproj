@@ -66,6 +66,9 @@
       <DependentUpon>IEDModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SApprover.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="SCategory.cs">
       <DependentUpon>IEDModel.tt</DependentUpon>
     </Compile>
@@ -207,6 +210,12 @@
     <Compile Include="T_PhaseGroupDailyProduction.cs">
       <DependentUpon>IEDModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="T_PhaseGroup_Phase.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_PhaseGroup_Phase_Mani.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="T_Product.cs">
       <DependentUpon>IEDModel.tt</DependentUpon>
     </Compile>
@@ -229,6 +238,12 @@
       <DependentUpon>IEDModel.tt</DependentUpon>
     </Compile>
     <Compile Include="T_TimeTypePrepare.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_UsingTechLog.cs">
+      <DependentUpon>IEDModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="T_UsingTech_Detail.cs">
       <DependentUpon>IEDModel.tt</DependentUpon>
     </Compile>
     <Compile Include="T_WorkShop.cs">

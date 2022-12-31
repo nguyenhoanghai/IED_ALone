@@ -1,6 +1,8 @@
 ﻿using GPRO_IED_A.Business;
 using GPRO_IED_A.Business.Model;
+using PagedList;
 using System;
+using System.Configuration;
 using System.Web.Mvc;
 
 namespace GPRO_IED_A.Controllers
@@ -19,7 +21,13 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    var phases = BLLCommo_Ana_Phase.Instance.GetsWhichNotLib(keyword, jtStartIndex, jtPageSize, jtSorting);
+                    PagedList<PhaseLibModel> phases = null;
+                    if (ConfigurationManager.AppSettings["PhaseSusguestForm"] != null &&
+                  ConfigurationManager.AppSettings["PhaseSusguestForm"] == "Library")
+                        phases = BLLPhaseGroup_Phase.Instance.GetsWhichNotLib(keyword, jtStartIndex, jtPageSize, jtSorting);
+                    else
+                        phases = BLLCommo_Ana_Phase.Instance.GetsWhichNotLib(keyword, jtStartIndex, jtPageSize, jtSorting);
+
                     JsonDataResult.Records = phases;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = phases.TotalItemCount;
@@ -39,7 +47,13 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    var phases = BLLCommo_Ana_Phase.Instance.GetsWhichIsLib(keyword, jtStartIndex, jtPageSize, jtSorting);
+                    PagedList<PhaseLibModel> phases = null;
+                    if (ConfigurationManager.AppSettings["PhaseSusguestForm"] != null &&
+                  ConfigurationManager.AppSettings["PhaseSusguestForm"] == "Library")
+                        phases = BLLPhaseGroup_Phase.Instance.GetsWhichIsLib(keyword, jtStartIndex, jtPageSize, jtSorting);
+                    else
+                        phases = BLLCommo_Ana_Phase.Instance.GetsWhichIsLib(keyword, jtStartIndex, jtPageSize, jtSorting);
+
                     JsonDataResult.Records = phases;
                     JsonDataResult.Result = "OK";
                     JsonDataResult.TotalRecordCount = phases.TotalItemCount;

@@ -1,0 +1,334 @@
+﻿<style>
+    #Create-Phase-Popup .nav-tabs > li > a {
+        margin-top: 5px !important
+    }
+
+    .phase-box-title {
+        display: flex;
+        align-items: center;
+        border-bottom: 3px solid blue;
+        margin-bottom: 5px;
+    }
+
+        .phase-box-title .title-div {
+            width: calc(100% - 170px);
+        }
+
+        .phase-box-title .action-div {
+            display: flex;
+            width: 170px;
+            justify-content: right
+        }
+
+    .choose-input {
+        cursor: pointer;
+        background: whitesmoke;
+        color: green;
+    }
+
+    .select-box input {
+        width: calc(100% - 30px);
+        padding: 6px;
+        border-radius: 5px;
+        height: 34px;
+        border: 2px solid red;
+    }
+</style>
+
+<!--   POPUP CREATE PHASE    -->
+<div class="modal   fade   " id="Create-Phase-Popup" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal_full">
+        <div class="modal-content">
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <input type="hidden" id="phaseID" lastindex="0" />
+                    <div class="phase-box-title">
+                        <div class="title-div">
+                            <div>Công đoạn: <label id="lbTenCongDoan"></label></div>
+                            <div>Trạng thái: <span id="phase-status" class="normal-text">Soạn thảo</span></div>
+                        </div>
+                        <div class="action-div">
+                            @*<button type="button" approve-phase class="btn btn-danger"><i class="fa fa-floppy-o"></i> Duyệt </button>
+                            <button type="button" not-approve-phase class="btn btn-warning"><i class="fa fa-floppy-o"></i> Không duyệt </button>
+                            <button type="button" submit-phase class="btn btn-danger"><i class="fa fa-floppy-o"></i> Lưu & gửi duyệt </button>
+                            <button type="button" save-phase class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>*@
+                            <button type="button" cancel-create-phase class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
+
+                        </div>
+                    </div>
+                    <div style=" height:600px ; overflow-y:auto">
+                        @*<div class="group-box">
+                            <div class="group-box-title"> Tìm Công Đoạn mẫu </div>
+                            <div class="group-box-body">
+                                <div class="select-box">
+                                    <input style="" list="suggestPhases" id="phase-suggest" type="text" placeholder="Nhập tên hoặc mã Công Đoạn cần tìm." />
+                                    <i title="Lấy thông tin công đoạn." save-sugguest-phase class="fa fa-cloud-download clickable blue"></i>
+                                </div>
+                            </div>
+                        </div>*@
+
+                        <div class="group-box">
+                            <div class="group-box-title">Thông tin công đoạn</div>
+                            <div class="group-box-body">
+                                <div class="col-md-1 form-group @ViewBag.hasPer">
+                                    <label class="control-label">Mã CĐ <span class="required-class">*</span></label>
+                                    <span disabled class="form-control" id="phase-code" />
+                                </div>
+                                <div class="col-md-1 form-group">
+                                    <label class="control-label">Vị trí CĐ <span class="required-class">*</span></label>
+                                    <input class="form-control" disabled id="phase-index" type="text" />
+                                </div>
+                                <div class="@(ViewBag.hasPer=="hide"?"col-md-11 ":"col-md-10")   form-group">
+                                    <input type="hidden" id="phaseID" lastindex="0" />
+                                    <label class="control-label">Tên công đoạn <span class="required-class">*</span></label>
+                                    <input class="form-control" disabled id="phase-name" @(ViewBag.hasPer == "hide" ? "disabled" : "") type="text" placeholder=@(ViewBag.hasPer=="hide"?"":"Nhập tên Công Đoạn ...") />
+                                </div>
+                                <div class="clearfix"></div>
+
+                                <div class="col-md-4" style="margin-bottom:0 !important">
+                                    <video width="98%" height="210" controls id="videotag" style="border: 1px solid #ccc;">
+                                        <source src="" type="video/wmv">
+                                        <source src="" type="video/mp4">
+
+                                    </video>
+                                    <div>
+                                        <button id="btn-browse-file" class="btn btn-primary">Chọn video công đoạn (mp4 file)</button>
+                                        <div>
+                                            <input type="file" id="video" accept="mp4 Video;video/mp4,video/x-m4v,video/*" class="hide" />
+                                            <input type="hidden" id="hid_video" />
+                                        </div>
+                                        <span id="video-info"> </span>
+                                    </div>
+
+                                    <div class="clearfix"></div>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <div class="col-md-3 form-group @ViewBag.hasPer">
+                                        <label class="control-label">Bậc thợ <span class="required-class">*</span></label>
+                                        <div class="select-box">
+                                            <select disabled id="workersLevel"></select>
+                                            @*<i re_workerslevel class="fa fa-refresh clickable red"></i>*@
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 form-group @ViewBag.hasPer">
+                                        <input type="hidden" id="equipmentId" />
+                                        <input type="hidden" id="equiptypedefaultId" />
+                                        <label class="control-label">Thiết bị</label><br />
+                                        <input data-toggle="modal" disabled data-target="#ChooseEquipment_Popup" class="form-control choose-input" id="equipmentName" type="text" placeholder="Chọn thiết bị..." style="width: 100%" />
+                                    </div>
+                                    <div class="col-md-6 form-group @ViewBag.hasPer">
+                                        <label class="control-label">Thông tin Thiết bị</label>
+                                        <textarea style="height:34px" class="form-control" id="E_info" disabled></textarea>
+                                    </div>
+
+                                    <div class="col-md-6 form-group @ViewBag.hasPer">
+                                        <label class="control-label">Thời gian chuẩn bị <span class="required-class">*</span></label>
+                                        <input data-toggle="modal" disabled data-target="#timeprepare-Popup" class="form-control choose-input" id="time-repare-name" type="text" placeholder="Chọn thời gian chuẩn bị..." />
+                                    </div>
+                                    <div class="col-md-6 form-group @ViewBag.hasPer" id="chooseApplyPressure">
+                                        <label class="control-label">Chọn số lớp cắt <span style="color: red;">(Sử dụng đối với máy cắt)</span></label>
+                                        <div class="select-box">
+                                            <select id="ApplyPressure"></select>
+                                            <i re-apply-pressure class="fa fa-refresh clickable red"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="clearfix"></div>
+                                    <div class="col-md-12 form-group  ">
+                                        <div style="padding:3px 0">
+                                            <label class="control-label">Thời gian CĐ: <span id="TotalTMU" class="red">0</span><input class="form-control" id="ManiVerTMU" type="hidden" /> (s) </label>
+                                        </div>
+                                        <div style="padding:3px 0">
+                                            <label class="control-label">Chiều dài đường may: <span id="TotalMay" class="red">0</span> (cm)</label>
+                                        </div>
+                                        @*<div class=" @ViewBag.hasPer"> <input type="checkbox" id="islibs" /> <label class="control-label">chọn làm công đoạn mẫu.</label></div>*@
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <textarea class="form-control" id="phase-Des" style="display:none"></textarea>
+
+                                @*<div class="col-md-8" style="padding:0">
+                                        <div id="jtable-timeprepare-arr"></div>
+                                    </div>*@
+
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+
+                        <div class="group-box">
+                            <div class="group-box-title">Phân tích thao tác</div>
+                            <div class="group-box-body">
+                                <div class="col-md-12  @ViewBag.hasPer">
+                                    <div id="jtable_ManipulationArr"> </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+
+                        <div class="group-box">
+                            <div class="group-box-title">Hao phí</div>
+                            <div class="group-box-body">
+                                <div class="col-md-12  @ViewBag.hasPer">
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Tổng TMU Thiết Bị</label><br />
+                                        <input class="form-control"   totaltmuequipment type="text" value="0" disabled style="width: 70px" onkeypress=" return isNumberKey(event)" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Tổng Thời Gian Thiết Bị</label><br />
+                                        <input class="form-control"   totaltimeequipment type="text" value="0" disabled style="width: 100px" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Hao Phí Thiết Bị (%)</label><br />
+                                        <input class="form-control" disabled percentequipment type="text" value="0" onkeypress=" return isNumberKey(event)" style="width: 100px" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Thời Gian Hao Phí</label><br />
+                                        <input class="form-control"   totaltimewasteequipment type="text" disabled value="0" style="width: 100px" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Tổng TMU Thao Tác</label><br />
+                                        <input class="form-control"   totaltmumanipulation type="text" value="0" disabled style="width: 70px" onkeypress=" return isNumberKey(event)" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Tổng Thời Gian Thao Tác </label>
+                                        <br />
+                                        <input class="form-control"   totaltimemanipulation type="text" value="0" disabled style="width: 100px" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Hao Phí Thao Tác (%)</label><br />
+                                        <input class="form-control" disabled percentmanipulation type="text" value="0" onkeypress=" return isNumberKey(event)" style="width: 100px" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Thời Gian Hao Phí</label><br />
+                                        <input class="form-control"   totaltimewastemanipulation type="text" disabled value="0" style="width: 100px" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Tổng TMU</label><br />
+                                        <input class="form-control"   totaltmu type="text" value="0" disabled style="width: 100px" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Tổng Thời Gian</label><br />
+                                        <input class="form-control"   totaltime type="text" value="0" disabled style="width: 100px" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Hao phí đặc biệt (%)</label><br />
+                                        <input class="form-control" disabled percentdb type="text" value="0" onkeypress=" return isNumberKey(event)" style="width: 100px" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Thời Gian Hao Phí</label><br />
+                                        <input class="form-control"   type="text" totaltimewastedb value="0" disabled style="width: 100px" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Tổng % Hao Phí</label><br />
+                                        <input class="form-control"   totalpercentwaste type="text" value="0" disabled style="width: 100px" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Tổng Thao Gian Hao Phí</label><br />
+                                        <input class="form-control"   totaltimewaste type="text" value="0" disabled style="width: 100px" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Hao Phí Nguyên Phụ Liệu (%)</label><br />
+                                        <input class="form-control" disabled percentnpl type="text" value="0" onkeypress=" return isNumberKey(event)" style="width: 100px" />
+                                    </div>
+                                    <div class="col-md-3 form-group">
+                                        <label class="control-label">Thời Gian Hao Phí</label><br />
+                                        <input class="form-control"   type="text" totaltimewastenpl value="0" disabled style="width: 100px" />
+                                    </div>
+                                    <div class="clearfix">  </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*<div class="modal-footer">
+                    <button type="button" save-phase class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
+                    <button type="button" cancel-create-phase class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
+
+                </div>*@
+        </div>
+    </div>
+</div>
+
+<!--   POPUP TIME PREPARE  -->
+<div class="modal   fade " id="timeprepare-Popup" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" close-time class="close" type="button">×</button>
+                <h4 class="modal-title">Chọn Thời Gian Chuẩn Bị</h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <div id="jtable-timeprepare"></div>
+                </div>
+            </div>
+            <div class="modal-footer hide">
+                <button id="choose-time" class="btn btn-primary">
+                    <div class="button-image image-search"></div>
+                    Lưu lại
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--   POPUP CHOOSE EQUIPMENT  -->
+<div class="modal   fade  " id="ChooseEquipment_Popup" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" chooseequipment_popupclose class="close" type="button">×</button>
+                <h4 class="modal-title">Danh Sách Thiết Bị</h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <div id="jtable-chooseequipment"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button chooseequipment_popupclose aria-hidden="true" data-dismiss="modal" class="btn btn-default">
+                    <i class="fa fa-times red"></i>
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--   POPUP ĐƯA VÀO THƯ Viện mẫu  -->
+<div class="modal   fade  " id="popup-library" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modalsmall">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" close-phase-library class="close" type="button">×</button>
+                <h4 class="modal-title">Chọn vào thư viện</h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <div class=" form-group ">
+                        <label class="control-label">Cụm công đoạn <span class="required-class">*</span></label>
+                        <input type="hidden" id="phase-group-library-id" value="0"/>
+                        <div class="select-box">
+                            <select id="phase-group-library"></select>
+                            <i re-phase-group-library class="fa fa-refresh clickable red"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" save-phase-library class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
+                <button close-phase-library aria-hidden="true" data-dismiss="modal" class="btn btn-default">
+                    <i class="fa fa-times red"></i>
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--   POPUP PHASE VERSION MANIPULATION   -->
+<datalist id="manipulations"></datalist>
+<datalist id="suggestPhases"></datalist>

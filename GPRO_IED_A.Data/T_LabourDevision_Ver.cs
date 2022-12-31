@@ -18,11 +18,13 @@ namespace GPRO_IED_A.Data
         {
             this.T_LinePosition = new HashSet<T_LinePosition>();
             this.T_LinePoDailyQuantities = new HashSet<T_LinePoDailyQuantities>();
+            this.T_UsingTechLog = new HashSet<T_UsingTechLog>();
         }
     
         public int Id { get; set; }
         public int LabourDivisionId { get; set; }
         public int TotalPosition { get; set; }
+        public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
         public int CreatedUser { get; set; }
         public System.DateTime CreatedDate { get; set; }
@@ -31,7 +33,8 @@ namespace GPRO_IED_A.Data
     
         public virtual T_LabourDivision T_LabourDivision { get; set; }
         public virtual ICollection<T_LinePosition> T_LinePosition { get; set; }
-        public virtual ICollection<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
         public virtual SUser SUser { get; set; }
+        public virtual ICollection<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
+        public virtual ICollection<T_UsingTechLog> T_UsingTechLog { get; set; }
     }
 }

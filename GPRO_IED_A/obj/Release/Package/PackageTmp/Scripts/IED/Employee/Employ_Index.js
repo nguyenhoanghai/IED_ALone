@@ -80,8 +80,7 @@ GPRO.EmployeeList = function () {
         var switchInstance = $("#eGender").data("kendoMobileSwitch");
         var EmployeeViewModel = {
             Id: 0,
-            FirstName: '',
-            LastName: '',
+             Name: '', 
             Gender: true,
             Birthday: new Date(),
             Mobile: '',
@@ -92,8 +91,7 @@ GPRO.EmployeeList = function () {
         if (Employee != null) {
             EmployeeViewModel = {
                 Id: ko.observable(Employee.Id),
-                FirstName: ko.observable(Employee.FirstName),
-                LastName: ko.observable(Employee.LastName),
+                Name: ko.observable(Employee.Name), 
                 Gender: ko.observable(Employee.Gender),
                 Birthday: ko.observable(Employee.Birthday),
                 Mobile: ko.observable(Employee.Mobile),
@@ -145,15 +143,6 @@ GPRO.EmployeeList = function () {
                     edit: false,
                     list: false
                 },
-                Code: {
-                    title: 'Mã Nhân Viên',
-                    width: '10%'
-                },
-                FullName: {
-                    visibility: 'fixed',
-                    title: "Tên Nhân Viên",
-                    width: "20%",
-                },
                 Image: {
                     title: 'Hình',
                     width: '1%',
@@ -165,6 +154,16 @@ GPRO.EmployeeList = function () {
                         }
                     }
                 },
+                Code: {
+                    title: 'Mã Nhân Viên',
+                    width: '10%'
+                },
+                Name: {
+                    visibility: 'fixed',
+                    title: "Tên Nhân Viên",
+                    width: "20%",
+                },
+               
                 Birthday: {
                     title: 'Ngày Sinh',
                     width: '10%',
@@ -205,8 +204,7 @@ GPRO.EmployeeList = function () {
                             //  BindData(data.record);
                             $('#eId').val(data.record.Id);
                             $('#ecode').val(data.record.Code);
-                            $('#efirst').val(data.record.FirstName);
-                            $('#elast').val(data.record.LastName);
+                            $('#eName').val(data.record.Name); 
                             $('#eEmail').val(data.record.Email);
                             $('#eMobile').val(data.record.Mobile);
                             $('#eWorkshopId').val(data.record.WorkshopId);
@@ -277,28 +275,24 @@ GPRO.EmployeeList = function () {
         });
     }
 
-    function CheckValidate() {
+    function CheckValidate() { 
         if ($('#ecode').val().trim() == '') {
             GlobalCommon.ShowMessageDialog("Bạn chưa nhập mã nhân viên.", function () { }, "Lỗi Nhập liệu");
             return false;
         }
-        else if ($('#efirst').val().trim() == '') {
-            GlobalCommon.ShowMessageDialog("Bạn chưa nhập họ.", function () { }, "Lỗi Nhập liệu");
+        else if ($('#eName').val().trim() == '') {
+            GlobalCommon.ShowMessageDialog("Bạn chưa nhập họ tên.", function () { }, "Lỗi Nhập liệu");
             return false;
-        }
-        else if ($('#elast').val().trim() == '') {
-            GlobalCommon.ShowMessageDialog("Bạn chưa nhập tên.", function () { }, "Lỗi Nhập liệu");
-            return false;
-        }
+        } 
         else if ($('#EBirthday').val().trim() == '') {
             GlobalCommon.ShowMessageDialog("Bạn chưa chọn ngày sinh.", function () { }, "Lỗi Nhập liệu");
             return false;
         }
-        else if ($('#eWorkshopId').val().trim() == '') {
+        else if (!$('#eWorkshopId').val() || $('#eWorkshopId').val() =='0') {
             GlobalCommon.ShowMessageDialog("Vui lòng chọn phân xưởng.", function () { }, "Lỗi Nhập liệu");
             return false;
         }
-        else if ($('#eLineId').val().trim() == '') {
+        else if (!$('#eLineId').val() || $('#eLineId').val() == '0'  ) {
             GlobalCommon.ShowMessageDialog("Vui lòng chọn chuyền.", function () { }, "Lỗi Nhập liệu");
             return false;
         }
@@ -309,8 +303,7 @@ GPRO.EmployeeList = function () {
         var obj = {
             Id: $('#eId').val(),
             Code: $('#ecode').val(),
-            FirstName: $('#efirst').val(),
-            LastName: $('#elast').val(),
+            Name: $('#eName').val(), 
             Email: $('#eEmail').val(),
             Mobile: $('#eMobile').val(),
             WorkshopId: $('#eWorkshopId').val(),

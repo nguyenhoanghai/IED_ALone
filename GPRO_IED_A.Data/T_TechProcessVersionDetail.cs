@@ -35,8 +35,8 @@ namespace GPRO_IED_A.Data
         public Nullable<System.DateTime> DeletedDate { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
     
-        public virtual T_CA_Phase T_CA_Phase { get; set; }
         public virtual ICollection<T_LinePositionDetail> T_LinePositionDetail { get; set; }
+        public virtual T_CA_Phase T_CA_Phase { get; set; }
         public virtual T_TechProcessVersion T_TechProcessVersion { get; set; }
     }
 }

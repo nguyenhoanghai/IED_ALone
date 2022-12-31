@@ -44,33 +44,17 @@ GPRO.EmployeeProductionReport = function () {
     this.Init = function () {
         RegisterEvent();
         InitJtable();
-        GetProAnaSelect('report-product', 1, 0);
-        $('#today-date').html(moment().format('D/M/YYYY')); 
+        // GetProAnaSelect('report-product', 1, 0);
+        $('#re-report-line').click();
+        $('#today-date').html(moment().format('D/M/YYYY'));
     }
 
 
     var RegisterEvent = function () {
-
-        $('#re-report-product').click(() => {
-            GetProAnaSelect('report-product', 1, 0);
-        })
-
-        $('#report-product').change(() => {
-            GetProAnaSelect('report-workshop', 2, $('#report-product').val()); 
-        })
-
-        $('#re-report-workshop').click(() => {
-            GetProAnaSelect('report-workshop', 2, $('#report-product').val());
-        });
-
-        $('#report-workshop').change(() => {
-            $('#re-report-line').click();
-        })
-
         $('#re-report-line').click(() => {
-            if ($('#report-workshop').val() != undefined)
-                GetTKCLineSelect('report-line', $('#report-workshop').val());
-        })
+            GetTKCOfLineSelect('report-line');
+
+        }) 
 
         $('#report-line').change(() => {
             $('#re-report-employee').click();
@@ -84,14 +68,14 @@ GPRO.EmployeeProductionReport = function () {
         });
 
         $('#report-employee').change(() => {
-             if ($('#report-employee').val() != undefined && $('#report-employee').val() != '0')
+            if ($('#report-employee').val() != undefined && $('#report-employee').val() != '0')
                 ReloadJtable();
         });
 
         $('#btn-excel').click(() => {
-            window.location.href = Global.UrlAction.Excel + `?labourId=${$('#report-line').val()}&employId=${$('#report-employee').val()}&product=${$('#report-product option:selected').text()}&workshop=${$('#report-workshop option:selected').val()}&line=${$('#report-line option:selected').val()}&employee=${$('#report-employee option:selected').val()}`
+            window.location.href = Global.UrlAction.Excel + `?labourId=${$('#report-line').val()}&employId=${$('#report-employee').val()}&employee=${$('#report-employee option:selected').text()}`
         })
-         
+
     }
 
     function InitJtable() {
@@ -149,6 +133,9 @@ GPRO.EmployeeProductionReport = function () {
     function ReloadJtable() {
         $('#' + Global.Element.Jtable).jtable('load', { 'labourId': $('#report-line').val(), 'employId': $('#report-employee').val() });
     }
+
+
+    
 }
 $(document).ready(function () {
     var obj = new GPRO.EmployeeProductionReport();

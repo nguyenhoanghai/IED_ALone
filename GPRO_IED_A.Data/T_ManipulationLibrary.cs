@@ -19,6 +19,7 @@ namespace GPRO_IED_A.Data
             this.T_CA_Phase_Mani = new HashSet<T_CA_Phase_Mani>();
             this.T_ManipulationEquipment = new HashSet<T_ManipulationEquipment>();
             this.T_ManipulationFile = new HashSet<T_ManipulationFile>();
+            this.T_PhaseGroup_Phase_Mani = new HashSet<T_PhaseGroup_Phase_Mani>();
         }
     
         public int Id { get; set; }
@@ -51,5 +52,6 @@ namespace GPRO_IED_A.Data
         public virtual T_ManipulationTypeLibrary T_ManipulationTypeLibrary1 { get; set; }
         public virtual T_NatureCutsLibrary T_NatureCutsLibrary { get; set; }
         public virtual T_StopPrecisionLibrary T_StopPrecisionLibrary { get; set; }
+        public virtual ICollection<T_PhaseGroup_Phase_Mani> T_PhaseGroup_Phase_Mani { get; set; }
     }
 }

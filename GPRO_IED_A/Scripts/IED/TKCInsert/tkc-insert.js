@@ -57,7 +57,7 @@ GPRO.TKCInsert = function () {
         //ReloadList(); 
         //InitPopup();  
         ResetInfo();
-        GetProAnaSelect('tkc-insert-product', 1, 0);
+        $('#re-report-line').click();
         $('#today-date').html(moment().format('D/M/YYYY'));
         $('#btn-insert').hide();
     }
@@ -65,31 +65,33 @@ GPRO.TKCInsert = function () {
 
     var RegisterEvent = function () {
 
-        $('#re-tkc-insert-product').click(() => {
-            GetProAnaSelect('tkc-insert-product', 1, 0);
-        })
+       
 
-        $('#tkc-insert-product').change(() => {
-            GetProAnaSelect('tkc-insert-workshop', 2, $('#tkc-insert-product').val());
-            ResetInfo();
-        })
+        //$('#re-tkc-insert-product').click(() => {
+        //    GetProAnaSelect('tkc-insert-product', 1, 0);
+        //})
 
-        $('#re-tkc-insert-workshop').click(() => {
-            GetProAnaSelect('tkc-insert-workshop', 2, $('#tkc-insert-product').val());
-        });
+        //$('#tkc-insert-product').change(() => {
+        //    GetProAnaSelect('tkc-insert-workshop', 2, $('#tkc-insert-product').val());
+        //    ResetInfo();
+        //})
 
-        $('#tkc-insert-workshop').change(() => {
-            $('#re-tkc-insert-line').click();
-        })
+        //$('#re-tkc-insert-workshop').click(() => {
+        //    GetProAnaSelect('tkc-insert-workshop', 2, $('#tkc-insert-product').val());
+        //});
 
-        $('#re-tkc-insert-line').click(() => {
-            if ($('#tkc-insert-workshop').val() != undefined)
-                GetTKCLineSelect('tkc-insert-line', $('#tkc-insert-workshop').val());
-        })
+        //$('#tkc-insert-workshop').change(() => {
+        //    $('#re-tkc-insert-line').click();
+        //})
 
-        $('#tkc-insert-line').change(() => {
-            $('#re-tkc-insert-line-position').click();
-        });
+        //$('#re-tkc-insert-line').click(() => {
+        //    if ($('#tkc-insert-workshop').val() != undefined)
+        //        GetTKCLineSelect('tkc-insert-line', $('#tkc-insert-workshop').val());
+        //})
+
+        //$('#tkc-insert-line').change(() => {
+        //    $('#re-tkc-insert-line-position').click();
+        //});
 
         $('#re-tkc-insert-line-position').click(() => {
             if ($('#tkc-insert-line').val() != undefined) {
@@ -643,6 +645,10 @@ GPRO.TKCInsert = function () {
         $('#line-box').empty();
         Global.Data.LabourDevision_VerId = 0;
     }
+
+
+
+
 }
 $(document).ready(function () {
     var obj = new GPRO.TKCInsert();
