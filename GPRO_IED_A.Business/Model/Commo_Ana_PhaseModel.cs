@@ -11,6 +11,7 @@ namespace GPRO_IED_A.Business.Model
         public int Index { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
+        public string FullCode { get; set; }
         public string Description { get; set; }
         public int? EquipmentId { get; set; }
         public int WorkerLevelId { get; set; }
@@ -46,6 +47,7 @@ namespace GPRO_IED_A.Business.Model
         public int WorkshopId { get; set; }
         public string WorkshopName { get; set; }
         public string PhaseGroupName { get; set; }
+        public string LastUpdateInfo { get; set; }
 
         public List<Commo_Ana_Phase_ManiModel> actions { get; set; }
         public Commo_Ana_PhaseModel()

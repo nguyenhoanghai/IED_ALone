@@ -44,6 +44,8 @@ namespace GPRO_IED_A.Business.Model
         public DateTime? ApproveDate { get; set; }
         public List<PhaseGroup_Phase_ManiModel> actions { get; set; }
         public List<Commo_Ana_Phase_TimePrepareModel> timePrepares { get; set; }
+        public string ProductIds { get; set; }
+        public string ProductNames { get; set; }
         public PhaseGroup_PhaseModel()
         { 
             actions = new List<PhaseGroup_Phase_ManiModel>();

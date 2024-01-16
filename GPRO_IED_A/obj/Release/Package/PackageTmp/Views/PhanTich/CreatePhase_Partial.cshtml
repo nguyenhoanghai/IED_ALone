@@ -27,7 +27,7 @@
     }
 
     .select-box input {
-        width: calc(100% - 30px);
+        width: calc(100% - 50px);
         padding: 6px;
         border-radius: 5px;
         height: 34px;
@@ -48,8 +48,12 @@
                             <div>Trạng thái: <span id="phase-status" class="normal-text">Soạn thảo</span></div>
                         </div>
                         <div class="action-div">
-                            <button type="button" approve-phase class="btn btn-danger"><i class="fa fa-floppy-o"></i> Duyệt </button>
-                            <button type="button" not-approve-phase class="btn btn-warning"><i class="fa fa-floppy-o"></i> Không duyệt </button>
+                            @*<button type="button" approve-phase class="btn btn-danger"><i class="fa fa-floppy-o"></i> Duyệt </button>*@
+                            @{ if ((bool)ViewBag.isApprover)
+                                {
+                                    <button type="button" not-approve-phase class="btn btn-warning"><i class="fa fa-floppy-o"></i> Hoàn tác</button>
+                                }
+                            }
                             <button type="button" submit-phase class="btn btn-danger"><i class="fa fa-floppy-o"></i> Lưu & gửi duyệt </button>
                             <button type="button" save-phase class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
                             <button type="button" cancel-create-phase class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
@@ -63,6 +67,7 @@
                                 <div class="select-box">
                                     <input style="" list="suggestPhases" id="phase-suggest" type="text" placeholder="Nhập tên hoặc mã Công Đoạn cần tìm." />
                                     <i title="Lấy thông tin công đoạn." save-sugguest-phase class="fa fa-cloud-download clickable blue"></i>
+                                    <i title="Tải lại danh sách công đoạn mẫu." reload-sugguest-phase class="fa fa-refresh clickable red"></i>
                                 </div>
                             </div>
                         </div>

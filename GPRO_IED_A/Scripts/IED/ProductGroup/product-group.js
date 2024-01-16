@@ -67,13 +67,13 @@ GPRO.ProductGroup = function () {
         var switchInstance = $("#pro-group-isPrivate").data("kendoMobileSwitch");
         switchInstance.check(true);
         $('#pro-group-id').val(0);
-        $('#pro-group-name').val('');
-        $('#pro-group-des').val('');
+        $('#pro-group-code,#pro-group-name,#pro-group-des').val(''); 
     }
 
     function Save() {
         var obj = {
             Id: $('#pro-group-id').val(),
+            Code: $('#pro-group-code').val(),
             Name: $('#pro-group-name').val(),
             Description: $('#pro-group-des').val(),
             IsPrivate: $("#pro-group-isPrivate").data("kendoMobileSwitch").check()
@@ -141,9 +141,13 @@ GPRO.ProductGroup = function () {
                     edit: false,
                     list: false
                 },
+                Code: { 
+                    title: "Mã",
+                    width: "5%",
+                },
                 Name: {
                     visibility: 'fixed',
-                    title: "Tên chủng loại hàng",
+                    title: "Tên chủng loại ",
                     width: "20%",
                 },
                 Description: {
@@ -162,6 +166,7 @@ GPRO.ProductGroup = function () {
                             var switchInstance = $("#pro-group-isPrivate").data("kendoMobileSwitch");
                             switchInstance.check(data.record.IsPrivate);
                             $('#pro-group-id').val(data.record.Id);
+                            $('#pro-group-code').val(data.record.Code);
                             $('#pro-group-name').val(data.record.Name);
                             $('#pro-group-des').val(data.record.Description);
                             Global.Data.IsInsert = false;

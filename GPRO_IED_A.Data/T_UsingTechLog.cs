@@ -32,13 +32,13 @@ namespace GPRO_IED_A.Data
         public bool IsView { get; set; }
         public System.DateTime CreatedDate { get; set; }
     
-        public virtual SUser SUser { get; set; }
         public virtual T_CA_Phase T_CA_Phase { get; set; }
         public virtual T_LabourDevision_Ver T_LabourDevision_Ver { get; set; }
         public virtual T_PhaseGroup T_PhaseGroup { get; set; }
-        public virtual T_Product T_Product { get; set; }
         public virtual T_TechProcessVersion T_TechProcessVersion { get; set; }
         public virtual ICollection<T_UsingTech_Detail> T_UsingTech_Detail { get; set; }
         public virtual T_WorkShop T_WorkShop { get; set; }
+        public virtual SUser SUser { get; set; }
+        public virtual T_Product T_Product { get; set; }
     }
 }

@@ -44,8 +44,8 @@ namespace GPRO_IED_A.Business
                 T_WorkShop objectExists = null;
                 if (!string.IsNullOrEmpty(name))
                     objectExists = db.T_WorkShop.FirstOrDefault(c => !c.IsDeleted && c.Id != Id && c.CompanyId == CompanyId && c.Name.Trim().ToUpper().Equals(name.Trim().ToUpper()));
-                else
-                    objectExists = db.T_WorkShop.FirstOrDefault(c => !c.IsDeleted && c.Id != Id && c.CompanyId == CompanyId && c.Code.Trim().ToUpper().Equals(code.Trim().ToUpper()));
+                //else
+                //    objectExists = db.T_WorkShop.FirstOrDefault(c => !c.IsDeleted && c.Id != Id && c.CompanyId == CompanyId && c.Code.Trim().ToUpper().Equals(code.Trim().ToUpper()));
 
                 if (objectExists == null)
                     return false;
@@ -193,7 +193,7 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     List<ModelSelectItem> objs = new List<ModelSelectItem>();
-                    var workshops = db.T_WorkShop.Where(x => !x.IsDeleted).Select(x => new ModelSelectItem() { Value = x.Id, Name = x.Name });
+                    var workshops = db.T_WorkShop.Where(x => !x.IsDeleted).Select(x => new ModelSelectItem() { Value = x.Id, Name = x.Name, Code = x.Code, strCode = x.Description });
                     if (workshops != null && workshops.Count() > 0)
                         objs.AddRange(workshops);
                     else

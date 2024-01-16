@@ -18,6 +18,7 @@ namespace GPRO_IED_A.Business.Model
         public string ProGroupName { get; set; }
         public bool IsPrivate { get; set; }
         public int ActionUser { get; set; }
+        public double PercentHelp { get; set; }
         public List<ModelSelectItem> Files { get; set; }
         public ProductModel()
         {

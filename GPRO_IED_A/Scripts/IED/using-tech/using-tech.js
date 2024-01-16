@@ -23,7 +23,9 @@ GPRO.UsingTech = function () {
             Export: '/UsingTech/Export',
             GetDetail: '/UsingTech/GetReportDetail',
             ExportDetail: '/UsingTech/ExportDetail',
-            Gets: '/UsingTech/Gets'
+            ExportCD_PT: '/UsingTech/ExportUserPhases',
+            Gets: '/UsingTech/Gets',
+            GetCD_PTs: '/UsingTech/GetUserPhases'
         },
         Element: {
         },
@@ -36,8 +38,8 @@ GPRO.UsingTech = function () {
 
     this.Init = function () {
         RegisterEvent();
-        GetUsers("filter-user");
-        GetWorkshop ("filter-workshop");
+        GetUsers();
+        GetWorkshop("filter-workshop");
         $('[using-tech-refresh-detail],[using-tech-refresh]').click();
     }
 
@@ -63,7 +65,9 @@ GPRO.UsingTech = function () {
 
 
         $('[using-tech-export]').click(function () {
-            window.location.href = Global.UrlAction.Export
+            var _from = $("#report-from").data("kendoDatePicker");
+            var _to = $("#report-to").data("kendoDatePicker");
+            window.location.href = Global.UrlAction.Export + `?from=${moment(_from.value()).format('DD/MM/YYYY')}&to=${moment(_to.value()).format('DD/MM/YYYY')}`;
         });
 
         $('#filter-user,#filter-view').change(function () {
@@ -82,8 +86,18 @@ GPRO.UsingTech = function () {
             var _from = $("#report-from").data("kendoDatePicker");
             var _to = $("#report-to").data("kendoDatePicker");
 
-            window.location.href = Global.UrlAction.ExportDetail + `?userId=${$('#filter-user').val()}&workshopId=${$('#filter-workshop').val()}&isView=${($('#filter-view').val() == '1' ? true : false)}&from=${ moment(_from.value()).format('DD/MM/YYYY') }&to=${ moment(_to.value()).format('DD/MM/YYYY') }`;
+            window.location.href = Global.UrlAction.ExportDetail + `?userId=${$('#filter-user').val()}&workshopId=${$('#filter-workshop').val()}&isView=${($('#filter-view').val() == '1' ? true : false)}&from=${moment(_from.value()).format('DD/MM/YYYY')}&to=${moment(_to.value()).format('DD/MM/YYYY')}`;
         });
+
+        $('[cd-pt-export]').click(function () {
+            var _from = $("#report-from").data("kendoDatePicker");
+            var _to = $("#report-to").data("kendoDatePicker");
+            window.location.href = Global.UrlAction.ExportCD_PT + `?userId=${$('#filter-user-').val()}&from=${moment(_from.value()).format('DD/MM/YYYY')}&to=${moment(_to.value()).format('DD/MM/YYYY')}`;
+        });
+
+        $('[cd-pt-refresh]').click(function () {
+            GetReportUserPhase();
+        })
     }
 
     function GetReportDetail() {
@@ -108,6 +122,7 @@ GPRO.UsingTech = function () {
                         if (records && records.length > 0) {
                             $.each(records, function (i, item) {
                                 tb.append(`<tr>
+                                                <td>${i + 1}</td>
                                                 <td>${item.WorkshopName}</td>
                                                 <td>${item.UserName}</td>
                                                 <td>${item.Note}</td>
@@ -116,7 +131,7 @@ GPRO.UsingTech = function () {
                             })
                         }
                         else
-                            tb.append(`<tr><td colspan="4">Không có dữ liệu.</td></tr>`)
+                            tb.append(`<tr><td colspan="5">Không có dữ liệu.</td></tr>`)
                     }
                     else
                         GlobalCommon.ShowMessageDialog('', function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
@@ -128,7 +143,7 @@ GPRO.UsingTech = function () {
         });
     }
 
-    function GetUsers(controlName) {
+    function GetUsers() {
         $.ajax({
             url: '/user/GetSelectList',
             type: 'POST',
@@ -144,9 +159,7 @@ GPRO.UsingTech = function () {
                                     str += ` <option value="${item.Value}">${item.Code} (${item.Name}) </option>`;
                                 });
                             }
-                            $('#' + controlName).empty().append(str).change();
-                            $('[' + controlName + ']').empty().append(str).change();
-                            $('#' + controlName).trigger('liszt:updated');
+                            $('#filter-user,#filter-user-').empty().append(str).change();
                         }
                     }
                 }, false, '', true, true, function () {
@@ -158,10 +171,12 @@ GPRO.UsingTech = function () {
     }
 
     function GetReport() {
+        var _from = $("#report-from").data("kendoDatePicker");
+        var _to = $("#report-to").data("kendoDatePicker");
         $.ajax({
             url: Global.UrlAction.Gets,
             type: 'post',
-            data: '',
+            data: JSON.stringify({ 'from': _from.value(), 'to': _to.value() }),
             contentType: 'application/json',
             beforeSend: function () { $('#loading').show(); },
             success: function (result) {
@@ -178,6 +193,8 @@ GPRO.UsingTech = function () {
                                             <td>0</td>
                                             <td>0</td>
                                             <td>${record.TotalPhase}</td>
+                                            <td>${record.TotalSubmitPhase}</td>
+                                            <td>${record.TotalApprovePhase}</td>
                                             <td>${record.TotalViewPhase}</td>
                                             <td>${record.TotalDownloadPhase}</td>
                                             <td>0</td>
@@ -191,6 +208,8 @@ GPRO.UsingTech = function () {
                                                 <td>0</td>
                                                 <td>0</td>
                                                 <td>${item.TotalPhase}</td>
+                                                <td>${item.TotalSubmitPhase}</td>
+                                                <td>${item.TotalApprovePhase}</td>
                                                 <td>${item.TotalViewPhase}</td>
                                                 <td>${item.TotalDownloadPhase}</td>
                                                 <td>0</td>
@@ -200,7 +219,7 @@ GPRO.UsingTech = function () {
                             })
                         }
                         else
-                            tb.append(`<tr><td colspan="10">Không có dữ liệu.</td></tr>`)
+                            tb.append(`<tr><td colspan="12">Không có dữ liệu.</td></tr>`)
                     }
                     else
                         GlobalCommon.ShowMessageDialog('', function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
@@ -237,6 +256,56 @@ GPRO.UsingTech = function () {
                 }, false, '', true, true, function () {
                     var msg = GlobalCommon.GetErrorMessage(data);
                     GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+                });
+            }
+        });
+    }
+
+    function GetReportUserPhase() {
+        var _from = $("#report-from").data("kendoDatePicker");
+        var _to = $("#report-to").data("kendoDatePicker");
+
+        let userId = ($('#filter-user-').val() == undefined || $('#filter-user-').val() == null ? 0 : $('#filter-user-').val())
+        $.ajax({
+            url: Global.UrlAction.GetCD_PTs,
+            type: 'post',
+            data: JSON.stringify({ 'userId': userId, 'from': _from.value(), 'to': _to.value() }),
+            contentType: 'application/json',
+            beforeSend: function () { $('#loading').show(); },
+            success: function (result) {
+                $('#loading').hide();
+                GlobalCommon.CallbackProcess(result, function () {
+                    if (result.Result == "OK") {
+                        var records = result.Records;
+                        let tb = $('#tb-user-cd-pt tbody');
+                        tb.empty();
+                        if (records && records.length > 0) {
+                            $.each(records, function (i, item) {
+                                let cls = 'normal-text';
+                                switch (item.Status) {
+                                    case 'Chờ duyệt': cls = 'danger-text'; break;
+                                    case 'Đã duyệt': cls = 'primary-text'; break;
+                                    default: break;
+                                }
+                                tb.append(`<tr>
+                                                <td>${i + 1}</td>
+                                                <td>${item.Type}</td>
+                                                <td>${item.ProductName}</td>
+                                                <td>${item.PhaseGroupName}</td>
+                                                <td>${item.PhaseName}</td> 
+                                                <td class='${cls}'>${item.Status}</td>
+                                                <td>${moment(item.CreatedDate).format('DD/MM/YYYY HH:mm')}</td > 
+                                            </tr>`)
+                            })
+                        }
+                        else
+                            tb.append(`<tr><td colspan="6">Không có dữ liệu.</td></tr>`)
+                    }
+                    else
+                        GlobalCommon.ShowMessageDialog('', function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
+                }, false, Global.Element.PopupModule, true, true, function () {
+                    var msg = GlobalCommon.GetErrorMessage(result);
+                    GlobalCommon.ShowMessageDialog('', function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
                 });
             }
         });

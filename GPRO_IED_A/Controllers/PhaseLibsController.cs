@@ -3,6 +3,7 @@ using GPRO_IED_A.Business.Model;
 using PagedList;
 using System;
 using System.Configuration;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace GPRO_IED_A.Controllers
@@ -11,6 +12,13 @@ namespace GPRO_IED_A.Controllers
     {
         public ActionResult Index()
         {
+            var per = this.UserContext.Permissions.Where(x => x.Contains("Create-workshop")).ToArray();
+            var per1 = this.UserContext.Permissions.Where(x => x.Contains("All Allow")).ToArray();
+            ViewBag.hasPer = (per.Length > 0 && per1.Length == 0 ? "hide" : "");
+            ViewBag.TMU = BLLIEDConfig.Instance.GetValueByCode("TMU");
+            ViewBag.GetTMUType = BLLIEDConfig.Instance.GetValueByCode("GetTMUType");
+            ViewBag.ListManipulationCode = BLLManipulationLibrary.Instance.GetListManipulationCode();
+            ViewBag.ManipulationExpendDefault = !string.IsNullOrEmpty(BLLIEDConfig.Instance.GetValueByCode("ManipulationExpend")) ? BLLIEDConfig.Instance.GetValueByCode("ManipulationExpend") : "0";
             return View();
         }
 
@@ -74,10 +82,17 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    if (!isRemove)
-                        result = BLLCommo_Ana_Phase.Instance.UpdateLibs(ids);
+                    if (ConfigurationManager.AppSettings["PhaseSusguestForm"] != null &&
+              ConfigurationManager.AppSettings["PhaseSusguestForm"] == "Library")
+                    {
+                        result = BLLPhaseGroup_Phase.Instance.UpdateLibs(ids, !isRemove);
+                    }
                     else
-                        result = BLLCommo_Ana_Phase.Instance.RemoveLibs(ids);
+                    {
+                        result = BLLCommo_Ana_Phase.Instance.UpdateLibs(ids, !isRemove);
+                    }
+
+
                     if (!result.IsSuccess)
                     {
                         JsonDataResult.Result = "ERROR";

@@ -10,6 +10,8 @@ namespace GPRO_IED_A.Business.Model
     {
         public int TotalProduct { get; set; }
         public int TotalPhase { get; set; }
+        public int TotalSubmitPhase { get; set; }
+        public int TotalApprovePhase { get; set; }
         public int TotalViewPhase { get; set; }
         public int TotalDownloadPhase { get; set; }
         public int TotalNewPhase { get; set; }
@@ -26,6 +28,8 @@ namespace GPRO_IED_A.Business.Model
         public string Name { get; set; }
         public int TotalProduct { get; set; }
         public int TotalPhase { get; set; }
+        public int TotalSubmitPhase { get; set; }
+        public int TotalApprovePhase { get; set; }
         public int TotalNewPhase { get; set; }
         public int TotalViewPhase { get; set; }
         public int TotalDownloadPhase { get; set; } 

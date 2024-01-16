@@ -12,6 +12,7 @@ namespace GPRO_IED_A.Controllers
     {
         public ActionResult Index()
         {
+            BLLCommodityAnalysis.Instance.Reset_TEN_CUMCONGDOAN();
             return View();
         }
 

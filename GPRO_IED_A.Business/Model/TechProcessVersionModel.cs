@@ -24,9 +24,11 @@ namespace GPRO_IED_A.Business.Model
         public string Note { get; set; }
         public int Quantities { get; set; }
         public int PercentWorker { get; set; } 
-        public double Price { get; set; } 
+        public double Pro_PercentHelp { get; set; }
+        public double Price { get; set; }  
         public string ProductName { get; set; }
-        public string WorkShopName { get; set; }        
+        public string WorkShopName { get; set; }
+       
         public string CompanyName { get; set; }
         public string CustomerName { get; set; }
         public int ActionUser { get; set; }
@@ -35,6 +37,10 @@ namespace GPRO_IED_A.Business.Model
         public List<ModelSelectItem> productImgs { get; set; }
         public string CreateBy { get; set; }
         public string CreateAt { get; set; }
+
+        //genviet
+        public string DonVi { get; set; }
+        public string NhomMe { get; set; }
         public TechProcessVersionModel()
         {
             details = new List<TechProcessVerDetailModel>();

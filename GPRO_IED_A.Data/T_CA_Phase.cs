@@ -58,14 +58,14 @@ namespace GPRO_IED_A.Data
         public virtual ICollection<T_CA_Phase_Mani> T_CA_Phase_Mani { get; set; }
         public virtual T_CA_Phase T_CA_Phase1 { get; set; }
         public virtual T_CA_Phase T_CA_Phase2 { get; set; }
-        public virtual T_CommodityAnalysis T_CommodityAnalysis { get; set; }
         public virtual T_Equipment T_Equipment { get; set; }
         public virtual T_PhaseGroup T_PhaseGroup { get; set; }
         public virtual T_WorkShop T_WorkShop { get; set; }
         public virtual ICollection<T_CA_Phase_TimePrepare> T_CA_Phase_TimePrepare { get; set; }
         public virtual ICollection<T_TechProcessVersionDetail> T_TechProcessVersionDetail { get; set; }
-        public virtual SUser SUser { get; set; }
         public virtual ICollection<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
         public virtual ICollection<T_UsingTechLog> T_UsingTechLog { get; set; }
+        public virtual SUser SUser { get; set; }
+        public virtual T_CommodityAnalysis T_CommodityAnalysis { get; set; }
     }
 }

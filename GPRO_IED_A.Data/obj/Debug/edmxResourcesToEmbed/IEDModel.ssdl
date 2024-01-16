@@ -248,6 +248,7 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="CompanyId" Type="int" Nullable="false" />
     <Property Name="IsOwner" Type="bit" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="200" />
     <Property Name="UserName" Type="nvarchar" MaxLength="200" Nullable="false" />
     <Property Name="PassWord" Type="nvarchar" MaxLength="250" Nullable="false" />
     <Property Name="IsLock" Type="bit" Nullable="false" />
@@ -257,7 +258,6 @@
     <Property Name="Email" Type="nvarchar" MaxLength="250" />
     <Property Name="ImagePath" Type="nvarchar" MaxLength="200" />
     <Property Name="LockedTime" Type="datetime" />
-    <Property Name="Name" Type="nvarchar" MaxLength="200" />
     <Property Name="WorkshopIds" Type="varchar" MaxLength="250" />
     <Property Name="IsDeleted" Type="bit" Nullable="false" />
     <Property Name="CreatedUser" Type="int" Nullable="false" />
@@ -267,6 +267,7 @@
     <Property Name="DeletedUser" Type="int" />
     <Property Name="DeletedDate" Type="datetime" />
     <Property Name="EmployeeId" Type="int" />
+    <Property Name="WorkshopId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="SUserRole">
     <Key>
@@ -408,6 +409,7 @@
     <Property Name="UpdatedDate" Type="datetime" />
     <Property Name="DeletedUser" Type="int" />
     <Property Name="DeletedDate" Type="datetime" />
+    <Property Name="Code" Type="varchar" MaxLength="50" />
   </EntityType>
   <EntityType Name="T_CompanySkill">
     <Key>
@@ -922,6 +924,7 @@
     <Property Name="IsApprove" Type="bit" Nullable="false" />
     <Property Name="Approver" Type="int" />
     <Property Name="ApprovedDate" Type="datetime" />
+    <Property Name="ProductIds" Type="varchar" MaxLength="250" Nullable="false" />
   </EntityType>
   <EntityType Name="T_PhaseGroup_Phase_Mani">
     <Key>
@@ -969,6 +972,7 @@
     <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
     <Property Name="Img" Type="nvarchar(max)" />
     <Property Name="Description" Type="nvarchar(max)" />
+    <Property Name="PercentHelp" Type="float" Nullable="false" />
     <Property Name="IsDeleted" Type="bit" Nullable="false" />
     <Property Name="CompanyId" Type="int" />
     <Property Name="CreatedUser" Type="int" Nullable="false" />
@@ -1001,6 +1005,7 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Code" Type="varchar" MaxLength="50" />
     <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" />
     <Property Name="IsDeleted" Type="bit" Nullable="false" />
@@ -1357,6 +1362,18 @@
       </Principal>
       <Dependent Role="SUser">
         <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SUser_T_WorkShop">
+    <End Role="T_WorkShop" Type="Self.T_WorkShop" Multiplicity="1" />
+    <End Role="SUser" Type="Self.SUser" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_WorkShop">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SUser">
+        <PropertyRef Name="WorkshopId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -2425,6 +2442,10 @@
     </AssociationSet>
     <AssociationSet Name="FK_SUser_HR_Employee" Association="Self.FK_SUser_HR_Employee">
       <End Role="HR_Employee" EntitySet="HR_Employee" />
+      <End Role="SUser" EntitySet="SUser" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SUser_T_WorkShop" Association="Self.FK_SUser_T_WorkShop">
+      <End Role="T_WorkShop" EntitySet="T_WorkShop" />
       <End Role="SUser" EntitySet="SUser" />
     </AssociationSet>
     <AssociationSet Name="FK_SUserRole_SRoLe" Association="Self.FK_SUserRole_SRoLe">

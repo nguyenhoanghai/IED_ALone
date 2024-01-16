@@ -239,7 +239,7 @@ function GetWorkshopSelect(controlName) {
                         var str = '';
                         if (data.Data.length > 0) {
                             $.each(data.Data, function (index, item) {
-                                str += ' <option value="' + item.Value + '">' + item.Name + '</option>';
+                                str += ' <option des="'+item.strCode+'" value="' + item.Value + '">' + item.Name + '</option>';
                             });
                         }
                         $('#' + controlName).empty().append(str);

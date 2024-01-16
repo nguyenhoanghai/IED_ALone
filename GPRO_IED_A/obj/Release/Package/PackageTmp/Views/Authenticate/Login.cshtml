@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng nhập</title>
     @Styles.Render("~/Admin/css")
-    @Scripts.Render("~/bundles/modernizr") 
+    @*@Scripts.Render("~/bundles/modernizr")*@
+    <script src="~/Scripts/modernizr-2.6.2.js"></script>
 </head>
 <body>
     <div class="title-login">
@@ -20,8 +21,13 @@
     <div id="loading" style="display:none">
         <img src="~/Content/Img/loading.gif" />
     </div>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/Admin/jquery")  
+    @* @Scripts.Render("~/bundles/jquery")
+         @Scripts.Render("~/bundles/bootstrap")
+        @Scripts.Render("~/Admin/jquery")*@
+
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/respond.min.js"></script>
+    <script src="~/Scripts/IED/Authenticate/Login.js"></script>
 </body>
 </html>

@@ -48,13 +48,14 @@ namespace GPRO_IED_A.Data
         public bool IsApprove { get; set; }
         public Nullable<int> Approver { get; set; }
         public Nullable<System.DateTime> ApprovedDate { get; set; }
+        public string ProductIds { get; set; }
     
-        public virtual SUser SUser { get; set; }
         public virtual SWorkerLevel SWorkerLevel { get; set; }
         public virtual T_ApplyPressureLibrary T_ApplyPressureLibrary { get; set; }
         public virtual T_Equipment T_Equipment { get; set; }
         public virtual T_PhaseGroup T_PhaseGroup { get; set; }
         public virtual ICollection<T_PhaseGroup_Phase_Mani> T_PhaseGroup_Phase_Mani { get; set; }
         public virtual T_TimePrepare T_TimePrepare { get; set; }
+        public virtual SUser SUser { get; set; }
     }
 }

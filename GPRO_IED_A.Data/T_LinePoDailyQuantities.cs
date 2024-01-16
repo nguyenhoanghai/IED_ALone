@@ -28,10 +28,10 @@ namespace GPRO_IED_A.Data
         public int EmployeeId { get; set; }
     
         public virtual HR_Employee HR_Employee { get; set; }
-        public virtual SUser SUser { get; set; }
         public virtual T_CA_Phase T_CA_Phase { get; set; }
         public virtual T_LabourDevision_Ver T_LabourDevision_Ver { get; set; }
         public virtual T_LabourDivision T_LabourDivision { get; set; }
         public virtual T_LinePositionDetail T_LinePositionDetail { get; set; }
+        public virtual SUser SUser { get; set; }
     }
 }

@@ -11,6 +11,7 @@
         public double Worker { get; set; }
         public string Description { get; set; }
         public int PhaseGroupId { get; set; }
+        public string PhaseGroupCode { get; set; }
         public string PhaseCode { get; set; }
         public string PhaseName { get; set; }
         public int? EquipmentId { get; set; }
@@ -26,5 +27,9 @@
         public int Index { get; set; }
         public string Node { get; set; }
         public int ParentId { get; set; }
+        public double TMUThaoTac { get; set; }
+        public double TMU_TGCB { get; set; }
+        public double HaoPhiThaoTac { get; set; }
+        public double HaoPhiThietBi { get; set; }
     }
 }

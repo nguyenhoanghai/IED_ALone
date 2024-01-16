@@ -18,6 +18,8 @@ namespace GPRO_IED_A.Controllers
             // them workshop vào phase
             // BLLCommo_Ana_Phase.Instance.InsertWorkshop();
 
+            //them code vào genviet
+            //BLLCommodityAnalysis.Instance.ResetMaChungLoai_MaPX_MaCumCD();
 
             var per = this.UserContext.Permissions.Where(x => x.Contains("Create-workshop")).ToArray();
             var per1 = this.UserContext.Permissions.Where(x => x.Contains("All Allow")).ToArray();
@@ -26,10 +28,8 @@ namespace GPRO_IED_A.Controllers
             ViewBag.GetTMUType = BLLIEDConfig.Instance.GetValueByCode("GetTMUType");
             ViewBag.ListManipulationCode = BLLManipulationLibrary.Instance.GetListManipulationCode();
             ViewBag.ManipulationExpendDefault = !string.IsNullOrEmpty(BLLIEDConfig.Instance.GetValueByCode("ManipulationExpend")) ? BLLIEDConfig.Instance.GetValueByCode("ManipulationExpend") : "0";
-
-
-            ViewBag.isApprover = isPhaseApprover;
-
+            
+            ViewBag.isApprover = isPhaseApprover; 
             return View();
         }
 

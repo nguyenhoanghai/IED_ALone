@@ -1,6 +1,5 @@
 ﻿using GPRO.Core.Mvc;
 using GPRO.Core.Security;
-using System;
 using System.Linq;
 using System.Web.Routing;
 
@@ -12,6 +11,11 @@ namespace GPRO_IED_A.Controllers
         public bool isAuthenticate = false;
         public bool isOwner = false;
         public bool isPhaseApprover = false;
+
+        /// <summary>
+        /// tạm cho MDG version cũ ko có tính năng duyệt công đoạn
+        /// </summary>
+        public bool IsMDG = false;
         public BaseController()
         {
         }

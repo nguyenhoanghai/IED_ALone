@@ -7,7 +7,7 @@
 }
 <style>
     .table-bordered th,
-    .table-bordered td { 
+    .table-bordered td {
         text-align: center;
         vertical-align: middle !important
     }
@@ -15,98 +15,167 @@
     .table-bordered th {
         background: blue;
         color: white;
-        font-weight: 600; 
+        font-weight: 600;
     }
+
+    .nav-tabs li.active {
+        border: 1px solid blue;
+        border-bottom: none
+    }
+
+        .nav-tabs li.active a {
+            font-weight: bold;
+            color: brown !important
+        }
+
+    .bg-green {
+        background: green !important
+    }
+
+    .nav-tabs li { text-transform:uppercase}
 </style>
-<div class="col-md-6">
-    <div class="group-box">
-        <div class="group-box-title" style="display:flex; padding-bottom:5px">
-            <div style="width:100%; line-height:34px">BÁO  CÁO  TƯƠNG TÁC -  PHẦN MỀM  QUẢN LÝ - QT/ CÔNG ĐOẠN  CHUẨN TỪ  DATA</div>
-            <button title="Xuất tệp báo cáo" using-tech-export class="btn btn-default" hidden="hidden">
-                <i class="fa fa-file-excel-o red"></i>
-            </button>
-        </div>
+<div class="group-box-title" style="margin-bottom:10px">BÁO CÁO TƯƠNG TÁC</div>
+<div class="col-md-12">
+     
+        <label class="control-label">Từ ngày <span class="required-class">*</span></label> 
+        <input class="form-control date-control" id="report-from" type="text" />
+   
+        <label class="control-label">đến <span class="required-class">*</span></label> 
+        <input class="form-control date-control" id="report-to" type="text" />
+    </div>
+ 
+<div class="clearfix"></div>
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a style="margin-top:0 !important" href="#report-all-box" aria-controls="report-all-box" role="tab" data-toggle="tab">PHẦN MỀM QUẢN LÝ - QT/ CÔNG ĐOẠN CHUẨN TỪ DATA</a></li>
+    <li role="presentation"><a style="margin-top:0 !important" href="#report-detail-box" aria-controls="report-detail-box" role="tab" data-toggle="tab">TƯƠNG TÁC CHI TIẾT</a></li>
+    <li role="presentation"><a style="margin-top:0 !important" href="#report-cd-pt-box" aria-controls="report-cd-pt-box" role="tab" data-toggle="tab">báo cáo cđ phân tích</a></li>
+</ul>
+<div class="tab-content" style="max-height:420px;overflow-y:scroll;margin-bottom:10px;border-radius:0">
+    <div role="tabpanel" class="tab-pane active" id="report-all-box">
+        <div class="group-box">
+            <div class="group-box-title" style="display:flex; padding-bottom:5px">
+                <div style="width:100%; line-height:34px">BÁO  CÁO  TƯƠNG TÁC -  PHẦN MỀM  QUẢN LÝ - QT/ CÔNG ĐOẠN  CHUẨN TỪ  DATA</div>
+                <button title="Xuất tệp báo cáo" using-tech-export class="btn btn-default" hidden="hidden" style="  margin-right:5px">
+                    <i class="fa fa-file-excel-o red"></i>
+                </button>
+                <button title="Làm mới báo cáo" using-tech-refresh class="btn btn-default" hidden="hidden">
+                    <i class="fa fa-refresh blue"></i> Làm mới
+                </button>
+            </div>
 
-        <div class="group-box-body using-tech-box" style="height:500px; overflow:auto">
-            <table class="table table-bordered table-center">
-                <thead>
-                    <tr>
-                        <th>ĐƠN VỊ </th>
-                        <th>TỔNG SL  MÃ HÀNG  </th>
-                        <th>TỔNG SL  MÃ HÀNG  LẬP LẠI </th>
-                        <th>% </th>
-                        <th>TỔNG SL CÔNG ĐOẠN  ĐƯỢC PHÂN TÍCH </th>
-                        <th>TỔNG  CĐ ĐƯỢC TƯƠNG TÁC </th>
-                        <th>% </th>
-                        <th> TỔNG  SỐ LƯỢNG  CĐ  MỚI / THÁNG  </th>
-                        <th>% </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        if (report != null)
-                        {
-                            <tr>
-                                <td>Tổng</td>
-                                <td>@report.TotalProduct</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>@report.TotalPhase</td>
-                                <td>@report.TotalTechPhase</td>
-                                <td>0</td>
-                                <td>@report.TotalNewPhase</td>
-                                <td>0</td>
-                            </tr>
-
-
-                            foreach (var item in report.Details)
-                            {
-                                <tr>
-                                    <td>@item.Name</td>
-                                    <td>@item.TotalProduct</td>
-                                    <td>0</td>
-                                    <td>0</td>
-                                    <td>@item.TotalPhase</td>
-                                    <td>@item.TotalTechPhase</td>
-                                    <td>0</td>
-                                    <td>@item.TotalNewPhase</td>
-                                    <td>0</td>
-                                </tr>
-                            }
-                        }
-
-                    }
-                </tbody>
-            </table>
+            <div class="group-box-body using-tech-box">
+                @* <span class="required-class">* Chú ý: Những công đoạn được thống kê trên báo cáo là công đoạn đã được duyệt.</span>*@
+                <table class="table table-bordered table-center" id="tb-using-tech">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">ĐƠN VỊ </th>
+                            <th rowspan="2">TỔNG SL MÃ HÀNG</th>
+                            <th rowspan="2">TỔNG SL MÃ HÀNG LẬP LẠI</th>
+                            <th rowspan="2">% </th>
+                            <th colspan="3" class="bg-green">TỔNG SL CÔNG ĐOẠN</th>
+                            <th colspan="2" class="bg-green">TỔNG CĐ ĐƯỢC TƯƠNG TÁC </th>
+                            <th rowspan="2">% </th>
+                            <th rowspan="2" class="bg-green"> TỔNG SL CĐ DUYỆT MỚI </th>
+                            <th rowspan="2">% </th>
+                        </tr>
+                        <tr>
+                            <th class="bg-green">ĐÃ PHÂN TÍCH</th>
+                            <th class="bg-green">CHỜ DUYỆT</th>
+                            <th class="bg-green">ĐÃ DUYỆT</th>
+                            <th class="bg-green">LƯỢT XEM</th>
+                            <th class="bg-green">LƯỢT TẢI</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-</div>
-<div class="col-md-6">
-    <div class="group-box">
-        <div class="group-box-title" style="display:flex; padding-bottom:5px">
-            <div style="width:100%; line-height:34px">BÁO CÁO TƯƠNG TÁC CHI TIẾT</div>
-            <select id="filter-user" class="form-control"></select>
-            <button title="Xuất tệp báo cáo" using-tech-export-detail class="btn btn-default" hidden="hidden">
-                <i class="fa fa-file-excel-o red"></i>
-            </button>
-        </div>
+    <div role="tabpanel" class="tab-pane " id="report-detail-box">
+        <div class="group-box">
+            <div class="group-box-title" style="display:flex; padding-bottom:5px">
+                <div style="width:100%; line-height:34px">BÁO CÁO TƯƠNG TÁC CHI TIẾT</div>
+                <button title="Xuất tệp báo cáo" using-tech-export-detail class="btn btn-default" hidden="hidden" style=" margin-right:5px">
+                    <i class="fa fa-file-excel-o red"></i>
+                </button>
+                <button title="Làm mới báo cáo" using-tech-refresh-detail class="btn btn-default" hidden="hidden">
+                    <i class="fa fa-refresh blue"></i> Làm mới
+                </button>
+            </div>
 
-        <div class="group-box-body using-tech-box" style="height:500px; overflow:auto">
-            <table class="table table-bordered table-center" id="tb-tech-detail">
-                <thead>
-                    <tr>
-                        <th>NHÂN VIÊN</th>
-                        <th>CÔNG ĐOẠN</th>
-                        <th>NGÀY TƯƠNG TÁC</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <div class="group-box-body using-tech-box">
+                <div class="col-md-12">
+                    <div class="col-md-2 form-group">
+                        <label class="control-label">Loại tương tác</label>
+                        <select id="filter-view" class="form-control">
+                            <option value="1">Lượt xem</option>
+                            <option value="0">Lượt tải</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label class="control-label">Đơn vị</label>
+                        <select id="filter-workshop" class="form-control"></select>
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label class="control-label">Tài khoản</label>
+                        <select id="filter-user" class="form-control"></select>
+                    </div>
+                </div>
+                <table class="table table-bordered table-center" id="tb-tech-detail">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>ĐƠN VỊ</th>
+                            <th>NHÂN VIÊN</th>
+                            <th>CÔNG ĐOẠN</th>
+                            <th>NGÀY TƯƠNG TÁC</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div role="tabpanel" class="tab-pane " id="report-cd-pt-box">
+        <div class="group-box">
+            <div class="group-box-title" style="display:flex; padding-bottom:5px">
+                <div style="width:100%; line-height:34px">BÁO CÁO SL CĐ ĐÃ PHÂN TÍCH</div>
+                <button title="Xuất tệp báo cáo" cd-pt-export class="btn btn-default" hidden="hidden" style=" margin-right:5px">
+                    <i class="fa fa-file-excel-o red"></i>
+                </button>
+                <button title="Làm mới báo cáo" cd-pt-refresh class="btn btn-default" hidden="hidden">
+                    <i class="fa fa-refresh blue"></i> Làm mới
+                </button>
+            </div>
+
+            <div class="group-box-body pt-cd-box">
+                <div class="col-md-12"> 
+                    <div class="col-md-3 form-group">
+                        <label class="control-label">Tài khoản</label>
+                        <select id="filter-user-" class="form-control"></select>
+                    </div>
+                </div>
+                <table class="table table-bordered table-center" id="tb-user-cd-pt">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Loại công đoạn</th>
+                            <th>mã hàng</th>
+                            <th>cụm công đoạn</th>
+                            <th>công đoạn</th>
+                            <th>trạng thái</th>
+                            <th>NGÀY PHÂN TÍCH</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="6">Không có dữ liệu</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-
 
 <script src="~/Scripts/IED/using-tech/using-tech.js"></script>

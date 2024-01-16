@@ -24,8 +24,8 @@ namespace GPRO_IED_A.Data
         public int CreatedUser { get; set; }
         public System.DateTime CreatedDate { get; set; }
     
-        public virtual T_CommodityAnalysis T_CommodityAnalysis { get; set; }
         public virtual T_PhaseGroup T_PhaseGroup { get; set; }
         public virtual SUser SUser { get; set; }
+        public virtual T_CommodityAnalysis T_CommodityAnalysis { get; set; }
     }
 }

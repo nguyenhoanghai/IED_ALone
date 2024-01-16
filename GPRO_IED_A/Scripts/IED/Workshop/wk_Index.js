@@ -46,19 +46,7 @@ GPRO.WorkShop = function () {
         InitPopupSearch();
         BindData(null);
     }
-
-    this.reloadListWorkShop = function () {
-        ReloadListWorkShop();
-    }
-
-    this.initViewModel = function (WorkShop) {
-        InitViewModel(WorkShop);
-    }
-
-    this.bindData = function (WorkShop) {
-        BindData(WorkShop);
-    }
-
+     
     var RegisterEvent = function () {
         $('#' + Global.Element.PopupWorkShop).on('shown.bs.modal', function () {
             $('div.divParent').attr('currentPoppup', Global.Element.PopupWorkShop.toUpperCase());
@@ -68,34 +56,31 @@ GPRO.WorkShop = function () {
         });
     }
 
-    function InitViewModel(WorkShop) {
-        var WorkShopViewModel = {
-            Id: 0,
-            Code: '',
-            Name: '',
-            Description: '',
-        };
-        if (WorkShop != null) {
-            WorkShopViewModel = {
-                Id: ko.observable(WorkShop.Id),
-                Code: ko.observable(WorkShop.Code),
-                Name: ko.observable(WorkShop.Name),
-                Description: ko.observable(WorkShop.Description),
-            };
+    function BindData(obj) {
+        if (obj) {
+            $('#wkId').val(obj.Id);
+            $('#wkcode').val(obj.Code);
+            $('#wkName').val(obj.Name);
+            $('#wkDescription').val(obj.Description);
         }
-        return WorkShopViewModel;
+        else {
+            $('#wkId').val(0);
+            $('#wkcode,#wkName,#wkDescription').val('');
+        }
     }
 
-    function BindData(WorkShop) {
-        Global.Data.ModelWorkShop = InitViewModel(WorkShop);
-        ko.applyBindings(Global.Data.ModelWorkShop, document.getElementById(Global.Element.PopupWorkShop));
-    }
 
     function SaveWorkShop() {
+        var obj = {
+            Id: $('#wkId').val(),
+            Code: $('#wkcode').val(),
+            Name: $('#wkName').val(),
+            Description: $('#wkDescription').val(),
+        }
         $.ajax({
             url: Global.UrlAction.SaveWorkShop,
             type: 'post',
-            data: ko.toJSON(Global.Data.ModelWorkShop),
+            data: ko.toJSON(obj),
             contentType: 'application/json',
             beforeSend: function () { $('#loading').show(); },
             success: function (result) {
@@ -104,8 +89,8 @@ GPRO.WorkShop = function () {
                     if (result.Result == "OK") {
                         BindData(null);
                         ReloadListWorkShop();
-                       // if (!Global.Data.isInsert)
-                            $("#" + Global.Element.PopupWorkShop + ' button[wkcancel]').click();
+                        // if (!Global.Data.isInsert)
+                        $("#" + Global.Element.PopupWorkShop + ' button[wkcancel]').click();
                         Global.Data.isInsert = true;
                     }
                 }, false, Global.Element.PopupWorkShop, true, true, function () {
@@ -127,13 +112,13 @@ GPRO.WorkShop = function () {
             actions: {
                 listAction: Global.UrlAction.GetListWorkShop,
                 createAction: Global.Element.PopupWorkShop,
-                createObjDefault: InitViewModel(null),
+                createObjDefault: BindData(null),
                 //searchAction: Global.Element.PopupSearch,
             },
             messages: {
                 addNewRecord: 'Thêm mới',
-               // searchRecord: 'Tìm kiếm',
-               // selectShow: 'Ẩn hiện cột'
+                // searchRecord: 'Tìm kiếm',
+                // selectShow: 'Ẩn hiện cột'
             },
             searchInput: {
                 id: 'wkkeyword',
@@ -151,15 +136,16 @@ GPRO.WorkShop = function () {
                     edit: false,
                     list: false
                 },
+                Code: {
+                    title: "Mã ",
+                    width: "5%",
+                },
                 Name: {
                     visibility: 'fixed',
                     title: "Tên Phân Xưởng",
                     width: "20%",
                 },
-                //Code: {
-                //    title: "Mã Phân Xưởng",
-                //    width: "10%",
-                //},
+
                 Description: {
                     title: "Mô Tả",
                     width: "20%",
@@ -187,13 +173,13 @@ GPRO.WorkShop = function () {
                         div.append(btnDelete)
                         return div;
                     }
-                } 
+                }
             }
         });
     }
 
     function ReloadListWorkShop() {
-        $('#' + Global.Element.JtableWorkShop).jtable('load', { 'keyword': $('#wkkeyword').val()  });
+        $('#' + Global.Element.JtableWorkShop).jtable('load', { 'keyword': $('#wkkeyword').val() });
     }
 
     function Delete(Id) {

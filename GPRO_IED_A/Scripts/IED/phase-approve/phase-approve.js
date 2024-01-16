@@ -72,7 +72,7 @@ GPRO.PhaseApprove = function () {
         $('#' + Global.Element.JtablePhase).jtable({
             title: 'Danh sách Công Đoạn',
             paging: true,
-            pageSize: 1000,
+            pageSize: 20,
             pageSizeChange: true,
             sorting: true,
             selectShow: false,
@@ -80,6 +80,15 @@ GPRO.PhaseApprove = function () {
                 listAction: Global.UrlAction.Gets,
             },
             messages: {
+            },
+            searchInput: {
+                id: 'pa-keyword',
+                className: 'search-input',
+                placeHolder: 'Nhập tên cđ hoặc cụm cđ ...',
+                keyup: function (evt) {
+                    if (evt.keyCode == 13)
+                        ReloadTablePhase();
+                }
             },
             fields: {
                 Id: {
@@ -232,14 +241,14 @@ GPRO.PhaseApprove = function () {
     }
 
     function ReloadTablePhase() {
-        $('#' + Global.Element.JtablePhase).jtable('load', { 'fromLib': false });
+        $('#' + Global.Element.JtablePhase).jtable('load', { 'fromLib': false, 'phaseName': $('#pa-keyword').val() });
     }
 
     function InitTablePhase_Lib() {
         $('#' + Global.Element.JtablePhaseLib).jtable({
             title: 'Danh sách Công Đoạn',
             paging: true,
-            pageSize: 1000,
+            pageSize: 20,
             pageSizeChange: true,
             sorting: true,
             selectShow: false,
@@ -247,6 +256,15 @@ GPRO.PhaseApprove = function () {
                 listAction: Global.UrlAction.Gets,
             },
             messages: {
+            },
+            searchInput: {
+                id: 'pa-lib-keyword',
+                className: 'search-input',
+                placeHolder: 'Nhập tên cđ hoặc cụm cđ ...',
+                keyup: function (evt) {
+                    if (evt.keyCode == 13)
+                        ReloadTablePhase();
+                }
             },
             fields: {
                 Id: {
@@ -391,7 +409,7 @@ GPRO.PhaseApprove = function () {
     }
 
     function ReloadTablePhase_Lib() {
-        $('#' + Global.Element.JtablePhaseLib).jtable('load', { 'fromLib': true });
+        $('#' + Global.Element.JtablePhaseLib).jtable('load', { 'fromLib': true, 'phaseName': $('#pa-lib-keyword').val() });
     }
 
     function InitPopup() {
@@ -429,7 +447,7 @@ GPRO.PhaseApprove = function () {
             video.load();
 
 
-            GetLastPhaseIndex();
+           // GetLastPhaseIndex();
             ReloadListPhase_View();
 
             $('#phaseName_label').html('');

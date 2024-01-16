@@ -3,11 +3,11 @@ using GPRO.Ultilities;
 using GPRO_IED_A.Business.Enum;
 using GPRO_IED_A.Business.Model;
 using GPRO_IED_A.Data;
+using Hugate.Framework;
 using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Hugate.Framework;
 
 namespace GPRO_IED_A.Business
 {
@@ -148,15 +148,15 @@ namespace GPRO_IED_A.Business
                         result.Errors.Add(new Error() { MemberName = "Insert ", Message = "Tên Cụm Công Đoạn này đã tồn tại. Vui lòng chọn lại Tên khác !." });
                         flag = true;
                     }
-                    if (!string.IsNullOrEmpty(model.Code))
-                    {
-                        if (CheckExists(model.Code.Trim().ToUpper(), model.Id, false))
-                        {
-                            result.IsSuccess = false;
-                            result.Errors.Add(new Error() { MemberName = "Insert", Message = "Mã Cụm Công Đoạn này đã tồn tại. Vui lòng chọn lại Mã khác !." });
-                            flag = true;
-                        }
-                    }
+                    //if (!string.IsNullOrEmpty(model.Code))
+                    //{
+                    //    if (CheckExists(model.Code.Trim().ToUpper(), model.Id, false))
+                    //    {
+                    //        result.IsSuccess = false;
+                    //        result.Errors.Add(new Error() { MemberName = "Insert", Message = "Mã Cụm Công Đoạn này đã tồn tại. Vui lòng chọn lại Mã khác !." });
+                    //        flag = true;
+                    //    }
+                    //}
                     if (!flag)
                     {
                         if (model.Id == 0)
@@ -196,18 +196,9 @@ namespace GPRO_IED_A.Business
                                     obj.UpdatedDate = DateTime.Now;
                                     obj.WorkshopIds = model.WorkshopIds;
 
-                                    //  cap nhat ben phan tich mat hang
-                                    var commoAna = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectId == obj.Id && x.ObjectType == (int)eObjectType.isPhaseGroup);
-                                    if (commoAna != null && commoAna.Count() > 0)
-                                    {
-                                        foreach (var item in commoAna)
-                                        {
-                                            item.Name = model.Name;
-                                            item.UpdatedUser = model.ActionUser;
-                                            item.UpdatedDate = DateTime.Now;
+                                    //  cap nhat ben phan tich mat hang 
+                                    db.Database.ExecuteSqlCommand("update T_CommodityAnalysis set Name=N'" + model.Name + "' , Code=N'" + model.Code + "', UpdatedUser ="+model.ActionUser+" , UpdatedDate='"+obj.UpdatedDate+"' where IsDeleted=0 and ObjectId =" + obj.Id + " and ObjectType=" + (int)eObjectType.isPhaseGroup);
 
-                                        }
-                                    }
                                     db.SaveChanges();
                                     result.IsSuccess = true;
                                 }
@@ -292,7 +283,7 @@ namespace GPRO_IED_A.Business
                 try
                 {
                     var pgs = db.T_PhaseGroup.Where(x => !x.IsDeleted)
-                        .Select(x => new ModelSelectItem() { Value = x.Id, Name = x.Name, Code = x.WorkshopIds }).ToList();
+                        .Select(x => new ModelSelectItem() { Value = x.Id, Name = x.Name, Code = x.WorkshopIds, strCode = x.Code }).ToList();
 
                     foreach (var item in pgs)
                     {
@@ -331,13 +322,13 @@ namespace GPRO_IED_A.Business
                 List<ModelSelectItem> objs = new List<ModelSelectItem>();
                 objs.Add(new ModelSelectItem() { Value = 0, Name = " - Chọn Cụm Công Đoạn - " });
                 try
-                { 
+                {
                     var _phaseGroups = db.T_PhaseGroup.Where(x => !x.IsDeleted);
                     if (!string.IsNullOrEmpty(groupName))
                         _phaseGroups = _phaseGroups.Where(x => (x.Code.Contains(groupName) || x.Name.Contains(groupName)));
 
-                       var pgs = _phaseGroups.Where(x => (x.Code.Contains(groupName) || x.Name.Contains(groupName)))
-                        .Select(x => new ModelSelectItem() { Value = x.Id, Name = x.Name, Code = x.WorkshopIds }).ToList();
+                    var pgs = _phaseGroups.Where(x => (x.Code.Contains(groupName) || x.Name.Contains(groupName)))
+                     .Select(x => new ModelSelectItem() { Value = x.Id, Name = x.Name, Code = x.WorkshopIds, strCode = x.Code }).ToList();
 
                     foreach (var item in pgs)
                     {

@@ -50,6 +50,7 @@ GPRO.User = function () {
         InitList();
         ReloadList();
         InitPopup();
+        $('[re-user-employ],[re-workshops]').click();
     }
 
     this.BindindUsercontextId = function (userContextId) {
@@ -61,6 +62,10 @@ GPRO.User = function () {
     }
 
     var RegisterEvent = function () {
+
+        $('[re-workshops]').click(function () {
+            GetWorkshopSelect('workshops-select');
+        });
 
         $('[btn="updatePassword"]').click(function () {
             if (checkValidateUpdatePass()) {
@@ -91,6 +96,10 @@ GPRO.User = function () {
         $('#' + Global.Element.popupSearch).on('shown.bs.modal', function () {
             $('div.divParent').attr('currentPoppup', Global.Element.popupSearch.toUpperCase());
         });
+
+        $('[re-user-employ]').click(() => {
+            GetEmployeeSelect("user-employ-select", 0);
+        })
     }
 
     function UnLockTime(Id) {
@@ -120,7 +129,7 @@ GPRO.User = function () {
         $.ajax({
             url: Global.UrlAction.ChangePass,
             type: 'POST',
-            data: JSON.stringify({ 'id': $('[txt="userId"]').val(), 'Password': $('[txt="txtNewPass"]').val() }),
+            data: JSON.stringify({ 'id': $('[txt="_userId"]').val(), 'Password': $('[txt="txtNewPass"]').val() }),
             contentType: 'application/json charset=utf-8',
             beforeSend: function () { $('#loading').show(); },
             success: function (data) {
@@ -165,21 +174,27 @@ GPRO.User = function () {
     }
     //
     function CheckValidate() {
+        let userId = $('[txt="userId"]').val();
 
         if ($('[txt="userName"]').val() == "") {
             GlobalCommon.ShowMessageDialog("Vui lòng nhập tên Tài Khoản.", function () { }, "Lỗi Nhập liệu");
             return false;
         }
-        else if ($('[txt="txtpass"]').val().trim() == "" && $('[txt="userId"]').val() == "0") {
+        else if ($('[txt="txtpass"]').val().trim() == "" && userId == '' || userId == "0") {
             GlobalCommon.ShowMessageDialog("Vui lòng nhập Mật Khẩu.", function () { }, "Lỗi Nhập liệu");
             return false;
         }
-        else if (($('[txt="txtpass"]').val() != $('[txt="txtcpass"]').val() && $('[txt="userId"]').val() == "0") || ($('[txt="txtpass"]').val() != $('[txt="txtcpass"]').val() && $('[txt="userId"]').val() != "0" && $('#required').val() == "1")) {
+        else if (($('[txt="txtpass"]').val() != $('[txt="txtcpass"]').val() && userId == '' || userId == "0") ||
+            ($('[txt="txtpass"]').val() != $('[txt="txtcpass"]').val() && $('[txt="userId"]').val() != "0" && $('#required').val() == "1")) {
             GlobalCommon.ShowMessageDialog("Xác nhận mật khẩu không khớp.", function () { }, "Lỗi Nhập liệu");
             return false;
         }
         else if ($('[txt="txtName"]').val() == "") {
             GlobalCommon.ShowMessageDialog("Vui lòng nhập họ tên.", function () { }, "Lỗi Nhập liệu");
+            return false;
+        }
+        else if ($('#workshops-select').val() == "" || $('#workshops-select').val() == "0") {
+            GlobalCommon.ShowMessageDialog("Vui lòng chọn đơn vị.", function () { $('#workshops-select').focus(); }, "Lỗi Nhập liệu");
             return false;
         }
         return true;
@@ -201,7 +216,6 @@ GPRO.User = function () {
         return true;
     }
 
-
     function ResetSearchPopupData() {
         $('#keyword').val('');
         $('#searchBy').val(0);
@@ -218,6 +232,8 @@ GPRO.User = function () {
             $('[txt="txtpass"]').val(user.PassWord);
             $('[txt="txtName"]').val(user.Name);
             $('[txt="email"]').val(user.Email);
+            $('#user-employ-select').val(user.EmployeeId);
+            $('#workshops-select').val(user.WorkshopId);
         }
         else {
             $('[txt="userId"]').val(0);
@@ -227,15 +243,19 @@ GPRO.User = function () {
             $('[txt="email"]').val('');
             $("#userRoles").data("kendoMultiSelect").value('');
             $("#workshops").data("kendoMultiSelect").value('');
+            $('#user-employ-select').val(0);
+            $('#workshops-select').val(0);
         }
     }
 
     function InitPopup() {
         $('#' + Global.Element.popupCreateUser + ' button[saveUser]').click(function () {
-            if ($('#uploader').val() != '')
-                UpSingle("FormUpload", "uploader");
-            else
-                Save();
+            if (CheckValidate()) {
+                if ($('#uploader').val() != '')
+                    UpSingle("FormUpload", "uploader");
+                else
+                    Save();
+            }
         });
 
         $('#' + Global.Element.popupCreateUser + ' button[cancel]').click(function () {
@@ -270,6 +290,8 @@ GPRO.User = function () {
             IsLock: false,
             UserRoles: null,
             UserCategoryId: $('#UserCategory').val(),
+            EmployeeId: $('#user-employ-select').val(),
+            WorkshopId: $('#workshops-select').val(),
             ChangePic: Global.Data.ChangePic,
             WorkshopIds: $('#workshops').data("kendoMultiSelect").value().toString()
         }
@@ -383,23 +405,31 @@ GPRO.User = function () {
                         var text = '<span >' + data.record.RoleNames + '</span> ';
                         return text;
                     },
-                    sorting:false
+                    sorting: false
                 },
                 Name: {
                     title: "Họ Tên",
                     width: "20%",
                 },
+                WorkshopName: {
+                    title: 'Đơn vị',
+                    width: '5%',
+                    sorting: false
+                },
                 WorkshopNames: {
-                    title: 'Phân xưởng',
+                    title: 'Phân xưởng phụ trách',
                     width: '20%',
-                    sorting:false
+                    sorting: false
                 },
                 Email: {
                     title: "Email",
-                    width: "20%",
+                    width: "10%",
                 },
-
-              
+                EmployeeName: {
+                    title: "Nhân viên",
+                    width: "10%",
+                    sorting: false
+                },
                 IsRequireChangePW: {
                     visibility: 'hidden',
                     title: 'YC đổi MK',
@@ -462,7 +492,7 @@ GPRO.User = function () {
                             BindData(data.record);
 
                             if (data.record.ImagePath)
-                                $('#user-img-avatar').attr('src', data.record.ImagePath); 
+                                $('#user-img-avatar').attr('src', data.record.ImagePath);
 
                         });
                         div.append(btnEdit);
@@ -478,7 +508,7 @@ GPRO.User = function () {
                         }
                         return div;
                     }
-                }, 
+                },
             }
         });
     }

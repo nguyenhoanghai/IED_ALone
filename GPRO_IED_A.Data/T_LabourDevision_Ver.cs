@@ -33,8 +33,8 @@ namespace GPRO_IED_A.Data
     
         public virtual T_LabourDivision T_LabourDivision { get; set; }
         public virtual ICollection<T_LinePosition> T_LinePosition { get; set; }
-        public virtual SUser SUser { get; set; }
         public virtual ICollection<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
         public virtual ICollection<T_UsingTechLog> T_UsingTechLog { get; set; }
+        public virtual SUser SUser { get; set; }
     }
 }

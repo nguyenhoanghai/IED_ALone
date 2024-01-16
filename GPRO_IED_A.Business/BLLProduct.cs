@@ -62,7 +62,8 @@ namespace GPRO_IED_A.Business
                         CompanyId = x.CompanyId,
                         CustomerId = x.CustomerId,
                         ProductGroupId = x.ProductGroupId ?? 0,
-                        ProGroupName = (x.ProductGroupId.HasValue ? x.T_ProductGroup.Name : "")
+                        ProGroupName = (x.ProductGroupId.HasValue ? x.T_ProductGroup.Name : ""),
+                        PercentHelp =x.PercentHelp
                     }).OrderBy(sorting).ToList(), pageNumber, pageSize);
                     if (objs.Count > 0)
                     {
@@ -144,6 +145,7 @@ namespace GPRO_IED_A.Business
                                 obj.Description = model.Description;
                                 obj.UpdatedUser = model.ActionUser;
                                 obj.UpdatedDate = DateTime.Now;
+                                obj.PercentHelp = model.PercentHelp;
 
                                 //  cap nhat ben phan tich mat hang
                                 var commoAna = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectId == obj.Id && x.ObjectType == (int)eObjectType.isCommodity);

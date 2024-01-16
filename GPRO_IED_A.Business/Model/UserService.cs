@@ -22,13 +22,14 @@ namespace GPRO_IED_A.Business.Model
         public string[] Permissions { get; set; }
         public int UserID { get; set; }
         public int[] ChildCompanyId { get; set; }
-        public string WorkshopId  { get; set; }
+        public int WorkshopId  { get; set; }
         public int[] intWorkshopIds { get; set; }
+        public string strWorkshopIds { get; set; }
         public string UserName { get; set; }
         public List<Module> ListModule { get; set; }
         public List<MenuCategory> ListMenu { get; set; }
         public int LineId { get; set; }
-        public int EmployeeId { get; set; }
+        public int EmployeeId { get; set; } 
         public UserService()
         {
             ListModule = new List<Module>();

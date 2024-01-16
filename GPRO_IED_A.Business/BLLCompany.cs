@@ -197,5 +197,12 @@ namespace GPRO_IED_A.Business
             }
         }
 
+        public SCompany GetById(int Id)
+        {
+            using (var db = new IEDEntities())
+            {
+                return db.SCompanies.FirstOrDefault(x => !x.IsDeleted && x.Id == Id);
+            }
+        }
     }
 }

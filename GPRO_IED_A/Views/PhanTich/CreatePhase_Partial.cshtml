@@ -27,7 +27,7 @@
     }
 
     .select-box input {
-        width: calc(100% - 30px);
+        width: calc(100% - 50px);
         padding: 6px;
         border-radius: 5px;
         height: 34px;
@@ -67,6 +67,7 @@
                                 <div class="select-box">
                                     <input style="" list="suggestPhases" id="phase-suggest" type="text" placeholder="Nhập tên hoặc mã Công Đoạn cần tìm." />
                                     <i title="Lấy thông tin công đoạn." save-sugguest-phase class="fa fa-cloud-download clickable blue"></i>
+                                    <i title="Tải lại danh sách công đoạn mẫu." reload-sugguest-phase class="fa fa-refresh clickable red"></i>
                                 </div>
                             </div>
                         </div>
@@ -76,7 +77,7 @@
                             <div class="group-box-body">
                                 <div class="col-md-1 form-group @ViewBag.hasPer">
                                     <label class="control-label">Mã CĐ <span class="required-class">*</span></label>
-                                    <span disabled class="form-control" id="phase-code" />
+                                    <span disabled class="form-control" id="phase-code" code="0"/>
                                 </div>
                                 <div class="col-md-1 form-group">
                                     <label class="control-label">Vị trí CĐ <span class="required-class">*</span></label>
@@ -137,7 +138,10 @@
                                             <i re-apply-pressure class="fa fa-refresh clickable red"></i>
                                         </div>
                                     </div>
-
+                                    <div class="col-md-6 form-group @ViewBag.hasPer">
+                                        <label class="control-label">Ghi chú</label>
+                                        <textarea style="height:34px" class="form-control" id="phase-Des" ></textarea>
+                                    </div>
                                     <div class="clearfix"></div>
                                     <div class="col-md-12 form-group  ">
                                         <div style="padding:3px 0">
@@ -149,8 +153,7 @@
                                         <div class=" @ViewBag.hasPer"> <input type="checkbox" id="islibs" /> <label class="control-label">chọn làm công đoạn mẫu.</label></div>
                                     </div>
                                     <div class="clearfix"></div>
-                                </div>
-                                <textarea class="form-control" id="phase-Des" style="display:none"></textarea>
+                                </div> 
 
                                 @*<div class="col-md-8" style="padding:0">
                                         <div id="jtable-timeprepare-arr"></div>
@@ -228,7 +231,7 @@
                                         <input class="form-control" totalpercentwaste type="text" value="0" disabled style="width: 100px" />
                                     </div>
                                     <div class="col-md-3 form-group">
-                                        <label class="control-label">Tổng Thao Gian Hao Phí</label><br />
+                                        <label class="control-label">Tổng Thời Gian Hao Phí</label><br />
                                         <input class="form-control" totaltimewaste type="text" value="0" disabled style="width: 100px" />
                                     </div>
                                     <div class="col-md-3 form-group">

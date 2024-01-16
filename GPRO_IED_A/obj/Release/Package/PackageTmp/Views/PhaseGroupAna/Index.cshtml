@@ -1,6 +1,6 @@
 ﻿@{
     ViewBag.Title = "Phân tích nhóm công đoạn mẫu";
-    // Layout = null;
+    //Layout = null;
 
 }
 <style>
@@ -8,11 +8,23 @@
         padding: 5px 0;
         margin: 0 5px;
         border-bottom: 1px dashed olive;
+        display: flex
     }
 
         .group-item span {
             cursor: pointer;
             color: black
+        }
+
+        .group-item div {
+            width: calc(100% - 20px);
+            cursor: pointer;
+        }
+
+        .group-item .fa-file-excel-o {
+            cursor: pointer;
+            padding: 0 !important;
+            color: red !important;
         }
 
     #Create-Phase-Popup .nav-tabs > li > a {
@@ -56,7 +68,7 @@
     <div class="group-box-title">Phân tích nhóm công đoạn mẫu</div>
     <div style="padding:10px 0">
         <div class="col-md-4">
-            <div class="group-box" >
+            <div class="group-box">
                 <div class="group-box-title" style="display:flex; padding-bottom:5px"><div style="width:100%; line-height:34px">Cụm công đoạn</div> <input type="text" id="filter-phasegroup" class="form-control" placeholder="Nhập tên cụm công đoạn..." /></div>
                 <div class="group-box-body phasegroup-box" style="height:500px; overflow:auto">
                     Không có dữ liệu.
@@ -64,7 +76,7 @@
             </div>
         </div>
         <div class="col-md-8">
-            <div class="group-box">
+            <div class="group-box box-jtable">
                 <div class="group-box-title title-name"> Danh sách công đoạn</div>
                 <div class="group-box-body">
                     <div id="jtable-phase" class="Jtable-css table-center"></div>
@@ -85,9 +97,14 @@
                     <div class="phase-box-title">
                         <div class="title-div">Công đoạn: <label id="lbTenCongDoan"></label></div>
                         <div class="action-div">
+                            @{ if ((bool)ViewBag.isApprover)
+                                {
+                                    <button type="button" not-approve-phase class="btn btn-warning"><i class="fa fa-floppy-o"></i> Hoàn tác</button>
+                                }
+                            }
+                            <button type="button" submit-phase class="btn btn-danger"><i class="fa fa-floppy-o"></i> Lưu & gửi duyệt </button>
                             <button type="button" save-phase class="btn btn-primary"><i class="fa fa-floppy-o"></i> Lưu lại </button>
                             <button type="button" cancel-create-phase class="btn btn-default" data-dismiss="modal"><i class="fa fa-times red"></i> Đóng </button>
-
                         </div>
                     </div>
                     <div style=" height:600px ; overflow-y:auto">
@@ -173,11 +190,18 @@
                                     <div class="col-md-12 form-group  ">
                                         <div style="padding:3px 0">
                                             <label class="control-label">Thời gian CĐ: <span id="TotalTMU" class="red">0</span><input class="form-control" id="ManiVerTMU" type="hidden" /> (s) </label>
-                                        </div>
-                                        <div style="padding:3px 0">
-                                            <label class="control-label">Chiều dài đường may: <span id="TotalMay" class="red">0</span> (cm)</label>
+                                            | <label class="control-label">Chiều dài đường may: <span id="TotalMay" class="red">0</span> (cm)</label>
+
                                         </div>
                                         <div class=" @ViewBag.hasPer"> <input type="checkbox" id="islibs" /> <label class="control-label">chọn làm công đoạn mẫu.</label></div>
+                                       
+                                    </div>
+                                    <div class="col-md-12 form-group"  >
+                                        <label class="control-label">Mã hàng tham chiếu</label>
+                                        <div class="select-box">
+                                            <select class="js-select2" multiple="multiple"></select>
+                                            <i re-product class="fa fa-refresh clickable red"></i>
+                                        </div>
                                     </div>
                                     <div class="clearfix"></div>
                                 </div>
@@ -323,10 +347,170 @@
     </div>
 </div>
 
+<div class="modal   fade  " id="product_Popup" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" close-popup class="close" type="button">×</button>
+                <h4 class="modal-title">Tham chiếu mã hàng</h4>
+            </div>
+            <div class="modal-body form-inline">
+                <div class="container-fluid">
+                    <div class="select-box" style="margin-bottom:10px">
+                        <select class="js-select2-p" multiple="multiple"></select>
+                        <i re-product class="fa fa-refresh clickable red"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button save-product-refer class="btn btn-primary">
+                    <div class="button-image image-search"></div>
+                    Lưu lại
+                </button>
+                <button close-popup aria-hidden="true" data-dismiss="modal" class="btn btn-default">
+                    <i class="fa fa-times red"></i>
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--   POPUP PHASE VERSION MANIPULATION   -->
 <datalist id="manipulations"></datalist>
 <datalist id="suggestPhases"></datalist>
+ 
+ <style>
+     .select2-container {
+         min-width: 400px;
+         width: calc(100% - 20px) !important
+     }
+     .select2-selection__clear {
+         line-height: 24px;
+         color: red;
+         font-size: 20px;
+     }
+     .select2-results__option {
+         padding-right: 20px;
+         vertical-align: middle;
+     }
+     .select2-container--default .select2-selection--multiple .select2-selection__choice{
+         padding-right:10px
+     }
 
+     .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+         line-height: 24px;
+         padding: 0 3px;
+     }
 
+         .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+             color: mediumvioletred; 
+         }
 
+     .select2-results__option:before {
+         content: "";
+         display: inline-block;
+         position: relative;
+         height: 20px;
+         width: 20px;
+         border: 2px solid #e9e9e9;
+         border-radius: 4px;
+         background-color: #fff;
+         margin-right: 20px;
+         vertical-align: middle;
+     }
+
+         .select2-results__option[aria-selected=true]:before {
+             font-family: fontAwesome;
+             content: "\f00c";
+             color: #fff;
+             background-color: #f77750;
+             border: 0;
+             display: inline-block;
+             padding-left: 3px;
+         }
+
+     .select2-container--default .select2-results__option[aria-selected=true] {
+         background-color: #fff;
+     }
+
+     .select2-container--default .select2-results__option--highlighted[aria-selected] {
+         background-color: #eaeaeb;
+         color: #272727;
+     }
+
+     /*.select2-container--default .select2-selection--multiple {
+         margin-bottom: 10px;
+     }*/
+
+     .select2-container--default.select2-container--open.select2-container--below .select2-selection--multiple {
+         border-radius: 4px;
+     }
+
+     .select2-container--default.select2-container--focus .select2-selection--multiple {
+         border-color: #f77750;
+         border-width: 2px;
+     }
+
+     .select2-container--default .select2-selection--multiple {
+         border-width: 2px;
+     }
+
+     .select2-container--open .select2-dropdown--below {
+         border-radius: 6px;
+         box-shadow: 0 0 10px rgba(0,0,0,0.5);
+     }
+
+     .select2-selection .select2-selection--multiple:after {
+         content: 'hhghgh';
+     }
+     /* select with icons badges single*/
+     .select-icon .select2-selection__placeholder .badge {
+         display: none;
+     }
+
+     .select-icon .placeholder {
+         display: none;
+     }
+
+     .select-icon .select2-results__option:before,
+     .select-icon .select2-results__option[aria-selected=true]:before {
+         display: none !important;
+         /* content: "" !important; */
+     }
+
+     .select-icon .select2-search--dropdown {
+         display: none;
+     }
+ </style>
+  
 <script src="~/Scripts/IED/phase-group-ana/phase-group-ana.js"></script>
+ 
+<script>
+
+    var obj = new GPRO.PhaseGroupAna();
+    obj.Init();
+    obj.GetGlobal().Data.Approver = ('@ViewBag.isApprover' == 'True' ? true : false)
+
+    function Export(_id) {
+        obj.Export(_id);
+    }
+      
+    //$(".js-select2").select2({
+    //    closeOnSelect: false,
+    //    placeholder: "Placeholder",
+    //    allowHtml: true,
+    //    allowClear: true,
+    //    tags: true,
+    //    data: data,
+    //    multiple: true,
+    //});
+    //$(".js-select2").val(['1', '2','342']);
+    //$(".js-select2").trigger('change');
+
+    $('#btn-click').click(function () {
+        alert(  $(".js-select2").val());
+    });
+      
+
+</script>

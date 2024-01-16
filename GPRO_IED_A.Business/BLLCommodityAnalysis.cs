@@ -43,14 +43,14 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     var _parents = db.T_CommodityAnalysis.Where(x => x.IsDeleted && x.ObjectType == 1);
-                    if (_parents!= null && _parents.Count()> 0)
+                    if (_parents != null && _parents.Count() > 0)
                     {
                         var now = DateTime.Now;
                         foreach (var _pa in _parents)
                         {
                             string _node = "0," + _pa.Id + ",";
                             var _children = db.T_CommodityAnalysis.Where(x => x.Node.Contains(_node));
-                            if (_children != null && _children.Count()>0)
+                            if (_children != null && _children.Count() > 0)
                             {
                                 foreach (var _chi in _children)
                                 {
@@ -60,8 +60,8 @@ namespace GPRO_IED_A.Business
 
                                     if (_chi.ObjectType == (int)eObjectType.isPhaseGroup)
                                     {
-                                        var _phases = db.T_CA_Phase.Where(x => !x.IsDeleted && x.ParentId == _chi.Id); 
-                                        if(_phases!= null && _phases.Count() > 0)
+                                        var _phases = db.T_CA_Phase.Where(x => !x.IsDeleted && x.ParentId == _chi.Id);
+                                        if (_phases != null && _phases.Count() > 0)
                                         {
                                             foreach (var _obj in _phases)
                                             {
@@ -84,6 +84,81 @@ namespace GPRO_IED_A.Business
                 throw;
             }
         }
+
+        public void Reset_TEN_CUMCONGDOAN()
+        {
+            try
+            {
+                using (db = new IEDEntities())
+                {
+                    var _parents = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectType == (int)eObjectType.isPhaseGroup);
+                    if (_parents != null && _parents.Count() > 0)
+                    {
+                        var phaseGroups = db.T_PhaseGroup.Select(x => new { Id = x.Id, Name = x.Name }).ToList();
+                        var now = DateTime.Now;
+                        foreach (var _pa in _parents)
+                        {
+                            var found = phaseGroups.FirstOrDefault(x => x.Id == _pa.ObjectId);
+                            if (found != null)
+                                _pa.Name = found.Name;
+                        }
+                        db.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            { 
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// gan ma chung loai + ma pham xuong + ma cum cđ
+        /// </summary>
+        public void ResetMaChungLoai_MaPX_MaCumCD()
+        {
+            try
+            {
+                using (db = new IEDEntities())
+                {
+                    var _parents = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && (x.ObjectType == (int)eObjectType.isCommodity || x.ObjectType == (int)eObjectType.isWorkShop || x.ObjectType == (int)eObjectType.isPhaseGroup));
+                    if (_parents != null && _parents.Count() > 0)
+                    {
+                        var products = db.T_Product.Where(x => !x.IsDeleted).Select(x => new { Id = x.Id, Code = x.T_ProductGroup.Code }).ToList(); 
+                        var workshops = db.T_WorkShop.Where(x => !x.IsDeleted).Select(x => new { Id = x.Id, Code = x.Code }).ToList(); 
+                        var phaseGroups = db.T_PhaseGroup.Where(x => !x.IsDeleted).Select(x => new { Id = x.Id, Code = x.Code }).ToList();
+
+                        foreach (var item in _parents)
+                        {
+                            switch (item.ObjectType)
+                            {
+                                case (int)eObjectType.isCommodity:
+                                    var found = products.FirstOrDefault(x => x.Id == item.ObjectId);
+                                    if (found != null)
+                                        item.Code = found.Code;
+                                    break;
+                                case (int)eObjectType.isWorkShop:
+                                      found = workshops.FirstOrDefault(x => x.Id == item.ObjectId);
+                                    if (found != null)
+                                        item.Code = found.Code;
+                                    break;
+                                case (int)eObjectType.isPhaseGroup:
+                                      found = phaseGroups.FirstOrDefault(x => x.Id == item.ObjectId);
+                                    if (found != null)
+                                        item.Code = found.Code;
+                                    break;
+                            } 
+                        }
+                        db.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
         public CommodityAnalysisModel GetList()
         {
@@ -153,7 +228,9 @@ namespace GPRO_IED_A.Business
                                                              }));
                             break;
                         case (int)eObjectType.isWorkShop:
+                            workshopIds = db.T_WorkShop.Where(x => !x.IsDeleted && workshopIds.Contains(x.Id)).Select(x => x.Id).ToArray();
                             if (workshopIds != null && workshopIds.Length > 0)
+                            {
                                 commoAnaModel.CommoAna.AddRange((from x in db.T_CommodityAnalysis
                                                                  where !x.IsDeleted
                                                                  && x.ParentId == parentId
@@ -169,23 +246,29 @@ namespace GPRO_IED_A.Business
                                                                      Description = x.Description,
                                                                      CreatedDate = x.CreatedDate,
                                                                  }));
+                            }
                             break;
                         case (int)eObjectType.isComponent:
                         case (int)eObjectType.isGroupVersion:
                         case (int)eObjectType.isPhaseGroup:
-                            commoAnaModel.CommoAna.AddRange((from x in db.T_CommodityAnalysis
-                                                             where !x.IsDeleted && x.ParentId == parentId
-                                                             select new ProAnaModel()
-                                                             {
-                                                                 Id = x.Id,
-                                                                 Name = x.Name,
-                                                                 Node = x.Node,
-                                                                 ObjectId = x.ObjectId,
-                                                                 ObjectType = x.ObjectType,
-                                                                 ParentId = x.ParentId,
-                                                                 Description = x.Description,
-                                                                 CreatedDate = x.CreatedDate,
-                                                             }));
+                            var _phaseGroups = (from x in db.T_CommodityAnalysis
+                                                where !x.IsDeleted && x.ParentId == parentId
+                                                select new ProAnaModel()
+                                                {
+                                                    Id = x.Id,
+                                                    Name = x.Name,
+                                                    Node = x.Node,
+                                                    ObjectId = x.ObjectId,
+                                                    ObjectType = x.ObjectType,
+                                                    ParentId = x.ParentId,
+                                                    Description = x.Description,
+                                                    CreatedDate = x.CreatedDate,
+                                                }).ToList();
+
+                            var _phaseGroupIds = _phaseGroups.Select(x => x.ObjectId).ToList();
+                            var _IdExists = db.T_PhaseGroup.Where(x => !x.IsDeleted && _phaseGroupIds.Contains(x.Id)).Select(x => x.Id).ToList();
+
+                            commoAnaModel.CommoAna.AddRange(_phaseGroups.Where(x => _IdExists.Contains(x.ObjectId)));
                             break;
                     }
 
@@ -566,7 +649,7 @@ namespace GPRO_IED_A.Business
             }
         }
         //Ktra lai
-        public ResponseBase Copy_CommoAnaPhaseGroup(int fromId, int toId, int actionUserId)
+        public ResponseBase Copy_CommoAnaPhaseGroup(int fromId, int toId, int actionUserId, bool isMDGVersion)
         {
             try
             {
@@ -676,9 +759,16 @@ namespace GPRO_IED_A.Business
                                             new_commoAnaPhase.T_CommodityAnalysis = new_commoAna;
                                             // new_commoAnaPhase.ParentId = parentid;
                                             new_commoAnaPhase.Node = new_commoAna.Node + new_commoAnaPhase.T_CommodityAnalysis.Id + ",";
-                                            new_commoAnaPhase.CreatedUser = actionUserId;
-                                            new_commoAnaPhase.CreatedDate = new_commoAna.CreatedDate;
                                             new_commoAnaPhase.Status = eStatus.Editor;
+
+                                            //TODO MDG
+                                            if (isMDGVersion)
+                                            {
+                                                new_commoAnaPhase.IsApprove = true;
+                                                new_commoAnaPhase.Approver = actionUserId;
+                                                new_commoAnaPhase.ApprovedDate = new_commoAna.CreatedDate;
+                                                new_commoAnaPhase.Status = eStatus.Approved;
+                                            }
                                             db.T_CA_Phase.Add(new_commoAnaPhase);
                                             db.SaveChanges();
                                         }
@@ -986,7 +1076,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public ResponseBase Copy_CommoAnaPhaseGroupContents(int fromId, int toId, int actionUserId)
+        public ResponseBase Copy_CommoAnaPhaseGroupContents(int fromId, int toId, int actionUserId, bool isMDGVersion)
         {
             try
             {
@@ -1069,8 +1159,15 @@ namespace GPRO_IED_A.Business
                                         }
 
                                         new_commoAnaPhase.Node = commoAna.Node + commoAna.Id + ",";
-                                        new_commoAnaPhase.CreatedUser = actionUserId;
-                                        new_commoAnaPhase.CreatedDate = now;
+                                        new_commoAnaPhase.Status = eStatus.Editor;
+                                        //TODO MDG
+                                        if (isMDGVersion)
+                                        {
+                                            new_commoAnaPhase.IsApprove = true;
+                                            new_commoAnaPhase.Approver = actionUserId;
+                                            new_commoAnaPhase.ApprovedDate = now;
+                                            new_commoAnaPhase.Status = eStatus.Approved;
+                                        }
                                         db.T_CA_Phase.Add(new_commoAnaPhase);
                                         db.SaveChanges();
                                     }
@@ -1253,7 +1350,7 @@ namespace GPRO_IED_A.Business
                         _iObjs = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectType == (int)eObjectType.isCommodity); break;
                     case (int)eObjectType.isWorkShop:
                         _iObjs = db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectType == (int)eObjectType.isWorkShop && x.ParentId == parentId); break;
-                     
+
                 }
                 if (_iObjs != null)
                     objs.AddRange(_iObjs.Select(x => new ModelSelectItem() { Value = x.Id, Name = x.Name, Data = x.ObjectId }));

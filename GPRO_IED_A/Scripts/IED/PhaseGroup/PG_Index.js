@@ -140,10 +140,10 @@ GPRO.PhaseGroup = function () {
                     edit: false,
                     list: false
                 },
-                //Code: {
-                //    title: "Mã cụm công đoạn",
-                //    width: "5%",
-                //},
+                Code: {
+                    title: "Mã",
+                    width: "5%",
+                },
                 Name: {
                     visibility: 'fixed',
                     title: "Tên cụm công đoạn",

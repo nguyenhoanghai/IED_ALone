@@ -6551,7 +6551,8 @@ ul.notifications {
 }
 
 .table-action {
-    min-width:100px
+    min-width:100px;
+    text-align:center
 }
 
     .table-action i {
@@ -6588,3 +6589,5 @@ ul.notifications {
     .normal-text { color:black}
     .primary-text { color:green}
     .danger-text { color:red}
+
+    table thead th { position:sticky ; top:0 !important}

@@ -31,7 +31,7 @@ GPRO.Phantich4 = function () {
             DeletePhase: '/ProAna/DeletePhase',
             RemovePhaseVideo: '/ProAna/RemovePhaseVideo',
             CopyPhase: '/ProAna/CopyPhase',
-            ApprovePhase: '/ProAna/ApprovePhase',
+            Approve: '/PhaseApprove/Approve',
             MoveToLibrary: '/proana/MoveToLibrary',
             GetListPhaseLib: '/PhaseGroupAna/Gets',
             ImportFromLibrary: '/proana/ImportFromLibrary',
@@ -41,9 +41,7 @@ GPRO.Phantich4 = function () {
             ExportToExcel_QTCN: '/ProAna/ExportToExcel',
 
             TinhLaiCode: '/ProAna/TinhLaiCode',
-
-
-
+            InsertViewLog: '/proana/InsertViewLog',
 
             Export_CommoAnaPhaseGroup: '/ProAna/Export_CommoAnaPhaseGroup',
             Copy_CommoAnaPhaseGroup: '/ProAna/Copy_CommoAnaPhaseGroup',
@@ -54,7 +52,7 @@ GPRO.Phantich4 = function () {
             DrawImage: '/LaborDivision/Draw/',
             GetListTechProcessVerDetail: '/TechnologyProcess/GetTechProcessVersionDetail',
             RefreshTKCById: '/ProAna/RefreshTKCById',
-
+            ActiveTKC: '/ProAna/active',
 
 
             GetListEquipment: '/Equipment/Gets',
@@ -334,9 +332,10 @@ GPRO.Phantich4 = function () {
 
         $('[re_caproduct],[re_phasegroup-name],[re_wk-name],[re_workerslevel],[re-apply-pressure]').click();
 
-        $('#jtable-phase-sample,#techprocess,#qtcn-action,#phase-group-action,#jtable-tkc,#jtable-tkc-sample,#current-phase-group-action,#jtable-phase,[approve-phase],[not-approve-phase]').hide();
+        $('#jtable-phase-sample,#techprocess,#qtcn-action,#phase-group-action,#jtable-tkc,#jtable-tkc-sample,#current-phase-group-action,#jtable-phase ').hide();
 
         $('[re-phase-group-library]').click();
+        $('[not-approve-phase]').hide();
     }
 
 
@@ -374,8 +373,6 @@ GPRO.Phantich4 = function () {
             else
                 GlobalCommon.ShowMessageDialog(`Không tìm thấy mã hàng có tên :<span class"red bold">'${$(this).val()}' trong danh mục mã hàng. Vui lòng kiểm tra lại.!`, function () { $('#tree-pt').html('Không có dữ liệu ....') }, "Lỗi nhập liệu");
         });
-
-
 
     }
 
@@ -507,6 +504,10 @@ GPRO.Phantich4 = function () {
             }
         });
 
+        $('[reload-sugguest-phase]').click(() => {
+            GetPhasesForSuggest();
+        });
+
         $('[save-sugguest-phase]').click(() => {
             var selectValue = $('#phase-suggest').val();
             if (selectValue != '') {
@@ -560,12 +561,12 @@ GPRO.Phantich4 = function () {
             }
         });
 
-        $('[approve-phase]').click(function () {
-            ApprovePhase(true);
-        });
+        //$('[approve-phase]').click(function () {
+        //    ApprovePhase(true);
+        //});
 
         $('[not-approve-phase]').click(function () {
-            ApprovePhase(false);
+            Approve();
         });
 
         $('[cancel-create-phase]').click(function () {
@@ -589,7 +590,7 @@ GPRO.Phantich4 = function () {
             sources[0].src = '';
             sources[1].src = '';
             video.load();
-
+            $('#video-info').html('');
 
             GetLastPhaseIndex();
             ReloadListPhase_View();
@@ -604,7 +605,7 @@ GPRO.Phantich4 = function () {
             $('#phaseID').val('0');
             $('#islibs').prop('checked', false);
             $('[save-phase],[submit-phase]').show();
-            $('[approve-phase],[not-approve-phase]').hide();
+            $('[not-approve-phase]').hide();
             // $('#phase-code').html(((Global.Data.PhaseAutoCode == null || Global.Data.PhaseAutoCode == '' ? '' : (Global.Data.PhaseAutoCode + '-')) + (Global.Data.phaseLastIndex + 1)));
 
         });
@@ -790,9 +791,9 @@ GPRO.Phantich4 = function () {
                             });
                             div.append(excel);
                         }
-                        var edit = $('<i data-toggle="modal" data-target="#' + Global.Element.CreatePhasePopup + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o "  ></i>');
+                        var edit = $('<i data-toggle="modal" data-target="#' + Global.Element.CreatePhasePopup + '" title="Xem thông tin" class="fa fa-info-circle "  ></i>');
                         edit.click(function () {
-                            $('[save-phase]').hide();
+                            $('[save-phase],[submit-phase],[not-approve-phase]').hide();
                             data.record.TotalTMU = Math.round(data.record.TotalTMU * 1000) / 1000;
                             $('#workersLevel').val(data.record.WorkerLevelId);
                             $('#TotalTMU').html(data.record.TotalTMU);
@@ -864,7 +865,7 @@ GPRO.Phantich4 = function () {
                                 $('#video-info').html('');
                                 sources[0].src = '';
                                 video.load();
-                            }
+                            } 
                         });
                         div.append(edit);
                         return div;
@@ -1023,19 +1024,20 @@ GPRO.Phantich4 = function () {
                     width: "5%",
                     sorting: false
                 },
-                Status: {
-                    title: 'Trạng thái',
-                    width: '5%',
-                    display: function (data) {
-                        let cls = 'normal-text';
-                        switch (data.record.Status) {
-                            case 'Chờ duyệt': cls = 'danger-text'; break;
-                            case 'Đã duyệt': cls = 'primary-text'; break;
-                            default: break;
-                        }
-                        return `<span class='${cls}'>${data.record.Status}</span>`;
-                    }
-                },
+                //TODO
+                //Status: {
+                //    title: 'Trạng thái',
+                //    width: '5%',
+                //    display: function (data) {
+                //        let cls = 'normal-text';
+                //        switch (data.record.Status) {
+                //            case 'Chờ duyệt': cls = 'danger-text'; break;
+                //            case 'Đã duyệt': cls = 'primary-text'; break;
+                //            default: break;
+                //        }
+                //        return `<span class='${cls}'>${data.record.Status}</span>`;
+                //    }
+                //},
                 action: {
                     title: '',
                     width: '1%',
@@ -1054,7 +1056,8 @@ GPRO.Phantich4 = function () {
                             libBut.click(function () {
                                 $('#phase-group-library-id').val(data.record.Id);
                             });
-                            div.append(libBut);
+                            //TODO
+                            //div.append(libBut);
                         }
 
                         if (data.record.actions.length > 0) {
@@ -1066,6 +1069,10 @@ GPRO.Phantich4 = function () {
                         }
 
                         var edit = $('<i data-toggle="modal" data-target="#' + Global.Element.CreatePhasePopup + '" title="Chỉnh sửa thông tin" class="fa fa-pencil-square-o clickable blue"  ></i>');
+                        //TODO
+                        //if (data.record.Status !== "Soạn thảo")
+                          //  edit = $('<i data-toggle="modal" data-target="#' + Global.Element.CreatePhasePopup + '" title="Xem thông tin" class="fa fa-info-circle clickable blue"  ></i>');
+
                         edit.click(function () {
                             data.record.TotalTMU = Math.round(data.record.TotalTMU * 1000) / 1000;
                             $('#workersLevel').val(data.record.WorkerLevelId);
@@ -1149,16 +1156,22 @@ GPRO.Phantich4 = function () {
                             }
                             $('#phase-status').addClass(cls);
 
+                            $('[submit-phase]').hide();
+                            /* TODO
                             if (data.record.Status == "Chờ duyệt" || data.record.Status == "Đã duyệt") {
                                 $('[save-phase],[submit-phase]').hide();
+                                $('[not-approve-phase]').show();
                             }
-                            if (data.record.Status == "Chờ duyệt" && Global.Data.Approver) {
-                                $('[approve-phase],[not-approve-phase]').show();
+                            else
+                                $('[not-approve-phase]').hide();
+                            if (data.record.Status == "Đã duyệt") {
+                                InsertViewLog(data.record.Id, data.record.WorkshopId, ("Mã hàng: " + data.record.ProductName + " - Công đoạn: " + data.record.Name));
                             }
+                            */
                         });
                         div.append(edit);
-
-                        if (data.record.Status == "Soạn thảo") {
+                        //TODO
+                        //if (data.record.Status == "Soạn thảo") {
                             var _delete = $('<i title="Xóa" class="fa fa-trash-o"></i>');
                             _delete.click(function () {
                                 GlobalCommon.ShowConfirmDialog('Bạn có chắc chắn muốn xóa?', function () {
@@ -1166,7 +1179,7 @@ GPRO.Phantich4 = function () {
                                 }, function () { }, 'Đồng ý', 'Hủy bỏ', 'Thông báo');
                             });
                             div.append(_delete);
-                        }
+                       // }
                         return div;
                     }
                 }
@@ -2082,6 +2095,17 @@ GPRO.Phantich4 = function () {
                                                 }
                                             }
                                         },
+                                        IsActive: {
+                                            title: 'Kích hoạt',
+                                            width: '7%',
+                                            edit: false,
+                                            display: function (data) {
+                                                if (data.record.IsActive) {
+                                                    return `<i class='fa fa-check-square-o red  ' ></i>`;
+                                                }
+                                                return `<i class='fa fa-square-o ' ></i>`;
+                                            }
+                                        },
                                         actions: {
                                             title: '',
                                             width: '5%',
@@ -2100,6 +2124,8 @@ GPRO.Phantich4 = function () {
                                                     window.location.href = Global.UrlAction.ExportExcel_TKC + '/' + data.record.Id;
                                                 });
                                                 div.append(btnExcel);
+
+
                                                 return div;
                                             }
                                         },
@@ -2184,6 +2210,7 @@ GPRO.Phantich4 = function () {
                         }
                     }
                 },
+
                 actions: {
                     title: '',
                     width: "7%",
@@ -2244,6 +2271,19 @@ GPRO.Phantich4 = function () {
                                                 }
                                             }
                                         },
+                                        IsActive: {
+                                            title: 'Kích hoạt',
+                                            width: '7%',
+                                            edit: false,
+                                            display: function (data) {
+                                                if (data.record.IsActive) {
+                                                    return `<i class='fa fa-check-square-o red  ' title='Thiết kế chuyền đang kích hoạt'></i>`;
+                                                }
+                                                let active = $(`<i class='fa fa-square-o clickable' title='Nhấn để kích hoạt thiết kế chuyền'></i>`);
+                                                active.click(() => { ActiveTKC(data.record.Id) });
+                                                return active;
+                                            }
+                                        },
                                         actions: {
                                             title: '',
                                             width: '5%',
@@ -2299,7 +2339,9 @@ GPRO.Phantich4 = function () {
             type: 'POST',
             data: JSON.stringify({ 'Id': Id }),
             contentType: 'application/json charset=utf-8',
+            beforeSend: function () { $('#loading').show(); },
             success: function (data) {
+                $('#loading').hide();
                 GlobalCommon.CallbackProcess(data, function () {
                     if (data.Result == "OK") {
                         ReloadList_TKC();
@@ -2311,6 +2353,24 @@ GPRO.Phantich4 = function () {
                     var msg = GlobalCommon.GetErrorMessage(data);
                     GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
                 });
+            }
+        });
+    }
+
+    function ActiveTKC(Id) {
+        $.ajax({
+            url: Global.UrlAction.ActiveTKC,
+            type: 'POST',
+            data: JSON.stringify({ 'labourVerId': Id }),
+            contentType: 'application/json charset=utf-8',
+            beforeSend: function () { $('#loading').show(); },
+            success: function (data) {
+                $('#loading').hide();
+                if (data.Result == "OK") {
+                    ReloadList_TKC();
+                }
+                else
+                    GlobalCommon.ShowMessageDialog(data.ErrorMessages[0].Message, function () { }, data.ErrorMessages[0].MemberName);
             }
         });
     }
@@ -2427,10 +2487,16 @@ GPRO.Phantich4 = function () {
                 $('#loading').hide();
                 GlobalCommon.CallbackProcess(result, function () {
                     if (result.Result == "OK") {
-                        if (obj.Id == 0) {
-                            $('#phaseID').val(result.Data);
+                        if (Global.Data.PhaseStatus == 'Chờ duyệt') {
+                            GetLastPhaseIndex();
+                            ReloadListPhase_View();
+                            $('[cancel-create-phase]').click();
                         }
-
+                        else {
+                            if (obj.Id == 0) {
+                                $('#phaseID').val(result.Data);
+                            }
+                        }
                         /*
                         GetLastPhaseIndex();
                         ReloadListPhase_View();
@@ -2467,25 +2533,26 @@ GPRO.Phantich4 = function () {
         });
     }
 
-    function ApprovePhase(isApprove) {
+    function InsertViewLog(phaseId, wsId, note) {
         $.ajax({
-            url: Global.UrlAction.ApprovePhase,
+            url: Global.UrlAction.InsertViewLog,
             type: 'POST',
-            data: JSON.stringify({ 'Id': $('#phaseID').val(), 'isApprove': isApprove }),
+            data: JSON.stringify({ 'phaseId': phaseId, 'wsId': wsId, 'note': note }),
             contentType: 'application/json charset=utf-8',
             beforeSend: function () { $('#loading').show(); },
             success: function (data) {
                 $('#loading').hide();
-                GlobalCommon.CallbackProcess(data, function () {
-                    if (data.Result == "OK") {
-                        $('[cancel-create-phase]').click();
-                    }
-                    else
-                        GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
-                }, false, Global.Element.PopupCommodityAnalysis, true, true, function () {
-                    var msg = GlobalCommon.GetErrorMessage(data);
-                    GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
-                });
+
+                //GlobalCommon.CallbackProcess(data, function () {
+                //    if (data.Result == "OK") {
+                //        $('[cancel-create-phase]').click();
+                //    }
+                //    else
+                //        GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
+                //}, false, Global.Element.PopupCommodityAnalysis, true, true, function () {
+                //    var msg = GlobalCommon.GetErrorMessage(data);
+                //    GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+                //});
             }
         });
     }
@@ -2572,9 +2639,9 @@ GPRO.Phantich4 = function () {
             return false;
         }
         else if ($('#workersLevel').val() == "" || $('#workersLevel').val() == "0") {
-            GlobalCommon.ShowMessageDialog("Vui Nhập chọn bậc thợ .", function () { }, "Lỗi Nhập liệu");
+            GlobalCommon.ShowMessageDialog("Vui chọn bậc thợ .", function () { }, "Lỗi Nhập liệu");
             return false;
-        }
+        } 
         return true;
     }
 
@@ -2624,6 +2691,32 @@ GPRO.Phantich4 = function () {
             }
         });
     }
+
+    function Approve() {
+        $.ajax({
+            url: Global.UrlAction.Approve,
+            type: 'POST',
+            data: JSON.stringify({ 'Id': $('#phaseID').val(), 'isApprove': false, 'phaseLib': false }),
+            contentType: 'application/json charset=utf-8',
+            beforeSend: function () { $('#loading').show(); },
+            success: function (data) {
+                $('#loading').hide();
+                GlobalCommon.CallbackProcess(data, function () {
+                    if (data.Result == "OK") {
+                        GetLastPhaseIndex();
+                        ReloadListPhase_View();
+                        $('[cancel-create-phase]').click();
+                    }
+                    else
+                        GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
+                }, false, Global.Element.PopupCommodityAnalysis, true, true, function () {
+                    var msg = GlobalCommon.GetErrorMessage(data);
+                    GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+                });
+            }
+        });
+    }
+
     //#endregion
 
     function UploadVideo() {
@@ -4997,14 +5090,14 @@ GPRO.Phantich4 = function () {
                     //}
                 });
                 if (successCount > 0) {
-                     $('#' + Global.Element.PopupPhaseLib).modal('hide');
+                    $('#' + Global.Element.PopupPhaseLib).modal('hide');
                     // GlobalCommon.ShowMessageDialog("Đã thêm " + successCount + " Thời Gian Chuẩn Bị thành công.!", function () { }, "Thông báo Thêm Thành Công");
                     // ReloadListTimePrepare();
                     // $('#' + Global.Element.jtable_timeprepare_arr).jtable('deselectRows');
                     $('.jtable-row-selected').removeClass('jtable-row-selected');
                     ImportFromLib(ids);
                 }
-                $('div.divParent').attr('currentPoppup', '');              
+                $('div.divParent').attr('currentPoppup', '');
             }
             else {
                 GlobalCommon.ShowMessageDialog("Không có công đoạn nào được chọn. Vui lòng chọn công đoạn.!", function () { }, "Lỗi thao tác");

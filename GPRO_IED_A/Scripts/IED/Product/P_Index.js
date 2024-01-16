@@ -97,7 +97,7 @@ GPRO.Product = function () {
         $('[re-pro-group]').click(function () {
             GetProductGroupSelect('pro-group-customer');
         });
-         
+
         $('.p-btn-file-upload').click(function () {
             $('#product-file-upload').click();
         });
@@ -116,7 +116,8 @@ GPRO.Product = function () {
             Name: $("#pname").val(),
             Code: $("#pcustomer option:selected").text(),
             ProductGroupId: $("#pro-group-customer").val(),
-            Img: $('#product-file-upload').attr("newUrl")
+            Img: $('#product-file-upload').attr("newUrl"),
+            PercentHelp: $("#p-help").val()
         }
         $.ajax({
             url: Global.UrlAction.SaveProduct,
@@ -134,9 +135,9 @@ GPRO.Product = function () {
                         $('#pname').val('');
                         $('#product-file-upload').attr("newUrl", '');
                         $('#product-file-upload').val('');
-                       // if (!Global.Data.IsInsert) {
-                            $("#" + Global.Element.PopupProduct + ' button[pcancel]').click();
-                            $('div.divParent').attr('currentPoppup', '');
+                        // if (!Global.Data.IsInsert) {
+                        $("#" + Global.Element.PopupProduct + ' button[pcancel]').click();
+                        $('div.divParent').attr('currentPoppup', '');
                         //}
                         Global.Data.IsInsert = true;
                     }
@@ -197,12 +198,21 @@ GPRO.Product = function () {
                 ProGroupName: {
                     title: "Chủng loại hàng",
                     width: "5%",
+                }, 
+                PercentHelp: {
+                    title: "% hỗ trợ",
+                    width: "5%",
+                    sorting: false,
+                    display: (data) => {
+                        return data.record.PercentHelp + "%";
+                    }
                 },
                 Description: {
                     title: "Mô Tả ",
                     width: "20%",
                     sorting: false,
                 },
+                
                 edit: {
                     title: '',
                     width: '5%',
@@ -218,6 +228,7 @@ GPRO.Product = function () {
                             $("#pcustomer").val(data.record.CustomerId);
                             $("#pdes").val(data.record.Description);
                             $("#pname").val(data.record.Name);
+                            $("#p-help").val(data.record.PercentHelp);
 
                             var switchInstance = $("#proIsPrivate").data("kendoMobileSwitch");
                             switchInstance.check(data.record.IsPrivate);
@@ -310,7 +321,7 @@ GPRO.Product = function () {
             $("#" + Global.Element.PopupProduct).modal("hide");
         });
 
-        
+
     }
 
     function CheckValidate() {

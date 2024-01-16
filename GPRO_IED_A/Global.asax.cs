@@ -72,6 +72,7 @@ namespace GPRO_IED_A
                 this.CompanyId = userService.CompanyId;
                 this.intWorkshopIds = userService.intWorkshopIds;
                 this.WorkshopIds = userService.intWorkshopIds;
+                this.WorkshopId = userService.WorkshopId;
                 this.CompanyName = userService.CompanyName;
                 this.DepartmentName = userService.DepartmentName;
                 this.Description = userService.Description;
@@ -97,7 +98,8 @@ namespace GPRO_IED_A
             public List<IModule> ListModule { get; set; }
             public List<IMenuCategory> ListMenu { get; set; }
             public int[] WorkshopIds { get; set; } 
-            public string Name { get; set; }
+           // public int WorkshopId  { get; set; }
+           // public string Name { get; set; } 
 
             public IModule[] GetListModuleService(List<Module> listModule)
             {

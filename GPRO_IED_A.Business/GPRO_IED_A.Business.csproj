@@ -118,6 +118,7 @@
     <Compile Include="Model\CategoryModel.cs" />
     <Compile Include="Model\ReportEmployeeProduction.cs" />
     <Compile Include="Model\ReportProductionBalance.cs" />
+    <Compile Include="Model\UserPhaseModel.cs" />
     <Compile Include="Model\UsingTechLogModel.cs" />
     <Compile Include="Model\PhaseGroup_Phase_ManiModel.cs" />
     <Compile Include="Model\PhaseGroup_PhaseModel.cs" />

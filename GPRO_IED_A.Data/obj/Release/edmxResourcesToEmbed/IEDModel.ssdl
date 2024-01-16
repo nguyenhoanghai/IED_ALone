@@ -248,6 +248,7 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="CompanyId" Type="int" Nullable="false" />
     <Property Name="IsOwner" Type="bit" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="200" />
     <Property Name="UserName" Type="nvarchar" MaxLength="200" Nullable="false" />
     <Property Name="PassWord" Type="nvarchar" MaxLength="250" Nullable="false" />
     <Property Name="IsLock" Type="bit" Nullable="false" />
@@ -257,7 +258,6 @@
     <Property Name="Email" Type="nvarchar" MaxLength="250" />
     <Property Name="ImagePath" Type="nvarchar" MaxLength="200" />
     <Property Name="LockedTime" Type="datetime" />
-    <Property Name="Name" Type="nvarchar" MaxLength="200" />
     <Property Name="WorkshopIds" Type="varchar" MaxLength="250" />
     <Property Name="IsDeleted" Type="bit" Nullable="false" />
     <Property Name="CreatedUser" Type="int" Nullable="false" />
@@ -266,6 +266,8 @@
     <Property Name="UpdatedDate" Type="datetime" />
     <Property Name="DeletedUser" Type="int" />
     <Property Name="DeletedDate" Type="datetime" />
+    <Property Name="EmployeeId" Type="int" />
+    <Property Name="WorkshopId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="SUserRole">
     <Key>
@@ -407,6 +409,7 @@
     <Property Name="UpdatedDate" Type="datetime" />
     <Property Name="DeletedUser" Type="int" />
     <Property Name="DeletedDate" Type="datetime" />
+    <Property Name="Code" Type="varchar" MaxLength="50" />
   </EntityType>
   <EntityType Name="T_CompanySkill">
     <Key>
@@ -679,6 +682,7 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="LabourDivisionId" Type="int" Nullable="false" />
     <Property Name="TotalPosition" Type="int" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
     <Property Name="IsDeleted" Type="bit" Nullable="false" />
     <Property Name="CreatedUser" Type="int" Nullable="false" />
     <Property Name="CreatedDate" Type="datetime" Nullable="false" />
@@ -735,6 +739,7 @@
     <Property Name="CreatedUser" Type="int" Nullable="false" />
     <Property Name="CreatedDate" Type="datetime" Nullable="false" />
     <Property Name="PhaseId" Type="int" Nullable="false" />
+    <Property Name="EmployeeId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="T_LinePosition">
     <Key>
@@ -915,6 +920,11 @@
     <Property Name="DeletedUser" Type="int" />
     <Property Name="DeletedDate" Type="datetime" />
     <Property Name="IsLibrary" Type="bit" Nullable="false" />
+    <Property Name="Status" Type="nvarchar" MaxLength="150" Nullable="false" />
+    <Property Name="IsApprove" Type="bit" Nullable="false" />
+    <Property Name="Approver" Type="int" />
+    <Property Name="ApprovedDate" Type="datetime" />
+    <Property Name="ProductIds" Type="varchar" MaxLength="250" Nullable="false" />
   </EntityType>
   <EntityType Name="T_PhaseGroup_Phase_Mani">
     <Key>
@@ -962,6 +972,7 @@
     <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
     <Property Name="Img" Type="nvarchar(max)" />
     <Property Name="Description" Type="nvarchar(max)" />
+    <Property Name="PercentHelp" Type="float" Nullable="false" />
     <Property Name="IsDeleted" Type="bit" Nullable="false" />
     <Property Name="CompanyId" Type="int" />
     <Property Name="CreatedUser" Type="int" Nullable="false" />
@@ -994,6 +1005,7 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Code" Type="varchar" MaxLength="50" />
     <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" />
     <Property Name="IsDeleted" Type="bit" Nullable="false" />
@@ -1129,6 +1141,7 @@
     <Property Name="Type" Type="int" Nullable="false" />
     <Property Name="Note" Type="nvarchar" MaxLength="1000" />
     <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="IsView" Type="bit" Nullable="false" />
     <Property Name="CreatedDate" Type="datetime" Nullable="false" />
   </EntityType>
   <EntityType Name="T_WorkShop">
@@ -1337,6 +1350,30 @@
       </Principal>
       <Dependent Role="SRoLe">
         <PropertyRef Name="CompanyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SUser_HR_Employee">
+    <End Role="HR_Employee" Type="Self.HR_Employee" Multiplicity="0..1" />
+    <End Role="SUser" Type="Self.SUser" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HR_Employee">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SUser">
+        <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SUser_T_WorkShop">
+    <End Role="T_WorkShop" Type="Self.T_WorkShop" Multiplicity="1" />
+    <End Role="SUser" Type="Self.SUser" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_WorkShop">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SUser">
+        <PropertyRef Name="WorkshopId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1760,6 +1797,30 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_T_LinePoDailyQuantities_HR_Employee">
+    <End Role="HR_Employee" Type="Self.HR_Employee" Multiplicity="1" />
+    <End Role="T_LinePoDailyQuantities" Type="Self.T_LinePoDailyQuantities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HR_Employee">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LinePoDailyQuantities">
+        <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_LinePoDailyQuantities_SUser">
+    <End Role="SUser" Type="Self.SUser" Multiplicity="1" />
+    <End Role="T_LinePoDailyQuantities" Type="Self.T_LinePoDailyQuantities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_LinePoDailyQuantities">
+        <PropertyRef Name="CreatedUser" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_T_LinePoDailyQuantities_T_CA_Phase">
     <End Role="T_CA_Phase" Type="Self.T_CA_Phase" Multiplicity="1" />
     <End Role="T_LinePoDailyQuantities" Type="Self.T_LinePoDailyQuantities" Multiplicity="*" />
@@ -2009,6 +2070,18 @@
       </Principal>
       <Dependent Role="T_PhaseGroup_Phase_Mani">
         <PropertyRef Name="PhaseGroup_PhaseId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_T_PhaseGroup_Phase_SUser">
+    <End Role="SUser" Type="Self.SUser" Multiplicity="0..1" />
+    <End Role="T_PhaseGroup_Phase" Type="Self.T_PhaseGroup_Phase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_PhaseGroup_Phase">
+        <PropertyRef Name="Approver" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -2367,6 +2440,14 @@
       <End Role="SCompany" EntitySet="SCompany" />
       <End Role="SRoLe" EntitySet="SRoLe" />
     </AssociationSet>
+    <AssociationSet Name="FK_SUser_HR_Employee" Association="Self.FK_SUser_HR_Employee">
+      <End Role="HR_Employee" EntitySet="HR_Employee" />
+      <End Role="SUser" EntitySet="SUser" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SUser_T_WorkShop" Association="Self.FK_SUser_T_WorkShop">
+      <End Role="T_WorkShop" EntitySet="T_WorkShop" />
+      <End Role="SUser" EntitySet="SUser" />
+    </AssociationSet>
     <AssociationSet Name="FK_SUserRole_SRoLe" Association="Self.FK_SUserRole_SRoLe">
       <End Role="SRoLe" EntitySet="SRoLe" />
       <End Role="SUserRole" EntitySet="SUserRole" />
@@ -2507,6 +2588,14 @@
       <End Role="T_WorkShop" EntitySet="T_WorkShop" />
       <End Role="T_Line" EntitySet="T_Line" />
     </AssociationSet>
+    <AssociationSet Name="FK_T_LinePoDailyQuantities_HR_Employee" Association="Self.FK_T_LinePoDailyQuantities_HR_Employee">
+      <End Role="HR_Employee" EntitySet="HR_Employee" />
+      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_LinePoDailyQuantities_SUser" Association="Self.FK_T_LinePoDailyQuantities_SUser">
+      <End Role="SUser" EntitySet="SUser" />
+      <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
+    </AssociationSet>
     <AssociationSet Name="FK_T_LinePoDailyQuantities_T_CA_Phase" Association="Self.FK_T_LinePoDailyQuantities_T_CA_Phase">
       <End Role="T_CA_Phase" EntitySet="T_CA_Phase" />
       <End Role="T_LinePoDailyQuantities" EntitySet="T_LinePoDailyQuantities" />
@@ -2590,6 +2679,10 @@
     <AssociationSet Name="FK_T_PhaseGroup_Phase_Mani_T_PhaseGroup_Phase" Association="Self.FK_T_PhaseGroup_Phase_Mani_T_PhaseGroup_Phase">
       <End Role="T_PhaseGroup_Phase" EntitySet="T_PhaseGroup_Phase" />
       <End Role="T_PhaseGroup_Phase_Mani" EntitySet="T_PhaseGroup_Phase_Mani" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_PhaseGroup_Phase_SUser" Association="Self.FK_T_PhaseGroup_Phase_SUser">
+      <End Role="SUser" EntitySet="SUser" />
+      <End Role="T_PhaseGroup_Phase" EntitySet="T_PhaseGroup_Phase" />
     </AssociationSet>
     <AssociationSet Name="FK_T_PhaseGroup_Phase_SWorkerLevel" Association="Self.FK_T_PhaseGroup_Phase_SWorkerLevel">
       <End Role="SWorkerLevel" EntitySet="SWorkerLevel" />

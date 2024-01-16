@@ -40,7 +40,6 @@ namespace GPRO_IED_A.Data
         public DbSet<T_ApplyPressureLibrary> T_ApplyPressureLibrary { get; set; }
         public DbSet<T_CA_Phase_Mani> T_CA_Phase_Mani { get; set; }
         public DbSet<T_CA_Phase_TimePrepare> T_CA_Phase_TimePrepare { get; set; }
-        public DbSet<T_CommodityAnalysis> T_CommodityAnalysis { get; set; }
         public DbSet<T_CompanySkill> T_CompanySkill { get; set; }
         public DbSet<T_CompanySkillDetail> T_CompanySkillDetail { get; set; }
         public DbSet<T_Customer> T_Customer { get; set; }
@@ -61,14 +60,12 @@ namespace GPRO_IED_A.Data
         public DbSet<T_ManipulationTypeLibrary> T_ManipulationTypeLibrary { get; set; }
         public DbSet<T_NatureCutsLibrary> T_NatureCutsLibrary { get; set; }
         public DbSet<T_PhaseGroup> T_PhaseGroup { get; set; }
-        public DbSet<T_ProductGroup> T_ProductGroup { get; set; }
         public DbSet<T_StopPrecisionLibrary> T_StopPrecisionLibrary { get; set; }
         public DbSet<T_TechProcessVersionDetail> T_TechProcessVersionDetail { get; set; }
         public DbSet<T_TimePrepare> T_TimePrepare { get; set; }
         public DbSet<T_TimeTypePrepare> T_TimeTypePrepare { get; set; }
         public DbSet<T_Line> T_Line { get; set; }
         public DbSet<T_WorkShop> T_WorkShop { get; set; }
-        public DbSet<T_Product> T_Product { get; set; }
         public DbSet<T_ProductFile> T_ProductFile { get; set; }
         public DbSet<T_LinePosition> T_LinePosition { get; set; }
         public DbSet<T_LabourDivision> T_LabourDivision { get; set; }
@@ -83,9 +80,12 @@ namespace GPRO_IED_A.Data
         public DbSet<T_CA_Phase> T_CA_Phase { get; set; }
         public DbSet<T_TechProcessVersion> T_TechProcessVersion { get; set; }
         public DbSet<T_LabourDevision_Ver> T_LabourDevision_Ver { get; set; }
-        public DbSet<SUser> SUsers { get; set; }
         public DbSet<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
-        public DbSet<T_PhaseGroup_Phase> T_PhaseGroup_Phase { get; set; }
         public DbSet<T_UsingTechLog> T_UsingTechLog { get; set; }
+        public DbSet<T_PhaseGroup_Phase> T_PhaseGroup_Phase { get; set; }
+        public DbSet<SUser> SUsers { get; set; }
+        public DbSet<T_ProductGroup> T_ProductGroup { get; set; }
+        public DbSet<T_CommodityAnalysis> T_CommodityAnalysis { get; set; }
+        public DbSet<T_Product> T_Product { get; set; }
     }
 }

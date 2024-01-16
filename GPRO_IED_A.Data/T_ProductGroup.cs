@@ -20,6 +20,7 @@ namespace GPRO_IED_A.Data
         }
     
         public int Id { get; set; }
+        public string Code { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public bool IsDeleted { get; set; }
@@ -31,7 +32,7 @@ namespace GPRO_IED_A.Data
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public Nullable<int> CompanyId { get; set; }
     
-        public virtual ICollection<T_Product> T_Product { get; set; }
         public virtual SCompany SCompany { get; set; }
+        public virtual ICollection<T_Product> T_Product { get; set; }
     }
 }

@@ -121,5 +121,10 @@ namespace GPRO.Core.Interface
             get;
             set;
         }
+        int  WorkshopId 
+        {
+            get;
+            set;
+        }
     }
 }

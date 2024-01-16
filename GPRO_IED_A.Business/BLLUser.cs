@@ -87,16 +87,17 @@ namespace GPRO_IED_A.Business
                         Email = c.Email,
                         EmployeeName = c.Name,
                         UserName = c.UserName,
-                        WorkshopId = c.WorkshopIds,
+                        strWorkshopIds = c.WorkshopIds,
                         Name = c.Name,
                         LineId = (c.EmployeeId.HasValue ? c.HR_Employee.LineId ?? 0 : 0),
-                        EmployeeId = c.EmployeeId ?? 0
+                        EmployeeId = c.EmployeeId ?? 0,
+                        WorkshopId = c.WorkshopId, 
                     }).FirstOrDefault();
                     if (user != null)
                     {
-                        if (!string.IsNullOrEmpty(user.WorkshopId))
+                        if (!string.IsNullOrEmpty(user.strWorkshopIds))
                         {
-                            user.intWorkshopIds = user.WorkshopId.Split(',').Select(x => Convert.ToInt32(x)).ToArray();
+                            user.intWorkshopIds = user.strWorkshopIds.Split(',').Select(x => Convert.ToInt32(x)).ToArray();
                         }
                         else
                             user.intWorkshopIds = new int[] { };
@@ -229,7 +230,10 @@ namespace GPRO_IED_A.Business
                     LockedTime = x.LockedTime,
                     Name = x.Name,
                     EmployeeId = x.EmployeeId ?? 0,
-                    EmployeeName = (x.EmployeeId.HasValue ? x.HR_Employee.Name : "")
+                    EmployeeName = (x.EmployeeId.HasValue ? x.HR_Employee.Name : ""),
+                    WorkshopId = x.WorkshopId,
+                    WorkshopName = x.T_WorkShop.Name,
+
                 }).FirstOrDefault();
                 return user;
             }
@@ -307,6 +311,7 @@ namespace GPRO_IED_A.Business
                             obj.UpdatedUser = model.ActionUser;
                             obj.WorkshopIds = model.WorkshopIds;
                             obj.EmployeeId = model.EmployeeId;
+                            obj.WorkshopId = model.WorkshopId;
                             obj.UpdatedDate = DateTime.Now;
                             #endregion
 
@@ -678,7 +683,9 @@ namespace GPRO_IED_A.Business
                             Name = x.Name,
                             WorkshopIds = x.WorkshopIds,
                             EmployeeId = x.EmployeeId ?? 0,
-                            EmployeeName = (x.EmployeeId.HasValue ? x.HR_Employee.Name : "")
+                            EmployeeName = (x.EmployeeId.HasValue ? x.HR_Employee.Name : ""),
+                            WorkshopId = x.WorkshopId,
+                              WorkshopName = x.T_WorkShop.Name,
                         }).OrderBy(sorting).ToList();
                         usersReturn = new PagedList<UserModel>(usersModel, pageNumber, pageSize);
                     }

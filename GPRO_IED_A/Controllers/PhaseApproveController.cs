@@ -20,7 +20,7 @@ namespace GPRO_IED_A.Controllers
             return View();
         }
 
-        public JsonResult Gets(bool fromLib, int jtStartIndex = 0, int jtPageSize = 1000, string jtSorting = "")
+        public JsonResult Gets(bool fromLib, string phaseName, int jtStartIndex = 0, int jtPageSize = 100, string jtSorting = "")
         {
             try
             {
@@ -29,13 +29,13 @@ namespace GPRO_IED_A.Controllers
                     JsonDataResult.Result = "OK";
                     if (fromLib)
                     {
-                        var phases = BLLPhaseGroup_Phase.Instance.Gets(jtStartIndex, jtPageSize, jtSorting);
+                        var phases = BLLPhaseGroup_Phase.Instance.Gets(phaseName, jtStartIndex, jtPageSize, jtSorting);
                         JsonDataResult.Records = phases;
                         JsonDataResult.TotalRecordCount = phases.TotalItemCount;
                     }
                     else
                     {
-                        var phases = BLLCommo_Ana_Phase.Instance.Gets(jtStartIndex, jtPageSize, jtSorting);
+                        var phases = BLLCommo_Ana_Phase.Instance.Gets(phaseName, jtStartIndex, jtPageSize, jtSorting);
                         JsonDataResult.Records = phases;
                         JsonDataResult.TotalRecordCount = phases.TotalItemCount;
                     }

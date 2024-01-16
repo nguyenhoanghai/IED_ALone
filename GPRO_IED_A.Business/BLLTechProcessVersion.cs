@@ -296,6 +296,7 @@ namespace GPRO_IED_A.Business
                                            Id = x.Id,
                                            TechProcessVersionId = x.TechProcessVersionId,
                                            PhaseGroupId = x.T_CA_Phase.T_PhaseGroup.Id,
+                                           PhaseGroupCode = x.T_CA_Phase.T_PhaseGroup.Code,
                                            CA_PhaseId = x.CA_PhaseId,
                                            PhaseCode = x.T_CA_Phase.Code,
                                            PhaseName = x.T_CA_Phase.Name,
@@ -309,13 +310,18 @@ namespace GPRO_IED_A.Business
                                            TimeByPercent = (x.Percent > 0 ? Math.Round(((x.T_CA_Phase.TotalTMU * 100) / x.Percent), 3) : 0),
                                            Worker = x.Worker,
                                            De_Percent = 0,
-                                           Description = x.Description == null ? "" : x.Description,
+                                           Description = x.T_CA_Phase.Description == null ? "" : x.T_CA_Phase.Description,
                                            Coefficient = x.T_CA_Phase.SWorkerLevel.Coefficient,
                                            WorkerLevelId = x.T_CA_Phase.WorkerLevelId,
                                            WorkerLevelName = x.T_CA_Phase.SWorkerLevel.Name,
                                            Index = x.T_CA_Phase.Index,
                                            Node = x.T_CA_Phase.Node,
-                                           ParentId = x.T_CA_Phase.ParentId
+                                           ParentId = x.T_CA_Phase.ParentId,
+                                           ////TMUThaoTac = x.T_CA_Phase.T_CA_Phase_Mani.Where(c => !c.IsDeleted).Sum(c => c.TotalTMU),
+                                           //TMU_TGCB = x.T_CA_Phase.T_CA_Phase_TimePrepare.Sum(c=>c.T_TimePrepare.TMUNumber),
+                                           HaoPhiThaoTac = x.T_CA_Phase.PercentWasteManipulation,
+                                           HaoPhiThietBi = x.T_CA_Phase.PercentWasteEquipment,
+                                           
                                        }).OrderBy(x => x.ParentId).ThenBy(x => x.Index).ToList();
 
                         details = details.GroupBy(x => x.CA_PhaseId).Select(x => x.First()).ToList();
@@ -343,30 +349,8 @@ namespace GPRO_IED_A.Business
                             }
                         }
                         var phaseIds = details.Select(x => x.CA_PhaseId).Distinct().ToList();
-                        if (phaseIds != null && phaseIds.Count > 0)
-                        {
-                            var timePrepares = _db.T_CA_Phase_TimePrepare.Where(x => !x.IsDeleted && phaseIds.Contains(x.Commo_Ana_PhaseId)).Select(x => new Commo_Ana_Phase_TimePrepareModel()
-                            {
-                                Id = x.Id,
-                                Commo_Ana_PhaseId = x.Commo_Ana_PhaseId,
-                                TMUNumber = x.T_TimePrepare.TMUNumber
-                            }).ToList();
-                            if (timePrepares != null && timePrepares.Count > 0)
-                            {
-                                double tmu = 0, time = 0;
-                                var cfObj = _db.T_IEDConfig.FirstOrDefault(x => !x.IsDeleted && x.Name.Trim().ToUpper().Equals(eIEDConfigName.TMU.Trim().ToUpper()));
-                                if (cfObj != null && !string.IsNullOrEmpty(cfObj.Value))
-                                    double.TryParse(cfObj.Value, out tmu);
-                                foreach (var item in details)
-                                {
-                                    time = timePrepares.Where(x => x.Commo_Ana_PhaseId == item.CA_PhaseId).Sum(x => x.TMUNumber);
-                                    item.TimePrepare = time > 0 ? time / tmu : 0;
-                                }
-                            }
-                        }
-
                         if (!string.IsNullOrEmpty(node))
-                            techVersion.details.AddRange(_db.T_CA_Phase.Where(x => !x.IsDeleted && x.Node.Contains(node) && !phaseIds.Contains(x.Id) && x.IsApprove)
+                            techVersion.details.AddRange(_db.T_CA_Phase.Where(x => !x.IsDeleted && x.Node.Contains(node) && !phaseIds.Contains(x.Id))
                                 .Select(x => new TechProcessVerDetailModel()
                                 {
                                     Id = 0,
@@ -383,8 +367,17 @@ namespace GPRO_IED_A.Business
                                     EquipmentGroupCode = x.EquipmentId.HasValue ? x.T_Equipment.T_EquipmentGroup.GroupCode : "",
                                     Description = x.Description == null ? "" : x.Description,
                                     Coefficient = x.SWorkerLevel.Coefficient,
-                                    WorkerLevelName = x.SWorkerLevel.Name
-                                }).OrderBy(x => x.Index).ThenBy(x => x.PhaseCode).ToList());
+                                    WorkerLevelName = x.SWorkerLevel.Name,
+                                    //TMUThaoTac = x.T_CA_Phase_Mani.Sum(c => c.TotalTMU),
+                                    //TMU_TGCB = x.T_CA_Phase.T_CA_Phase_TimePrepare.Sum(c=>c.T_TimePrepare.TMUNumber),
+                                    HaoPhiThaoTac = x.PercentWasteManipulation,
+                                    HaoPhiThietBi = x.PercentWasteEquipment,
+                                    Node = x.Node,
+                                    Percent = 100,
+                                    TimeByPercent = (x.TotalTMU == 0 ? 0 : Math.Round((x.TotalTMU * 100) / 100, 3))
+                                })
+                                .OrderBy(x => x.Index)
+                                .ThenBy(x => x.PhaseCode).ToList());
                         #endregion
                     }
                     else
@@ -411,7 +404,11 @@ namespace GPRO_IED_A.Business
                                        Description = x.Description == null ? "" : x.Description,
                                        Node = x.Node,
                                        Coefficient = x.SWorkerLevel.Coefficient,
-                                       WorkerLevelName = x.SWorkerLevel.Name
+                                       WorkerLevelName = x.SWorkerLevel.Name,
+                                       TMUThaoTac = x.T_CA_Phase_Mani.Sum(c => c.TotalTMU),
+                                       //TMU_TGCB = x.T_CA_Phase.T_CA_Phase_TimePrepare.Sum(c=>c.T_TimePrepare.TMUNumber),
+                                       HaoPhiThaoTac = x.PercentWasteManipulation,
+                                       HaoPhiThietBi = x.PercentWasteEquipment,
                                    })
                                    .OrderBy(x => x.Index)
                                .ThenBy(x => x.PhaseCode)
@@ -420,27 +417,82 @@ namespace GPRO_IED_A.Business
 
                     if (techVersion.details.Count > 0)
                     {
-                        int _parentId = int.Parse(techVersion.details.First().Node.Split(',')[1]);
-                        var parentObj = _db.T_CommodityAnalysis.FirstOrDefault(x => x.Id == _parentId);
-                        if (parentObj != null)
-                        {
-                            var user = _db.SUsers.FirstOrDefault(x => x.Id == parentObj.CreatedUser);
-                            techVersion.CreateBy = user.Name;
-                            techVersion.CreateAt = parentObj.CreatedDate.ToString("dd/MM/yyyy");
+                        string _node = techVersion.details.First().Node;
+                        int cawk = Convert.ToInt32(_node.Split(',')[1]);
+                        var proObj = _db.T_CommodityAnalysis.FirstOrDefault(x => x.Id == cawk);
+                        cawk = Convert.ToInt32(_node.Split(',')[2]);
+                        var wsObj = _db.T_CommodityAnalysis.FirstOrDefault(x => x.Id == cawk);
+                        string[] wsDes = (!string.IsNullOrEmpty(wsObj.Description) ? wsObj.Description : "").Split('|').ToArray();
+                        techVersion.DonVi = !string.IsNullOrEmpty(wsDes[0]) ? wsDes[0] : "";
+                        techVersion.NhomMe = !string.IsNullOrEmpty(wsDes[2]) ? wsDes[2] : "";
 
+                        cawk = Convert.ToInt32(_node.Split(',')[4]);
+                        var phaseGroupObjs = _db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectType == (int)eObjectType.isPhaseGroup).Select(x => new { Id = x.Id, Code = x.Code });
+
+                        if (proObj != null)
+                        {
+                            var user = _db.SUsers.FirstOrDefault(x => x.Id == proObj.CreatedUser);
+                            techVersion.CreateBy = user.Name;
+                            techVersion.CreateAt = proObj.CreatedDate.ToString("dd/MM/yyyy");
+                            var product = _db.T_Product.FirstOrDefault(x => !x.IsDeleted && x.Id == proObj.ObjectId);
+                            if (product != null)
+                                techVersion.Pro_PercentHelp = product.PercentHelp;
                             techVersion
                                 .productImgs
                                 .AddRange(_db.T_ProductFile
-                                .Where(x => !x.IsDeleted && x.ProductId == parentObj.ObjectId)
+                                .Where(x => !x.IsDeleted && x.ProductId == proObj.ObjectId)
                                 .Select(x => new ModelSelectItem()
                                 {
                                     Value = x.Id,
                                     Name = x.FileName,
                                     Code = x.Path,
                                     Data = x.ProductId
-                                })
-                            .ToList());
+                                }).ToList());
                         }
+
+                        var phaseIds = techVersion.details.Select(x => x.CA_PhaseId).Distinct().ToList();
+                        if (phaseIds != null && phaseIds.Count > 0)
+                        {
+                            var timePrepares = _db.T_CA_Phase_TimePrepare.Where(x => !x.IsDeleted && phaseIds.Contains(x.Commo_Ana_PhaseId)).Select(x => new Commo_Ana_Phase_TimePrepareModel()
+                            {
+                                Id = x.Id,
+                                Commo_Ana_PhaseId = x.Commo_Ana_PhaseId,
+                                TMUNumber = x.T_TimePrepare.TMUNumber
+                            }).ToList();
+
+                            var manis = _db.T_CA_Phase_Mani.Where(x => !x.IsDeleted && phaseIds.Contains(x.CA_PhaseId)).Select(x => new
+                            {
+                                Id = x.Id,
+                                CA_PhaseId = x.CA_PhaseId,
+                                TMUNumber = x.TotalTMU
+                            }).ToList();
+
+                            double tmu = 0, time = 0;
+                            var cfObj = _db.T_IEDConfig.FirstOrDefault(x => !x.IsDeleted && x.Name.Trim().ToUpper().Equals(eIEDConfigName.TMU.Trim().ToUpper()));
+                            if (cfObj != null && !string.IsNullOrEmpty(cfObj.Value))
+                                double.TryParse(cfObj.Value, out tmu);
+
+
+                            for (int i = 0; i < techVersion.details.Count; i++)
+                            {
+                                cawk = Convert.ToInt32(techVersion.details[i].Node.Split(',')[4]);
+                                var pGroup = phaseGroupObjs.FirstOrDefault(x => x.Id == cawk);
+                                techVersion.details[i].PhaseCode = GenerateCode(techVersion.details[i].PhaseCode, ((!string.IsNullOrEmpty(wsDes[1]) ? wsDes[1] : "") + "" + proObj.Code + "" + (pGroup != null ? pGroup.Code : "")));
+
+                                time = timePrepares.Where(x => x.Commo_Ana_PhaseId == techVersion.details[i].CA_PhaseId).Sum(x => x.TMUNumber);
+                                techVersion.details[i].TimePrepare = time > 0 ? time / tmu : 0;
+
+                                time = manis.Where(x => x.CA_PhaseId == techVersion.details[i].CA_PhaseId).Sum(x => x.TMUNumber);
+                                techVersion.details[i].TMUThaoTac = time > 0 ? time / tmu : 0;
+                            }
+                        }
+
+                        if (wsObj != null)
+                        {
+                            var px = _db.T_WorkShop.FirstOrDefault(x => !x.IsDeleted && x.Id == wsObj.ObjectId);
+                            techVersion.WorkShopName = px != null ? px.Code : "";
+                        }
+
                     }
                     return techVersion;
                 }
@@ -450,6 +502,24 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
-         
-    } 
+        public string GenerateCode(string so, string ma)
+        {
+            switch (so.Length)
+            {
+                case 1:
+                    return ma + "00000" + so;
+                case 2:
+                    return ma + "0000" + so;
+                case 3:
+                    return ma + "000" + so;
+                case 4:
+                    return ma + "00" + so;
+                case 5:
+                    return ma + "0" + so;
+                case 6:
+                    return ma + so;
+            }
+            return "";
+        }
+    }
 }

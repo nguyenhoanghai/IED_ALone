@@ -111,8 +111,10 @@ E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\SystemGPRO.Serial.dll
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\WebGrease.dll
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\GPRO.Core.pdb
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\GPRO_IED_A.Business.pdb
+E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\GPRO_IED_A.Business.dll.config
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\GPRO_IED_A.Data.pdb
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\GPRO_IED_A.Data.dll.config
+E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\Newtonsoft.Json.xml
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\System.Web.Helpers.xml
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\System.Web.Mvc.xml
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\System.Web.Optimization.xml
@@ -121,7 +123,6 @@ E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\System.Web.WebPages.xml
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\System.Web.WebPages.Deployment.xml
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\System.Web.WebPages.Razor.xml
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\Antlr3.Runtime.pdb
-E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\Newtonsoft.Json.xml
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\System.Net.Http.Formatting.xml
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\System.Web.Http.xml
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\System.Web.Http.WebHost.xml
@@ -142,5 +143,4 @@ E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\obj\Release\GPRO_IED_A.csproj.CoreCompileIn
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\obj\Release\GPRO_IED_A.csproj.CopyComplete
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\obj\Release\GPRO_IED_A.dll
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\obj\Release\GPRO_IED_A.pdb
-E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\bin\GPRO_IED_A.Business.dll.config
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A\obj\Release\GPRO_IED_A.csproj.AssemblyReference.cache

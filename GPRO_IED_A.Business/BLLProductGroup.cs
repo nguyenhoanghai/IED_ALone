@@ -36,7 +36,7 @@ namespace GPRO_IED_A.Business
             return obj.CreatedUser == actionUser;
         }
 
-        public PagedList<ProductGroupModel> GetList(string keyWord,  int companyId, int[] relationCompanyId, int startIndexRecord, int pageSize, string sorting)
+        public PagedList<ProductGroupModel> GetList(string keyWord, int companyId, int[] relationCompanyId, int startIndexRecord, int pageSize, string sorting)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace GPRO_IED_A.Business
 
                     IQueryable<T_ProductGroup> objs = null;
                     if (string.IsNullOrEmpty(keyWord))
-                        objs = db.T_ProductGroup.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0)) ).OrderByDescending(x => x.CreatedDate);
+                        objs = db.T_ProductGroup.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0))).OrderByDescending(x => x.CreatedDate);
                     else
                         objs = db.T_ProductGroup.Where(x => !x.IsDeleted && (x.CompanyId == null || x.CompanyId == companyId || relationCompanyId.Contains(x.CompanyId ?? 0)) && x.Name.Trim().ToUpper().Contains(keyWord.Trim().ToUpper())).OrderByDescending(x => x.CreatedDate);
 
@@ -55,10 +55,11 @@ namespace GPRO_IED_A.Business
                     return new PagedList<ProductGroupModel>(objs.Select(x => new ProductGroupModel()
                     {
                         Id = x.Id,
-                        Name = x.Name, 
+                        Code = x.Code,
+                        Name = x.Name,
                         Description = x.Description,
                         IsPrivate = (x.CompanyId == null ? true : false),
-                        CompanyId = x.CompanyId 
+                        CompanyId = x.CompanyId
                     }).OrderBy(sorting).ToList(), pageNumber, pageSize);
                 }
             }
@@ -67,7 +68,7 @@ namespace GPRO_IED_A.Business
                 throw ex;
             }
         }
-         
+
         public ResponseBase InsertOrUpdate(ProductGroupModel model, bool isOwner)
         {
             try
@@ -75,14 +76,14 @@ namespace GPRO_IED_A.Business
                 using (db = new IEDEntities())
                 {
                     var result = new ResponseBase();
-                    if (CheckExists(model.Name.Trim().ToUpper(), model.Id, model.CompanyId ))
+                    if (CheckExists(model.Name.Trim().ToUpper(), model.Id, model.CompanyId))
                     {
                         result.IsSuccess = false;
                         result.Errors.Add(new Error() { MemberName = "Insert", Message = "Tên nhóm mã hàng này đã tồn tại. Vui lòng chọn lại Tên khác !." });
                         return result;
                     }
                     else
-                    { 
+                    {
                         T_ProductGroup obj;
                         if (model.Id == 0)
                         {
@@ -113,11 +114,18 @@ namespace GPRO_IED_A.Business
                                 else
                                 {
                                     obj.CompanyId = model.CompanyId;
-                                    obj.Name = model.Name; 
+                                    obj.Code = model.Code;
+                                    obj.Name = model.Name;
                                     obj.Description = model.Description;
                                     obj.UpdatedUser = model.ActionUser;
                                     obj.UpdatedDate = DateTime.Now;
-                                     
+
+                                    //update code  phân tích
+                                    var proIds = db.T_Product.Where(x => !x.IsDeleted && x.ProductGroupId == obj.Id).Select(x => x.Id).ToList();
+                                    if (proIds.Count > 0)
+                                        for (int i = 0; i < proIds.Count; i++)
+                                            db.Database.ExecuteSqlCommand("update T_CommodityAnalysis set Code=N'" + model.Code + "', UpdatedUser =" + model.ActionUser + " , UpdatedDate='" + obj.UpdatedDate + "' where IsDeleted=0 and ObjectId =" + proIds[i] + " and ObjectType=" + (int)eObjectType.isCommodity);
+
                                     db.SaveChanges();
                                     result.IsSuccess = true;
                                 }
@@ -134,12 +142,12 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        private bool CheckExists(string code, int? id, int? companyId )
+        private bool CheckExists(string code, int? id, int? companyId)
         {
             try
             {
-                T_ProductGroup obj = null; 
-                    obj = db.T_ProductGroup.FirstOrDefault(x => !x.IsDeleted && x.CompanyId == companyId && x.Name.Trim().ToUpper().Equals(code) && x.Id != id);
+                T_ProductGroup obj = null;
+                obj = db.T_ProductGroup.FirstOrDefault(x => !x.IsDeleted && x.CompanyId == companyId && x.Name.Trim().ToUpper().Equals(code) && x.Id != id);
 
                 if (obj == null)
                     return false;
@@ -212,13 +220,14 @@ namespace GPRO_IED_A.Business
                         x => new ModelSelectItem()
                         {
                             Value = x.Id,
+                            Code = x.Code,
                             Name = x.Name
                         }).ToList();
 
                     //if (productTypes != null && productTypes.Count() > 0)
                     //{
                     //    listModelSelect.Add(new ModelSelectItem() { Value = 0, Name = " - -  Chọn nhóm mã hàng  - - " });
-                       listModelSelect.AddRange(productTypes);
+                    listModelSelect.AddRange(productTypes);
                     //}
                     //else
                     //    listModelSelect.Add(new ModelSelectItem() { Value = 0, Name = "  Không có nhóm mã hàng  " });
@@ -245,6 +254,7 @@ namespace GPRO_IED_A.Business
                         x => new ModelSelectItem()
                         {
                             Value = x.Id,
+                            Code = x.Code,
                             Name = x.Name
                         }).ToList();
 

@@ -1,7 +1,7 @@
 ﻿@using GPRO_IED_A.App_Global;
 @{
     ViewBag.Title = "Tài khoản";
-     Layout = null;
+    Layout = null;
     List<SelectListItem> items = null;
     if (ViewData["roles"] != null)
     {
@@ -37,7 +37,7 @@
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
-                    <input type="hidden" txt="userId" data-bind="value: Id" />
+                    <input type="hidden" txt="userId"  value="0" />
                     <input id="required" type="text" style="display: none" />
 
                     <div class="col-md-5" style="padding-left:15px; text-align:center  ">
@@ -52,7 +52,7 @@
                     <div class="col-md-7">
                         <div class="col-md-12  " id="rowUsername">
                             <label class="control-label">Tên Tài Khoản <span class="required-class">*</span></label>
-                            <input class="form-control" txt="userName" data-bind="value: UserName" type="text" placeholder="Nhập Tên Tài Khoản ..." />
+                            <input class="form-control" txt="userName"   type="text" placeholder="Nhập Tên Tài Khoản ..." />
                         </div>
                         <div class="col-md-12">
                             <label class="control-label">Họ Tên<span class="required-class">*</span></label>
@@ -60,14 +60,14 @@
                         </div>
                         <div class="col-md-12">
                             <label class="control-label">Email</label>
-                            <input class="form-control" txt="email" data-bind="value: Email" type="text" placeholder="Nhập địa chỉ thư điện tử ..." />
+                            <input class="form-control" txt="email"   type="text" placeholder="Nhập địa chỉ thư điện tử ..." />
                         </div>
                     </div>
                     <div class="clearfix"></div>
 
                     <div class="col-md-6">
                         <label class="control-label">Mật Khẩu <span class="required-class">*</span></label>
-                        <input class="form-control" txt="txtpass" data-bind="value: PassWord" type="password" placeholder="Nhập Mật Khẩu ..." />
+                        <input class="form-control" txt="txtpass"   type="password" placeholder="Nhập Mật Khẩu ..." />
                     </div>
                     <div class="col-md-6">
                         <label class="control-label">Xác nhận mật khẩu <span class="required-class">*</span></label>
@@ -86,12 +86,19 @@
                         @Html.DropDownList("userRoles", items, null, new { @select = "userRoles", @class = "chosen-select", @multiple = "", @placeholder = "Chọn quyền cho Tài Khoản..." })
                     </div>
                     <div class="col-md-12 " style="clear:both">
-                        <label class="control-label">Phân xưởng</label><br />
+                        <label class="control-label">Phân xưởng phụ trách</label><br />
                         @Html.DropDownList("workshops", wkitems, null, new { @select = "workshops", @class = "chosen-select", @multiple = "", @placeholder = "Chọn phân xưởng" })
 
                     </div>
-                    <div class="col-md-12 " style="clear:both">
-                        <label class="control-label">Nhân viên</label> 
+                    <div class="col-md-6 " >
+                        <label class="control-label">Đơn vị <span class="required-class">*</span></label>
+                        <div class="select-box">
+                            <select id="workshops-select"></select>
+                            <i re-workshops class="fa fa-refresh clickable red"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-6 " >
+                        <label class="control-label">Nhân viên</label>
                         <div class="select-box">
                             <select id="user-employ-select"></select>
                             <i re-user-employ class="fa fa-refresh clickable red"></i>
@@ -127,10 +134,10 @@
             <div class="modal-body">
                 <div class="container-fluid">
                     <div class="rows">
-                        <input type="hidden" txt="userId" data-bind="value: Id" />
+                        <input type="hidden" txt="_userId"  value="0" />
                         <div class="col-left" style="width: 95%">
                             <label class="control-label">Yêu cầu từ Tài Khoản </label>
-                            <textarea data-bind="value: NoteForgotPassword" disabled style="width: 100%"></textarea>
+                            <textarea   disabled style="width: 100%"></textarea>
                         </div>
 
                     </div>
