@@ -22,6 +22,8 @@ namespace GPRO_IED_A.Controllers
             ViewBag.ListManipulationCode = BLLManipulationLibrary.Instance.GetListManipulationCode();
             ViewBag.ManipulationExpendDefault = !string.IsNullOrEmpty(BLLIEDConfig.Instance.GetValueByCode("ManipulationExpend")) ? BLLIEDConfig.Instance.GetValueByCode("ManipulationExpend") : "0";
             ViewBag.isApprover = isPhaseApprover;
+            ViewBag.WorkshopId = UserContext.WorkshopId;
+
             return View();
         }
 

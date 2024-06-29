@@ -52,4 +52,23 @@ namespace GPRO_IED_A.Business.Model
             timePrepares = new List<Commo_Ana_Phase_TimePrepareModel>();
         }
     }
+
+    public class PhaseGroup_Phase_PLModel
+    {
+        public int Id { get; set; }
+        public int Index { get; set; }
+        public string Name { get; set; }
+        public string Code { get; set; }
+        public int WorkerLevelId { get; set; }
+        public string WorkerLevelName { get; set; }
+        public int PhaseGroupId { get; set; }
+        public string PhaseGroupName { get; set; }
+        public double TotalTMU { get; set; }      
+        public bool IsLibrary { get; set; }
+        public string Status { get; set; }
+        public bool IsApprove { get; set; }
+        public string ProductIds { get; set; }
+        public string ProductNames { get; set; }
+        public string Description { get; set; }
+    }
 }

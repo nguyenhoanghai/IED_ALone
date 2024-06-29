@@ -56,4 +56,24 @@ namespace GPRO_IED_A.Business.Model
             actions = new List<Commo_Ana_Phase_ManiModel>();
         }
     }
+
+    public class Commo_Ana_PhaseModel_PL
+    {
+        public int Id { get; set; }
+        public int Index { get; set; }
+        public string Name { get; set; }
+        public string Code { get; set; }
+        public string FullCode { get; set; }
+        public string Description { get; set; }
+        public double TotalTMU { get; set; }         
+        public string WorkerLevelName { get; set; }         
+        public string EquipName { get; set; }         
+        public bool IsLibrary { get; set; }
+        public string Status { get; set; }    
+        public bool IsApprove { get; set; }
+        public Commo_Ana_PhaseModel_PL()
+        { 
+        }
+    }
+
 }

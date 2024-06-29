@@ -48,6 +48,7 @@ namespace GPRO_IED_A.Business
                     T_CA_Phase phase = null;
                     T_CA_Phase_TimePrepare timePrepare = null;
                     T_CA_Phase_Mani maniVerDetail;
+                    DateTime now = DateTime.Now;
                     if (CheckExists(model.Name.Trim().ToUpper(), model.Id, model.ParentId, false))
                     {
                         result.IsSuccess = false;
@@ -119,39 +120,39 @@ namespace GPRO_IED_A.Business
                             db.SaveChanges();
 
                             //TODO MDG
-                            // if (isMDGVersion)
-                            //{
-                            //version cũ
-                            //TODO cđ cần duyệt mới dc sử dụng
-                            //ktra xem co qtcn chua
-                            int paId = (phase.Node.Substring(0, phase.Node.Length - 1).Split(',').Select(x => Convert.ToInt32(x)).ToList()[2] + 1);
-                            var qt = db.T_TechProcessVersion.FirstOrDefault(x => !x.IsDeleted && x.ParentId == paId);
-                            if (qt != null)
+                            if (isMDGVersion)
                             {
-                                var allDetails = db.T_TechProcessVersionDetail.Where(x => !x.IsDeleted && x.TechProcessVersionId == qt.Id);
+                                //version cũ
+                                //TODO cđ cần duyệt mới dc sử dụng
+                                //ktra xem co qtcn chua
+                                int paId = (phase.Node.Substring(0, phase.Node.Length - 1).Split(',').Select(x => Convert.ToInt32(x)).ToList()[2] + 1);
+                                var qt = db.T_TechProcessVersion.FirstOrDefault(x => !x.IsDeleted && x.ParentId == paId);
+                                if (qt != null)
+                                {
+                                    var allDetails = db.T_TechProcessVersionDetail.Where(x => !x.IsDeleted && x.TechProcessVersionId == qt.Id);
 
-                                var verDetail = new T_TechProcessVersionDetail();
-                                verDetail.TechProcessVersionId = qt.Id;
-                                verDetail.CA_PhaseId = phase.Id;
-                                verDetail.StandardTMU = phase.TotalTMU;
-                                verDetail.Percent = allDetails.First().Percent;
-                                verDetail.TimeByPercent = (phase.TotalTMU == 0 || verDetail.Percent == 0 ? 0 : Math.Round((phase.TotalTMU * 100) / verDetail.Percent, 3));
-                                verDetail.CreatedDate = phase.CreatedDate;
-                                verDetail.CreatedUser = phase.CreatedUser;
+                                    var verDetail = new T_TechProcessVersionDetail();
+                                    verDetail.TechProcessVersionId = qt.Id;
+                                    verDetail.CA_PhaseId = phase.Id;
+                                    verDetail.StandardTMU = phase.TotalTMU;
+                                    verDetail.Percent = allDetails.First().Percent;
+                                    verDetail.TimeByPercent = (phase.TotalTMU == 0 || verDetail.Percent == 0 ? 0 : Math.Round((phase.TotalTMU * 100) / verDetail.Percent, 3));
+                                    verDetail.CreatedDate = phase.CreatedDate;
+                                    verDetail.CreatedUser = phase.CreatedUser;
 
 
-                                qt.TimeCompletePerCommo = Math.Round((qt.TimeCompletePerCommo + verDetail.TimeByPercent), 3);
-                                qt.PacedProduction = (qt.NumberOfWorkers == 0 ? 0 : (Math.Round(((qt.TimeCompletePerCommo / qt.NumberOfWorkers)), 3)));
-                                qt.ProOfGroupPerHour = Math.Round(((3600 / qt.TimeCompletePerCommo) * qt.NumberOfWorkers), 3);
-                                qt.ProOfGroupPerDay = Math.Round((qt.ProOfGroupPerHour * qt.WorkingTimePerDay), 3);
-                                qt.ProOfPersonPerDay = (qt.NumberOfWorkers == 0 ? 0 : (Math.Round((qt.ProOfGroupPerDay / qt.NumberOfWorkers), 3)));
-                                foreach (var item in allDetails)
-                                    item.Worker = (qt.PacedProduction == 0 ? 0 : (Math.Round(((item.TimeByPercent / qt.PacedProduction)), 3)));
+                                    qt.TimeCompletePerCommo = Math.Round((qt.TimeCompletePerCommo + verDetail.TimeByPercent), 3);
+                                    qt.PacedProduction = (qt.NumberOfWorkers == 0 ? 0 : (Math.Round(((qt.TimeCompletePerCommo / qt.NumberOfWorkers)), 3)));
+                                    qt.ProOfGroupPerHour = Math.Round(((3600 / qt.TimeCompletePerCommo) * qt.NumberOfWorkers), 3);
+                                    qt.ProOfGroupPerDay = Math.Round((qt.ProOfGroupPerHour * qt.WorkingTimePerDay), 3);
+                                    qt.ProOfPersonPerDay = (qt.NumberOfWorkers == 0 ? 0 : (Math.Round((qt.ProOfGroupPerDay / qt.NumberOfWorkers), 3)));
+                                    foreach (var item in allDetails)
+                                        item.Worker = (qt.PacedProduction == 0 ? 0 : (Math.Round(((item.TimeByPercent / qt.PacedProduction)), 3)));
 
-                                verDetail.Worker = (qt.PacedProduction == 0 ? 0 : (Math.Round(((verDetail.TimeByPercent / qt.PacedProduction)), 3)));
-                                db.T_TechProcessVersionDetail.Add(verDetail);
+                                    verDetail.Worker = (qt.PacedProduction == 0 ? 0 : (Math.Round(((verDetail.TimeByPercent / qt.PacedProduction)), 3)));
+                                    db.T_TechProcessVersionDetail.Add(verDetail);
+                                }
                             }
-                            // }
 
                             db.SaveChanges();
                             ReOrderPhase(db, phase.ParentId, phase.Index, phase.Id);
@@ -186,6 +187,7 @@ namespace GPRO_IED_A.Business
                                     return result;
                                 }
 
+                                /*
                                 phase.Name = model.Name;
                                 phase.Index = model.Index;
                                 phase.WorkerLevelId = model.WorkerLevelId;
@@ -199,29 +201,66 @@ namespace GPRO_IED_A.Business
                                 phase.PercentWasteMaterial = model.PercentWasteMaterial;
                                 phase.PercentWasteSpecial = model.PercentWasteSpecial;
                                 phase.Video = model.Video;
-                                phase.UpdatedDate = DateTime.Now;
-                                phase.UpdatedUser = model.ActionUser;
+                                
                                 phase.IsLibrary = model.IsLibrary;
                                 phase.Status = model.Status;
+                                */
+                                phase.UpdatedDate = DateTime.Now;
+                                phase.UpdatedUser = model.ActionUser;
+                                string updateQuery = string.Format(@"UPDATE [dbo].[T_CA_Phase]
+                                                                       SET [Index] = {0} 
+                                                                          ,[Name] =N'{1}' 
+                                                                          ,[Code] ='{2}'
+                                                                          ,[Description] = N'{3}'
+                                                                          ,[EquipmentId] ={4}  
+                                                                          ,[WorkerLevelId] ={5}    
+                                                                          ,[TotalTMU] ={6}  
+                                                                          ,[ApplyPressuresId] ={7} 
+                                                                          ,[PercentWasteEquipment] ={8} 
+                                                                          ,[PercentWasteManipulation] ={9} 
+                                                                          ,[PercentWasteSpecial] ={10}  
+                                                                          ,[PercentWasteMaterial] ={11}  
+                                                                          ,[Video] ='{12}' 
+                                                                          ,[UpdatedUser] ={13}  
+                                                                          ,[UpdatedDate] ='{14}' 
+                                                                          ,[IsLibrary] ={15}  
+                                                                          ,[Status] =N'{16}'
+                                                                          ,[IsApprove] ={17} ", model.Index, model.Name, model.Code, model.Description, model.EquipmentId,
+                                                                     model.WorkerLevelId, model.TotalTMU, model.ApplyPressuresId, model.PercentWasteEquipment,
+                                                                     model.PercentWasteManipulation, model.PercentWasteMaterial, model.PercentWasteSpecial, model.Video,
+                                                                     model.ActionUser, now, (model.IsLibrary ? 1 : 0), (isMDGVersion && !phase.IsApprove ? eStatus.Approved : model.Status),
+                                                                     (isMDGVersion && !phase.IsApprove ? 1 : 0));
 
                                 //TODO MDG
                                 if (isMDGVersion && !phase.IsApprove)
                                 {
-                                    phase.IsApprove = true;
-                                    phase.Approver = model.ActionUser;
-                                    phase.ApprovedDate = phase.CreatedDate;
-                                    phase.Status = eStatus.Approved;
+                                    //phase.IsApprove = true;
+                                    //phase.Approver = model.ActionUser;
+                                    //phase.ApprovedDate = phase.CreatedDate;
+                                    //phase.Status = eStatus.Approved;
+
+                                    updateQuery += string.Format(@" ,[Approver] ={0}  ,[ApprovedDate] ='{1}' ", model.ActionUser, now);
                                 }
 
+                                updateQuery += string.Format(@" WHERE Id ={0}", model.Id);
+                                db.Database.ExecuteSqlCommand(updateQuery);
+
                                 #region time prepare
-                                var oldTimes = db.T_CA_Phase_TimePrepare.Where(x => !x.IsDeleted && x.Commo_Ana_PhaseId == model.Id);
+                                var oldTimes = db.T_CA_Phase_TimePrepare
+                                    .Where(x => !x.IsDeleted && x.Commo_Ana_PhaseId == model.Id)
+                                    .Select(x => new { Id = x.Id, TimePrepareId = x.TimePrepareId })
+                                    .ToList();
+
                                 if (oldTimes != null && oldTimes.Count() > 0 && (timePreparesModel == null || timePreparesModel.Count == 0))
                                 {
                                     foreach (var item in oldTimes)
                                     {
+                                        /*
                                         item.IsDeleted = true;
                                         item.DeletedUser = model.ActionUser;
                                         item.DeletedDate = DateTime.Now;
+                                        */
+                                        db.Database.ExecuteSqlCommand(string.Format(@"UPDATE [dbo].[T_CA_Phase_TimePrepare] SET  isdeleted =1, [DeletedUser] = {0} ,[DeletedDate] = '{1}' WHERE Id ={2}", model.ActionUser, now, item.Id));
                                     }
                                 }
                                 else if (oldTimes != null && oldTimes.Count() > 0 && timePreparesModel != null && timePreparesModel.Count > 0)
@@ -231,9 +270,12 @@ namespace GPRO_IED_A.Business
                                         var obj = timePreparesModel.FirstOrDefault(x => x.TimePrepareId == item.TimePrepareId);
                                         if (obj == null)
                                         {
+                                            /*
                                             item.IsDeleted = true;
                                             item.DeletedUser = model.ActionUser;
                                             item.DeletedDate = DateTime.Now;
+                                            */
+                                            db.Database.ExecuteSqlCommand(string.Format(@"UPDATE [dbo].[T_CA_Phase_TimePrepare] SET  isdeleted =1, [DeletedUser] = {0} ,[DeletedDate] = '{1}' WHERE Id ={2}", model.ActionUser, now, item.Id));
                                         }
                                         else
                                             timePreparesModel.Remove(obj);
@@ -265,14 +307,30 @@ namespace GPRO_IED_A.Business
                                 #endregion
 
                                 #region actions
-                                var oldDetails = db.T_CA_Phase_Mani.Where(x => !x.IsDeleted && x.CA_PhaseId == phase.Id);
+                                var oldDetails = db.T_CA_Phase_Mani
+                                    .Where(x => !x.IsDeleted && x.CA_PhaseId == phase.Id)
+                                    .Select(x => new
+                                    {
+                                        Id = x.Id,
+                                        OrderIndex = x.OrderIndex,
+                                        ManipulationCode = x.ManipulationCode,
+                                        ManipulationName = x.ManipulationName,
+                                        TMUEquipment = x.TMUEquipment,
+                                        TMUManipulation = x.TMUManipulation,
+                                        Loop = x.Loop,
+                                        TotalTMU = x.TotalTMU,
+                                        ManipulationId = x.ManipulationId
+                                    }).ToList();
                                 if (model.actions == null && model.actions.Count == 0 && oldDetails != null && oldDetails.Count() > 0)
                                 {
                                     foreach (var item in oldDetails)
                                     {
+                                        /*
                                         item.IsDeleted = true;
                                         item.DeletedUser = phase.UpdatedUser;
                                         item.DeletedDate = phase.UpdatedDate;
+                                        */
+                                        db.Database.ExecuteSqlCommand(string.Format(@"UPDATE [dbo].[T_CA_Phase_Mani] SET  isdeleted =1, [DeletedUser] = {0} ,[DeletedDate] = '{1}' WHERE Id ={2}", phase.UpdatedUser, phase.UpdatedDate, item.Id));
                                     }
                                 }
                                 else if (model.actions != null && model.actions.Count > 0 && oldDetails != null && oldDetails.Count() > 0)
@@ -282,12 +340,16 @@ namespace GPRO_IED_A.Business
                                         var obj = model.actions.FirstOrDefault(x => x.Id == item.Id);
                                         if (obj == null)
                                         {
+                                            /*
                                             item.IsDeleted = true;
                                             item.DeletedUser = phase.UpdatedUser;
                                             item.DeletedDate = phase.UpdatedDate;
+                                            */
+                                            db.Database.ExecuteSqlCommand(string.Format(@"UPDATE [dbo].[T_CA_Phase_Mani] SET isdeleted =1,  [DeletedUser] = {0} ,[DeletedDate] = '{1}' WHERE Id ={2}", phase.UpdatedUser, phase.UpdatedDate, item.Id));
                                         }
                                         else
                                         {
+                                            /*
                                             item.OrderIndex = obj.OrderIndex;
                                             item.ManipulationCode = obj.ManipulationCode.Trim();
                                             item.ManipulationName = obj.ManipulationName.Trim();
@@ -298,6 +360,22 @@ namespace GPRO_IED_A.Business
                                             item.ManipulationId = obj.ManipulationId == 0 ? null : obj.ManipulationId;
                                             item.UpdatedUser = phase.UpdatedUser;
                                             item.UpdatedDate = phase.UpdatedDate;
+                                            */
+                                            string _query = string.Format(@"UPDATE [dbo].[T_CA_Phase_Mani] SET  
+                                                                                            [UpdatedUser] = {0} 
+                                                                                            ,[UpdatedDate] = '{1}' 
+                                                                                            ,[OrderIndex] = '{2}' 
+                                                                                            ,[ManipulationCode] = '{3}' 
+                                                                                            ,[ManipulationName] = N'{4}' 
+                                                                                            ,[TMUEquipment] = '{5}' 
+                                                                                            ,[TMUManipulation] = '{6}' 
+                                                                                            ,[Loop] = '{7}' 
+                                                                                            ,[TotalTMU] = '{8}'  
+                                                                                            WHERE Id ={9}",
+                                                                                            phase.UpdatedUser, phase.UpdatedDate, obj.OrderIndex, obj.ManipulationCode.Trim(),
+                                                                                            obj.ManipulationName.Trim(), obj.TMUEquipment, obj.TMUManipulation, obj.Loop, obj.TotalTMU,
+                                                                                            item.Id);
+                                            db.Database.ExecuteSqlCommand(_query);
                                             model.actions.Remove(obj);
                                         }
                                     }
@@ -335,40 +413,45 @@ namespace GPRO_IED_A.Business
                                 #endregion
 
                                 //TODO MDG
-                                //if (isMDGVersion)
-                                //{
-                                //ktra xem co qtcn chua 
-                                int paId = (phase.Node.Substring(0, phase.Node.Length - 1).Split(',').Select(x => Convert.ToInt32(x)).ToList()[2] + 1);
-                                var qt = db.T_TechProcessVersion.FirstOrDefault(x => !x.IsDeleted && x.ParentId == paId);
-                                if (qt != null)
+                                if (isMDGVersion)
                                 {
-                                    var dt = db.T_TechProcessVersionDetail.FirstOrDefault(x => !x.IsDeleted && x.CA_PhaseId == phase.Id && x.TechProcessVersionId == qt.Id);
-                                    if (dt == null)
+                                    //ktra xem co qtcn chua 
+                                    int paId = (phase.Node.Substring(0, phase.Node.Length - 1).Split(',').Select(x => Convert.ToInt32(x)).ToList()[2] + 1);
+                                    var qt = db.T_TechProcessVersion.FirstOrDefault(x => !x.IsDeleted && x.ParentId == paId);
+                                    if (qt != null)
                                     {
-                                        var allDetails = db.T_TechProcessVersionDetail.Where(x => !x.IsDeleted && x.TechProcessVersionId == qt.Id);
-                                        var verDetail = new T_TechProcessVersionDetail();
-                                        verDetail.TechProcessVersionId = qt.Id;
-                                        verDetail.CA_PhaseId = phase.Id;
-                                        verDetail.StandardTMU = phase.TotalTMU;
-                                        verDetail.Percent = allDetails.First().Percent;
-                                        verDetail.TimeByPercent = (phase.TotalTMU == 0 || verDetail.Percent == 0 ? 0 : Math.Round((phase.TotalTMU * 100) / verDetail.Percent, 3));
-                                        verDetail.CreatedDate = phase.CreatedDate;
-                                        verDetail.CreatedUser = phase.CreatedUser;
+                                        var dt = db.T_TechProcessVersionDetail.FirstOrDefault(x => !x.IsDeleted && x.CA_PhaseId == phase.Id && x.TechProcessVersionId == qt.Id);
+                                        if (dt == null)
+                                        {
+                                            var allDetails = db.T_TechProcessVersionDetail.Where(x => !x.IsDeleted && x.TechProcessVersionId == qt.Id).Select(x => new
+                                            {
+                                                Percent = x.Percent,
+                                                Worker = x.Worker,
+                                                TimeByPercent = x.TimeByPercent
+                                            });
+                                            var verDetail = new T_TechProcessVersionDetail();
+                                            verDetail.TechProcessVersionId = qt.Id;
+                                            verDetail.CA_PhaseId = phase.Id;
+                                            verDetail.StandardTMU = phase.TotalTMU;
+                                            verDetail.Percent = allDetails.First().Percent;
+                                            verDetail.TimeByPercent = (phase.TotalTMU == 0 || verDetail.Percent == 0 ? 0 : Math.Round((phase.TotalTMU * 100) / verDetail.Percent, 3));
+                                            verDetail.CreatedDate = phase.CreatedDate;
+                                            verDetail.CreatedUser = phase.CreatedUser;
 
 
-                                        qt.TimeCompletePerCommo = Math.Round((qt.TimeCompletePerCommo + verDetail.TimeByPercent), 3);
-                                        qt.PacedProduction = (qt.NumberOfWorkers == 0 ? 0 : (Math.Round(((qt.TimeCompletePerCommo / qt.NumberOfWorkers)), 3)));
-                                        qt.ProOfGroupPerHour = Math.Round(((3600 / qt.TimeCompletePerCommo) * qt.NumberOfWorkers), 3);
-                                        qt.ProOfGroupPerDay = Math.Round((qt.ProOfGroupPerHour * qt.WorkingTimePerDay), 3);
-                                        qt.ProOfPersonPerDay = (qt.NumberOfWorkers == 0 ? 0 : (Math.Round((qt.ProOfGroupPerDay / qt.NumberOfWorkers), 3)));
-                                        foreach (var item in allDetails)
-                                            item.Worker = (qt.PacedProduction == 0 ? 0 : (Math.Round(((item.TimeByPercent / qt.PacedProduction)), 3)));
+                                            qt.TimeCompletePerCommo = Math.Round((qt.TimeCompletePerCommo + verDetail.TimeByPercent), 3);
+                                            qt.PacedProduction = (qt.NumberOfWorkers == 0 ? 0 : (Math.Round(((qt.TimeCompletePerCommo / qt.NumberOfWorkers)), 3)));
+                                            qt.ProOfGroupPerHour = Math.Round(((3600 / qt.TimeCompletePerCommo) * qt.NumberOfWorkers), 3);
+                                            qt.ProOfGroupPerDay = Math.Round((qt.ProOfGroupPerHour * qt.WorkingTimePerDay), 3);
+                                            qt.ProOfPersonPerDay = (qt.NumberOfWorkers == 0 ? 0 : (Math.Round((qt.ProOfGroupPerDay / qt.NumberOfWorkers), 3)));
+                                            //foreach (var item in allDetails)
+                                            //    item.Worker = (qt.PacedProduction == 0 ? 0 : (Math.Round(((item.TimeByPercent / qt.PacedProduction)), 3)));
 
-                                        verDetail.Worker = (qt.PacedProduction == 0 ? 0 : (Math.Round(((verDetail.TimeByPercent / qt.PacedProduction)), 3)));
-                                        db.T_TechProcessVersionDetail.Add(verDetail);
+                                            verDetail.Worker = (qt.PacedProduction == 0 ? 0 : (Math.Round(((verDetail.TimeByPercent / qt.PacedProduction)), 3)));
+                                            db.T_TechProcessVersionDetail.Add(verDetail);
+                                        }
                                     }
                                 }
-                                // }
 
                                 db.SaveChanges();
                                 ReOrderPhase(db, phase.ParentId, phase.Index, phase.Id);
@@ -755,7 +838,7 @@ namespace GPRO_IED_A.Business
         }
 
         //load lai 
-        public PagedList<Commo_Ana_PhaseModel> GetListByNode(int currentUserId, bool isApprover, string node, int startIndexRecord, int pageSize, string sorting, bool isMDGVersion)
+        public PagedList<Commo_Ana_PhaseModel_PL> GetListByNode(int currentUserId, bool isApprover, string node, int startIndexRecord, int pageSize, string sorting, bool isMDGVersion)
         {
             try
             {
@@ -778,41 +861,45 @@ namespace GPRO_IED_A.Business
                     var phaseGroupObj = db.T_CommodityAnalysis.FirstOrDefault(x => x.Id == cawk);
 
                     var phases = _phases.OrderBy(x => x.Index)
-                                    .Select(x => new Commo_Ana_PhaseModel()
+                                    .Select(x => new Commo_Ana_PhaseModel_PL()
                                     {
-                                        WorkshopId = wsObj.ObjectId,
-                                        WorkshopName = wsObj.Name,
-                                        ProductName = proObj.Name,
                                         Id = x.Id,
                                         Index = x.Index,
                                         Name = x.Name,
                                         //Code = proObj.Code + "" + wsObj.Code + "" + x.Code,
                                         Code = x.Code,
                                         TotalTMU = x.TotalTMU,
-                                        Description = x.Description,
-                                        EquipmentId = x.EquipmentId,
-                                        EquipName = x.T_Equipment.Name,
-                                        EquipDes = x.T_Equipment.Description,
-                                        EquipTypeDefaultId = x.EquipmentId != null ? x.T_Equipment.T_EquipmentType.EquipTypeDefaultId ?? 0 : 0,
-                                        WorkerLevelId = x.WorkerLevelId,
                                         WorkerLevelName = x.SWorkerLevel.Name,
-                                        ParentId = x.ParentId,
-                                        PhaseGroupId = x.PhaseGroupId,
-                                        ApplyPressuresId = x.ApplyPressuresId != null ? x.ApplyPressuresId : 0,
-                                        PercentWasteEquipment = x.PercentWasteEquipment,
-                                        PercentWasteManipulation = x.PercentWasteManipulation,
-                                        PercentWasteMaterial = x.PercentWasteMaterial,
-                                        PercentWasteSpecial = x.PercentWasteSpecial,
-                                        Video = x.Video,
-                                        IsLibrary = x.IsLibrary,
+                                        EquipName = x.T_Equipment.Name,
                                         Status = x.Status,
+                                        //WorkshopId = wsObj.ObjectId,
+                                        //WorkshopName = wsObj.Name,
+                                        //ProductName = proObj.Name,
+
+                                        //Description = x.Description,
+                                        //EquipmentId = x.EquipmentId,
+
+                                        //EquipDes = x.T_Equipment.Description,
+                                        //EquipTypeDefaultId = x.EquipmentId != null ? x.T_Equipment.T_EquipmentType.EquipTypeDefaultId ?? 0 : 0,
+                                        //WorkerLevelId = x.WorkerLevelId,
+
+                                        //ParentId = x.ParentId,
+                                        //PhaseGroupId = x.PhaseGroupId,
+                                        //ApplyPressuresId = x.ApplyPressuresId != null ? x.ApplyPressuresId : 0,
+                                        //PercentWasteEquipment = x.PercentWasteEquipment,
+                                        //PercentWasteManipulation = x.PercentWasteManipulation,
+                                        //PercentWasteMaterial = x.PercentWasteMaterial,
+                                        //PercentWasteSpecial = x.PercentWasteSpecial,
+                                        //Video = x.Video,
+                                        IsLibrary = x.IsLibrary,
+
                                         IsApprove = x.IsApprove,
-                                        Approver = x.Approver,
-                                        ApproverName = x.IsApprove ? x.SUser.UserName : "",
-                                        ApproveDate = x.ApprovedDate,
+                                        //Approver = x.Approver,
+                                        //ApproverName = x.IsApprove ? x.SUser.UserName : "",
+                                        //ApproveDate = x.ApprovedDate,
                                     }).OrderBy(sorting).ToList();
 
-                    var pageListReturn = new PagedList<Commo_Ana_PhaseModel>(phases, pageNumber, pageSize);
+                    var pageListReturn = new PagedList<Commo_Ana_PhaseModel_PL>(phases, pageNumber, pageSize);
                     if (pageListReturn != null && pageListReturn.Count > 0)
                     {
                         double tmu = 27.8;
@@ -826,9 +913,11 @@ namespace GPRO_IED_A.Business
                         string[] wsDes = (!string.IsNullOrEmpty(wsObj.Description) ? wsObj.Description : "").Split('|').ToArray();
                         foreach (var item in pageListReturn)
                         {
-
-                            item.FullCode = GenerateCode(item.Code, ((wsDes.Length > 1 &&!string.IsNullOrEmpty(wsDes[1]) ? wsDes[1] : "") + "" + proObj.Code + "" + phaseGroupObj.Code));
-
+                            if (isMDGVersion)
+                                item.FullCode = item.Code;
+                            else
+                                item.FullCode = GenerateCode(item.Code, ((wsDes.Length > 1 && !string.IsNullOrEmpty(wsDes[1]) ? wsDes[1] : "") + "" + proObj.Code + "" + phaseGroupObj.Code));
+                            /*
                             item.timePrepares.AddRange((from x in db.T_CA_Phase_TimePrepare
                                                         where !x.IsDeleted && x.Commo_Ana_PhaseId == item.Id
                                                         select new Commo_Ana_Phase_TimePrepareModel()
@@ -859,7 +948,7 @@ namespace GPRO_IED_A.Business
                                                        OrderIndex = x.OrderIndex
                                                    }));
                             item.ManiVerTMU = item.actions.Sum(x => ((x.TMUEquipment ?? 0 * x.Loop) + (x.TMUManipulation ?? 0 * x.Loop)));
-
+                            */
                             if (isMDGVersion)
                             {
                                 item.IsApprove = false;
@@ -1287,41 +1376,41 @@ namespace GPRO_IED_A.Business
                         db.SaveChanges();
 
                         //TODO MDG
-                        // if (isMDGVersion)
-                        //{
-                        //ktra xem co qtcn chua 
-                        int paId = (phase.Node.Substring(0, phase.Node.Length - 1).Split(',').Select(x => Convert.ToInt32(x)).ToList()[2] + 1);
-                        var qt = (from x in db.T_TechProcessVersion
-                                  where !x.IsDeleted && x.ParentId == paId
-                                  select x).FirstOrDefault();
-                        if (qt != null)
+                        if (isMDGVersion)
                         {
-                            var allDetails = (from x in db.T_TechProcessVersionDetail
-                                              where !x.IsDeleted && x.TechProcessVersionId == qt.Id
-                                              select x);
+                            //ktra xem co qtcn chua 
+                            int paId = (phase.Node.Substring(0, phase.Node.Length - 1).Split(',').Select(x => Convert.ToInt32(x)).ToList()[2] + 1);
+                            var qt = (from x in db.T_TechProcessVersion
+                                      where !x.IsDeleted && x.ParentId == paId
+                                      select x).FirstOrDefault();
+                            if (qt != null)
+                            {
+                                var allDetails = (from x in db.T_TechProcessVersionDetail
+                                                  where !x.IsDeleted && x.TechProcessVersionId == qt.Id
+                                                  select x);
 
-                            var verDetail = new T_TechProcessVersionDetail();
-                            verDetail.TechProcessVersionId = qt.Id;
-                            verDetail.CA_PhaseId = phase.Id;
-                            verDetail.StandardTMU = phase.TotalTMU;
-                            verDetail.Percent = allDetails.First().Percent;
-                            verDetail.TimeByPercent = Math.Round((phase.TotalTMU * 100) / verDetail.Percent, 3);
-                            verDetail.CreatedDate = phase.CreatedDate;
-                            verDetail.CreatedUser = phase.CreatedUser;
+                                var verDetail = new T_TechProcessVersionDetail();
+                                verDetail.TechProcessVersionId = qt.Id;
+                                verDetail.CA_PhaseId = phase.Id;
+                                verDetail.StandardTMU = phase.TotalTMU;
+                                verDetail.Percent = allDetails.First().Percent;
+                                verDetail.TimeByPercent = Math.Round((phase.TotalTMU * 100) / verDetail.Percent, 3);
+                                verDetail.CreatedDate = phase.CreatedDate;
+                                verDetail.CreatedUser = phase.CreatedUser;
 
-                            qt.TimeCompletePerCommo = Math.Round((qt.TimeCompletePerCommo + verDetail.TimeByPercent), 3);
-                            qt.PacedProduction = (qt.TimeCompletePerCommo > 0 && qt.NumberOfWorkers > 0 ? Math.Round(((qt.TimeCompletePerCommo / qt.NumberOfWorkers)), 3) : 0);
-                            qt.ProOfGroupPerHour = Math.Round(((3600 / qt.TimeCompletePerCommo) * qt.NumberOfWorkers), 3);
-                            qt.ProOfGroupPerDay = Math.Round((qt.ProOfGroupPerHour * qt.WorkingTimePerDay), 3);
-                            qt.ProOfPersonPerDay = (qt.ProOfGroupPerDay > 0 && qt.NumberOfWorkers > 0 ? Math.Round((qt.ProOfGroupPerDay / qt.NumberOfWorkers), 3) : 0);
-                            foreach (var item in allDetails)
-                                item.Worker = (item.TimeByPercent > 0 && qt.PacedProduction > 0 ? Math.Round(((item.TimeByPercent / qt.PacedProduction)), 3) : 0);
+                                qt.TimeCompletePerCommo = Math.Round((qt.TimeCompletePerCommo + verDetail.TimeByPercent), 3);
+                                qt.PacedProduction = (qt.TimeCompletePerCommo > 0 && qt.NumberOfWorkers > 0 ? Math.Round(((qt.TimeCompletePerCommo / qt.NumberOfWorkers)), 3) : 0);
+                                qt.ProOfGroupPerHour = Math.Round(((3600 / qt.TimeCompletePerCommo) * qt.NumberOfWorkers), 3);
+                                qt.ProOfGroupPerDay = Math.Round((qt.ProOfGroupPerHour * qt.WorkingTimePerDay), 3);
+                                qt.ProOfPersonPerDay = (qt.ProOfGroupPerDay > 0 && qt.NumberOfWorkers > 0 ? Math.Round((qt.ProOfGroupPerDay / qt.NumberOfWorkers), 3) : 0);
+                                foreach (var item in allDetails)
+                                    item.Worker = (item.TimeByPercent > 0 && qt.PacedProduction > 0 ? Math.Round(((item.TimeByPercent / qt.PacedProduction)), 3) : 0);
 
-                            verDetail.Worker = (verDetail.TimeByPercent > 0 && qt.PacedProduction > 0 ? Math.Round(((verDetail.TimeByPercent / qt.PacedProduction)), 3) : 0);
-                            db.T_TechProcessVersionDetail.Add(verDetail);
-                            db.Entry<T_TechProcessVersion>(qt).State = System.Data.Entity.EntityState.Modified;
+                                verDetail.Worker = (verDetail.TimeByPercent > 0 && qt.PacedProduction > 0 ? Math.Round(((verDetail.TimeByPercent / qt.PacedProduction)), 3) : 0);
+                                db.T_TechProcessVersionDetail.Add(verDetail);
+                                db.Entry<T_TechProcessVersion>(qt).State = System.Data.Entity.EntityState.Modified;
+                            }
                         }
-                        //}
                         db.SaveChanges();
                         rs.IsSuccess = true;
                     }
@@ -1520,7 +1609,7 @@ namespace GPRO_IED_A.Business
             return list;
         }
 
-        public Commo_Ana_PhaseModel GetPhase(int phaseId)
+        public Commo_Ana_PhaseModel GetPhase(int phaseId, bool isMDGVersion)
         {
             using (db = new IEDEntities())
             {
@@ -1533,15 +1622,24 @@ namespace GPRO_IED_A.Business
                                         Id = x.Id,
                                         Index = x.Index,
                                         Name = x.Name,
+                                        //Code = proObj.Code + "" + wsObj.Code + "" + x.Code,
                                         Code = x.Code,
+                                        FullCode = x.Code,
                                         TotalTMU = x.TotalTMU,
+                                        WorkerLevelName = x.SWorkerLevel.Name,
+                                        EquipName = x.T_Equipment.Name,
+                                        Status = x.Status,
+                                        //WorkshopId = wsObj.ObjectId,
+                                        //WorkshopName = wsObj.Name,
+                                       //ProductName = proObj.Name,
+
                                         Description = x.Description,
                                         EquipmentId = x.EquipmentId,
-                                        EquipName = x.T_Equipment.Name,
+
                                         EquipDes = x.T_Equipment.Description,
                                         EquipTypeDefaultId = x.EquipmentId != null ? x.T_Equipment.T_EquipmentType.EquipTypeDefaultId ?? 0 : 0,
                                         WorkerLevelId = x.WorkerLevelId,
-                                        WorkerLevelName = x.SWorkerLevel.Name,
+
                                         ParentId = x.ParentId,
                                         PhaseGroupId = x.PhaseGroupId,
                                         ApplyPressuresId = x.ApplyPressuresId != null ? x.ApplyPressuresId : 0,
@@ -1549,7 +1647,14 @@ namespace GPRO_IED_A.Business
                                         PercentWasteManipulation = x.PercentWasteManipulation,
                                         PercentWasteMaterial = x.PercentWasteMaterial,
                                         PercentWasteSpecial = x.PercentWasteSpecial,
-                                        Video = x.Video
+                                        Video = x.Video,
+                                        IsLibrary = x.IsLibrary,
+
+                                        IsApprove = x.IsApprove,
+                                        Approver = x.Approver,
+                                        ApproverName = x.IsApprove ? x.SUser.UserName : "",
+                                        ApproveDate = x.ApprovedDate,
+                                        Node = x.Node
                                     }).FirstOrDefault();
                     if (phaseObj != null)
                     {
@@ -1560,6 +1665,19 @@ namespace GPRO_IED_A.Business
                         if (config != null)
                             double.TryParse(config.Value, out tmu);
 
+                        int cawk = Convert.ToInt32(phaseObj.Node.Split(',')[1]);
+                        var proObj = db.T_CommodityAnalysis.FirstOrDefault(x => x.Id == cawk);
+                        phaseObj.ProductName = proObj.Name;
+
+                        cawk = Convert.ToInt32(phaseObj.Node.Split(',')[2]);
+                        var wsObj = db.T_CommodityAnalysis.FirstOrDefault(x => x.Id == cawk);
+                        phaseObj.WorkshopName = wsObj.Name;
+
+                        cawk = Convert.ToInt32(phaseObj.Node.Split(',')[4]);
+                        var phaseGroupObj = db.T_CommodityAnalysis.FirstOrDefault(x => x.Id == cawk);
+                        phaseObj.PhaseGroupName = phaseGroupObj.Name;
+
+                        string[] wsDes = (!string.IsNullOrEmpty(wsObj.Description) ? wsObj.Description : "").Split('|').ToArray();
                         phaseObj.timePrepares.AddRange((from x in db.T_CA_Phase_TimePrepare
                                                         where !x.IsDeleted && x.Commo_Ana_PhaseId == phaseObj.Id
                                                         select new Commo_Ana_Phase_TimePrepareModel()
@@ -1590,7 +1708,13 @@ namespace GPRO_IED_A.Business
                                                        OrderIndex = x.OrderIndex
                                                    }));
                         phaseObj.ManiVerTMU = phaseObj.actions.Sum(x => ((x.TMUEquipment ?? 0 * x.Loop) + (x.TMUManipulation ?? 0 * x.Loop)));
-
+                        if (isMDGVersion)
+                        {
+                            phaseObj.IsApprove = false;
+                            phaseObj.Status = eStatus.Editor;
+                        }
+                        else
+                            phaseObj.FullCode = GenerateCode(phaseObj.Code, ((wsDes.Length > 1 && !string.IsNullOrEmpty(wsDes[1]) ? wsDes[1] : "") + "" + proObj.Code + "" + phaseGroupObj.Code));
                     }
                     return phaseObj;
                 }

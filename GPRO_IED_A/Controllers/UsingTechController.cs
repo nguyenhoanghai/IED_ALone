@@ -1,4 +1,6 @@
 ﻿using GPRO_IED_A.Business;
+using GPRO_IED_A.Business.Enum;
+using GPRO_IED_A.Data;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
@@ -247,5 +249,12 @@ namespace GPRO_IED_A.Controllers
             }
         }
 
+        public JsonResult Insert(T_UsingTechLog obj)
+        { 
+            obj.UserId = UserContext.UserID;
+            BLLUsingTechLog.Instance.Insert(obj);
+           JsonDataResult.Result = "OK";
+            return Json(JsonDataResult);
+        }
     }
 }

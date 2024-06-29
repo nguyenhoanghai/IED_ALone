@@ -16,9 +16,9 @@ namespace GPRO_IED_A.Data
     {
         public T_Product()
         {
-            this.T_UsingTechLog = new HashSet<T_UsingTechLog>();
             this.T_ProductFile = new HashSet<T_ProductFile>();
             this.T_TechProcessVersion = new HashSet<T_TechProcessVersion>();
+            this.T_UsingTechLog = new HashSet<T_UsingTechLog>();
         }
     
         public int Id { get; set; }
@@ -39,9 +39,9 @@ namespace GPRO_IED_A.Data
         public Nullable<int> ProductGroupId { get; set; }
     
         public virtual T_Customer T_Customer { get; set; }
-        public virtual ICollection<T_UsingTechLog> T_UsingTechLog { get; set; }
         public virtual T_ProductGroup T_ProductGroup { get; set; }
         public virtual ICollection<T_ProductFile> T_ProductFile { get; set; }
         public virtual ICollection<T_TechProcessVersion> T_TechProcessVersion { get; set; }
+        public virtual ICollection<T_UsingTechLog> T_UsingTechLog { get; set; }
     }
 }

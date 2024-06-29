@@ -18,8 +18,8 @@ namespace GPRO_IED_A.Data
         {
             this.T_PhaseGroupDailyProduction = new HashSet<T_PhaseGroupDailyProduction>();
             this.T_CA_Phase = new HashSet<T_CA_Phase>();
-            this.T_UsingTechLog = new HashSet<T_UsingTechLog>();
             this.T_PhaseGroup_Phase = new HashSet<T_PhaseGroup_Phase>();
+            this.T_UsingTechLog = new HashSet<T_UsingTechLog>();
         }
     
         public int Id { get; set; }
@@ -39,7 +39,7 @@ namespace GPRO_IED_A.Data
     
         public virtual ICollection<T_PhaseGroupDailyProduction> T_PhaseGroupDailyProduction { get; set; }
         public virtual ICollection<T_CA_Phase> T_CA_Phase { get; set; }
-        public virtual ICollection<T_UsingTechLog> T_UsingTechLog { get; set; }
         public virtual ICollection<T_PhaseGroup_Phase> T_PhaseGroup_Phase { get; set; }
+        public virtual ICollection<T_UsingTechLog> T_UsingTechLog { get; set; }
     }
 }

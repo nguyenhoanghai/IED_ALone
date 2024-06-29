@@ -42,4 +42,3 @@ E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\bin\Debug\Microsoft.Web.Infrastruc
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\bin\Debug\System.Web.WebPages.Deployment.xml
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\bin\Debug\System.Web.Mvc.xml
 E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\obj\Debug\GPRO_IED_A.Business.csprojAssemblyReference.cache
-E:\Hai_GPRO\Git IED_Alone\GPRO_IED_A.Business\bin\Debug\SystemGPRO.Serial.dll

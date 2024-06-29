@@ -81,11 +81,11 @@ namespace GPRO_IED_A.Data
         public DbSet<T_TechProcessVersion> T_TechProcessVersion { get; set; }
         public DbSet<T_LabourDevision_Ver> T_LabourDevision_Ver { get; set; }
         public DbSet<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
-        public DbSet<T_UsingTechLog> T_UsingTechLog { get; set; }
         public DbSet<T_PhaseGroup_Phase> T_PhaseGroup_Phase { get; set; }
         public DbSet<SUser> SUsers { get; set; }
         public DbSet<T_ProductGroup> T_ProductGroup { get; set; }
         public DbSet<T_CommodityAnalysis> T_CommodityAnalysis { get; set; }
         public DbSet<T_Product> T_Product { get; set; }
+        public DbSet<T_UsingTechLog> T_UsingTechLog { get; set; }
     }
 }

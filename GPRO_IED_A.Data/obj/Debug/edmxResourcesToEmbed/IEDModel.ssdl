@@ -1143,6 +1143,7 @@
     <Property Name="UserId" Type="int" Nullable="false" />
     <Property Name="IsView" Type="bit" Nullable="false" />
     <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="PhaseId_Sample" Type="int" />
   </EntityType>
   <EntityType Name="T_WorkShop">
     <Key>
@@ -2289,6 +2290,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_T_UsingTechLog_T_PhaseGroup_Phase">
+    <End Role="T_PhaseGroup_Phase" Type="Self.T_PhaseGroup_Phase" Multiplicity="0..1" />
+    <End Role="T_UsingTechLog" Type="Self.T_UsingTechLog" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="T_PhaseGroup_Phase">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="T_UsingTechLog">
+        <PropertyRef Name="PhaseId_Sample" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_T_UsingTechLog_T_WorkShop">
     <End Role="T_WorkShop" Type="Self.T_WorkShop" Multiplicity="1" />
     <End Role="T_UsingTechLog" Type="Self.T_UsingTechLog" Multiplicity="*" />
@@ -2751,6 +2764,10 @@
     <AssociationSet Name="FK_T_UsingTech_Detail_T_UsingTechLog" Association="Self.FK_T_UsingTech_Detail_T_UsingTechLog">
       <End Role="T_UsingTechLog" EntitySet="T_UsingTechLog" />
       <End Role="T_UsingTech_Detail" EntitySet="T_UsingTech_Detail" />
+    </AssociationSet>
+    <AssociationSet Name="FK_T_UsingTechLog_T_PhaseGroup_Phase" Association="Self.FK_T_UsingTechLog_T_PhaseGroup_Phase">
+      <End Role="T_PhaseGroup_Phase" EntitySet="T_PhaseGroup_Phase" />
+      <End Role="T_UsingTechLog" EntitySet="T_UsingTechLog" />
     </AssociationSet>
     <AssociationSet Name="FK_T_UsingTechLog_T_WorkShop" Association="Self.FK_T_UsingTechLog_T_WorkShop">
       <End Role="T_WorkShop" EntitySet="T_WorkShop" />

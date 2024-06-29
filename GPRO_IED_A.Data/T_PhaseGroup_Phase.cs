@@ -17,6 +17,7 @@ namespace GPRO_IED_A.Data
         public T_PhaseGroup_Phase()
         {
             this.T_PhaseGroup_Phase_Mani = new HashSet<T_PhaseGroup_Phase_Mani>();
+            this.T_UsingTechLog = new HashSet<T_UsingTechLog>();
         }
     
         public int Id { get; set; }
@@ -57,5 +58,6 @@ namespace GPRO_IED_A.Data
         public virtual ICollection<T_PhaseGroup_Phase_Mani> T_PhaseGroup_Phase_Mani { get; set; }
         public virtual T_TimePrepare T_TimePrepare { get; set; }
         public virtual SUser SUser { get; set; }
+        public virtual ICollection<T_UsingTechLog> T_UsingTechLog { get; set; }
     }
 }

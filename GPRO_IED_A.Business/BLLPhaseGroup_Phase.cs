@@ -392,7 +392,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public PagedList<PhaseGroup_PhaseModel> Gets(int phasegroupId, string keyword, int startIndexRecord, int pageSize, string sorting)
+        public PagedList<PhaseGroup_Phase_PLModel> Gets(int phasegroupId, string keyword, int startIndexRecord, int pageSize, string sorting)
         {
             try
             {
@@ -410,44 +410,46 @@ namespace GPRO_IED_A.Business
                     }
 
                     var phases = _phases
-                        .Select(x => new PhaseGroup_PhaseModel()
+                        .Select(x => new PhaseGroup_Phase_PLModel()
                         {
                             Id = x.Id,
                             Index = x.Index,
                             Name = x.Name,
                             Code = x.Code,
                             TotalTMU = x.TotalTMU,
-                            Description = x.Description,
-                            EquipmentId = x.EquipmentId,
-                            EquipName = x.T_Equipment.Name,
-                            EquipDes = x.T_Equipment.Description,
-                            EquipTypeDefaultId = x.EquipmentId != null ? x.T_Equipment.T_EquipmentType.EquipTypeDefaultId ?? 0 : 0,
                             WorkerLevelId = x.WorkerLevelId,
                             WorkerLevelName = x.SWorkerLevel.Name,
-
-                            PhaseGroupId = x.PhaseGroupId,
-                            ApplyPressuresId = x.ApplyPressuresId != null ? x.ApplyPressuresId : 0,
-                            PercentWasteEquipment = x.PercentWasteEquipment,
-                            PercentWasteManipulation = x.PercentWasteManipulation,
-                            PercentWasteMaterial = x.PercentWasteMaterial,
-                            PercentWasteSpecial = x.PercentWasteSpecial,
-                            Video = x.Video,
-                            TimePrepareTMU = x.T_TimePrepare.TMUNumber,
-                            TimePrepareId = x.TimePrepareId,
-                            TimePrepareName = x.T_TimePrepare.Name,
                             IsLibrary = x.IsLibrary,
                             Status = x.Status,
                             IsApprove = x.IsApprove,
-                            Approver = x.Approver,
-                            ApproverName = x.IsApprove ? x.SUser.UserName : "",
-                            ApproveDate = x.ApprovedDate,
+                            PhaseGroupId = x.PhaseGroupId,
                             ProductIds = x.ProductIds,
-                            ProductNames = ""
+                            ProductNames = "",
+
+                            //Description = x.Description,
+                            //EquipmentId = x.EquipmentId,
+                            //EquipName = x.T_Equipment.Name,
+                            //EquipDes = x.T_Equipment.Description,
+                            //EquipTypeDefaultId = x.EquipmentId != null ? x.T_Equipment.T_EquipmentType.EquipTypeDefaultId ?? 0 : 0,
+                            //ApplyPressuresId = x.ApplyPressuresId != null ? x.ApplyPressuresId : 0,
+                            //PercentWasteEquipment = x.PercentWasteEquipment,
+                            //PercentWasteManipulation = x.PercentWasteManipulation,
+                            //PercentWasteMaterial = x.PercentWasteMaterial,
+                            //PercentWasteSpecial = x.PercentWasteSpecial,
+                            //Video = x.Video,
+                            //TimePrepareTMU = x.T_TimePrepare.TMUNumber,
+                            //TimePrepareId = x.TimePrepareId,
+                            //TimePrepareName = x.T_TimePrepare.Name,
+
+                            //Approver = x.Approver,
+                            //ApproverName = x.IsApprove ? x.SUser.UserName : "",
+                            //ApproveDate = x.ApprovedDate,
+
                         })
                     .OrderBy(sorting)
                     .ToList();
 
-                    var pageListReturn = new PagedList<PhaseGroup_PhaseModel>(phases, pageNumber, pageSize);
+                    var pageListReturn = new PagedList<PhaseGroup_Phase_PLModel>(phases, pageNumber, pageSize);
                     if (pageListReturn != null && pageListReturn.Count > 0)
                     {
                         double tmu = 27.8;
@@ -460,6 +462,7 @@ namespace GPRO_IED_A.Business
                         var _products = db.T_Product.Where(x => !x.IsDeleted).Select(x => new { Id = x.Id, Name = x.Name }).ToList();
                         foreach (var item in pageListReturn)
                         {
+                            /*
                             item.actions.AddRange((from x in db.T_PhaseGroup_Phase_Mani
                                                    where !x.IsDeleted && x.PhaseGroup_PhaseId == item.Id
                                                    orderby x.OrderIndex
@@ -477,6 +480,7 @@ namespace GPRO_IED_A.Business
                                                        OrderIndex = x.OrderIndex
                                                    }));
                             item.ManiVerTMU = item.actions.Sum(x => ((x.TMUEquipment ?? 0 * x.Loop) + (x.TMUManipulation ?? 0 * x.Loop)));
+                            */
                             if (item.ProductIds != "0")
                             {
                                 var _ids = item.ProductIds.Split(',').Select(x => Convert.ToInt32(x)).ToList();
@@ -493,7 +497,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public PagedList<PhaseGroup_PhaseModel> Gets(string phaseName, int startIndexRecord, int pageSize, string sorting)
+        public PagedList<PhaseGroup_Phase_PLModel> Gets(string phaseName, int startIndexRecord, int pageSize, string sorting)
         {
             try
             {
@@ -507,23 +511,27 @@ namespace GPRO_IED_A.Business
                     if (!string.IsNullOrEmpty(phaseName))
                         iquery = iquery.Where(x => x.Name.Trim().ToUpper().Contains(phaseName.Trim().ToUpper()) || x.T_PhaseGroup.Name.Trim().ToUpper().Contains(phaseName.Trim().ToUpper()));
 
-                    var phases = iquery.Select(x => new PhaseGroup_PhaseModel()
+                    var phases = iquery.Select(x => new PhaseGroup_Phase_PLModel()
                     {
                         Id = x.Id,
                         Index = x.Index,
                         Name = x.Name,
                         Code = x.Code,
                         TotalTMU = x.TotalTMU,
+                        WorkerLevelId = x.WorkerLevelId,
+                        WorkerLevelName = x.SWorkerLevel.Name,
+                        IsLibrary = x.IsLibrary,
+                        PhaseGroupId = x.PhaseGroupId,
+                        PhaseGroupName = x.T_PhaseGroup.Name,
                         Description = x.Description,
+
+                        /*
+                     
                         EquipmentId = x.EquipmentId,
                         EquipName = x.T_Equipment.Name,
                         EquipDes = x.T_Equipment.Description,
                         EquipTypeDefaultId = x.EquipmentId != null ? x.T_Equipment.T_EquipmentType.EquipTypeDefaultId ?? 0 : 0,
-                        WorkerLevelId = x.WorkerLevelId,
-                        WorkerLevelName = x.SWorkerLevel.Name,
-
-                        PhaseGroupId = x.PhaseGroupId,
-                        PhaseGroupName = x.T_PhaseGroup.Name,
+                       
                         ApplyPressuresId = x.ApplyPressuresId != null ? x.ApplyPressuresId : 0,
                         PercentWasteEquipment = x.PercentWasteEquipment,
                         PercentWasteManipulation = x.PercentWasteManipulation,
@@ -533,10 +541,10 @@ namespace GPRO_IED_A.Business
                         TimePrepareTMU = x.T_TimePrepare.TMUNumber,
                         TimePrepareId = x.TimePrepareId,
                         TimePrepareName = x.T_TimePrepare.Name,
-                        IsLibrary = x.IsLibrary,
+                        */
                     }).OrderBy(sorting).ToList();
 
-                    var pageListReturn = new PagedList<PhaseGroup_PhaseModel>(phases, pageNumber, pageSize);
+                    var pageListReturn = new PagedList<PhaseGroup_Phase_PLModel>(phases, pageNumber, pageSize);
                     if (pageListReturn != null && pageListReturn.Count > 0)
                     {
                         double tmu = 27.8;
@@ -547,6 +555,7 @@ namespace GPRO_IED_A.Business
                             double.TryParse(config.Value, out tmu);
                         foreach (var item in pageListReturn)
                         {
+                            /*
                             item.actions.AddRange((from x in db.T_PhaseGroup_Phase_Mani
                                                    where !x.IsDeleted && x.PhaseGroup_PhaseId == item.Id
                                                    orderby x.OrderIndex
@@ -564,6 +573,7 @@ namespace GPRO_IED_A.Business
                                                        OrderIndex = x.OrderIndex
                                                    }));
                             item.ManiVerTMU = item.actions.Sum(x => ((x.TMUEquipment ?? 0 * x.Loop) + (x.TMUManipulation ?? 0 * x.Loop)));
+                            */
                         }
                     }
                     return pageListReturn;
@@ -769,6 +779,7 @@ namespace GPRO_IED_A.Business
                                         WorkerLevelId = x.WorkerLevelId,
                                         WorkerLevelName = x.SWorkerLevel.Name,
                                         PhaseGroupId = x.PhaseGroupId,
+                                        PhaseGroupName = x.T_PhaseGroup.Name,
                                         ApplyPressuresId = x.ApplyPressuresId != null ? x.ApplyPressuresId : 0,
                                         PercentWasteEquipment = x.PercentWasteEquipment,
                                         PercentWasteManipulation = x.PercentWasteManipulation,
@@ -777,7 +788,12 @@ namespace GPRO_IED_A.Business
                                         Video = x.Video,
                                         TimePrepareId = x.TimePrepareId,
                                         TimePrepareName = x.T_TimePrepare.Name,
-                                        TimePrepareTMU = x.T_TimePrepare.TMUNumber
+                                        TimePrepareTMU = x.T_TimePrepare.TMUNumber,
+                                        ProductIds = x.ProductIds,
+                                        ProductNames = "",
+                                        Status = x.Status,
+                                        IsLibrary = x.IsLibrary,
+                                        IsApprove = x.IsApprove
                                     }).FirstOrDefault();
                     if (phaseObj != null)
                     {
@@ -815,7 +831,12 @@ namespace GPRO_IED_A.Business
                                                        OrderIndex = x.OrderIndex
                                                    }));
                         phaseObj.ManiVerTMU = phaseObj.actions.Sum(x => ((x.TMUEquipment ?? 0 * x.Loop) + (x.TMUManipulation ?? 0 * x.Loop)));
-
+                        var _products = db.T_Product.Where(x => !x.IsDeleted).Select(x => new { Id = x.Id, Name = x.Name }).ToList();
+                        if (phaseObj.ProductIds != "0")
+                        {
+                            var _ids = phaseObj.ProductIds.Split(',').Select(x => Convert.ToInt32(x)).ToList();
+                            phaseObj.ProductNames = string.Join(" | ", _products.Where(x => _ids.Contains(x.Id)).Select(x => x.Name).ToArray());
+                        }
                     }
                     return phaseObj;
                 }

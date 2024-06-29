@@ -47,7 +47,8 @@ namespace GPRO_IED_A.Business.Model
         public DateTime CreatedDate { get; set; }
         public string Note { get; set; }
         public int LogId { get; set; }
-
+        public int PhaseId_Sample { get; set; }
+        public string PhaseName_Sample { get; set; }
     }
 
 }

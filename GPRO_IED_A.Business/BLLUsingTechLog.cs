@@ -31,7 +31,7 @@ namespace GPRO_IED_A.Business
         public ResponseBase Insert(T_UsingTechLog model)
         {
             ResponseBase result = new ResponseBase();
-            result.IsSuccess = false; 
+            result.IsSuccess = false;
             try
             {
                 using (db = new IEDEntities())
@@ -43,6 +43,7 @@ namespace GPRO_IED_A.Business
                                             x.UserId == model.UserId &&
                                             x.ProductId == model.ProductId &&
                                             x.PhaseId == model.PhaseId &&
+                                            x.PhaseId_Sample == model.PhaseId_Sample &&
                                             x.PhaseGroupId == model.PhaseGroupId &&
                                             x.QTCNId == model.QTCNId &&
                                             x.TKCId == model.TKCId);
@@ -75,7 +76,7 @@ namespace GPRO_IED_A.Business
             return result;
         }
 
-        public UsingTechReportModel GetReport(   DateTime from, DateTime to)
+        public UsingTechReportModel GetReport(DateTime from, DateTime to)
         {
             UsingTechReportModel report = null;
             using (db = new IEDEntities())
@@ -92,11 +93,11 @@ namespace GPRO_IED_A.Business
 
                 var allPhases = db.T_CA_Phase
                     .Where(x => !x.IsDeleted && x.CreatedDate >= from && x.CreatedDate <= to) // && x.IsApprove)
-                    .Select(x => new { Id = x.Id, CreatedDate = x.CreatedDate, node = x.Node, wkId = x.WorkShopId, ApproveDate = x.ApprovedDate , Status = x.Status })
+                    .Select(x => new { Id = x.Id, CreatedDate = x.CreatedDate, node = x.Node, wkId = x.WorkShopId, ApproveDate = x.ApprovedDate, Status = x.Status })
                     .ToList();
 
                 var allTechPhases = db.T_UsingTechLog
-                                        .Where(x => x.PhaseId.HasValue && x.CreatedDate >= from && x.CreatedDate <= to)
+                                        .Where(x =>( x.PhaseId.HasValue || x.PhaseId_Sample.HasValue) && x.CreatedDate >= from && x.CreatedDate <= to)
                    .Select(x => new { wkId = x.WorkShopId, CreatedDate = x.CreatedDate, IsView = x.IsView })
                    .ToList();
 
@@ -104,8 +105,8 @@ namespace GPRO_IED_A.Business
                                      .Where(x => !x.IsDeleted)
                 .Select(x => new UsingTechReportDetailModel { WorkshopId = x.Id, Name = x.Name })
                 .ToList();
-                 
-                report = new UsingTechReportModel(); 
+
+                report = new UsingTechReportModel();
                 report.TotalViewPhase = allTechPhases.Where(x => x.IsView).Count();
                 report.TotalDownloadPhase = allTechPhases.Where(x => !x.IsView).Count();
 
@@ -122,7 +123,7 @@ namespace GPRO_IED_A.Business
                             ws.TotalSubmitPhase = allPhases.Where(x => x.wkId == ws.WorkshopId && x.Status == eStatus.Submit).Count();
                             ws.TotalApprovePhase = allPhases.Where(x => x.wkId == ws.WorkshopId && x.Status == eStatus.Approved).Count();
                             ws.TotalPhase = allPhases.Where(x => x.wkId == ws.WorkshopId).Count();
-                            ws.TotalNewPhase = allPhases.Where(x => x.wkId == ws.WorkshopId && x.Status == eStatus.Approved && x.ApproveDate.HasValue && x.ApproveDate >= from && x.ApproveDate<=to).Count();
+                            ws.TotalNewPhase = allPhases.Where(x => x.wkId == ws.WorkshopId && x.Status == eStatus.Approved && x.ApproveDate.HasValue && x.ApproveDate >= from && x.ApproveDate <= to).Count();
                             ws.TotalViewPhase = allTechPhases.Where(x => x.wkId == ws.WorkshopId && x.IsView).Count();
                             ws.TotalDownloadPhase = allTechPhases.Where(x => x.wkId == ws.WorkshopId && !x.IsView).Count();
 
@@ -138,12 +139,24 @@ namespace GPRO_IED_A.Business
             }
             return report;
         }
-     
+
         public List<ReportTechDetailModel> GetReportDetail(int userId, int workshopId, bool isView, DateTime from, DateTime to)
         {
             using (db = new IEDEntities())
             {
-                var iquery = db.T_UsingTech_Detail.Where(x => x.T_UsingTechLog.PhaseId.HasValue && x.T_UsingTechLog.IsView == isView && x.CreatedDate >= from && x.CreatedDate <= to);
+                var iquery = db.T_UsingTech_Detail
+                    .Where(x =>
+                    (x.T_UsingTechLog.PhaseId.HasValue || x.T_UsingTechLog.PhaseId_Sample.HasValue) &&
+                    x.T_UsingTechLog.IsView == isView &&
+                    x.CreatedDate >= from &&
+                    x.CreatedDate <= to);
+                var abc = db.T_UsingTech_Detail
+                   .Where(x =>
+                   (x.T_UsingTechLog.PhaseId.HasValue || x.T_UsingTechLog.PhaseId_Sample.HasValue) &&
+                   x.T_UsingTechLog.IsView == isView &&
+                   x.CreatedDate >= from &&
+                   x.CreatedDate <= to).ToList();
+
                 if (userId != 0)
                     iquery = iquery.Where(x => x.T_UsingTechLog.UserId == userId);
                 if (workshopId != 0)
@@ -155,15 +168,17 @@ namespace GPRO_IED_A.Business
                         PhaseId = x.T_UsingTechLog.PhaseId ?? 0,
                         UserId = x.T_UsingTechLog.UserId,
                         UserName = (x.T_UsingTechLog.SUser.UserName + " (" + x.T_UsingTechLog.SUser.Name + ")"),
-                        PhaseName = x.T_UsingTechLog.T_CA_Phase.Name,
+                        PhaseName = x.T_UsingTechLog.PhaseId.HasValue ? x.T_UsingTechLog.T_CA_Phase.Name : "",
                         CreatedDate = x.CreatedDate,
                         LogId = x.UsingTechLogId,
                         Note = x.T_UsingTechLog.Note,
-                        WorkshopName = x.T_UsingTechLog.T_WorkShop.Name,
-                        WorkshopId = x.T_UsingTechLog.WorkShopId
+                        WorkshopName = (x.T_UsingTechLog.WorkShopId ==0 ? "" : x.T_UsingTechLog.T_WorkShop.Name),
+                        WorkshopId = x.T_UsingTechLog.WorkShopId,
+                        PhaseId_Sample = x.T_UsingTechLog.PhaseId_Sample ?? 0,
+                        PhaseName_Sample = x.T_UsingTechLog.PhaseId_Sample.HasValue ? x.T_UsingTechLog.T_PhaseGroup_Phase.Name : "",
                     })
                     .OrderBy(x => x.UserId)
-                    .ThenBy(x => x.WorkshopId)
+                   .ThenBy(x => x.WorkshopId)
                     .ThenBy(x => x.LogId)
                     .ThenBy(x => x.CreatedDate)
                    .ToList();

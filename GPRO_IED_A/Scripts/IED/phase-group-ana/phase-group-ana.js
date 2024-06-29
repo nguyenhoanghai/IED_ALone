@@ -33,7 +33,7 @@ GPRO.PhaseGroupAna = function () {
             Approve: '/PhaseApprove/Approve',
             ExportGroup: '/PhaseGroupAna/Export_CommoAnaPhaseGroup',
             Export: '/PhaseGroupAna/export_PhaseManiVersion',
-            SaveThamChieu:'/PhaseGroupAna/SaveThamChieu',
+            SaveThamChieu: '/PhaseGroupAna/SaveThamChieu',
 
             TinhLaiCode: '/PhaseGroupAna/TinhLaiCode',
 
@@ -41,6 +41,8 @@ GPRO.PhaseGroupAna = function () {
             GetManipulationEquipmentInfoByCode: '/MType/GetManipulationEquipmentInfoByCode',
             GetListTimePrepare: '/TimePrepare/GetLists',
             GetTimeTypePrepare: '/TimePrepare/GetTimeTypePreparesByWorkShopId',
+
+            InsertViewLog: '/UsingTech/Insert'
         },
         Element: {
             CreatePhasePopup: 'Create-Phase-Popup',
@@ -84,6 +86,7 @@ GPRO.PhaseGroupAna = function () {
             Video: '',
             AccessoriesArray: [],
             Commo_Ana_PhaseId: 0,
+            WorkShopId:0
         }
     }
     this.GetGlobal = function () {
@@ -107,6 +110,10 @@ GPRO.PhaseGroupAna = function () {
         Global.Data.TMU = parseFloat($('#config').attr('tmu'));
         if ($('#config').attr('gettmutype') != "")
             Global.Data.IntGetTMUType = parseInt($('#config').attr('gettmutype'));
+
+        if ($('#config').attr('wshopId') != "")
+            Global.Data.WorkShopId = parseInt($('#config').attr('wshopId'));
+
         InitListPhase_View();
         InitPopupChooseEquipment();
         InitPopupTimeRepare();
@@ -124,7 +131,7 @@ GPRO.PhaseGroupAna = function () {
 
     var RegisterEvent = function () {
         $('[re-product]').click(function () {
-            GetProducts( );
+            GetProducts();
         });
 
         $('[save-product-refer]').click(function () {
@@ -441,16 +448,16 @@ GPRO.PhaseGroupAna = function () {
                 //        return txt;
                 //    }
                 //},
-               ProductNames: {
+                ProductNames: {
                     title: "Mã hàng tham chiếu",
                     width: "15%",
                     sorting: false
-                },  Name: {
+                }, Name: {
                     visibility: 'fixed',
                     title: "Tên Công Đoạn",
                     width: "25%",
                 },
-               
+
                 WorkerLevelId: {
                     title: "Bậc thợ",
                     width: "5%",
@@ -467,7 +474,7 @@ GPRO.PhaseGroupAna = function () {
                         return txt;
                     }
                 },
-               
+
                 Status: {
                     title: 'Trạng thái',
                     width: '5%',
@@ -505,93 +512,7 @@ GPRO.PhaseGroupAna = function () {
                             _edit = $('<i data-toggle="modal" data-target="#' + Global.Element.CreatePhasePopup + '" title="Xem thông tin" class="fa fa-info-circle clickable blue"  ></i>');
                         _edit.click(function () {
                             data.record.TotalTMU = Math.round(data.record.TotalTMU * 1000) / 1000;
-                            $('#workersLevel').val(data.record.WorkerLevelId);
-                            $('#TotalTMU').html(data.record.TotalTMU);
-                            $('#phase-Des').val(data.record.Description);
-                            $('#phaseID').val(data.record.Id);
-                            $('#phase-name').val(data.record.Name).change();
-                            $('#phase-code').html(data.record.Code);
-                            $('#phase-index').val(data.record.Index);
-
-                            $('#time-repare-id').val(data.record.TimePrepareId);
-                            $('#time-repare-name').val(`${data.record.TimePrepareName} - TMU: ${data.record.TimePrepareTMU}`);
-                            $('#time-repare-id').attr('tmu', data.record.TimePrepareTMU);
-
-                            $('#equipmentId').val(data.record.EquipmentId);
-                            $('#equipmentName').val(data.record.EquipName);
-                            $('#equiptypedefaultId').val(data.record.EquipTypeDefaultId);
-                            $('#E_info').val(data.record.EquipDes);
-                            $('#ApplyPressure').val(data.record.ApplyPressuresId);
-                            $('#islibs').prop('checked', data.record.IsLibrary);
-                            $('#chooseApplyPressure').hide();
-                            if (data.record.ApplyPressuresId != 0)
-                                $('#chooseApplyPressure').show();
-                            Global.Data.PhaseManiVerDetailArray.length = 0;
-
-                            if (data.record.actions.length > 0) {
-                                $.each(data.record.actions, function (i, item) {
-                                    item.OrderIndex = i + 1;
-                                });
-                                $.each(data.record.actions, function (i, item) {
-                                    var obj = {
-                                        Id: item.Id,
-                                        CA_PhaseId: item.CA_PhaseId,
-                                        OrderIndex: item.OrderIndex,
-                                        ManipulationId: item.ManipulationId,
-                                        ManipulationCode: item.ManipulationCode.trim(),
-                                        EquipmentId: item.EquipmentId,
-                                        TMUEquipment: item.TMUEquipment,
-                                        TMUManipulation: item.TMUManipulation,
-                                        Loop: item.Loop,
-                                        TotalTMU: item.TotalTMU,
-                                        ManipulationName: item.ManipulationName == null ? '' : item.ManipulationName.trim()
-                                    }
-                                    Global.Data.PhaseManiVerDetailArray.push(obj);
-                                });
-                            }
-                            AddEmptyObject();
-                            ReloadListMani_Arr();
-                            $('[percentequipment]').val(data.record.PercentWasteEquipment);
-                            $('[percentmanipulation]').val(data.record.PercentWasteManipulation);
-                            $('[percentdb]').val(data.record.PercentWasteSpecial);
-                            $('[percentnpl]').val(data.record.PercentWasteMaterial);
-                            UpdateIntWaste();
-                            Global.Data.isInsertPhase = false;
-                            Global.Data.Video = data.record.Video;
-                            var video = document.getElementsByTagName('video')[0];
-                            var sources = video.getElementsByTagName('source');
-                            if (data.record.Video) {
-                                $('#video-info').html(data.record.Video.split('|')[1] + '  <i onclick="removeVideo()" title="Gỡ video" class="fa fa-trash-o red clickable"></i>')
-
-                                sources[0].src = data.record.Video.split('|')[0];
-                                sources[1].src = data.record.Video.split('|')[0];
-                                video.load();
-                            }
-                            else {
-                                $('#video-info').html('');
-                                sources[0].src = '';
-                                video.load();
-                            }
-
-                            $('#phase-status').html(data.record.Status);
-                            $('#phase-status').attr('class', '');
-                            let cls = 'normal-text';
-                            switch (data.record.Status) {
-                                case 'Chờ duyệt': cls = 'danger-text'; break;
-                                case 'Đã duyệt': cls = 'primary-text'; break;
-                                default: break;
-                            }
-                            $('#phase-status').addClass(cls);
-
-                            if (data.record.Status == "Chờ duyệt" || data.record.Status == "Đã duyệt") {
-                                $('[save-phase],[submit-phase]').hide();
-                                $('[not-approve-phase]').show();
-                            }
-                            else
-                                $('[not-approve-phase]').hide();
-
-                            $(".js-select2").val(data.record.ProductIds.split(','));
-                            $(".js-select2").trigger('change');
+                            GetById(data.record.Id);
                         });
                         div.append(_edit);
 
@@ -622,7 +543,7 @@ GPRO.PhaseGroupAna = function () {
     function ReloadListPhase_View() {
         $('#' + Global.Element.jtablePhase).jtable('load', { 'phaseGroupId': Global.Data.PhaseGroupId, 'keyword': $('#phasegroup-phase-keyword').val() });
     }
-     
+
     function GetLastPhaseIndex() {
         $.ajax({
             url: Global.UrlAction.GetLastIndex,
@@ -956,6 +877,142 @@ GPRO.PhaseGroupAna = function () {
         });
     }
 
+    function GetById(_Id) {
+        $.ajax({
+            url: Global.UrlAction.GetPhaseById,
+            type: 'POST',
+            data: JSON.stringify({ 'phaseId': _Id }),
+            contentType: 'application/json charset=utf-8',
+            beforeSend: function () { $('#loading').show(); },
+            success: function (data) {
+                $('#loading').hide();
+                GlobalCommon.CallbackProcess(data, function () {
+                    let obj = data.Records;
+                    if (data.Result == "OK") {
+                        $('#workersLevel').val(obj.WorkerLevelId);
+                        $('#TotalTMU').html(obj.TotalTMU);
+                        $('#phase-Des').val(obj.Description);
+                        $('#phaseID').val(obj.Id);
+                        $('#phase-name').val(obj.Name).change();
+                        $('#phase-code').html(obj.Code);
+                        $('#phase-index').val(obj.Index);
+
+                        $('#time-repare-id').val(obj.TimePrepareId);
+                        $('#time-repare-name').val(`${obj.TimePrepareName} - TMU: ${obj.TimePrepareTMU}`);
+                        $('#time-repare-id').attr('tmu', obj.TimePrepareTMU);
+
+                        $('#equipmentId').val(obj.EquipmentId);
+                        $('#equipmentName').val(obj.EquipName);
+                        $('#equiptypedefaultId').val(obj.EquipTypeDefaultId);
+                        $('#E_info').val(obj.EquipDes);
+                        $('#ApplyPressure').val(obj.ApplyPressuresId);
+                        $('#islibs').prop('checked', obj.IsLibrary);
+                        $('#chooseApplyPressure').hide();
+                        if (obj.ApplyPressuresId != 0)
+                            $('#chooseApplyPressure').show();
+                        Global.Data.PhaseManiVerDetailArray.length = 0;
+
+                        if (obj.actions.length > 0) {
+                            $.each(obj.actions, function (i, item) {
+                                item.OrderIndex = i + 1;
+                            });
+                            $.each(obj.actions, function (i, item) {
+                                var obj = {
+                                    Id: item.Id,
+                                    CA_PhaseId: item.CA_PhaseId,
+                                    OrderIndex: item.OrderIndex,
+                                    ManipulationId: item.ManipulationId,
+                                    ManipulationCode: item.ManipulationCode.trim(),
+                                    EquipmentId: item.EquipmentId,
+                                    TMUEquipment: item.TMUEquipment,
+                                    TMUManipulation: item.TMUManipulation,
+                                    Loop: item.Loop,
+                                    TotalTMU: item.TotalTMU,
+                                    ManipulationName: item.ManipulationName == null ? '' : item.ManipulationName.trim()
+                                }
+                                Global.Data.PhaseManiVerDetailArray.push(obj);
+                            });
+                        }
+                        AddEmptyObject();
+                        ReloadListMani_Arr();
+                        $('[percentequipment]').val(obj.PercentWasteEquipment);
+                        $('[percentmanipulation]').val(obj.PercentWasteManipulation);
+                        $('[percentdb]').val(obj.PercentWasteSpecial);
+                        $('[percentnpl]').val(obj.PercentWasteMaterial);
+                        UpdateIntWaste();
+                        Global.Data.isInsertPhase = false;
+                        Global.Data.Video = obj.Video;
+                        var video = document.getElementsByTagName('video')[0];
+                        var sources = video.getElementsByTagName('source');
+                        if (obj.Video) {
+                            $('#video-info').html(obj.Video.split('|')[1] + '  <i onclick="removeVideo()" title="Gỡ video" class="fa fa-trash-o red clickable"></i>')
+
+                            sources[0].src = obj.Video.split('|')[0];
+                            sources[1].src = obj.Video.split('|')[0];
+                            video.load();
+                        }
+                        else {
+                            $('#video-info').html('');
+                            sources[0].src = '';
+                            video.load();
+                        }
+
+                        $('#phase-status').html(obj.Status);
+                        $('#phase-status').attr('class', '');
+                        let cls = 'normal-text';
+                        switch (obj.Status) {
+                            case 'Chờ duyệt': cls = 'danger-text'; break;
+                            case 'Đã duyệt': cls = 'primary-text'; break;
+                            default: break;
+                        }
+                        $('#phase-status').addClass(cls);
+
+                        if (obj.Status == "Chờ duyệt" || obj.Status == "Đã duyệt") {
+                            $('[save-phase],[submit-phase]').hide();
+                            $('[not-approve-phase]').show();
+                        }
+                        else
+                            $('[not-approve-phase]').hide();
+
+                        $(".js-select2").val(obj.ProductIds.split(','));
+                        $(".js-select2").trigger('change');
+
+                        if (obj.Status == "Đã duyệt") {
+                            let viewLog = {
+                                CreatedDate : new Date(),
+                                PhaseId_Sample : obj.Id,
+                                PhaseGroupId: obj.PhaseGroupId,
+                                WorkShopId: Global.Data.WorkShopId,
+                                Type : 6, //PhaseGroup
+                                Note: `Cụm công đoạn mẫu: ${obj.PhaseGroupName} - Công đoạn: ${obj.Name}`,
+                                IsView:true
+                            };
+                            InsertViewLog(viewLog);
+                        }
+                    }
+                    else
+                        GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra trong quá trình xử lý.");
+                }, false, Global.Element.PopupProductType, true, true, function () {
+
+                    var msg = GlobalCommon.GetErrorMessage(data);
+                    GlobalCommon.ShowMessageDialog(msg, function () { }, "Đã có lỗi xảy ra.");
+                });
+            }
+        });
+    }
+
+    function InsertViewLog(obj) {
+        $.ajax({
+            url: Global.UrlAction.InsertViewLog,
+            type: 'POST',
+            data: JSON.stringify({ 'obj': obj }),
+            contentType: 'application/json charset=utf-8',
+            beforeSend: function () { $('#loading').show(); },
+            success: function (data) {
+                $('#loading').hide();
+            }
+        });
+    }
     /*********************************************** END PHASE ***********************************************************/
 
     /*********************************************** TIME PREPARE LIBRARY ***********************************************************/
@@ -1800,7 +1857,8 @@ GPRO.PhaseGroupAna = function () {
             url: Global.UrlAction.SaveThamChieu,
             type: 'POST',
             data: JSON.stringify({
-                'phaseId': Global.Data.Commo_Ana_PhaseId, 'productIds': ($(".js-select2-p").val() == null ? '0' : ($(".js-select2-p").val()).toString()) }),
+                'phaseId': Global.Data.Commo_Ana_PhaseId, 'productIds': ($(".js-select2-p").val() == null ? '0' : ($(".js-select2-p").val()).toString())
+            }),
             contentType: 'application/json charset=utf-8',
             beforeSend: function () { $('#loading').show(); },
             success: function (data) {

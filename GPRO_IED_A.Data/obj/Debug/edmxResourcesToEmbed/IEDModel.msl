@@ -1079,24 +1079,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="T_UsingTechLog">
-      <EntityTypeMapping TypeName="IEDModel.T_UsingTechLog">
-        <MappingFragment StoreEntitySet="T_UsingTechLog">
-          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-          <ScalarProperty Name="IsView" ColumnName="IsView" />
-          <ScalarProperty Name="UserId" ColumnName="UserId" />
-          <ScalarProperty Name="Note" ColumnName="Note" />
-          <ScalarProperty Name="Type" ColumnName="Type" />
-          <ScalarProperty Name="QTCNId" ColumnName="QTCNId" />
-          <ScalarProperty Name="TKCId" ColumnName="TKCId" />
-          <ScalarProperty Name="PhaseGroupId" ColumnName="PhaseGroupId" />
-          <ScalarProperty Name="PhaseId" ColumnName="PhaseId" />
-          <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-          <ScalarProperty Name="WorkShopId" ColumnName="WorkShopId" />
-          <ScalarProperty Name="Id" ColumnName="Id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="T_PhaseGroup_Phase">
       <EntityTypeMapping TypeName="IEDModel.T_PhaseGroup_Phase">
         <MappingFragment StoreEntitySet="T_PhaseGroup_Phase">
@@ -1220,6 +1202,25 @@
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Code" ColumnName="Code" />
           <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="T_UsingTechLog">
+      <EntityTypeMapping TypeName="IEDModel.T_UsingTechLog">
+        <MappingFragment StoreEntitySet="T_UsingTechLog">
+          <ScalarProperty Name="PhaseId_Sample" ColumnName="PhaseId_Sample" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="IsView" ColumnName="IsView" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="Note" ColumnName="Note" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="QTCNId" ColumnName="QTCNId" />
+          <ScalarProperty Name="TKCId" ColumnName="TKCId" />
+          <ScalarProperty Name="PhaseGroupId" ColumnName="PhaseGroupId" />
+          <ScalarProperty Name="PhaseId" ColumnName="PhaseId" />
+          <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+          <ScalarProperty Name="WorkShopId" ColumnName="WorkShopId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>

@@ -36,12 +36,12 @@ namespace GPRO_IED_A.Business
             return obj.CreatedUser == actionUser;
         }
 
-        public ExportTechProcessModel GetInfoForExport(int parentId, bool isGetNull)
+        public ExportTechProcessModel GetInfoForExport(int parentId, bool isGetNull , bool isMDG)
         {
             ExportTechProcessModel model = null;
             try
             {
-                var techProcessInfo = Get(parentId, "", isGetNull);
+                var techProcessInfo = Get(parentId, "", isGetNull,isMDG);
                 if (techProcessInfo != null)
                 {
                     using (db = new IEDEntities())
@@ -250,7 +250,7 @@ namespace GPRO_IED_A.Business
             }
         }
 
-        public TechProcessVersionModel Get(int parentId, string node, bool isGetNull)
+        public TechProcessVersionModel Get(int parentId, string node, bool isGetNull, bool isMDG)
         {
             try
             {
@@ -321,7 +321,7 @@ namespace GPRO_IED_A.Business
                                            //TMU_TGCB = x.T_CA_Phase.T_CA_Phase_TimePrepare.Sum(c=>c.T_TimePrepare.TMUNumber),
                                            HaoPhiThaoTac = x.T_CA_Phase.PercentWasteManipulation,
                                            HaoPhiThietBi = x.T_CA_Phase.PercentWasteEquipment,
-                                           
+
                                        }).OrderBy(x => x.ParentId).ThenBy(x => x.Index).ToList();
 
                         details = details.GroupBy(x => x.CA_PhaseId).Select(x => x.First()).ToList();
@@ -424,7 +424,7 @@ namespace GPRO_IED_A.Business
                         var wsObj = _db.T_CommodityAnalysis.FirstOrDefault(x => x.Id == cawk);
                         string[] wsDes = (!string.IsNullOrEmpty(wsObj.Description) ? wsObj.Description : "").Split('|').ToArray();
                         techVersion.DonVi = !string.IsNullOrEmpty(wsDes[0]) ? wsDes[0] : "";
-                        techVersion.NhomMe = !string.IsNullOrEmpty(wsDes[2]) ? wsDes[2] : "";
+                        techVersion.NhomMe = (wsDes.Length >= 3 && !string.IsNullOrEmpty(wsDes[2]) ? wsDes[2] : "");
 
                         cawk = Convert.ToInt32(_node.Split(',')[4]);
                         var phaseGroupObjs = _db.T_CommodityAnalysis.Where(x => !x.IsDeleted && x.ObjectType == (int)eObjectType.isPhaseGroup).Select(x => new { Id = x.Id, Code = x.Code });
@@ -477,7 +477,8 @@ namespace GPRO_IED_A.Business
                             {
                                 cawk = Convert.ToInt32(techVersion.details[i].Node.Split(',')[4]);
                                 var pGroup = phaseGroupObjs.FirstOrDefault(x => x.Id == cawk);
-                                techVersion.details[i].PhaseCode = GenerateCode(techVersion.details[i].PhaseCode, ((!string.IsNullOrEmpty(wsDes[1]) ? wsDes[1] : "") + "" + proObj.Code + "" + (pGroup != null ? pGroup.Code : "")));
+                                if (!isMDG)
+                                    techVersion.details[i].PhaseCode = GenerateCode(techVersion.details[i].PhaseCode, ((wsDes.Length >= 3 ? (!string.IsNullOrEmpty(wsDes[1]) ? wsDes[1] : "") : "") + "" + (!string.IsNullOrEmpty(proObj.Code) ? proObj.Code : "") + "" + (pGroup != null ? pGroup.Code : "")));
 
                                 time = timePrepares.Where(x => x.Commo_Ana_PhaseId == techVersion.details[i].CA_PhaseId).Sum(x => x.TMUNumber);
                                 techVersion.details[i].TimePrepare = time > 0 ? time / tmu : 0;

@@ -47,7 +47,7 @@ namespace GPRO_IED_A.Data
     
         public virtual ICollection<T_LabourDivision> T_LabourDivision { get; set; }
         public virtual ICollection<T_TechProcessVersionDetail> T_TechProcessVersionDetail { get; set; }
-        public virtual ICollection<T_UsingTechLog> T_UsingTechLog { get; set; }
         public virtual T_Product T_Product { get; set; }
+        public virtual ICollection<T_UsingTechLog> T_UsingTechLog { get; set; }
     }
 }

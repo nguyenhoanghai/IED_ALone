@@ -19,13 +19,13 @@ namespace GPRO_IED_A.Data
             this.SApprovers = new HashSet<SApprover>();
             this.SUserRoles = new HashSet<SUserRole>();
             this.T_CA_Phase = new HashSet<T_CA_Phase>();
-            this.T_UsingTechLog = new HashSet<T_UsingTechLog>();
             this.T_LabourDevision_Ver = new HashSet<T_LabourDevision_Ver>();
             this.T_LabourDivision = new HashSet<T_LabourDivision>();
             this.T_LabourDivision1 = new HashSet<T_LabourDivision>();
             this.T_LinePoDailyQuantities = new HashSet<T_LinePoDailyQuantities>();
             this.T_PhaseGroup_Phase = new HashSet<T_PhaseGroup_Phase>();
             this.T_PhaseGroupDailyProduction = new HashSet<T_PhaseGroupDailyProduction>();
+            this.T_UsingTechLog = new HashSet<T_UsingTechLog>();
         }
     
         public int Id { get; set; }
@@ -58,12 +58,12 @@ namespace GPRO_IED_A.Data
         public virtual T_WorkShop T_WorkShop { get; set; }
         public virtual ICollection<SUserRole> SUserRoles { get; set; }
         public virtual ICollection<T_CA_Phase> T_CA_Phase { get; set; }
-        public virtual ICollection<T_UsingTechLog> T_UsingTechLog { get; set; }
         public virtual ICollection<T_LabourDevision_Ver> T_LabourDevision_Ver { get; set; }
         public virtual ICollection<T_LabourDivision> T_LabourDivision { get; set; }
         public virtual ICollection<T_LabourDivision> T_LabourDivision1 { get; set; }
         public virtual ICollection<T_LinePoDailyQuantities> T_LinePoDailyQuantities { get; set; }
         public virtual ICollection<T_PhaseGroup_Phase> T_PhaseGroup_Phase { get; set; }
         public virtual ICollection<T_PhaseGroupDailyProduction> T_PhaseGroupDailyProduction { get; set; }
+        public virtual ICollection<T_UsingTechLog> T_UsingTechLog { get; set; }
     }
 }

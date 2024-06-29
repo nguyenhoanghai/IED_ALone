@@ -13,6 +13,7 @@ using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -597,7 +598,7 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var phase = BLLCommo_Ana_Phase.Instance.GetPhase(phaseId);
+                var phase = BLLCommo_Ana_Phase.Instance.GetPhase(phaseId,IsMDG);
                 JsonDataResult.Records = phase;
                 JsonDataResult.Result = "OK";
             }
@@ -634,12 +635,12 @@ namespace GPRO_IED_A.Controllers
         {
             try
             {
-                var phase = BLLCommo_Ana_Phase.Instance.GetPhase(phaseId);
+                //var phase = BLLCommo_Ana_Phase.Instance.GetPhase(phaseId,IsMDG);
                 if (ConfigurationManager.AppSettings["PhaseSusguestForm"] != null &&
                      ConfigurationManager.AppSettings["PhaseSusguestForm"] == "Library")
                     JsonDataResult.Records = BLLPhaseGroup_Phase.Instance.GetPhase(phaseId);
                 else
-                    JsonDataResult.Records = BLLCommo_Ana_Phase.Instance.GetPhase(phaseId);
+                    JsonDataResult.Records = BLLCommo_Ana_Phase.Instance.GetPhase(phaseId,IsMDG);
                 JsonDataResult.Result = "OK";
             }
             catch (Exception ex)
@@ -815,7 +816,7 @@ namespace GPRO_IED_A.Controllers
                     Response.ClearContent();
                     Response.BinaryWrite(excelPackage.GetAsByteArray());
                     DateTime dateNow = DateTime.Now;
-                    string fileName = "PTCĐ_" + result.PhaseName + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+                    string fileName = "PTCĐ_" + Regex.Replace( result.PhaseName, "[^\\w]", "_") + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
                     Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
                     Response.ContentType = "application/excel";
                     Response.Flush();
@@ -1097,7 +1098,7 @@ namespace GPRO_IED_A.Controllers
                     Response.ClearContent();
                     Response.BinaryWrite(excelPackage.GetAsByteArray());
                     DateTime dateNow = DateTime.Now;
-                    string fileName = "PTCĐ_" + result.Name + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+                    string fileName = "PTCĐ_" + Regex.Replace( result.Name , "[^\\w]", "_")+ "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
                     Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
                     Response.ContentType = "application/excel";
                     Response.Flush();
@@ -1205,7 +1206,7 @@ namespace GPRO_IED_A.Controllers
             {
                 if (isAuthenticate)
                 {
-                    JsonDataResult.Data = BLLTechProcessVersion.Instance.Get(parentId, node, isGetNull);
+                    JsonDataResult.Data = BLLTechProcessVersion.Instance.Get(parentId, node, isGetNull,IsMDG);
                     JsonDataResult.Result = "OK";
                 }
             }
@@ -1239,7 +1240,7 @@ namespace GPRO_IED_A.Controllers
         {
             if (isAuthenticate)
             {
-                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull);
+                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull,IsMDG);
                 var company = BLLCompany.Instance.GetById(UserContext.CompanyId);
                 var excelPackage = new ExcelPackage();
                 excelPackage.Workbook.Properties.Author = "IED";
@@ -1714,7 +1715,7 @@ namespace GPRO_IED_A.Controllers
                 Response.ClearContent();
                 Response.BinaryWrite(excelPackage.GetAsByteArray());
                 DateTime dateNow = DateTime.Now;
-                string fileName = "QTC_" + techProcessInfo.ProductName + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+                string fileName = "QTC_" + Regex.Replace(techProcessInfo.ProductName , "[^\\w]", "_") + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
                 Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
                 Response.ContentType = "application/excel";
                 Response.ContentEncoding = System.Text.Encoding.UTF8;
@@ -1756,7 +1757,7 @@ namespace GPRO_IED_A.Controllers
         {
             if (isAuthenticate)
             {
-                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull);
+                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull, IsMDG);
                 var excelPackage = new ExcelPackage();
                 excelPackage.Workbook.Properties.Author = "IED";
                 excelPackage.Workbook.Properties.Title = "Quy trình công nghệ";
@@ -2176,7 +2177,7 @@ namespace GPRO_IED_A.Controllers
                 Response.ClearContent();
                 Response.BinaryWrite(excelPackage.GetAsByteArray());
                 DateTime dateNow = DateTime.Now;
-                string fileName = "QTC_" + techProcessInfo.ProductName + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+                string fileName = "QTC_" + Regex.Replace(techProcessInfo.ProductName , "[^\\w]", "_") + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
                 Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
                 Response.ContentType = "application/excel";
                 Response.Flush();
@@ -2201,7 +2202,7 @@ namespace GPRO_IED_A.Controllers
         {
             if (isAuthenticate)
             {
-                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull);
+                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull, IsMDG);
                 var company = BLLCompany.Instance.GetById(UserContext.CompanyId);
                 var _file = new FileInfo(Server.MapPath(@"~\ReportTemplates\QTCN_TexGiang.xlsx"));
                 int rowIndex = 8;
@@ -2384,7 +2385,7 @@ namespace GPRO_IED_A.Controllers
                     Response.ClearContent();
                     Response.BinaryWrite(package.GetAsByteArray());
                     DateTime dateNow = DateTime.Now;
-                    string fileName = "QTC_" + techProcessInfo.ProductName + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+                    string fileName = "QTC_" + Regex.Replace( techProcessInfo.ProductName, "[^\\w]", "_") + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
                     Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
                     Response.ContentType = "application/excel";
                     Response.ContentEncoding = System.Text.Encoding.UTF8;
@@ -2413,7 +2414,7 @@ namespace GPRO_IED_A.Controllers
         {
             if (isAuthenticate)
             {
-                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull);
+                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull, IsMDG);
                 var excelPackage = new ExcelPackage();
                 excelPackage.Workbook.Properties.Author = "IED";
                 excelPackage.Workbook.Properties.Title = "Quy trình công nghệ";
@@ -2691,7 +2692,7 @@ namespace GPRO_IED_A.Controllers
                 Response.ClearContent();
                 Response.BinaryWrite(excelPackage.GetAsByteArray());
                 DateTime dateNow = DateTime.Now;
-                string fileName = "QTC_" + techProcessInfo.ProductName + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+                string fileName = "QTC_" + Regex.Replace( techProcessInfo.ProductName, "[^\\w]", "_") + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
                 Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
                 Response.ContentType = "application/excel";
                 Response.Flush();
@@ -2712,7 +2713,7 @@ namespace GPRO_IED_A.Controllers
         {
             if (isAuthenticate)
             {
-                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull);
+                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull, IsMDG);
                 var _file = new FileInfo(Server.MapPath(@"~\ReportTemplates\qtcn-dong-tien-template.xlsx"));
 
                 using (var excelPackage = new ExcelPackage(_file))
@@ -2986,7 +2987,7 @@ namespace GPRO_IED_A.Controllers
                     Response.ClearContent();
                     Response.BinaryWrite(excelPackage.GetAsByteArray());
                     DateTime dateNow = DateTime.Now;
-                    string fileName = "QTC_" + techProcessInfo.ProductName + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+                    string fileName = "QTC_" + Regex.Replace( techProcessInfo.ProductName, "[^\\w]", "_") + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
                     Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
                     Response.ContentType = "application/excel";
                     Response.Flush();
@@ -3001,7 +3002,7 @@ namespace GPRO_IED_A.Controllers
         /// <param name="techProcessVersionId"></param>
         public void ExportToExcel_7(int parentId, bool isGetNull)
         {
-            var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull);
+            var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull, IsMDG);
             var company = BLLCompany.Instance.GetById(UserContext.CompanyId);
 
             var excelPackage = new ExcelPackage();
@@ -3326,7 +3327,7 @@ namespace GPRO_IED_A.Controllers
         {
             if (isAuthenticate)
             {
-                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull);
+                var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull, IsMDG);
                 var _file = new FileInfo(Server.MapPath(@"~\ReportTemplates\qtcn-genviet-template.xlsx"));
 
                 using (var excelPackage = new ExcelPackage(_file))
@@ -3534,7 +3535,7 @@ namespace GPRO_IED_A.Controllers
                     Response.ClearContent();
                     Response.BinaryWrite(excelPackage.GetAsByteArray());
                     DateTime dateNow = DateTime.Now;
-                    string fileName = "QTC_" + techProcessInfo.ProductName + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+                    string fileName = "QTC_" + Regex.Replace( techProcessInfo.ProductName, "[^\\w]", "_") + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
                     Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
                     Response.ContentType = "application/excel";
                     Response.Flush();
@@ -4100,7 +4101,7 @@ namespace GPRO_IED_A.Controllers
                 Response.ClearContent();
                 Response.BinaryWrite(excelPackage.GetAsByteArray());
                 DateTime dateNow = DateTime.Now;
-                string fileName = "TKC_" + (linePos[0] != null ? linePos[0].LineName : "_") + "_" + tech.ProductName + "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
+                string fileName = Regex.Replace( "TKC_" + (linePos[0] != null ? linePos[0].LineName : "_") + "_" + tech.ProductName  , "[^\\w]", "_")+ "_" + dateNow.ToString("yyMMddhhmmss") + ".xlsx";
 
                 fileName = fileName.Replace(',', '-');
                 Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
@@ -4130,7 +4131,7 @@ namespace GPRO_IED_A.Controllers
         /// <param name="techProcessVersionId"></param>
         public void ExportToExcel_4(int parentId, bool isGetNull)
         {
-            var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull);
+            var techProcessInfo = BLLTechProcessVersion.Instance.GetInfoForExport(parentId, isGetNull, IsMDG);
             var company = BLLCompany.Instance.GetById(UserContext.CompanyId);
 
             var excelPackage = new ExcelPackage();

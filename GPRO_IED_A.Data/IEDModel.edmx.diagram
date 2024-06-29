@@ -123,13 +123,6 @@
         <AssociationConnector Association="IEDModel.FK_T_LinePoDailyQuantities_T_LabourDevision_Ver" />
         <AssociationConnector Association="IEDModel.FK_T_LinePoDailyQuantities_T_LabourDivision" />
         <AssociationConnector Association="IEDModel.FK_T_LinePoDailyQuantities_T_LinePositionDetail" />
-        <EntityTypeShape EntityType="IEDModel.T_UsingTechLog" Width="1.5" PointX="25.25" PointY="31.125" />
-        <AssociationConnector Association="IEDModel.FK_T_DownloadLog_T_CA_Phase" />
-        <AssociationConnector Association="IEDModel.FK_T_DownloadLog_T_LabourDevision_Ver" />
-        <AssociationConnector Association="IEDModel.FK_T_DownloadLog_T_PhaseGroup" />
-        <AssociationConnector Association="IEDModel.FK_T_DownloadLog_T_TechProcessVersion" />
-        <AssociationConnector Association="IEDModel.FK_T_UsingTech_Detail_T_UsingTechLog" />
-        <AssociationConnector Association="IEDModel.FK_T_UsingTechLog_T_WorkShop" />
         <EntityTypeShape EntityType="IEDModel.T_PhaseGroup_Phase" Width="1.5" PointX="26.5" PointY="37.375" />
         <AssociationConnector Association="IEDModel.FK_T_PhaseGroup_Phase_SWorkerLevel" />
         <AssociationConnector Association="IEDModel.FK_T_PhaseGroup_Phase_T_ApplyPressureLibrary" />
@@ -144,7 +137,6 @@
         <AssociationConnector Association="IEDModel.FK_SUser_T_WorkShop" />
         <AssociationConnector Association="IEDModel.FK_SUserRole_SUser" />
         <AssociationConnector Association="IEDModel.FK_T_CA_Phase_SUser" />
-        <AssociationConnector Association="IEDModel.FK_T_DownloadLog_SUser" />
         <AssociationConnector Association="IEDModel.FK_T_LabourDevision_Ver_SUser" />
         <AssociationConnector Association="IEDModel.FK_T_LabourDivision_SUser" />
         <AssociationConnector Association="IEDModel.FK_T_LabourDivision_SUser1" />
@@ -159,10 +151,19 @@
         <AssociationConnector Association="IEDModel.FK_T_PhaseGroupDailyProduction_T_CommodityAnalysis" />
         <EntityTypeShape EntityType="IEDModel.T_Product" Width="1.5" PointX="11.25" PointY="35" />
         <AssociationConnector Association="IEDModel.FK_T_Product_T_Customer" />
-        <AssociationConnector Association="IEDModel.FK_T_DownloadLog_T_Product" />
         <AssociationConnector Association="IEDModel.FK_T_Product_T_ProductGroup" />
         <AssociationConnector Association="IEDModel.FK_T_ProductFile_T_Product" />
         <AssociationConnector Association="IEDModel.FK_T_TechProcessVersion_T_Product" />
+        <EntityTypeShape EntityType="IEDModel.T_UsingTechLog" Width="1.5" PointX="29.75" PointY="30.5" />
+        <AssociationConnector Association="IEDModel.FK_T_DownloadLog_SUser" />
+        <AssociationConnector Association="IEDModel.FK_T_DownloadLog_T_CA_Phase" />
+        <AssociationConnector Association="IEDModel.FK_T_DownloadLog_T_LabourDevision_Ver" />
+        <AssociationConnector Association="IEDModel.FK_T_DownloadLog_T_PhaseGroup" />
+        <AssociationConnector Association="IEDModel.FK_T_UsingTechLog_T_PhaseGroup_Phase" />
+        <AssociationConnector Association="IEDModel.FK_T_DownloadLog_T_Product" />
+        <AssociationConnector Association="IEDModel.FK_T_DownloadLog_T_TechProcessVersion" />
+        <AssociationConnector Association="IEDModel.FK_T_UsingTech_Detail_T_UsingTechLog" />
+        <AssociationConnector Association="IEDModel.FK_T_UsingTechLog_T_WorkShop" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

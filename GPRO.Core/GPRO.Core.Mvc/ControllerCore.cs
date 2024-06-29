@@ -62,7 +62,7 @@ namespace GPRO.Core.Mvc
                         requestContext.HttpContext.Response.Redirect("/OutOfDate");
                       */
                    
-                    if (DateTime.Now > new DateTime(2024,1, 1))
+                    if (DateTime.Now > new DateTime(2025,1, 1))
                     {
                         requestContext.HttpContext.Response.Redirect("/OutOfDate");
                         Authentication.Check = false;
